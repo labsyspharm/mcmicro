@@ -23,7 +23,8 @@ ffp = Channel.fromPath( "${path_ilp}/*-ffp.tif" ).toSortedList()
 // Stitching and registration
 process ashlar {
     container 'labsyspharm/ashlar:latest'
-
+    publishDir path_rg, mode: 'copy', overwrite: false
+    
     input:
     file raw
     file dfp
@@ -38,10 +39,5 @@ process ashlar {
     """
 }
 
-// Handle final and intermediate outputs
+// Display stdout
 result.subscribe { print it }
-stitched
-    .flatMap()
-    .collectFile( storeDir: path_rg )
-    .subscribe { println "Stitched image ${it.name} saved to ${it.getParent()}" }
-
