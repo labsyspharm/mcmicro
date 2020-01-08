@@ -1,22 +1,24 @@
 #!/usr/bin/env nextflow
 
-// Input location of the exemplar
-params.in = '/home/sokolov/test/mcmicro_nf/exemplar-002'
+// Default parameters
+params.in = '/home/sokolov/test/exemplar-002'
+params.TMA = true
+
+// Define all subdirectories
+path_raw = "${params.in}/raw_images"
+path_ilp = "${params.in}/illumination_profiles"
+path_rg  = "${params.in}/registration"
+path_dr  = "${params.in}/dearray"
+path_drm = "${params.in}/dearray/masks"
 
 // Create intermediate directories
-path_rg = "${params.in}/registration"
 file(path_rg).mkdir()
+file(path_drm).mkdirs()   // Also handles the parent path_dr
 
 // Channels for the initial inputs (raw images and illumination profiles)
-raw = Channel
-    .fromPath( "${params.in}/raw_images/*.ome.tiff" )
-    .toSortedList()
-dfp = Channel
-    .fromPath( "${params.in}/illumination_profiles/*-dfp.tif" )
-    .toSortedList()
-ffp = Channel
-    .fromPath( "${params.in}/illumination_profiles/*-ffp.tif" )
-    .toSortedList()
+raw = Channel.fromPath( "${path_raw}/*.ome.tiff" ).toSortedList()
+dfp = Channel.fromPath( "${path_ilp}/*-dfp.tif" ).toSortedList()
+ffp = Channel.fromPath( "${path_ilp}/*-ffp.tif" ).toSortedList()
 
 // Stitching and registration
 process ashlar {
@@ -39,5 +41,7 @@ process ashlar {
 // Handle final and intermediate outputs
 result.subscribe { print it }
 stitched
+    .flatMap()
     .collectFile( storeDir: path_rg )
-    .subscribe { println "Stitched image saved to $it" }
+    .subscribe { println "Stitched image ${it.name} saved to ${it.getParent()}" }
+
