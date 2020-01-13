@@ -7,6 +7,11 @@ path_drm = "${params.in}/dearray/masks"
 
 rg = Channel.fromPath( "${path_rg}/*.ome.tif" ).toSortedList()
 
+// Additional closures
+
+// Filename from full path: {/path/to/file.ext -> file.ext}
+cls_base = { fn -> file(fn).name }
+
 /*
 process mock_ashlar {
     intput:
@@ -21,25 +26,25 @@ process mock_ashlar {
 */
 
 process dearray {
+    publishDir path_dr,  mode: 'copy', pattern: "**[0-9].tif", saveAs: cls_base
+    publishDir path_drm, mode: 'copy', pattern: "**_mask.tif", saveAs: cls_base
+    
     output:
-    file "*.tif" into cores
-    file "*_mask.tif" into core_masks
+    file "**/{[A-Z],[A-Z][A-Z]}{[0-9],[0-9][0-9]}.tif" into cores
+    file "**_mask.tif" into core_masks
 
     '''
-    #!/usr/bin/env matlab
-
-    addpath(genpath('~/mcmicro/Coreograph'))
-    tmaDearray('/home/sokolov/test/exemplar-002/registration/stitched.ome.tif', ...
-               'outputPath','.','useGrid','true')    
+    matlab -nodesktop -nosplash -r \
+    "addpath(genpath('~/mcmicro/Coreograph')); \
+     tmaDearray('/home/sokolov/test/exemplar-002/registration/stitched.ome.tif',\
+                'outputPath','.','useGrid','true'); exit"
     '''
 }
 
 cores
-    .flatMap()
-    .collectFile( storeDir: path_dr )
-    .subscribe { println "File ${it.name} saved to ${it.getParent()}" }
+    .flatten()
+    .subscribe { println "Received ${it.name} in cores" }
 
 core_masks
-    .flatMap()
-    .collectFile( storeDir: path_drm )
-    .subscribe { println "File ${it.name} saved to ${it.getParent()}" }
+    .flatten()
+    .subscribe { println "Received ${it.name} in masks" }

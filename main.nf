@@ -23,7 +23,7 @@ ffp = Channel.fromPath( "${path_ilp}/*-ffp.tif" ).toSortedList()
 // Stitching and registration
 process ashlar {
     container 'labsyspharm/ashlar:latest'
-    publishDir path_rg, mode: 'copy', overwrite: false
+    publishDir path_rg, mode: 'copy'
     
     input:
     file raw
