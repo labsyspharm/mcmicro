@@ -1,34 +1,39 @@
 #!/usr/bin/env nextflow
 
-// Input location of the exemplar
-params.in = '/home/sokolov/test/mcmicro_nf/exemplar-002'
+// Default parameters
+params.in        = '/home/sokolov/test/exemplar-002'
+params.TMA       = true
+params.tool_core = '/home/sokolov/mcmicro/Coreograph'
+
+// Define all subdirectories
+path_raw = "${params.in}/raw_images"
+path_ilp = "${params.in}/illumination_profiles"
+path_rg  = "${params.in}/registration"
+path_dr  = "${params.in}/dearray"
+path_drm = "${params.in}/dearray/masks"
+
+// Closure: Filename from full path: {/path/to/file.ext -> file.ext}
+cls_base = { fn -> file(fn).name }
 
 // Create intermediate directories
-path_rg = "${params.in}/registration"
 file(path_rg).mkdir()
+file(path_drm).mkdirs()   // Also handles the parent path_dr
 
 // Channels for the initial inputs (raw images and illumination profiles)
-raw = Channel
-    .fromPath( "${params.in}/raw_images/*.ome.tiff" )
-    .toSortedList()
-dfp = Channel
-    .fromPath( "${params.in}/illumination_profiles/*-dfp.tif" )
-    .toSortedList()
-ffp = Channel
-    .fromPath( "${params.in}/illumination_profiles/*-ffp.tif" )
-    .toSortedList()
+raw = Channel.fromPath( "${path_raw}/*.ome.tiff" ).toSortedList()
+dfp = Channel.fromPath( "${path_ilp}/*-dfp.tif" ).toSortedList()
+ffp = Channel.fromPath( "${path_ilp}/*-ffp.tif" ).toSortedList()
 
 // Stitching and registration
 process ashlar {
-    container 'labsyspharm/ashlar:latest'
-
+    publishDir path_rg, mode: 'copy'
+    
     input:
     file raw
     file dfp
     file ffp
 
     output:
-    stdout result
     file 'stitched.ome.tif' into stitched
 
     """
@@ -36,8 +41,29 @@ process ashlar {
     """
 }
 
-// Handle final and intermediate outputs
-result.subscribe { print it }
-stitched
-    .collectFile( storeDir: path_rg )
-    .subscribe { println "Stitched image saved to $it" }
+// De-arraying (if TMA)
+process dearray {
+    publishDir path_dr,  mode: 'copy', pattern: "**[0-9].tif", saveAs: cls_base
+    publishDir path_drm, mode: 'copy', pattern: "**_mask.tif", saveAs: cls_base
+
+    input:
+    file stitched
+    
+    output:
+    file "**/{[A-Z],[A-Z][A-Z]}{[0-9],[0-9][0-9]}.tif" into cores
+    file "**_mask.tif" into core_masks
+
+    """
+    matlab -nodesktop -nosplash -r \
+    "addpath(genpath('${params.tool_core}')); \
+     tmaDearray('./$stitched','outputPath','.','useGrid','true'); exit"
+    """
+}
+
+cores
+    .flatten()
+    .subscribe { println "Received ${it.name} in cores" }
+
+core_masks
+    .flatten()
+    .subscribe { println "Received ${it.name} in masks" }
