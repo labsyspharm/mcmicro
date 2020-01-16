@@ -1,9 +1,12 @@
 #!/usr/bin/env nextflow
 
 // Default parameters
-params.in        = '/home/sokolov/test/exemplar-002'
-params.TMA       = true
-params.tool_core = '/home/sokolov/mcmicro/Coreograph'
+params.in    = '/home/sokolov/test/exemplar-002'
+params.TMA   = true
+params.tools = '$HOME/mcmicro'
+
+// Define tools
+tool_core = "${params.in}/Coreograph"
 
 // Define all subdirectories
 path_raw = "${params.in}/raw_images"
@@ -55,7 +58,7 @@ process dearray {
 
     """
     matlab -nodesktop -nosplash -r \
-    "addpath(genpath('${params.tool_core}')); \
+    "addpath(genpath('${tool_core}')); \
      tmaDearray('./$stitched','outputPath','.','useGrid','true'); exit"
     """
 }
