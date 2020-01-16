@@ -1,9 +1,8 @@
 #!/usr/bin/env nextflow
 
 // Default parameters
-params.in    = '/home/sokolov/test/exemplar-002'
+params.tools = "$HOME/mcmicro"
 params.TMA   = true
-params.tools = '$HOME/mcmicro'
 
 // Define tools
 tool_core = "${params.tools}/Coreograph"
