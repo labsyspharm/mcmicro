@@ -6,7 +6,7 @@ params.TMA   = true
 params.tools = '$HOME/mcmicro'
 
 // Define tools
-tool_core = "${params.in}/Coreograph"
+tool_core = "${params.tools}/Coreograph"
 
 // Define all subdirectories
 path_raw = "${params.in}/raw_images"
