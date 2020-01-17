@@ -15,4 +15,4 @@ Local: `nextflow run ArtemSokolov/mcmicro-nf --in path/to/exemplar002`
 On O2:
 
 - `module load {gcc, ashlar, matlab}`
-- `nextflow run ArtemSokolov/mcmicro-nf -profile O2 --in path/to/exemplar002`
+- `nextflow run ArtemSokolov/mcmicro-nf --in test/exemplar-002/ --tools /n/groups/lsp/mcmicro/ -profile O2`
