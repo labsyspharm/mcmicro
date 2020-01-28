@@ -71,12 +71,12 @@ process unmicst {
     publishDir path_prob, mode: 'copy'
 
     input:
-    file cores
+    file core from cores.flatten()
 
     output:
     file '*.tif'
 
     """
-    python ${params.tool_unmicst}/UnMicst.py $cores --outputPath .
+    python ${params.tool_unmicst}/UnMicst.py $core --outputPath .
     """
 }
