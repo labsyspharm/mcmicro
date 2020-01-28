@@ -5,6 +5,7 @@ params.tools = "$HOME/mcmicro"
 params.TMA   = true
 
 // Define tools
+// NOTE: Some of these values are overwritten by nextflow.config
 params.tool_core    = "${params.tools}/Coreograph"
 params.tool_unmicst = "${params.tools}/UnMicst"
 
@@ -65,10 +66,17 @@ process dearray {
     """
 }
 
-cores
-    .flatten()
-    .subscribe { println "Received ${it.name} in cores" }
+// UNet classification
+process unmicst {
+    publishDir path_prob, mode: 'copy'
 
-core_masks
-    .flatten()
-    .subscribe { println "Received ${it.name} in masks" }
+    input:
+    file cores
+
+    output:
+    file '*.tif'
+
+    """
+    python ${params.tool_unmicst}/UnMicst.py $cores --outputPath .
+    """
+}
