@@ -5,14 +5,16 @@ params.tools = "$HOME/mcmicro"
 params.TMA   = true
 
 // Define tools
-tool_core = "${params.tools}/Coreograph"
+params.tool_core    = "${params.tools}/Coreograph"
+params.tool_unmicst = "${params.tools}/UnMicst"
 
 // Define all subdirectories
-path_raw = "${params.in}/raw_images"
-path_ilp = "${params.in}/illumination_profiles"
-path_rg  = "${params.in}/registration"
-path_dr  = "${params.in}/dearray"
-path_drm = "${params.in}/dearray/masks"
+path_raw  = "${params.in}/raw_images"
+path_ilp  = "${params.in}/illumination_profiles"
+path_rg   = "${params.in}/registration"
+path_dr   = "${params.in}/dearray"
+path_drm  = "${params.in}/dearray/masks"
+path_prob = "${params.in}/prob_maps"
 
 // Closure: Filename from full path: {/path/to/file.ext -> file.ext}
 cls_base = { fn -> file(fn).name }
@@ -20,6 +22,7 @@ cls_base = { fn -> file(fn).name }
 // Create intermediate directories
 file(path_rg).mkdir()
 file(path_drm).mkdirs()   // Also handles the parent path_dr
+file(path_prob).mkdir()
 
 // Channels for the initial inputs (raw images and illumination profiles)
 raw = Channel.fromPath( "${path_raw}/*.ome.tiff" ).toSortedList()
@@ -57,7 +60,7 @@ process dearray {
 
     """
     matlab -nodesktop -nosplash -r \
-    "addpath(genpath('${tool_core}')); \
+    "addpath(genpath('${params.tool_core}')); \
      tmaDearray('./$stitched','outputPath','.','useGrid','true'); exit"
     """
 }
