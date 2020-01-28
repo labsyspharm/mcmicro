@@ -1,0 +1,9 @@
+name: unmicst
+dependencies:
+  - python=3.6
+  - tensorflow=1.15.0
+  - scikit-image
+  - matplotlib
+  - pip
+  - pip:
+    - tifffile
