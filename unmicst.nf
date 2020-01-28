@@ -4,8 +4,10 @@ tool_unmicst = "$HOME/projects/UnMicst"
 
 cores = Channel.fromPath( "$HOME/test/exemplar-002/dearray/*.tif" )
 
+println "Project : $workflow.projectDir"
+
 process unmicst {
-    conda 'conda/unmicst.yml'
+    conda "${workflow.projectDir}/conda/unmicst.yml"
     publishDir "$HOME/test/exemplar-002/prob_maps", mode: 'copy'
     
     input:
