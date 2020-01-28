@@ -2,7 +2,7 @@
 
 params.tools = "$HOME/mcmicro"
 
-process coreograph {
+process setup_coreograph {
     publishDir params.tools, mode: 'copy'
 
     output:
@@ -16,7 +16,7 @@ process coreograph {
     """
 }
 
-process unmicst {
+process setup_unmicst {
     publishDir params.tools, mode: 'copy'
 
     output:
