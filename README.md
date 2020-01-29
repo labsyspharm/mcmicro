@@ -1,25 +1,22 @@
 ## mcmicro-nf: Nextflow prototype for mcmicro
 
-**Prerequisites**: Java (v8 or later), MATLAB, Docker (if running locally)
+Install [Nextflow](https://www.nextflow.io/): `curl -s https://get.nextflow.io | bash`
 
-### Setup
+### Local execution
 
-1. Install [Nextflow](https://www.nextflow.io/): `curl -s https://get.nextflow.io | bash`
-2. Pull individual modules: `nextflow run ArtemSokolov/mcmicro-nf/setup.nf`
+**Prerequisites**: Java (v8 or later), MATLAB, Docker
 
-Note that by default the individual modules will be installed to `$HOME/mcmicro` directory. An alternative destination can be specified via the `--tools` parameter:
+Pull individual tools: `nextflow run ArtemSokolov/mcmicro-nf/setup.nf`
 
+Run the pipeline: `nextflow run ArtemSokolov/mcmicro-nf --in path/to/exemplar002`
+
+### O2 execution
+
+Individual tools are already pre-installed to `/n/groups/lsp/mcmicro`.
+
+Load necessary modules: `module load gcc ashlar matlab java conda2`
+
+Run the pipeline pointing to the existing tools location with the O2 profile:
 ```
-nextflow run ArtemSokolov/mcmicro-nf/setup.nf --tools /path/to/tools
+nextflow run ArtemSokolov/mcmicro-nf --in path/to/exemplar-002 --tools /n/groups/lsp/mcmicro/ -profile O2
 ```
-
-On O2, these have been pre-installed to `/n/groups/lsp/mcmicro`. When running the pipeline, the location of the tools can also be specified via the `--tools` argument. (See the O2 example below.)
-
-### Running the pipeline
-
-Local: `nextflow run ArtemSokolov/mcmicro-nf --in path/to/exemplar002`
-
-On O2:
-
-- `module load gcc, ashlar, matlab`
-- `nextflow run ArtemSokolov/mcmicro-nf --in path/to/exemplar-002 --tools /n/groups/lsp/mcmicro/ -profile O2`
