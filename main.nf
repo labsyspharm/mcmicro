@@ -1,8 +1,9 @@
 #!/usr/bin/env nextflow
 
 // Default parameters
-params.tools = "$HOME/mcmicro"
-params.TMA   = true
+params.tools       = "$HOME/mcmicro"
+params.TMA         = true
+params.skip_ashlar = false
 
 // Define tools
 // NOTE: Some of these values are overwritten by nextflow.config
@@ -17,18 +18,25 @@ path_dr   = "${params.in}/dearray"
 path_drm  = "${params.in}/dearray/masks"
 path_prob = "${params.in}/prob_maps"
 
-// Closure: Filename from full path: {/path/to/file.ext -> file.ext}
-cls_base = { fn -> file(fn).name }
-
 // Create intermediate directories
 file(path_rg).mkdir()
 file(path_drm).mkdirs()   // Also handles the parent path_dr
 file(path_prob).mkdir()
 
-// Channels for the initial inputs (raw images and illumination profiles)
-raw = Channel.fromPath( "${path_raw}/*.ome.tiff" ).toSortedList()
-dfp = Channel.fromPath( "${path_ilp}/*-dfp.tif" ).toSortedList()
-ffp = Channel.fromPath( "${path_ilp}/*-ffp.tif" ).toSortedList()
+// Define closures
+//   Filename from full path: {/path/to/file.ext -> file.ext}
+cls_base = { fn -> file(fn).name }
+
+//   Channel from path p if cond is true, empty channel if false
+cls_ch = { cond, p -> cond ? Channel.fromPath(p) : Channel.empty() }
+
+// If we're running ASHLAR, find raw images and illumination profiles
+raw = cls_ch( !params.skip_ashlar, "${path_raw}/*.ome.tiff" ).toSortedList()
+dfp = cls_ch( !params.skip_ashlar, "${path_ilp}/*-dfp.tif" ).toSortedList()
+ffp = cls_ch( !params.skip_ashlar, "${path_ilp}/*-ffp.tif" ).toSortedList()
+
+// If we're not running ASHLAR, find the pre-stitched image
+prestitched = cls_ch( params.skip_ashlar, "${path_rg}/stitched.ome.tif" )
 
 // Stitching and registration
 process ashlar {
@@ -36,11 +44,14 @@ process ashlar {
     
     input:
     file raw
-    file dfp
     file ffp
+    file dfp
 
     output:
     file 'stitched.ome.tif' into stitched
+
+    when:
+    !params.skip_ashlar
 
     """
     ashlar $raw -m 30 --pyramid --ffp $ffp --dfp $dfp -f stitched.ome.tif
@@ -52,8 +63,9 @@ process dearray {
     publishDir path_dr,  mode: 'copy', pattern: "**[0-9].tif", saveAs: cls_base
     publishDir path_drm, mode: 'copy', pattern: "**_mask.tif", saveAs: cls_base
 
+    // Mix mutually-exclusive channels (dependent on params.skip_ashlar)
     input:
-    file stitched
+    file s from stitched.mix( prestitched )
     
     output:
     file "**/{[A-Z],[A-Z][A-Z]}{[0-9],[0-9][0-9]}.tif" into cores
@@ -62,7 +74,7 @@ process dearray {
     """
     matlab -nodesktop -nosplash -r \
     "addpath(genpath('${params.tool_core}')); \
-     tmaDearray('./$stitched','outputPath','.','useGrid','true'); exit"
+     tmaDearray('./$s','outputPath','.','useGrid','true'); exit"
     """
 }
 
