@@ -11,7 +11,7 @@ process setup_coreograph {
     """
     git clone https://github.com/HMS-IDAC/Coreograph.git
     cd Coreograph
-    git checkout e21b137e9bde2b95f0402836bd9bb2658f436aea
+    git checkout 17d0b694521d3cfbdcaa12b553699856e47fb2a5
     curl -o TMAsegmentation/model1.mat https://mcmicro.s3.amazonaws.com/models/model1.mat
     """
 }
