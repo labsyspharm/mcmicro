@@ -9,6 +9,7 @@ params.skip_ashlar = false
 // NOTE: Some of these values are overwritten by nextflow.config
 params.tool_core    = "${params.tools}/Coreograph"
 params.tool_unmicst = "${params.tools}/UnMicst"
+params.tool_segment = "${params.tools}/S3segmenter"
 
 // Define all subdirectories
 path_raw  = "${params.in}/raw_images"
@@ -23,12 +24,16 @@ file(path_rg).mkdir()
 file(path_drm).mkdirs()   // Also handles the parent path_dr
 file(path_prob).mkdir()
 
-// Define closures
+// Define closures / functions
 //   Filename from full path: {/path/to/file.ext -> file.ext}
 cls_base = { fn -> file(fn).name }
 
 //   Channel from path p if cond is true, empty channel if false
 cls_ch = { cond, p -> cond ? Channel.fromPath(p) : Channel.empty() }
+
+//   Extract image ID from filename
+cls_id  = { fn -> fn.toString().tokenize('_').get(0) }
+cls_fid = { file -> tuple(cls_fnid(file.getBaseName()), file) }
 
 // If we're running ASHLAR, find raw images and illumination profiles
 raw = cls_ch( !params.skip_ashlar, "${path_raw}/*.ome.tiff" ).toSortedList()
@@ -60,15 +65,15 @@ process ashlar {
 
 // De-arraying (if TMA)
 process dearray {
-    publishDir path_dr,  mode: 'copy', pattern: "**[0-9].tif", saveAs: cls_base
-    publishDir path_drm, mode: 'copy', pattern: "**_mask.tif", saveAs: cls_base
+    publishDir path_dr,  mode: 'copy', pattern: "**[0-9].tif"
+    publishDir path_drm, mode: 'copy', pattern: "**_mask.tif"
 
     // Mix mutually-exclusive channels (dependent on params.skip_ashlar)
     input:
     file s from stitched.mix( prestitched )
     
     output:
-    file "**/{[A-Z],[A-Z][A-Z]}{[0-9],[0-9][0-9]}.tif" into cores
+    file "**{[A-Z],[A-Z][A-Z]}{[0-9],[0-9][0-9]}.tif" into cores
     file "**_mask.tif" into core_masks
 
     """
@@ -92,3 +97,7 @@ process unmicst {
     python ${params.tool_unmicst}/UnMicst.py $core --outputPath .
     """
 }
+
+//cores
+//    .flatten()
+//    .map(cls_fid)
