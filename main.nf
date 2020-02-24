@@ -16,13 +16,14 @@ path_raw  = "${params.in}/raw_images"
 path_ilp  = "${params.in}/illumination_profiles"
 path_rg   = "${params.in}/registration"
 path_dr   = "${params.in}/dearray"
-path_drm  = "${params.in}/dearray/masks"
 path_prob = "${params.in}/prob_maps"
+path_seg  = "${params.in}/segmentation"
 
 // Create intermediate directories
 file(path_rg).mkdir()
-file(path_drm).mkdirs()   // Also handles the parent path_dr
+file(path_dr).mkdir()
 file(path_prob).mkdir()
+file(path_seg).mkdir()
 
 // Define closures / functions
 //   Filename from full path: {/path/to/file.ext -> file.ext}
@@ -33,7 +34,7 @@ cls_ch = { cond, p -> cond ? Channel.fromPath(p) : Channel.empty() }
 
 //   Extract image ID from filename
 cls_id  = { fn -> fn.toString().tokenize('_').get(0) }
-cls_fid = { file -> tuple(cls_fnid(file.getBaseName()), file) }
+cls_fid = { file -> tuple(cls_id(file.getBaseName()), file) }
 
 // If we're running ASHLAR, find raw images and illumination profiles
 raw = cls_ch( !params.skip_ashlar, "${path_raw}/*.ome.tiff" ).toSortedList()
@@ -65,8 +66,7 @@ process ashlar {
 
 // De-arraying (if TMA)
 process dearray {
-    publishDir path_dr,  mode: 'copy', pattern: "**[0-9].tif"
-    publishDir path_drm, mode: 'copy', pattern: "**_mask.tif"
+    publishDir path_dr,  mode: 'copy'
 
     // Mix mutually-exclusive channels (dependent on params.skip_ashlar)
     input:
@@ -74,7 +74,7 @@ process dearray {
     
     output:
     file "**{[A-Z],[A-Z][A-Z]}{[0-9],[0-9][0-9]}.tif" into cores
-    file "**_mask.tif" into core_masks
+    file "**_mask.tif" into masks
 
     """
     matlab -nodesktop -nosplash -r \
@@ -83,21 +83,50 @@ process dearray {
     """
 }
 
+// Duplicate the cores channel for 1) UNet and 2) S3segmenter
+cores.into {cores1; cores2}
+
 // UNet classification
 process unmicst {
     publishDir path_prob, mode: 'copy'
 
     input:
-    file core from cores.flatten()
+    file core from cores1.flatten()
 
     output:
-    file '*.tif'
+    file '*Nuclei*.tif' into probs_n
+    file '*Contours*.tif' into probs_c
 
     """
     python ${params.tool_unmicst}/UnMicst.py $core --outputPath .
     """
 }
 
-//cores
-//    .flatten()
-//    .map(cls_fid)
+// Extract core ID from each filename
+id_cores   = cores2.flatten().map(cls_fid)
+id_masks   = masks.flatten().map(cls_fid)
+id_probs_n = probs_n.flatten().map(cls_fid)
+id_probs_c = probs_c.flatten().map(cls_fid)
+
+// Use the core IDs to match up file tuples for segmentation
+seg_inputs = id_cores.join( id_masks ).join( id_probs_n ).join( id_probs_c )
+
+// Segmentation
+process s3seg {
+    publishDir path_seg, mode: 'copy'
+
+    input:
+	set id, file(core), file(mask), file(pmn), file(pmc) from seg_inputs
+
+    output:
+	file '**' into segmented
+
+    """
+    python ${params.tool_segment}/S3segmenter.py --crop dearray \
+       --imagePath $core \
+       --maskPath $mask \
+       --nucleiClassProbPath $pmn \
+       --contoursClassProbPath $pmc \
+       --outputPath .
+    """
+}
