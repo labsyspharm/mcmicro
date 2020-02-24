@@ -1,0 +1,10 @@
+name: s3segmenter
+dependencies:
+  - python=3.6
+  - scikit-learn
+  - scikit-image
+  - matplotlib
+  - pip
+  - pip:
+    - tifffile
+    - opencv-python
