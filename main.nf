@@ -17,11 +17,13 @@ path_ilp  = "${params.in}/illumination_profiles"
 path_rg   = "${params.in}/registration"
 path_dr   = "${params.in}/dearray"
 path_prob = "${params.in}/prob_maps"
+path_seg  = "${params.in}/segmentation"
 
 // Create intermediate directories
 file(path_rg).mkdir()
-file(path_dr).mkdirs()
+file(path_dr).mkdir()
 file(path_prob).mkdir()
+file(path_seg).mkdir()
 
 // Define closures / functions
 //   Filename from full path: {/path/to/file.ext -> file.ext}
@@ -108,4 +110,23 @@ id_probs_c = probs_c.flatten().map(cls_fid)
 
 // Use the core IDs to match up file tuples for segmentation
 seg_inputs = id_cores.join( id_masks ).join( id_probs_n ).join( id_probs_c )
-seg_inputs.view()
+
+// Segmentation
+process s3seg {
+    publishDir path_seg, mode: 'copy'
+
+    input:
+	set id, file(core), file(mask), file(pmn), file(pmc) from seg_inputs
+
+    output:
+	file '**' into segmented
+
+    """
+    python ${params.tool_segment}/S3segmenter.py --crop dearray \
+       --imagePath $core \
+       --maskPath $mask \
+       --nucleiClassProbPath $pmn \
+       --contoursClassProbPath $pmc \
+       --outputPath .
+    """
+}
