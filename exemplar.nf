@@ -16,8 +16,7 @@ switch( params.name ) {
 	url = 'https://mcmicro.s3.amazonaws.com/exemplars/002/exemplar-002'
 	break
     default:
-	println "Unknown exemplar name"
-	break
+	error "Unknown exemplar name"
 }
 
 // Number of individual channels to download
@@ -42,8 +41,8 @@ process getExemplar {
     name_dfp="!{dir_ilp}/$name-dfp.tif"
     name_ffp="!{dir_ilp}/$name-ffp.tif"
 
-    curl -o $name_raw "!{url}/$name_raw"
-    curl -o $name_dfp "!{url}/$name_dfp"
-    curl -o $name_ffp "!{url}/$name_ffp"
+    curl -f -o $name_raw "!{url}/$name_raw"
+    curl -f -o $name_dfp "!{url}/$name_dfp"
+    curl -f -o $name_ffp "!{url}/$name_ffp"
     '''
 }
