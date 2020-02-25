@@ -7,21 +7,31 @@
 dir_raw = "raw_images"
 dir_ilp = "illumination_profiles"
 
-base001 = 'https://mcmicro.s3.amazonaws.com/exemplars/001/exemplar-001'
-seq001 = Channel.of( 1..10 )
+// Map the exemplar name to remote URL
+switch( params.name ) {
+    case "exemplar-001":
+	url = 'https://mcmicro.s3.amazonaws.com/exemplars/001/exemplar-001'
+	break
+    case "exemplar-002":
+	url = 'https://mcmicro.s3.amazonaws.com/exemplars/002/exemplar-002'
+	break
+    default:
+	println "Unknown exemplar name"
+	break
+}
 
-process get001 {
+// Number of individual channels to download
+seq10 = Channel.of( 1..10 )
+
+process getExemplar {
     publishDir "${params.path}/${params.name}", mode: 'copy'
 
     input:
-	val i from seq001
+	val i from seq10
     
     output:
 	file '**'
-
-    when:
-	params.name == 'exemplar-001'
-
+    
     shell:
     '''
     mkdir !{dir_raw}
@@ -32,8 +42,8 @@ process get001 {
     name_dfp="!{dir_ilp}/$name-dfp.tif"
     name_ffp="!{dir_ilp}/$name-ffp.tif"
 
-    curl -o $name_raw "!{base001}/$name_raw"
-    curl -o $name_dfp "!{base001}/$name_dfp"
-    curl -o $name_ffp "!{base001}/$name_ffp"
+    curl -o $name_raw "!{url}/$name_raw"
+    curl -o $name_dfp "!{url}/$name_dfp"
+    curl -o $name_ffp "!{url}/$name_ffp"
     '''
 }
