@@ -95,7 +95,7 @@ process dearray {
     file s from img.tma
     
     output:
-    file "**{[A-Z],[A-Z][A-Z]}{[0-9],[0-9][0-9]}.tif" into cores
+    file "**{,[A-Z],[A-Z][A-Z]}{[0-9],[0-9][0-9]}.tif" into cores
     file "**_mask.tif" into masks
 
     when:
@@ -104,7 +104,7 @@ process dearray {
     """
     matlab -nodesktop -nosplash -r \
     "addpath(genpath('${params.tool_core}')); \
-     tmaDearray('./$s','outputPath','.'); exit"
+     tmaDearray('./$s','outputPath','.','useGrid','false'); exit"
     """
 }
 
