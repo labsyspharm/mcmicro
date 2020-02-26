@@ -104,7 +104,7 @@ process dearray {
     """
     matlab -nodesktop -nosplash -r \
     "addpath(genpath('${params.tool_core}')); \
-     tmaDearray('./$s','outputPath','.','useGrid','true'); exit"
+     tmaDearray('./$s','outputPath','.'); exit"
     """
 }
 
