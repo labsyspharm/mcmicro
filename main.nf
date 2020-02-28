@@ -15,14 +15,17 @@ params.tools       = "$HOME/mcmicro"
 params.TMA         = false
 params.skip_ashlar = false
 
-// Define tools
-// NOTE: Some of these values are overwritten by nextflow.config
+// Define paths to tools inside the containers
+// NOTE: Some of these values are overwritten by nextflow.config for O2
+params.tool_imagej  = '/opt/fiji/Fiji.app'
+params.tool_illum   = '/opt/fiji'
 params.tool_core    = "${params.tools}/Coreograph"
-params.tool_unmicst = "${params.tools}/UnMicst"
-params.tool_segment = "${params.tools}/S3segmenter"
+params.tool_unmicst = '/app'
+params.tool_segment = '/app'
 
 // Define all subdirectories
 path_raw  = "${params.in}/raw_images"
+path_ilt  = "${params.in}/illumination"
 path_ilp  = "${params.in}/illumination_profiles"
 path_rg   = "${params.in}/registration"
 path_dr   = "${params.in}/dearray"
@@ -48,9 +51,9 @@ cls_id  = { fn -> cls_tok(cls_tok(fn,'.'),'_') }
 cls_fid = { file -> tuple(cls_id(file.getBaseName()), file) }
 
 // If we're running ASHLAR, find raw images and illumination profiles
-raw = cls_ch( !params.skip_ashlar, "${path_raw}/*.ome.tiff" ).toSortedList()
-dfp = cls_ch( !params.skip_ashlar, "${path_ilp}/*-dfp.tif" ).toSortedList()
-ffp = cls_ch( !params.skip_ashlar, "${path_ilp}/*-ffp.tif" ).toSortedList()
+cls_ch( !params.skip_ashlar, "${path_raw}/*.ome.tiff" ).into{ raw1; raw2 }
+cls_ch( !params.skip_ashlar, "${path_ilp}/*-dfp.tif" ).set{ dfp }
+cls_ch( !params.skip_ashlar, "${path_ilp}/*-ffp.tif" ).set{ ffp }
 
 // If we're not running ASHLAR, find the pre-stitched image
 fn_stitched = "${params.sample_name}.ome.tif"
@@ -61,9 +64,9 @@ process ashlar {
     publishDir path_rg, mode: 'copy'
     
     input:
-    file raw
-    file ffp
-    file dfp
+    file lraw from raw2.toSortedList()
+    file lffp from ffp.toSortedList()
+    file ldfp from dfp.toSortedList()
 
     output:
     file "${fn_stitched}" into stitched
@@ -72,7 +75,7 @@ process ashlar {
     !params.skip_ashlar
 
     """
-    ashlar $raw -m 30 --pyramid --ffp $ffp --dfp $dfp -f ${fn_stitched}
+    ashlar $lraw -m 30 --pyramid --ffp $lffp --dfp $ldfp -f ${fn_stitched}
     """
 }
 
@@ -112,7 +115,7 @@ process dearray {
 //   a single img channel for all downstream processing
 img.tissue.mix(cores).set{ imgs }
     
-// Duplicate images for 1) UNet and 2) S3segmenter
+// Duplicate channel for 1) UNet and 2) S3segmenter
 imgs.into{ imgs1; imgs2 }
 
 // UNet classification
