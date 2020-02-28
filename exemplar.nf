@@ -11,22 +11,24 @@ dir_ilp = "illumination_profiles"
 switch( params.name ) {
     case "exemplar-001":
 	url = 'https://mcmicro.s3.amazonaws.com/exemplars/001/exemplar-001'
+	nc  = 3
 	break
     case "exemplar-002":
 	url = 'https://mcmicro.s3.amazonaws.com/exemplars/002/exemplar-002'
+	nc  = 10
 	break
     default:
 	error "Unknown exemplar name"
 }
 
-// Number of individual channels to download
-seq10 = Channel.of( 1..10 )
+// Sequence of individual cycles to download
+seq = Channel.of( 1..nc )
 
 process getExemplar {
     publishDir "${params.path}/${params.name}", mode: 'copy'
 
     input:
-	val i from seq10
+	val i from seq
     
     output:
 	file '**'
