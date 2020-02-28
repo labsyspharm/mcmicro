@@ -16,7 +16,7 @@ params.TMA         = false
 params.skip_ashlar = false
 
 // Define paths to tools inside the containers
-// NOTE: Some of these values are overwritten by nextflow.config for O2
+// NOTE: These values are overwritten by nextflow.config for O2
 params.tool_imagej  = '/opt/fiji/Fiji.app'
 params.tool_illum   = '/opt/fiji'
 params.tool_core    = "${params.tools}/Coreograph"
@@ -58,6 +58,25 @@ cls_ch( !params.skip_ashlar, "${path_ilp}/*-ffp.tif" ).set{ ffp }
 // If we're not running ASHLAR, find the pre-stitched image
 fn_stitched = "${params.sample_name}.ome.tif"
 prestitched = cls_ch( params.skip_ashlar, "${path_rg}/*.ome.tif" )
+
+// Illumination profiles
+process illumination {
+    input:
+    file raw1
+
+    output:
+    file '**' into temp
+
+    script:
+    def xpn = file(raw1).name.tokenize(".").get(0)
+    """
+    ${params.tool_imagej}/ImageJ-linux64 --ij2 --headless \
+      --run ${params.tool_illum}/imagej_basic_ashlar.py \
+      "filename='${raw1}',output_dir='.',experiment_name='${xpn}'"
+    """
+}
+
+temp.view()
 
 // Stitching and registration
 process ashlar {
