@@ -61,11 +61,14 @@ prestitched = cls_ch( params.skip_ashlar, "${path_rg}/*.ome.tif" )
 
 // Illumination profiles
 process illumination {
+    publishDir path_ilt, mode: 'copy'
+    
     input:
     file raw1
 
     output:
-    file '**' into temp
+    file '*-dfp.tif' into dfp_test
+    file '*-ffp.tif' into ffp_test
 
     script:
     def xpn = file(raw1).name.tokenize(".").get(0)
@@ -76,7 +79,8 @@ process illumination {
     """
 }
 
-temp.view()
+//dfp_test.view()
+ffp_test.view()
 
 // Stitching and registration
 process ashlar {
