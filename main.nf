@@ -2,9 +2,9 @@
 
 // Variable naming conventions
 // path_* - directories
-// fn_*   - filenames
-// cls_*  - closures (functions)
-// tp_*   - tuples
+//   fn_* - filenames
+//  cls_* - closures (functions)
+//   tp_* - tuples
 
 // Expecting params
 // .in - location of the data
@@ -12,14 +12,17 @@
 // Default parameters
 params.sample_name = file(params.in).name
 params.tools       = "$HOME/mcmicro"
-params.TMA         = false
-params.skip_ashlar = false
+params.illum       = false    // whether to run ImageJ+BaSiC
+params.TMA         = false    // whether to run Coreograph
+params.skip_ashlar = false    // whether to skip ASHLAR
 
-// Define tools
-// NOTE: Some of these values are overwritten by nextflow.config
+// Define paths to tools inside the containers
+// NOTE: These values are overwritten by nextflow.config for O2
+params.tool_imagej  = '/opt/fiji/Fiji.app'
+params.tool_illum   = '/opt/fiji'
 params.tool_core    = "${params.tools}/Coreograph"
-params.tool_unmicst = "${params.tools}/UnMicst"
-params.tool_segment = "${params.tools}/S3segmenter"
+params.tool_unmicst = '/app'
+params.tool_segment = '/app'
 
 // Define all subdirectories
 path_raw  = "${params.in}/raw_images"
@@ -28,12 +31,6 @@ path_rg   = "${params.in}/registration"
 path_dr   = "${params.in}/dearray"
 path_prob = "${params.in}/prob_maps"
 path_seg  = "${params.in}/segmentation"
-
-// Create intermediate directories
-file(path_rg).mkdir()
-file(path_dr).mkdir()
-file(path_prob).mkdir()
-file(path_seg).mkdir()
 
 // Define closures / functions
 //   Filename from full path: {/path/to/file.ext -> file.ext}
@@ -47,23 +44,53 @@ cls_tok = { x, sep -> x.toString().tokenize(sep).get(0) }
 cls_id  = { fn -> cls_tok(cls_tok(fn,'.'),'_') }
 cls_fid = { file -> tuple(cls_id(file.getBaseName()), file) }
 
-// If we're running ASHLAR, find raw images and illumination profiles
-raw = cls_ch( !params.skip_ashlar, "${path_raw}/*.ome.tiff" ).toSortedList()
-dfp = cls_ch( !params.skip_ashlar, "${path_ilp}/*-dfp.tif" ).toSortedList()
-ffp = cls_ch( !params.skip_ashlar, "${path_ilp}/*-ffp.tif" ).toSortedList()
+// Find raw images; feed them into separate channels for
+//   illumination (raw1) and ASHLAR (raw2)
+Channel.fromPath( "${path_raw}/*.ome.tiff" ).into{ raw1; raw2 }
+
+// If we're not running illumination, find illumination profiles
+predfp = cls_ch( !params.illum, "${path_ilp}/*-dfp.tif" )
+preffp = cls_ch( !params.illum, "${path_ilp}/*-ffp.tif" )
 
 // If we're not running ASHLAR, find the pre-stitched image
 fn_stitched = "${params.sample_name}.ome.tif"
 prestitched = cls_ch( params.skip_ashlar, "${path_rg}/*.ome.tif" )
+
+// Illumination profiles
+process illumination {
+    publishDir path_ilp, mode: 'copy'
+    
+    input:
+    file raw1
+
+    output:
+    file '*-dfp.tif' into compdfp
+    file '*-ffp.tif' into compffp
+
+    when:
+    params.illum
+
+    script:
+    def xpn = file(raw1).name.tokenize(".").get(0)
+    """
+    ${params.tool_imagej}/ImageJ-linux64 --ij2 --headless \
+      --run ${params.tool_illum}/imagej_basic_ashlar.py \
+      "filename='${raw1}',output_dir='.',experiment_name='${xpn}'"
+    """
+}
+
+// Mix mutually-exclusive channels (dependent on params.illum)
+compdfp.mix( predfp ).set{ dfp }
+compffp.mix( preffp ).set{ ffp }
 
 // Stitching and registration
 process ashlar {
     publishDir path_rg, mode: 'copy'
     
     input:
-    file raw
-    file ffp
-    file dfp
+    file lraw from raw2.toSortedList()
+    file lffp from ffp.toSortedList()
+    file ldfp from dfp.toSortedList()
 
     output:
     file "${fn_stitched}" into stitched
@@ -72,7 +99,7 @@ process ashlar {
     !params.skip_ashlar
 
     """
-    ashlar $raw -m 30 --pyramid --ffp $ffp --dfp $dfp -f ${fn_stitched}
+    ashlar $lraw -m 30 --pyramid --ffp $lffp --dfp $ldfp -f ${fn_stitched}
     """
 }
 
@@ -112,7 +139,7 @@ process dearray {
 //   a single img channel for all downstream processing
 img.tissue.mix(cores).set{ imgs }
     
-// Duplicate images for 1) UNet and 2) S3segmenter
+// Duplicate channel for 1) UNet and 2) S3segmenter
 imgs.into{ imgs1; imgs2 }
 
 // UNet classification
