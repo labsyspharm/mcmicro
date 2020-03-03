@@ -2,9 +2,9 @@
 
 // Variable naming conventions
 // path_* - directories
-// fn_*   - filenames
-// cls_*  - closures (functions)
-// tp_*   - tuples
+//   fn_* - filenames
+//  cls_* - closures (functions)
+//   tp_* - tuples
 
 // Expecting params
 // .in - location of the data
@@ -12,8 +12,9 @@
 // Default parameters
 params.sample_name = file(params.in).name
 params.tools       = "$HOME/mcmicro"
-params.TMA         = false
-params.skip_ashlar = false
+params.illum       = false    // whether to run ImageJ+BaSiC
+params.TMA         = false    // whether to run Coreograph
+params.skip_ashlar = false    // whether to skip ASHLAR
 
 // Define paths to tools inside the containers
 // NOTE: These values are overwritten by nextflow.config for O2
@@ -25,18 +26,11 @@ params.tool_segment = '/app'
 
 // Define all subdirectories
 path_raw  = "${params.in}/raw_images"
-path_ilt  = "${params.in}/illumination"
 path_ilp  = "${params.in}/illumination_profiles"
 path_rg   = "${params.in}/registration"
 path_dr   = "${params.in}/dearray"
 path_prob = "${params.in}/prob_maps"
 path_seg  = "${params.in}/segmentation"
-
-// Create intermediate directories
-file(path_rg).mkdir()
-file(path_dr).mkdir()
-file(path_prob).mkdir()
-file(path_seg).mkdir()
 
 // Define closures / functions
 //   Filename from full path: {/path/to/file.ext -> file.ext}
@@ -50,10 +44,13 @@ cls_tok = { x, sep -> x.toString().tokenize(sep).get(0) }
 cls_id  = { fn -> cls_tok(cls_tok(fn,'.'),'_') }
 cls_fid = { file -> tuple(cls_id(file.getBaseName()), file) }
 
-// If we're running ASHLAR, find raw images and illumination profiles
-cls_ch( !params.skip_ashlar, "${path_raw}/*.ome.tiff" ).into{ raw1; raw2 }
-cls_ch( !params.skip_ashlar, "${path_ilp}/*-dfp.tif" ).set{ dfp }
-cls_ch( !params.skip_ashlar, "${path_ilp}/*-ffp.tif" ).set{ ffp }
+// Find raw images; feed them into separate channels for
+//   illumination (raw1) and ASHLAR (raw2)
+Channel.fromPath( "${path_raw}/*.ome.tiff" ).into{ raw1; raw2 }
+
+// If we're not running illumination, find illumination profiles
+predfp = cls_ch( !params.illum, "${path_ilp}/*-dfp.tif" )
+preffp = cls_ch( !params.illum, "${path_ilp}/*-ffp.tif" )
 
 // If we're not running ASHLAR, find the pre-stitched image
 fn_stitched = "${params.sample_name}.ome.tif"
@@ -61,14 +58,17 @@ prestitched = cls_ch( params.skip_ashlar, "${path_rg}/*.ome.tif" )
 
 // Illumination profiles
 process illumination {
-    publishDir path_ilt, mode: 'copy'
+    publishDir path_ilp, mode: 'copy'
     
     input:
     file raw1
 
     output:
-    file '*-dfp.tif' into dfp_test
-    file '*-ffp.tif' into ffp_test
+    file '*-dfp.tif' into compdfp
+    file '*-ffp.tif' into compffp
+
+    when:
+    params.illum
 
     script:
     def xpn = file(raw1).name.tokenize(".").get(0)
@@ -79,8 +79,9 @@ process illumination {
     """
 }
 
-//dfp_test.view()
-ffp_test.view()
+// Mix mutually-exclusive channels (dependent on params.illum)
+compdfp.mix( predfp ).set{ dfp }
+compffp.mix( preffp ).set{ ffp }
 
 // Stitching and registration
 process ashlar {
