@@ -48,7 +48,7 @@ cls_fid = { file -> tuple(cls_id(file.getBaseName()), file) }
 // Find raw images; feed them into separate channels for
 //   illumination (raw1) and ASHLAR (raw2)
 Channel.fromPath( "${path_raw}/*.ome.tiff" ).into{ raw1; raw2 }
-chNames = Channel.fromPath( "${params.in}/my_markers.csv" )
+Channel.fromPath( "${params.in}/my_markers.csv" ).into { chNames }
 
 // If we're not running illumination, find illumination profiles
 predfp = cls_ch( !params.illum, "${path_ilp}/*-dfp.tif" )
