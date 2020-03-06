@@ -23,6 +23,7 @@ params.tool_illum   = '/opt/fiji'
 params.tool_core    = "${params.tools}/Coreograph"
 params.tool_unmicst = '/app'
 params.tool_segment = '/app'
+params.tool_quant   = '/app' 
 
 // Define all subdirectories
 path_raw  = "${params.in}/raw_images"
@@ -31,6 +32,7 @@ path_rg   = "${params.in}/registration"
 path_dr   = "${params.in}/dearray"
 path_prob = "${params.in}/prob_maps"
 path_seg  = "${params.in}/segmentation"
+path_seg  = "${params.in}/quantification"
 
 // Define closures / functions
 //   Filename from full path: {/path/to/file.ext -> file.ext}
@@ -192,5 +194,19 @@ process s3seg {
        --nucleiClassProbPath $pmn \
        --contoursClassProbPath $pmc \
        --outputPath .
+    """
+}
+
+// Quantification
+process quantification {
+    publishDir path_prob, mode: 'copy'
+    
+    output:
+    file '**' into quantification
+
+    """
+    python ${params.tool_unmicst}/CommandSingleCellExtraction.py \
+    --mask $mask --image $core \
+    --output . --channel_names ./my_channels.csv
     """
 }
