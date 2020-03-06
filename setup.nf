@@ -84,8 +84,6 @@ process setup_quantification {
     params.platform == "O2"
 
     """
-    git clone https://github.com/DenisSch/quantification
-    cd quantification
-    git checkout a18e53a27b616064a68770f548158a6342290669
+    git clone https://github.com/labsyspharm/quantification
     """
 }
