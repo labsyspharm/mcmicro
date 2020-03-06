@@ -74,22 +74,6 @@ process setup_s3segmenter {
     """
 }
 
-process setup_unmicst {
-    publishDir params.tools, mode: 'copy'
-
-    output:
-    file '**' into tool_unmicst
-
-    when:
-    params.platform == "O2"
-
-    """
-    git clone https://github.com/HMS-IDAC/UnMicst.git
-    cd UnMicst
-    git checkout 94139df231e9092f678cc24a714f83af2bf2033a
-    """
-}
-
 process setup_quantification {
     publishDir params.tools, mode: 'copy'
 
