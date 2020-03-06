@@ -141,8 +141,8 @@ process dearray {
 //   a single img channel for all downstream processing
 img.tissue.mix(cores).set{ imgs }
     
-// Duplicate channel for 1) UNet and 2) S3segmenter
-imgs.into{ imgs1; imgs2 }
+// Duplicate channel for 1) UNet and 2) S3segmenter 3) quantification
+imgs.into{ imgs1; imgs2; imgs3 }
 
 // UNet classification
 process unmicst {
@@ -164,6 +164,7 @@ process unmicst {
 imgs2.flatten().map(cls_fid).into{ tp_cores; tp_cores2 }
 probs_n.flatten().map(cls_fid).set{ tp_probs_n }
 probs_c.flatten().map(cls_fid).set{ tp_probs_c }
+imgs3.flatten().map(cls_fid).into{ tp_cores3 }
 
 // If we're working with TMA, the masks are produced by dearray
 // If we're working with single tissue, create dummy placeholders
