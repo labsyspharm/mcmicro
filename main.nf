@@ -4,7 +4,6 @@
 // path_* - directories
 //   fn_* - filenames
 //  cls_* - closures (functions)
-//   tp_* - tuples
 
 // Expecting params
 // .in - location of the data
@@ -136,52 +135,44 @@ process dearray {
 }
 
 // Collapse the earlier branching between full-tissue and TMA into
-//   a single img channel for all downstream processing
-img.tissue.mix(cores).set{ imgs }
-    
-// Duplicate channel for 1) UNet and 2) S3segmenter
-imgs.into{ imgs1; imgs2 }
+//   a single (core, mask) imgs channel for all downstream processing
+if( params.TMA ) {
+    // Match up cores and masks by filename
+    cores.flatten().map(cls_fid).set{ id_cores }
+    masks.flatten().map(cls_fid).set{ id_masks }
+    imgs = id_cores.join( id_masks ).map{ id, c, m -> tuple(c, m) }
+}
+else
+    imgs = img.tissue.map{ x -> tuple(x, file('NO_MASK')) }
 
 // UNet classification
 process unmicst {
-    publishDir path_prob, mode: 'copy'
+    publishDir path_prob, mode: 'copy', pattern: '*PM*.tif'
 
     input:
-    file core from imgs1.flatten()
+    tuple file(core), val(mask) from imgs
 
     output:
-    file '*Nuclei*.tif' into probs_n
-    file '*Contours*.tif' into probs_c
+    tuple file(core), val(mask),
+      file('*Nuclei*.tif'), file('*Contours*.tif') into prob_maps
 
     """
     python ${params.tool_unmicst}/UnMicst.py $core --outputPath .
     """
 }
 
-// Extract core ID from each filename
-imgs2.flatten().map(cls_fid).into{ tp_cores; tp_cores2 }
-probs_n.flatten().map(cls_fid).set{ tp_probs_n }
-probs_c.flatten().map(cls_fid).set{ tp_probs_c }
-
-// If we're working with TMA, the masks are produced by dearray
-// If we're working with single tissue, create dummy placeholders
-if( params.TMA ) 
-    tp_masks = masks.flatten().map(cls_fid)
-else
-    tp_masks = tp_cores2.map{ id, fn -> tuple(id, file('NO_FILE')) }
-
-// Use core IDs to match up file tuples for segmentation
-tp_s3seg = tp_cores.join(tp_masks).join(tp_probs_n).join(tp_probs_c)
-
 // Segmentation
 process s3seg {
-    publishDir path_seg, mode: 'copy'
+    publishDir path_seg, mode: 'copy', pattern: '*/*'
 
     input:
-    set id, file(core), file(mask), file(pmn), file(pmc) from tp_s3seg
+    tuple file(core), file(mask), file(pmn), file(pmc) from prob_maps
 
     output:
-    file '**' into segmented
+    // tuples for quantification
+    tuple file(core), file('**cellMask.tif') into seg_qty
+    // rest of the files for publishDir
+    file '**' into seg_rest
 
     script:
     def crop = params.TMA ? 'dearray' : 'noCrop'
