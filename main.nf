@@ -32,7 +32,7 @@ path_rg   = "${params.in}/registration"
 path_dr   = "${params.in}/dearray"
 path_prob = "${params.in}/prob_maps"
 path_seg  = "${params.in}/segmentation"
-path_seg  = "${params.in}/quantification"
+path_quant = "${params.in}/quantification"
 
 // Define closures / functions
 //   Filename from full path: {/path/to/file.ext -> file.ext}
@@ -199,7 +199,10 @@ process s3seg {
 
 // Quantification
 process quantification {
-    publishDir path_prob, mode: 'copy'
+    publishDir path_quant, mode: 'copy'
+    
+    input:
+    set id, file(core), file(mask), file(pmn), file(pmc) from tp_s3seg
     
     output:
     file '**' into quantification
