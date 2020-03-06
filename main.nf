@@ -188,12 +188,15 @@ process s3seg {
     """
 }
 
+chNames = Channel.fromPath( "${params.in}/my_markers.csv" )
+
 // Quantification
 process quantification {
     publishDir path_quant, mode: 'copy'
     
     input:
     tuple file(core), file(mask) from seg_qty
+    file from chNames
 
     output:
     file '**' into quantified
@@ -201,6 +204,6 @@ process quantification {
     """
     python ${params.tool_unmicst}/CommandSingleCellExtraction.py \
     --mask $mask --image $core \
-    --output . --channel_names ./my_channels.csv
+    --output . --channel_names $chNames
     """
 }
