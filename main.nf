@@ -195,7 +195,7 @@ process quantification {
     
     input:
     tuple file(core), file(mask) from seg_qty
-    file from chNames
+    file chNames
 
     output:
     file '**' into quantified
