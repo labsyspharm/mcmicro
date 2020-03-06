@@ -23,6 +23,7 @@ params.tool_illum   = '/opt/fiji'
 params.tool_core    = "${params.tools}/Coreograph"
 params.tool_unmicst = '/app'
 params.tool_segment = '/app'
+params.tool_quant   = '/app' 
 
 // Define all subdirectories
 path_raw  = "${params.in}/raw_images"
@@ -31,6 +32,7 @@ path_rg   = "${params.in}/registration"
 path_dr   = "${params.in}/dearray"
 path_prob = "${params.in}/prob_maps"
 path_seg  = "${params.in}/segmentation"
+path_quant = "${params.in}/quantification"
 
 // Define closures / functions
 //   Filename from full path: {/path/to/file.ext -> file.ext}
@@ -139,8 +141,8 @@ process dearray {
 //   a single img channel for all downstream processing
 img.tissue.mix(cores).set{ imgs }
     
-// Duplicate channel for 1) UNet and 2) S3segmenter
-imgs.into{ imgs1; imgs2 }
+// Duplicate channel for 1) UNet and 2) S3segmenter 3) quantification
+imgs.into{ imgs1; imgs2; imgs3 }
 
 // UNet classification
 process unmicst {
@@ -162,6 +164,7 @@ process unmicst {
 imgs2.flatten().map(cls_fid).into{ tp_cores; tp_cores2 }
 probs_n.flatten().map(cls_fid).set{ tp_probs_n }
 probs_c.flatten().map(cls_fid).set{ tp_probs_c }
+imgs3.flatten().map(cls_fid).into{ tp_cores3 }
 
 // If we're working with TMA, the masks are produced by dearray
 // If we're working with single tissue, create dummy placeholders
@@ -192,5 +195,22 @@ process s3seg {
        --nucleiClassProbPath $pmn \
        --contoursClassProbPath $pmc \
        --outputPath .
+    """
+}
+
+// Quantification
+process quantification {
+    publishDir path_quant, mode: 'copy'
+    
+    input:
+    set id, file(core), file(mask), file(pmn), file(pmc) from tp_s3seg
+    
+    output:
+    file '**' into quantification
+
+    """
+    python ${params.tool_unmicst}/CommandSingleCellExtraction.py \
+    --mask $mask --image $core \
+    --output . --channel_names ./my_channels.csv
     """
 }
