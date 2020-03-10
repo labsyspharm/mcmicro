@@ -91,8 +91,8 @@ process ashlar {
     
     input:
     file lraw from raw2.toSortedList()
-    file lffp from ffp.toSortedList()
-    file ldfp from dfp.toSortedList()
+    file lffp from ffp.ifEmpty{ file('EMPTY1') }.toSortedList()
+    file ldfp from dfp.ifEmpty{ file('EMPTY2') }.toSortedList()
 
     output:
     file "${fn_stitched}" into stitched
@@ -100,8 +100,11 @@ process ashlar {
     when:
     !params.skip_ashlar
 
+    script:
+    def ilp = ( lffp.name == 'EMPTY1' | ldfp.name == 'EMPTY2' ) ?
+	"" : "--ffp $lffp --dfp $ldfp"
     """
-    ashlar $lraw -m 30 --pyramid --ffp $lffp --dfp $ldfp -f ${fn_stitched}
+    ashlar $lraw -m 30 --pyramid $ilp -f ${fn_stitched}
     """
 }
 
