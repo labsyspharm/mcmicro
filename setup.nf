@@ -70,7 +70,21 @@ process setup_s3segmenter {
     """
     git clone https://github.com/HMS-IDAC/S3segmenter.git
     cd S3segmenter
-    git checkout 6118c586d5af594a30b9822412ac6b4224de4a36
+    git checkout 375312fba4c58799b7529c708aef617a349ab8fc
+    """
+}
+
+process setup_quantification {
+    publishDir params.tools, mode: 'copy'
+
+    output:
+    file '**' into tool_quant
+
+    when:
+    params.platform == "O2"
+
+    """
+    git clone https://github.com/labsyspharm/quantification
     """
 }
 

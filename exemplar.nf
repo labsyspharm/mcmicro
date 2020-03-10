@@ -24,7 +24,7 @@ switch( params.name ) {
 // Sequence of individual cycles to download
 seq = Channel.of( 1..nc )
 
-process getExemplar {
+process getImages {
     publishDir "${params.path}/${params.name}", mode: 'copy'
 
     input:
@@ -47,4 +47,15 @@ process getExemplar {
     curl -f -o $name_dfp "!{url}/$name_dfp"
     curl -f -o $name_ffp "!{url}/$name_ffp"
     '''
+}
+
+process getMarkers {
+    publishDir "${params.path}/${params.name}", mode: 'copy'
+
+    output:
+	file '**'
+
+    """
+    curl -f -o markers.csv "${url}/markers.csv"
+    """
 }
