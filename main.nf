@@ -48,8 +48,9 @@ cls_fid = { file -> tuple(cls_id(file.getBaseName()), file) }
 
 // Find raw images; feed them into separate channels for
 //   illumination (raw1) and ASHLAR (raw2)
-Channel.fromPath( "${path_raw}/*.rcpnl" ).into{ raw1; raw2 }
-Channel.fromPath( "${params.in}/my_channels.csv" ).set{ chNames }
+
+Channel.fromPath( "${path_raw}/*.ome.tiff" ).into{ raw1; raw2 }
+Channel.fromPath( "${params.in}/markers.csv" ).set{ chNames }
 
 // If we're not running illumination, find illumination profiles
 predfp = cls_ch( !params.illum, "${path_ilp}/*-dfp.tif" )
@@ -92,8 +93,8 @@ process ashlar {
     
     input:
     file lraw from raw2.toSortedList()
-    file lffp from ffp.toSortedList()
-    file ldfp from dfp.toSortedList()
+    file lffp from ffp.ifEmpty{ file('EMPTY1') }.toSortedList()
+    file ldfp from dfp.ifEmpty{ file('EMPTY2') }.toSortedList()
 
     output:
     file "${fn_stitched}" into stitched
@@ -101,8 +102,13 @@ process ashlar {
     when:
     !params.skip_ashlar
 
+    script:
+    def ilp = ( lffp.name == 'EMPTY1' | ldfp.name == 'EMPTY2' ) ?
+	"" : "--ffp $lffp --dfp $ldfp"
     """
+
     ashlar $lraw -m 35 --pyramid --ffp $lffp --dfp $ldfp -f ${fn_stitched}
+
     """
 }
 
@@ -190,20 +196,19 @@ process s3seg {
     """
 }
 
+// Add channel name file to every (image, mask) tuple
+to_qty = seg_qty.combine(chNames)
+
 // Quantification
 process quantification {
-    publishDir path_quant, mode: 'copy'
-    
+    publishDir path_quant, mode: 'copy', pattern: '*.csv'
     input:
-    tuple file(core), file(mask) from seg_qty
-    file chNames
-
+    tuple file(core), file(mask), file(ch) from to_qty
     output:
     file '**' into quantified
-
     """
     python ${params.tool_quant}/CommandSingleCellExtraction.py \
     --mask $mask --image $core \
-    --output . --channel_names $chNames
+    --output . --channel_names $ch
     """
 }
