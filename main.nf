@@ -10,6 +10,7 @@
 
 // Default parameters
 params.sample_name = file(params.in).name
+params.ashlar_shift = 30      // shift input for ASHLAR
 params.tools       = "$HOME/mcmicro"
 params.illum       = false    // whether to run ImageJ+BaSiC
 params.TMA         = false    // whether to run Coreograph
@@ -47,6 +48,7 @@ cls_fid = { file -> tuple(cls_id(file.getBaseName()), file) }
 
 // Find raw images; feed them into separate channels for
 //   illumination (raw1) and ASHLAR (raw2)
+
 Channel.fromPath( "${path_raw}/*.ome.tiff" ).into{ raw1; raw2 }
 Channel.fromPath( "${params.in}/markers.csv" ).set{ chNames }
 
@@ -104,7 +106,9 @@ process ashlar {
     def ilp = ( lffp.name == 'EMPTY1' | ldfp.name == 'EMPTY2' ) ?
 	"" : "--ffp $lffp --dfp $ldfp"
     """
-    ashlar $lraw -m 30 --pyramid $ilp -f ${fn_stitched}
+
+    ashlar $lraw -m 35 --pyramid --ffp $lffp --dfp $ldfp -f ${fn_stitched}
+
     """
 }
 
