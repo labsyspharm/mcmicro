@@ -17,13 +17,13 @@ nextflow run labsyspharm/mcmicro-nf/setup.nf
 nextflow run labsyspharm/mcmicro-nf/exemplar.nf --name exemplar-002 --path /local/path
 
 # Run the pipeline on data
-nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar001
+nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001
 
 # Use --skip_ashlar if you have a prestitched image in registration/ subfolder
-nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar001 --skip_ashlar
+nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001 --skip_ashlar
 
 # Use --TMA to dearray a tissue microarray and process each core in parallel
-nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar002 --TMA
+nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --TMA
 ```
 
 ### O2 execution

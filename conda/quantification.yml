@@ -1,0 +1,8 @@
+name: quantification
+dependencies:
+  - pip:
+    - scikit-image 
+    - h5py
+    - pandas
+    - numpy
+    - pathlib

@@ -22,6 +22,7 @@ params.tool_illum   = '/opt/fiji'
 params.tool_core    = "${params.tools}/Coreograph"
 params.tool_unmicst = '/app'
 params.tool_segment = '/app'
+params.tool_quant   = '/app' 
 
 // Define all subdirectories
 path_raw  = "${params.in}/raw_images"
@@ -30,6 +31,7 @@ path_rg   = "${params.in}/registration"
 path_dr   = "${params.in}/dearray"
 path_prob = "${params.in}/prob_maps"
 path_seg  = "${params.in}/segmentation"
+path_quant = "${params.in}/quantification"
 
 // Define closures / functions
 //   Filename from full path: {/path/to/file.ext -> file.ext}
@@ -46,6 +48,7 @@ cls_fid = { file -> tuple(cls_id(file.getBaseName()), file) }
 // Find raw images; feed them into separate channels for
 //   illumination (raw1) and ASHLAR (raw2)
 Channel.fromPath( "${path_raw}/*.ome.tiff" ).into{ raw1; raw2 }
+Channel.fromPath( "${params.in}/markers.csv" ).set{ chNames }
 
 // If we're not running illumination, find illumination profiles
 predfp = cls_ch( !params.illum, "${path_ilp}/*-dfp.tif" )
@@ -183,5 +186,22 @@ process s3seg {
        --nucleiClassProbPath $pmn \
        --contoursClassProbPath $pmc \
        --outputPath .
+    """
+}
+
+// Add channel name file to every (image, mask) tuple
+to_qty = seg_qty.combine(chNames)
+
+// Quantification
+process quantification {
+    publishDir path_quant, mode: 'copy', pattern: '*.csv'
+    input:
+    tuple file(core), file(mask), file(ch) from to_qty
+    output:
+    file '**' into quantified
+    """
+    python ${params.tool_quant}/CommandSingleCellExtraction.py \
+    --mask $mask --image $core \
+    --output . --channel_names $ch
     """
 }
