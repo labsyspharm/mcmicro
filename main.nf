@@ -10,6 +10,7 @@
 
 // Default parameters
 params.sample_name = file(params.in).name
+params.ashlar_shift = 30      // shift input for ASHLAR
 params.tools       = "$HOME/mcmicro"
 params.illum       = false    // whether to run ImageJ+BaSiC
 params.TMA         = false    // whether to run Coreograph
