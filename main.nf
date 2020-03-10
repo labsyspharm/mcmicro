@@ -173,7 +173,7 @@ process s3seg {
 
     output:
     // tuples for quantification
-    tuple file(core), file('cellMask.tif') into seg_qty
+    tuple file(core), file('**cellMask.tif') into seg_qty
     // rest of the files for publishDir
     file '**' into seg_rest
 
