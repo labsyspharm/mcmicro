@@ -48,7 +48,7 @@ cls_fid = { file -> tuple(cls_id(file.getBaseName()), file) }
 
 // Find raw images; feed them into separate channels for
 //   illumination (raw1) and ASHLAR (raw2)
-Channel.fromPath( "${path_raw}/*" ).into{ raw1; raw2 }
+Channel.fromPath( "${path_raw}/*.rcpnl" ).into{ raw1; raw2 }
 Channel.fromPath( "${params.in}/my_channels.csv" ).set{ chNames }
 
 // If we're not running illumination, find illumination profiles
