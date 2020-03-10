@@ -201,7 +201,7 @@ process quantification {
     file '**' into quantified
 
     """
-    python ${params.tool_unmicst}/CommandSingleCellExtraction.py \
+    python ${params.tool_quant}/CommandSingleCellExtraction.py \
     --mask $mask --image $core \
     --output . --channel_names $chNames
     """
