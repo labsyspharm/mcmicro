@@ -30,7 +30,7 @@ nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --TMA
 
 ``` bash
 # Load necessary modules
-module load gcc ashlar matlab java conda2
+module load java matlab conda2
 
 # Get the latest version of the pipeline
 nextflow pull labsyspharm/mcmicro-nf
