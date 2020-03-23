@@ -6,15 +6,15 @@ Install [Nextflow](https://www.nextflow.io/): `curl -s https://get.nextflow.io |
 
 ### Additional steps for local installation
 * Install [Docker](https://docs.docker.com/install/). Ensure that the Docker engine is running by typing `docker images`. If the engine is running, it should return a (possibly empty) list of container images currently downloaded to your system.
-* (Optional) If working with TMAs, you will need MATLAB 2018a or later. MATLAB has to be in PATH, so it can be execute by typing `matlab` in the command line. Additionally, you will need to install Coreograph locally by running `nextflow run labsyspharm/mcmicro-nf/setup.nf`.
+* (Optional) If working with TMAs, you will need MATLAB 2018a or later. MATLAB has to be available on `$PATH`, so it can be executed by typing `matlab` on the command line. Additionally, you will need to install Coreograph locally by running `nextflow run labsyspharm/mcmicro-nf/setup.nf`.
 
 ## Exemplar data
 
-Two exemplars are currently available for demonstration purposes. These are
+Two exemplars are currently available for demonstration purposes:
 
-* `exemplar-001` is meant to serve as a minimal reproducbile example for running all modules of the pipeline, except the dearray step. The exemplar consists of six tile images, collected on a Lung Adenocarcinoma specimen in three cycles, for a total of 12 channels. Because the exemplar is small, illumination profiles were precomputed from the larger context and included with the raw images.
+* `exemplar-001` is meant to serve as a minimal reproducible example for running all modules of the pipeline, except the dearray step. The exemplar consists of a small lung adenocarcinoma specimen taken from a larger TMA (tissue microarray), imaged using CyCIF with three cycles. Each cycle consists of six four-channel image tiles, for a total of 12 channels. Because the exemplar is small, illumination profiles were precomputed from the entire TMA and included with the raw images.
 
-* `exemplar-002` is a two-by-two cut-out from a tissue microarray (TMA). The four cores are two meningioma, one GI stroma tumor, and one normal colon specimens. The exemplar is meant to test the dearray step, followed by processing of all four cores in parallel.
+* `exemplar-002` is a two-by-two cut-out from a TMA. The four cores are two meningioma tumors, one GI stroma tumor, and one normal colon specimen. The exemplar is meant to test the dearray step, followed by processing of all four cores in parallel.
 
 Both exemplars can be downloaded using the following commands:
 ``` bash
@@ -25,7 +25,7 @@ with `/local/path/` pointing to a local directory where the exemplars should be 
 
 ### O2 notes
 
-When working with exemplars on O2, please download your own copy to `/n/scratch2/eCommonsID/`. A fully processed version is available in `/n/groups/lsp/cycif/exemplars`, but this version is meant to serve as a reference only. The directory permissions are set to read-only, preventing your pipeline run from writing its output there.
+When working with exemplars on O2, please download your own copy to `/n/scratch2/$USER/` (where `$USER` is your eCommons ID). A fully processed version is available in `/n/groups/lsp/cycif/exemplars`, but this version is meant to serve as a reference only. The directory permissions are set to read-only, preventing your pipeline run from writing its output there.
 
 ### Directory structure
 
@@ -76,8 +76,14 @@ Additional flags can be used to control inclusion and exclusion of individual mo
 # Use --skip_ashlar if you have a prestitched image in registration/ subfolder
 nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001 --skip_ashlar
 
-# Use --illum to run illumination profile computation, if you have none precomputed
+# Use --illum to run illumination profile computation, if you dont's have one precomputed
 nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001 --illum
+```
+
+By default Nextflow writes intermediate files to a `work/` directory inside whatever location you initiate a pipeline run from. Use `-w` flag to provide a different location. (See below for more information about these files.)
+
+``` bash
+nextflow run labsyspharm/mcmicro-nf --in /path/to/exemplar-001 -profile O2 -w /path/to/work/
 ```
 
 ### O2 execution
@@ -96,9 +102,15 @@ nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001 -profile O2
 nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --TMA -profile O2
 ```
 
+To avoid running over on your disk quota, it is recommended to use `/n/scratch2` for holding the `work/` directory:
+
+```
+nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001 -profile O2 -w /n/scratch2/$USER/work
+```
+
 ## Handling intermediate files
 
-By default Nextflow writes intermediate files to a `work/` directory inside whatever location you initiate a pipeline run from. The intermediate files allow you to restart a pipeline partway, without re-running everything from scratch. For example, consider the following scenario on O2:
+The intermediate files in the `work/` directory allow you to restart a pipeline partway, without re-running everything from scratch. For example, consider the following scenario on O2:
 
 ``` bash
 module load java conda2      # <--- OOPS, forgot matlab
@@ -133,13 +145,7 @@ nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --TMA -profile O2 
 # [14/25a33c] process > quantification [100%] 4 of 4 ✔
 ```
 
-As you run the pipeline on your datasets, the size of the `work/` directory can grow substantially. Two Nextflow features can greatly assist with managing its content. First, you can control where the `work/` directory gets create. On O2, it is recommended to use `/n/scratch2`:
-
-``` bash
-nextflow run labsyspharm/mcmicro-nf --in /path/to/exemplar-001 -profile O2 -w /n/scratch2/eCommonsID/work/
-```
-
-Second, use [nextflow clean](https://github.com/nextflow-io/nextflow/blob/cli-docs/docs/cli.rst#clean) to selectively remove portions of the work directory. Use `-n` flag to list which files will be removed, inspect the list to ensure that you don't lose anything important, and repeat the command with `-f` to actually remove the files:
+As you run the pipeline on your datasets, the size of the `work/` directory can grow substantially. Use [nextflow clean](https://github.com/nextflow-io/nextflow/blob/cli-docs/docs/cli.rst#clean) to selectively remove portions of the work directory. Use `-n` flag to list which files will be removed, inspect the list to ensure that you don't lose anything important, and repeat the command with `-f` to actually remove the files:
 
 ``` bash
 # Remove work files associated with most-recent run
