@@ -55,7 +55,7 @@ An important set of assumptions to keep in mind:
 * (Optional) Any precomputed illumination profiles must be placed in `illumination_profiles/`
 * The order of markers in `markers.csv` must followed the channel order.
 
-## Local execution
+## Pipeline execution
 
 The basic pipeline execution consists of 1) ensuring you have the latest version of the pipeline, followed by 2) using `--in` to point the pipeline at the data.
 
@@ -80,15 +80,53 @@ nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001 --skip_ashlar
 nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001 --illum
 ```
 
-## O2 execution
+### O2 execution
+
+To run the pipeline on O2, two additional steps are required: 1) you must load the necessary O2 modules, and 2) all pipeline calls need to have the flag `-profile O2`.
 
 ``` bash
-# Load necessary modules
+# Load necessary modules (matlab is optional, if not working with TMA)
 module load java matlab conda2
 
 # Get the latest version of the pipeline
 nextflow pull labsyspharm/mcmicro-nf
 
-# All of the above run commands require an additional -profile parameter
-nextflow run ... -profile O2
+# All previous commands require an additional `-profile O2` flag
+nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001 -profile O2
+nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --TMA -profile O2
+```
+
+## Handling intermediate files
+
+By default Nextflow writes intermediate files to a `work/` directory inside whatever location you initiate a pipeline run from. The intermediate files allow you to restart a pipeline partway, without re-running everything from scratch. For example, consider the following scenario on O2:
+
+``` bash
+module load java conda2      # <--- OOPS, forgot matlab
+
+# This run will fail with "matlab: command not found"
+nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --TMA -profile O2
+
+# Address the issue by loading the appropriate module
+module load matlab
+
+# Restart the pipeline from the dearray step using `-resume`
+nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --TMA -profile O2 -resume
+```
+
+As you run the pipeline on your datasets, the size of the `work/` directory can grow substantially. Two Nextflow features can greatly assist with managing its content. First, you can control where the `work/` directory gets create. On O2, it is recommended to use `/n/scratch2`:
+
+``` bash
+nextflow run labsyspharm/mcmicro-nf --in /path/to/exemplar-001 -profile O2 -w /n/scratch2/eCommonsID/work/
+```
+
+Second, use [nextflow clean](https://github.com/nextflow-io/nextflow/blob/cli-docs/docs/cli.rst#clean) to selectively remove portions of the work directory. Use `-n` flag to list which files will be removed, inspect the list to ensure that you don't lose anything important, and repeat the command with `-f` to actually remove the files:
+
+``` bash
+# Remove work files associated with most-recent run
+nextflow clean -n last           # Show what will be removed
+nextflow clean -f last           # Proceed with the removal
+
+# Remove all work files except those associated with the most-recent run
+nextflow clean -n -but last
+nextflow clean -f -but last
 ```
