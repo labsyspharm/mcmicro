@@ -6,7 +6,7 @@ Install [Nextflow](https://www.nextflow.io/): `curl -s https://get.nextflow.io |
 
 ### Additional steps for local installation
 * Install [Docker](https://docs.docker.com/install/). Ensure that the Docker engine is running by typing `docker images`. If the engine is running, it should return a (possibly empty) list of container images currently downloaded to your system.
-* (Optional) If working with TMAs, you will need MATLAB 2018a or later. Additionally, you will need to install Coreograph locally by running `nextflow run labsyspharm/mcmicro-nf/setup.nf`.
+* (Optional) If working with TMAs, you will need MATLAB 2018a or later. MATLAB has to be in PATH, so it can be execute by typing `matlab` in the command line. Additionally, you will need to install Coreograph locally by running `nextflow run labsyspharm/mcmicro-nf/setup.nf`.
 
 ## Exemplar data
 
@@ -53,7 +53,7 @@ An important set of assumptions to keep in mind:
   * Raw images must be placed inside `raw_images/` subdirectory.
   * A prestitched image must be placed inside `registration/` subdirectory.
 * (Optional) Any precomputed illumination profiles must be placed in `illumination_profiles/`
-* The order of markers in `markers.csv` must followed the channel order.
+* The order of markers in `markers.csv` must follow the channel order.
 
 ## Pipeline execution
 
