@@ -106,11 +106,31 @@ module load java conda2      # <--- OOPS, forgot matlab
 # This run will fail with "matlab: command not found"
 nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --TMA -profile O2
 
+# N E X T F L O W  ~  version 20.01.0
+# Launching `labsyspharm/mcmicro-nf` [backstabbing_fermi] - revision: e5ff35c351 [master]
+# executor >  slurm (2)
+# [-        ] process > illumination   -
+# [57/1c3712] process > ashlar         [100%] 1 of 1 ✔
+# [cf/7b42eb] process > dearray        [100%] 1 of 1, failed: 1 ✘
+# [-        ] process > unmicst        -
+# [-        ] process > s3seg          -
+# [-        ] process > quantification -
+
 # Address the issue by loading the appropriate module
 module load matlab
 
 # Restart the pipeline from the dearray step using `-resume`
 nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --TMA -profile O2 -resume
+
+N E X T F L O W  ~  version 20.01.0
+Launching `labsyspharm/mcmicro-nf` [condescending_wing] - revision: e5ff35c351 [master]
+executor >  slurm (13)
+[-        ] process > illumination   -
+[57/1c3712] process > ashlar         [100%] 1 of 1, cached: 1 ✔
+[dd/1928b1] process > dearray        [100%] 1 of 1 ✔
+[1c/82bcd4] process > unmicst        [100%] 4 of 4 ✔
+[f7/02146c] process > s3seg          [100%] 4 of 4 ✔
+[14/25a33c] process > quantification [100%] 4 of 4 ✔
 ```
 
 As you run the pipeline on your datasets, the size of the `work/` directory can grow substantially. Two Nextflow features can greatly assist with managing its content. First, you can control where the `work/` directory gets create. On O2, it is recommended to use `/n/scratch2`:
