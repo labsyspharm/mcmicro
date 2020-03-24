@@ -9,11 +9,11 @@
 // .in - location of the data
 
 // Default parameters
-params.sample_name = file(params.in).name
-params.tools       = "$HOME/mcmicro"
-params.illum       = false    // whether to run ImageJ+BaSiC
-params.tma         = false    // whether to run Coreograph
-params.skip-ashlar = false    // whether to skip ASHLAR
+params.sample_name   = file(params.in).name
+params.tools         = "$HOME/mcmicro"
+params.illum         = false    // whether to run ImageJ+BaSiC
+params.tma           = false    // whether to run Coreograph
+params.'skip-ashlar' = false    // whether to skip ASHLAR
 
 // Define paths to tools inside the containers
 // NOTE: These values are overwritten by nextflow.config for O2
@@ -56,7 +56,7 @@ preffp = cls_ch( !params.illum, "${path_ilp}/*-ffp.tif" )
 
 // If we're not running ASHLAR, find the pre-stitched image
 fn_stitched = "${params.sample_name}.ome.tif"
-prestitched = cls_ch( params.skip-ashlar, "${path_rg}/*.ome.tif" )
+prestitched = cls_ch( params.'skip-ashlar', "${path_rg}/*.ome.tif" )
 
 // Illumination profiles
 process illumination {
@@ -98,7 +98,7 @@ process ashlar {
     file "${fn_stitched}" into stitched
 
     when:
-    !params.skip-ashlar
+    !params.'skip-ashlar'
 
     script:
     def ilp = ( lffp.name == 'EMPTY1' | ldfp.name == 'EMPTY2' ) ?
