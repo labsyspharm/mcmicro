@@ -12,8 +12,8 @@
 params.sample_name = file(params.in).name
 params.tools       = "$HOME/mcmicro"
 params.illum       = false    // whether to run ImageJ+BaSiC
-params.TMA         = false    // whether to run Coreograph
-params.skip_ashlar = false    // whether to skip ASHLAR
+params.tma         = false    // whether to run Coreograph
+params.skip-ashlar = false    // whether to skip ASHLAR
 
 // Define paths to tools inside the containers
 // NOTE: These values are overwritten by nextflow.config for O2
@@ -56,7 +56,7 @@ preffp = cls_ch( !params.illum, "${path_ilp}/*-ffp.tif" )
 
 // If we're not running ASHLAR, find the pre-stitched image
 fn_stitched = "${params.sample_name}.ome.tif"
-prestitched = cls_ch( params.skip_ashlar, "${path_rg}/*.ome.tif" )
+prestitched = cls_ch( params.skip-ashlar, "${path_rg}/*.ome.tif" )
 
 // Illumination profiles
 process illumination {
@@ -98,7 +98,7 @@ process ashlar {
     file "${fn_stitched}" into stitched
 
     when:
-    !params.skip_ashlar
+    !params.skip-ashlar
 
     script:
     def ilp = ( lffp.name == 'EMPTY1' | ldfp.name == 'EMPTY2' ) ?
@@ -108,13 +108,13 @@ process ashlar {
     """
 }
 
-// Mix mutually-exclusive channels (dependent on params.skip_ashlar)
-// Forward the result to channel tma or tissue based on params.TMA flag
+// Mix mutually-exclusive channels (dependent on params.skip-ashlar)
+// Forward the result to channel tma or tissue based on params.tma flag
 stitched
     .mix( prestitched )
     .branch {
-      tissue: !params.TMA
-      tma: params.TMA
+      tissue: !params.tma
+      tma: params.tma
     }
     .set {img}
 
@@ -122,7 +122,7 @@ stitched
 process dearray {
     publishDir path_dr,  mode: 'copy'
 
-    // Mix mutually-exclusive channels (dependent on params.skip_ashlar)
+    // Mix mutually-exclusive channels (dependent on params.skip-ashlar)
     input:
     file s from img.tma
     
@@ -131,7 +131,7 @@ process dearray {
     file "**_mask.tif" into masks
 
     when:
-    params.TMA
+    params.tma
 
     """
     matlab -nodesktop -nosplash -r \
@@ -142,7 +142,7 @@ process dearray {
 
 // Collapse the earlier branching between full-tissue and TMA into
 //   a single (core, mask) imgs channel for all downstream processing
-if( params.TMA ) {
+if( params.tma ) {
     // Match up cores and masks by filename
     cores.flatten().map(cls_fid).set{ id_cores }
     masks.flatten().map(cls_fid).set{ id_masks }
@@ -181,7 +181,7 @@ process s3seg {
     file '**' into seg_rest
 
     script:
-    def crop = params.TMA ? 'dearray' : 'noCrop'
+    def crop = params.tma ? 'dearray' : 'noCrop'
     """
     python ${params.tool_segment}/S3segmenter.py --crop $crop \
        --imagePath $core \
