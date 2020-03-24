@@ -66,15 +66,15 @@ nextflow pull labsyspharm/mcmicro-nf
 # Run the pipeline on exemplar data
 nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001
 
-# Use --TMA to dearray a tissue microarray and process each core in parallel
-nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --TMA
+# Use --tma to dearray a tissue microarray and process each core in parallel
+nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --tma
 ```
 
 Additional flags can be used to control inclusion and exclusion of individual modules in the pipeline.
 
 ``` bash
-# Use --skip_ashlar if you have a prestitched image in registration/ subfolder
-nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001 --skip_ashlar
+# Use --skip-ashlar if you have a prestitched image in registration/ subfolder
+nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001 --skip-ashlar
 
 # Use --illum to run illumination profile computation, if you dont's have one precomputed
 nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001 --illum
@@ -99,7 +99,7 @@ nextflow pull labsyspharm/mcmicro-nf
 
 # All previous commands require an additional `-profile O2` flag
 nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001 -profile O2
-nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --TMA -profile O2
+nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --tma -profile O2
 ```
 
 To avoid running over on your disk quota, it is recommended to use `/n/scratch2` for holding the `work/` directory:
@@ -116,7 +116,7 @@ The intermediate files in the `work/` directory allow you to restart a pipeline 
 module load java conda2      # <--- OOPS, forgot matlab
 
 # This run will fail with "matlab: command not found"
-nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --TMA -profile O2
+nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --tma -profile O2
 
 # N E X T F L O W  ~  version 20.01.0
 # Launching `labsyspharm/mcmicro-nf` [backstabbing_fermi] - revision: e5ff35c351 [master]
@@ -132,7 +132,7 @@ nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --TMA -profile O2
 module load matlab
 
 # Restart the pipeline from the dearray step using `-resume`
-nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --TMA -profile O2 -resume
+nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --tma -profile O2 -resume
 
 # N E X T F L O W  ~  version 20.01.0
 # Launching `labsyspharm/mcmicro-nf` [condescending_wing] - revision: e5ff35c351 [master]
