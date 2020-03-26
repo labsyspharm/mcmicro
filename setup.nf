@@ -25,6 +25,8 @@ process setup_illumination {
     rm Fiji.app/jars/jtransforms-2.4.jar
 
     git clone https://github.com/labsyspharm/basic-illumination.git
+    cd basic-illumination
+    git checkout tags/1.0.0
     """
 }
 
@@ -54,7 +56,7 @@ process setup_unmicst {
     """
     git clone https://github.com/HMS-IDAC/UnMicst.git
     cd UnMicst
-    git checkout 94139df231e9092f678cc24a714f83af2bf2033a
+    git checkout tags/1.0.0
     """
 }
 
@@ -70,7 +72,7 @@ process setup_s3segmenter {
     """
     git clone https://github.com/HMS-IDAC/S3segmenter.git
     cd S3segmenter
-    git checkout 375312fba4c58799b7529c708aef617a349ab8fc
+    git checkout tags/0.1.0
     """
 }
 
@@ -85,5 +87,7 @@ process setup_quantification {
 
     """
     git clone https://github.com/labsyspharm/quantification
+    cd quantification
+    git checkout tags/1.0.0
     """
 }
