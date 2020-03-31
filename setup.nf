@@ -72,7 +72,7 @@ process setup_s3segmenter {
     """
     git clone https://github.com/HMS-IDAC/S3segmenter.git
     cd S3segmenter
-    git checkout tags/0.1.0
+    git checkout tags/0.2.1
     """
 }
 
