@@ -88,6 +88,6 @@ process setup_quantification {
     """
     git clone https://github.com/labsyspharm/quantification
     cd quantification
-    git checkout tags/1.0.0
+    git checkout tags/1.1.0
     """
 }
