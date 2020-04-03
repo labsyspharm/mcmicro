@@ -15,6 +15,7 @@ params.illum         = false    // whether to run ImageJ+BaSiC
 params.tma           = false    // whether to run Coreograph
 params.'skip-ashlar' = false    // whether to skip ASHLAR
 
+
 // Define paths to tools inside the containers
 // NOTE: These values are overwritten by nextflow.config for O2
 params.tool_imagej  = '/opt/fiji/Fiji.app'
@@ -47,6 +48,7 @@ cls_fid = { file -> tuple(cls_id(file.getBaseName()), file) }
 
 // Find raw images; feed them into separate channels for
 //   illumination (raw1) and ASHLAR (raw2)
+
 formats = '{.ome.tiff,.ome.tif,.rcpnl,.xdce,.nd,.scan,.htd}'
 Channel.fromPath( "${path_raw}/**${formats}" ).into{ raw1; raw2 }
 Channel.fromPath( "${params.in}/markers.csv" ).set{ chNames }
@@ -105,7 +107,9 @@ process ashlar {
     def ilp = ( lffp.name == 'EMPTY1' | ldfp.name == 'EMPTY2' ) ?
 	"" : "--ffp $lffp --dfp $ldfp"
     """
-    ashlar $lraw -m 30 --pyramid $ilp -f ${fn_stitched}
+
+    ashlar $lraw -m 35 --pyramid --ffp $lffp --dfp $ldfp -f ${fn_stitched}
+
     """
 }
 
