@@ -91,17 +91,3 @@ process setup_quantification {
     git checkout tags/1.0.0
     """
 }
-
-process setup_quantification {
-    publishDir params.tools, mode: 'copy'
-
-    output:
-    file '**' into tool_quant
-
-    when:
-    params.platform == "O2"
-
-    """
-    git clone https://github.com/labsyspharm/quantification
-    """
-}
