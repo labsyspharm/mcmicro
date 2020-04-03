@@ -107,9 +107,8 @@ process ashlar {
     def ilp = ( lffp.name == 'EMPTY1' | ldfp.name == 'EMPTY2' ) ?
 	"" : "--ffp $lffp --dfp $ldfp"
     """
-
-    ashlar $lraw -m 35 --pyramid --ffp $lffp --dfp $ldfp -f ${fn_stitched}
-
+    ashlar $lraw -m 30 --pyramid $ilp -f ${fn_stitched}
+    
     """
 }
 
