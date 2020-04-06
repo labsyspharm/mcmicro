@@ -83,7 +83,35 @@ nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001 --illum
 By default Nextflow writes intermediate files to a `work/` directory inside whatever location you initiate a pipeline run from. Use `-w` flag to provide a different location. (See below for more information about these files.)
 
 ``` bash
-nextflow run labsyspharm/mcmicro-nf --in /path/to/exemplar-001 -profile O2 -w /path/to/work/
+nextflow run labsyspharm/mcmicro-nf --in /path/to/exemplar-001 -w /path/to/work/
+```
+
+### Specifying module-specific parameters
+
+The pipeline provides a sensible set of default parameters for individual modules. To change these use `--ashlar-opts`, `--unmicst-opts`, `--s3seg-opts` and `--quant-opts`. For example,
+``` bash
+nextflow run labsyspharm/mcmicro-nf --in /path/to/exemplar-001 --ashlar-opts '-m 35 --pyramid'
+```
+will provide `-m 35 --pyramid` as additional command line arguments to ASHLAR.
+
+### Using YAML parameter files
+
+As the number of custom flags grows, providing them all on the command line can become unwieldly. Instead, parameter values can be stored in a YAML file, which is then provided to nextflow using `-params-file`. For example, consider the following **myexperiment.yml**:
+
+``` yaml
+in: /data/exemplar-002
+tma: true
+skip-ashlar: true
+ashlar-opts: -m 35 --pyramid
+```
+
+The file can be fed to the pipeline via
+``` bash
+nextflow run labsyspharm/mcmicro-nf -params-file myexperiment.yml
+```
+which is equivalent to typing those options out by hand on the command line:
+``` bash
+nextflow run labsyspharm/mcmicro-nf --in /data/exemplar-002 --tma --skip-ashlar --ashlar-opts '-m 35 --pyramid'
 ```
 
 ### O2 execution

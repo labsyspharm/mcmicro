@@ -1,19 +1,20 @@
 #!/usr/bin/env nextflow
 
-// Variable naming conventions
-// path_* - directories
-//   fn_* - filenames
-//  cls_* - closures (functions)
-
 // Expecting params
 // .in - location of the data
 
-// Default parameters
+// Default parameters for the pipeline as a whole
 params.sample_name   = file(params.in).name
 params.tools         = "$HOME/mcmicro"
 params.illum         = false    // whether to run ImageJ+BaSiC
 params.tma           = false    // whether to run Coreograph
-params.'skip-ashlar' = false    // whether to skip ASHLAR
+params.skipAshlar    = false    // whether to skip ASHLAR
+
+// Default parameters for individual modules
+params.ashlarOpts  = '-m 30 --pyramid'
+params.unmicstOpts = ''
+params.s3segOpts   = ''
+params.quantOpts   = ''
 
 // Define paths to tools inside the containers
 // NOTE: These values are overwritten by nextflow.config for O2
@@ -34,31 +35,24 @@ path_prob  = "${params.in}/prob_maps"
 path_seg   = "${params.in}/segmentation"
 path_quant = "${params.in}/quantification"
 
-// Define closures / functions
-//   Filename from full path: {/path/to/file.ext -> file.ext}
-cls_base = { fn -> file(fn).name }
-
-//   Channel from path p if cond is true, empty channel if false
-cls_ch = { cond, p -> cond ? Channel.fromPath(p) : Channel.empty() }
-
-//   Extract image ID from filename
-cls_tok = { x, sep -> x.toString().tokenize(sep).get(0) }
-cls_id  = { fn -> cls_tok(cls_tok(fn,'.'),'_') }
-cls_fid = { file -> tuple(cls_id(file.getBaseName()), file) }
-
 // Find raw images; feed them into separate channels for
 //   illumination (raw1) and ASHLAR (raw2)
 formats = '{.ome.tiff,.ome.tif,.rcpnl,.xdce,.nd,.scan,.htd}'
-Channel.fromPath( "${path_raw}/**${formats}" ).into{ raw1; raw2 }
+Channel.fromPath( "${path_raw}/**${formats}" )
+    .ifEmpty{ if(!params.skipAshlar) error "No images found in ${path_raw}" }
+    .into{ raw1; raw2 }
 Channel.fromPath( "${params.in}/markers.csv" ).set{ chNames }
 
-// If we're not running illumination, find illumination profiles
-predfp = cls_ch( !params.illum, "${path_ilp}/*-dfp.tif" )
-preffp = cls_ch( !params.illum, "${path_ilp}/*-ffp.tif" )
+// If we're not running illumination, look for illumination profiles
+(predfp, preffp) = ( params.illum ? [Channel.empty(), Channel.empty()]
+		    : [Channel.fromPath("${path_ilp}/*-dfp.tif"),
+		       Channel.fromPath("${path_ilp}/*-ffp.tif")] )
 
 // If we're not running ASHLAR, find the pre-stitched image
 fn_stitched = "${params.sample_name}.ome.tif"
-prestitched = cls_ch( params.'skip-ashlar', "${path_rg}/*.ome.tif" )
+prestitched = ( !params.skipAshlar ? Channel.empty()
+	       : Channel.fromPath("${path_rg}/*.ome.tif").ifEmpty{
+	error "Didn't find pre-stitched image in ${path_rg}" })
 
 // Illumination profiles
 process illumination {
@@ -100,13 +94,13 @@ process ashlar {
     file "${fn_stitched}" into stitched
 
     when:
-    !params.'skip-ashlar'
+    !params.skipAshlar
 
     script:
     def ilp = ( lffp.name == 'EMPTY1' | ldfp.name == 'EMPTY2' ) ?
 	"" : "--ffp $lffp --dfp $ldfp"
     """
-    ashlar $lraw -m 30 --pyramid $ilp -f ${fn_stitched}
+    ashlar $lraw ${params.ashlarOpts} $ilp -f ${fn_stitched}
     """
 }
 
@@ -125,7 +119,6 @@ process dearray {
     publishDir path_qc, mode: 'copy', pattern: 'TMA_MAP.tif'
     publishDir path_dr, mode: 'copy'
 
-    // Mix mutually-exclusive channels (dependent on params.skip-ashlar)
     input:
     file s from img.tma
     
@@ -143,6 +136,11 @@ process dearray {
      tmaDearray('./$s','outputPath','.','useGrid','false'); exit"
     """
 }
+
+// Helper functions (closures) to extract image ID from filename
+cls_tok = { x, sep -> x.toString().tokenize(sep).get(0) }
+cls_id  = { fn -> cls_tok(cls_tok(fn,'.'),'_') }
+cls_fid = { file -> tuple(cls_id(file.getBaseName()), file) }
 
 // Collapse the earlier branching between full-tissue and TMA into
 //   a single (core, mask) imgs channel for all downstream processing
@@ -167,7 +165,7 @@ process unmicst {
       file('*Nuclei*.tif'), file('*Contours*.tif') into prob_maps
 
     """
-    python ${params.tool_unmicst}/UnMicst.py $core --outputPath .
+    python ${params.tool_unmicst}/UnMicst.py $core ${params.unmicstOpts} --outputPath .
     """
 }
 
@@ -192,6 +190,7 @@ process s3seg {
        --maskPath $mask \
        --nucleiClassProbPath $pmn \
        --contoursClassProbPath $pmc \
+       ${params.s3segOpts} \
        --outputPath .
     """
 }
@@ -209,6 +208,7 @@ process quantification {
     """
     python ${params.tool_quant}/CommandSingleCellExtraction.py \
     --mask $mask --image $core \
+    ${params.quantOpts} \
     --output . --channel_names $ch
     """
 }
