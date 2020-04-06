@@ -8,12 +8,18 @@
 // Expecting params
 // .in - location of the data
 
-// Default parameters
+// Default parameters for the pipeline as a whole
 params.sample_name   = file(params.in).name
 params.tools         = "$HOME/mcmicro"
 params.illum         = false    // whether to run ImageJ+BaSiC
 params.tma           = false    // whether to run Coreograph
-params.'skip-ashlar' = false    // whether to skip ASHLAR
+params.skipAshlar    = false    // whether to skip ASHLAR
+
+// Default parameters for individual modules
+params.ashlarOpts  = '-m 30 --pyramid'
+params.unmicstOpts = ''
+params.s3segOpts   = ''
+params.quantOpts   = ''
 
 // Define paths to tools inside the containers
 // NOTE: These values are overwritten by nextflow.config for O2
@@ -58,7 +64,7 @@ preffp = cls_ch( !params.illum, "${path_ilp}/*-ffp.tif" )
 
 // If we're not running ASHLAR, find the pre-stitched image
 fn_stitched = "${params.sample_name}.ome.tif"
-prestitched = cls_ch( params.'skip-ashlar', "${path_rg}/*.ome.tif" )
+prestitched = cls_ch( params.skipAshlar, "${path_rg}/*.ome.tif" )
 
 // Illumination profiles
 process illumination {
@@ -100,13 +106,13 @@ process ashlar {
     file "${fn_stitched}" into stitched
 
     when:
-    !params.'skip-ashlar'
+    !params.skipAshlar
 
     script:
     def ilp = ( lffp.name == 'EMPTY1' | ldfp.name == 'EMPTY2' ) ?
 	"" : "--ffp $lffp --dfp $ldfp"
     """
-    ashlar $lraw -m 30 --pyramid $ilp -f ${fn_stitched}
+    ashlar $lraw ${params.ashlarOpts} $ilp -f ${fn_stitched}
     """
 }
 
@@ -167,7 +173,7 @@ process unmicst {
       file('*Nuclei*.tif'), file('*Contours*.tif') into prob_maps
 
     """
-    python ${params.tool_unmicst}/UnMicst.py $core --outputPath .
+    python ${params.tool_unmicst}/UnMicst.py $core ${params.unmicstOpts} --outputPath .
     """
 }
 
@@ -192,6 +198,7 @@ process s3seg {
        --maskPath $mask \
        --nucleiClassProbPath $pmn \
        --contoursClassProbPath $pmc \
+       ${params.s3segOpts} \
        --outputPath .
     """
 }
@@ -209,6 +216,7 @@ process quantification {
     """
     python ${params.tool_quant}/CommandSingleCellExtraction.py \
     --mask $mask --image $core \
+    ${params.quantOpts} \
     --output . --channel_names $ch
     """
 }
