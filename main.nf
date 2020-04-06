@@ -25,12 +25,13 @@ params.tool_segment = '/app'
 params.tool_quant   = '/app' 
 
 // Define all subdirectories
-path_raw  = "${params.in}/raw_images"
-path_ilp  = "${params.in}/illumination_profiles"
-path_rg   = "${params.in}/registration"
-path_dr   = "${params.in}/dearray"
-path_prob = "${params.in}/prob_maps"
-path_seg  = "${params.in}/segmentation"
+path_raw   = "${params.in}/raw_images"
+path_qc    = "${params.in}/qc"
+path_ilp   = "${params.in}/illumination_profiles"
+path_rg    = "${params.in}/registration"
+path_dr    = "${params.in}/dearray"
+path_prob  = "${params.in}/prob_maps"
+path_seg   = "${params.in}/segmentation"
 path_quant = "${params.in}/quantification"
 
 // Define closures / functions
@@ -121,7 +122,8 @@ stitched
 
 // De-arraying (if TMA)
 process dearray {
-    publishDir path_dr,  mode: 'copy'
+    publishDir path_qc, mode: 'copy', pattern: 'TMA_MAP.tif'
+    publishDir path_dr, mode: 'copy'
 
     // Mix mutually-exclusive channels (dependent on params.skip-ashlar)
     input:
@@ -130,6 +132,7 @@ process dearray {
     output:
     file "**{,[A-Z],[A-Z][A-Z]}{[0-9],[0-9][0-9]}.tif" into cores
     file "**_mask.tif" into masks
+    file "TMA_MAP.tif" into tmamap
 
     when:
     params.tma
