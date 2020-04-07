@@ -5,25 +5,9 @@
 
 // Default parameters for the pipeline as a whole
 params.sample_name   = file(params.in).name
-params.tools         = "$HOME/mcmicro"
 params.illum         = false    // whether to run ImageJ+BaSiC
 params.tma           = false    // whether to run Coreograph
 params.skipAshlar    = false    // whether to skip ASHLAR
-
-// Default parameters for individual modules
-params.ashlarOpts  = '-m 30 --pyramid'
-params.unmicstOpts = ''
-params.s3segOpts   = ''
-params.quantOpts   = ''
-
-// Define paths to tools inside the containers
-// NOTE: These values are overwritten by nextflow.config for O2
-params.tool_imagej  = '/opt/fiji/Fiji.app'
-params.tool_illum   = '/opt/fiji'
-params.tool_core    = "${params.tools}/Coreograph"
-params.tool_unmicst = '/app'
-params.tool_segment = '/app'
-params.tool_quant   = '/app' 
 
 // Define all subdirectories
 path_raw   = "${params.in}/raw_images"
