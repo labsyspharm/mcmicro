@@ -1,16 +1,14 @@
 #!/usr/bin/env nextflow
 
-params.tools    = "$HOME/mcmicro"
-params.platform = "local"
-
 process setup_illumination {
+    executor 'local'
     publishDir params.tools, mode: 'copy'
 
     output:
     file '**' into tool_ilp
 
     when:
-    params.platform == "O2"
+    workflow.profile == "O2"
     
     """
     wget https://downloads.imagej.net/fiji/latest/fiji-linux64.zip && \
@@ -26,11 +24,12 @@ process setup_illumination {
 
     git clone https://github.com/labsyspharm/basic-illumination.git
     cd basic-illumination
-    git checkout tags/1.0.0
+    git checkout tags/${params.illumVersion}
     """
 }
 
 process setup_coreograph {
+    executor 'local'
     publishDir params.tools, mode: 'copy'
 
     output:
@@ -45,49 +44,52 @@ process setup_coreograph {
 }
 
 process setup_unmicst {
+    executor 'local'
     publishDir params.tools, mode: 'copy'
 
     output:
     file '**' into tool_unmicst
 
     when:
-    params.platform == "O2"
+    workflow.profile == "O2"
 
     """
     git clone https://github.com/HMS-IDAC/UnMicst.git
     cd UnMicst
-    git checkout tags/1.0.0
+    git checkout tags/${params.unmicstVersion}
     """
 }
 
 process setup_s3segmenter {
+    executor 'local'
     publishDir params.tools, mode: 'copy'
 
     output:
     file '**' into tool_s3seg
 
     when:
-    params.platform == "O2"
+    workflow.profile == "O2"
     
     """
     git clone https://github.com/HMS-IDAC/S3segmenter.git
     cd S3segmenter
-    git checkout tags/0.2.1
+    git checkout tags/${params.s3segVersion}
     """
 }
 
 process setup_quantification {
+    executor 'local'
     publishDir params.tools, mode: 'copy'
 
     output:
     file '**' into tool_quant
 
     when:
-    params.platform == "O2"
+    workflow.profile == "O2"
 
     """
     git clone https://github.com/labsyspharm/quantification
     cd quantification
-    git checkout tags/1.1.0
+    git checkout tags/${params.quantVersion}
     """
 }
