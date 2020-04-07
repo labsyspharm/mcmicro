@@ -101,7 +101,7 @@ stitched
 // De-arraying (if TMA)
 process dearray {
     publishDir path_qc, mode: 'copy', pattern: 'TMA_MAP.tif'
-    publishDir path_dr, mode: 'copy'
+    publishDir path_dr, mode: 'copy', pattern: '**{[0-9],mask}.tif'
 
     input:
     file s from img.tma
