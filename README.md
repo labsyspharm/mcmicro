@@ -187,15 +187,15 @@ nextflow clean -f -but last
 
 ## For developers: testing new module versions
 
-The versions of individual modules are pinned for standard pipeline runs. When a new version of a particular module becomes available, it is strongly encouraged to test the pipeline with this new version before formally incrementing the version number in the config. The easiest way to test is by running the pipeline with `-profile dev`, which will use the `latest` tag for all Docker images.
+The versions of individual modules are pinned for standard pipeline runs. When a new version of a particular module becomes available:
 
-``` bash
-# Suppose that a new version of quantification is available
-# Ensure that we have the latest version locally
-docker pull labsyspharm/quantification:latest
+1. Increment the corresponding version in `nextflow.config`.
+2. In the same file, change the pipeline "version" to today's date (this is used exclusively for maintaining multiple versions of the pipeline on O2).
+3. Run the pipeline on the exemplar(s) to ensure that the new version works as expected.
+4. If everything works, submit a pull request.
+5. Once the PR is merged, update the O2 install by doing
 
-# Test the pipeline with the latest version using the dev profile
-nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001 -profile dev
 ```
-
-If everything works as expected, bump the corresponding version in nextflow.config and submit a pull request.
+nextflow pull labsyspharm/mcmicro-nf
+nextflow pull labsyspharm/mcmicro-nf/setup.nf -profile O2
+```
