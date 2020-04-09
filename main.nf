@@ -185,14 +185,33 @@ to_qty = seg_qty.combine(chNames)
 // Quantification
 process quantification {
     publishDir path_quant, mode: 'copy', pattern: '*.csv'
+
     input:
     tuple file(core), file(mask), file(ch) from to_qty
+
     output:
     file '**' into quantified
+
     """
     python ${params.tool_quant}/CommandSingleCellExtraction.py \
     --mask $mask --image $core \
     ${params.quantOpts} \
     --output . --channel_names $ch
     """
+}
+
+// Provenance reconstruction
+process provenance {
+    publishDir path_qc, mode: 'copy'
+
+    output:
+    file 'params.txt' into prov_params
+
+    exec:
+    file("${task.workDir}/params.txt").withWriter{ out ->
+	params.each{ key, val ->
+	    if( key.indexOf('-') == -1 )
+	    out.println "$key: $val"
+	}
+    }
 }
