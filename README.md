@@ -197,5 +197,5 @@ The versions of individual modules are pinned for standard pipeline runs. When a
 
 ```
 nextflow pull labsyspharm/mcmicro-nf
-nextflow pull labsyspharm/mcmicro-nf/setup.nf -profile O2
+nextflow run labsyspharm/mcmicro-nf/setup.nf -profile O2
 ```
