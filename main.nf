@@ -202,6 +202,7 @@ process quantification {
 
 // Provenance reconstruction
 process provenance {
+    executor 'local'
     publishDir path_qc, mode: 'copy'
 
     output:
