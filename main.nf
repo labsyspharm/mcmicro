@@ -117,7 +117,7 @@ process dearray {
     """
     matlab -nodesktop -nosplash -r \
     "addpath(genpath('${params.tool_core}')); \
-     tmaDearray('./$s','outputPath','.','useGrid','false'); exit"
+     tmaDearray('./$s','outputPath','.','useGrid','false','cluster',true); exit"
     """
 }
 
@@ -202,6 +202,7 @@ process quantification {
 
 // Provenance reconstruction
 process provenance {
+    executor 'local'
     publishDir path_qc, mode: 'copy'
 
     output:

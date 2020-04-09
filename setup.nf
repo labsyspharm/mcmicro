@@ -38,7 +38,7 @@ process setup_coreograph {
     """
     git clone https://github.com/HMS-IDAC/Coreograph.git
     cd Coreograph
-    git checkout 8bb702c0b1f36c81fa15efe2095aeb425caee7fb
+    git checkout c4bd1432c3e01771f08ef6fed99d6bf5a98d37ef
     curl -o TMAsegmentation/model1.mat https://mcmicro.s3.amazonaws.com/models/model1.mat
     """
 }
@@ -92,4 +92,48 @@ process setup_quantification {
     cd quantification
     git checkout tags/${params.quantVersion}
     """
+}
+
+process conda_ashlar {
+    executor 'local'
+
+    when:
+    workflow.profile == "O2"
+
+    """
+    conda env create -f $baseDir/conda/ashlar.yml -p ${params.tools}/conda/ashlar
+    """
+}
+
+process conda_unmicst {
+    executor 'local'
+    
+    when:
+	workflow.profile == "O2"
+    
+    """
+    conda env create -f $baseDir/conda/unmicst.yml -p ${params.tools}/conda/unmicst
+    """
+}
+
+process conda_s3seg {
+    executor 'local'
+    
+    when:
+	workflow.profile == "O2"
+    
+    """
+    conda env create -f $baseDir/conda/s3seg.yml -p ${params.tools}/conda/s3seg
+    """
+}
+
+process conda_quant {
+    executor 'local'
+    
+    when:
+	workflow.profile == "O2"
+    
+    """
+    conda env create -f $baseDir/conda/quantification.yml -p ${params.tools}/conda/quantification
+    """    
 }
