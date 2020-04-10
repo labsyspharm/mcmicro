@@ -23,7 +23,7 @@ switch( params.name ) {
 
 // Sequence of individual cycles to download
 seq = Channel.of( 1..nc )
-nm = nc * 4			// Four markers per channel
+nm = nc * 4 + 1			// Four markers per channel, plus header
 
 process getImages {
     publishDir "${params.path}/${params.name}", mode: 'copy'
