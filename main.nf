@@ -42,15 +42,12 @@ prestitched = ( !params.skipAshlar ? Channel.empty()
 process illumination {
     publishDir path_ilp, mode: 'copy'
     
-    input:
-    file raw1
-
+    input: file raw1
     output:
-    file '*-dfp.tif' into compdfp
-    file '*-ffp.tif' into compffp
+      file '*-dfp.tif' into compdfp
+      file '*-ffp.tif' into compffp
 
-    when:
-    params.illum
+    when: params.illum
 
     script:
     def xpn = file(raw1).name.tokenize(".").get(0)
@@ -61,24 +58,27 @@ process illumination {
     """
 }
 
-// Mix mutually-exclusive channels (dependent on params.illum)
-compdfp.mix( predfp ).set{ dfp }
-compffp.mix( preffp ).set{ ffp }
+// pre* will contain precomputed profiles (if !params.illum)
+// comp* will contain profiles computed by the pipeline (if params.illum)
+// Mix them, as they are mutually exclusive
+dfp = compdfp.mix( predfp )
+ffp = compffp.mix( preffp )
+
+// Closure for sorting by filename instead of the full path
+cls_fnsort = {a, b -> a.getName() <=> b.getName()}
 
 // Stitching and registration
 process ashlar {
     publishDir path_rg, mode: 'copy'
     
     input:
-    file lraw from raw2.toSortedList()
-    file lffp from ffp.ifEmpty{ file('EMPTY1') }.toSortedList()
-    file ldfp from dfp.ifEmpty{ file('EMPTY2') }.toSortedList()
+      file lraw from raw2.toSortedList()
+      file lffp from ffp.ifEmpty{ file('EMPTY1') }.toSortedList(cls_fnsort)
+      file ldfp from dfp.ifEmpty{ file('EMPTY2') }.toSortedList(cls_fnsort)
 
-    output:
-    file "${fn_stitched}" into stitched
+    output: file "${fn_stitched}" into stitched
 
-    when:
-    !params.skipAshlar
+    when: !params.skipAshlar
 
     script:
     def ilp = ( lffp.name == 'EMPTY1' | ldfp.name == 'EMPTY2' ) ?
@@ -88,7 +88,7 @@ process ashlar {
     """
 }
 
-// Mix mutually-exclusive channels (dependent on params.skip-ashlar)
+// Mix mutually-exclusive prestitched and stitched
 // Forward the result to channel tma or tissue based on params.tma flag
 stitched
     .mix( prestitched )
@@ -103,16 +103,14 @@ process dearray {
     publishDir path_qc, mode: 'copy', pattern: 'TMA_MAP.tif'
     publishDir path_dr, mode: 'copy', pattern: '**{[0-9],mask}.tif'
 
-    input:
-    file s from img.tma
+    input: file s from img.tma
     
     output:
-    file "**{,[A-Z],[A-Z][A-Z]}{[0-9],[0-9][0-9]}.tif" into cores
-    file "**_mask.tif" into masks
-    file "TMA_MAP.tif" into tmamap
+      file "**{,[A-Z],[A-Z][A-Z]}{[0-9],[0-9][0-9]}.tif" into cores
+      file "**_mask.tif" into masks
+      file "TMA_MAP.tif" into tmamap
 
-    when:
-    params.tma
+    when: params.tma
 
     """
     matlab -nodesktop -nosplash -r \
@@ -121,17 +119,15 @@ process dearray {
     """
 }
 
-// Helper functions (closures) to extract image ID from filename
-cls_tok = { x, sep -> x.toString().tokenize(sep).get(0) }
-cls_id  = { fn -> cls_tok(cls_tok(fn,'.'),'_') }
-cls_fid = { file -> tuple(cls_id(file.getBaseName()), file) }
+// Helper function (closures) to extract image ID from filename
+cls_fnid = { file -> file.getBaseName().toString().tokenize('._').head() }
 
 // Collapse the earlier branching between full-tissue and TMA into
 //   a single (core, mask) imgs channel for all downstream processing
 if( params.tma ) {
     // Match up cores and masks by filename
-    cores.flatten().map(cls_fid).set{ id_cores }
-    masks.flatten().map(cls_fid).set{ id_masks }
+    cores.flatten().map{ f -> tuple(cls_fnid(f),f) }.set{ id_cores }
+    masks.flatten().map{ f -> tuple(cls_fnid(f),f) }.set{ id_masks }
     imgs = id_cores.join( id_masks ).map{ id, c, m -> tuple(c, m) }
 }
 else
@@ -141,8 +137,7 @@ else
 process unmicst {
     publishDir path_prob, mode: 'copy', pattern: '*PM*.tif'
 
-    input:
-    tuple file(core), val(mask) from imgs
+    input: tuple file(core), val(mask) from imgs
 
     output:
     tuple file(core), val(mask),
@@ -158,13 +153,13 @@ process s3seg {
     publishDir path_seg, mode: 'copy', pattern: '*/*'
 
     input:
-    tuple file(core), file(mask), file(pmn), file(pmc) from prob_maps
+      tuple file(core), file(mask), file(pmn), file(pmc) from prob_maps
 
     output:
-    // tuples for quantification
-    tuple file(core), file('**cellMask.tif') into seg_qty
-    // rest of the files for publishDir
-    file '**' into seg_rest
+      // tuples for quantification
+      tuple file(core), file('**cellMask.tif') into seg_qty
+      // rest of the files for publishDir
+      file '**' into seg_rest
 
     script:
     def crop = params.tma ? 'dearray' : 'noCrop'
@@ -186,11 +181,8 @@ to_qty = seg_qty.combine(chNames)
 process quantification {
     publishDir path_quant, mode: 'copy', pattern: '*.csv'
 
-    input:
-    tuple file(core), file(mask), file(ch) from to_qty
-
-    output:
-    file '**' into quantified
+    input:  tuple file(core), file(mask), file(ch) from to_qty
+    output: file '**' into quantified
 
     """
     python ${params.tool_quant}/CommandSingleCellExtraction.py \
@@ -205,8 +197,7 @@ process provenance {
     executor 'local'
     publishDir path_qc, mode: 'copy'
 
-    output:
-    file 'params.txt' into prov_params
+    output: file 'params.txt' into prov_params
 
     exec:
     file("${task.workDir}/params.txt").withWriter{ out ->
