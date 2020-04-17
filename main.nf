@@ -9,6 +9,12 @@ params.illum         = false    // whether to run ImageJ+BaSiC
 params.tma           = false    // whether to run Coreograph
 params.skipAshlar    = false    // whether to skip ASHLAR
 
+// Default parameters for individual modules
+params.ashlarOpts  = '-m 30 --pyramid'
+params.unmicstOpts = ''
+params.s3segOpts   = ''
+params.quantOpts   = ''
+
 // Define all subdirectories
 path_raw   = "${params.in}/raw_images"
 path_qc    = "${params.in}/qc"
