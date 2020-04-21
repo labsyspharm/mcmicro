@@ -96,8 +96,17 @@ will provide `-m 35 --pyramid` as additional command line arguments to ASHLAR.
 
 ### Using YAML parameter files
 
-As the number of custom flags grows, providing them all on the command line can become unwieldly. Instead, parameter values can be stored in a YAML file, which is then provided to nextflow using `-params-file`. For example, consider the following **myexperiment.yml**:
+As the number of custom flags grows, providing them all on the command line can become unwieldly. Instead, parameter values can be stored in a YAML file, which is then provided to nextflow using `-params-file`. The general rules of thumb for composing YAML files:
+1. Anything that would appear as `--param value` on the command line should be `param: value` in the YAML file.
+1. Anything that would appear as --flag on the command line should be `flag: true` in the YAML file.
+1. The above only applies to double-dashed arguments (which are passed to the pipeline). The single-dash arguments (like `-profile`) cannot be moved to YAML, because they are given to nextflow; the pipeline never sees them.
 
+For example, consider the following command:
+``` bash
+nextflow run labsyspharm/mcmicro-nf --in /data/exemplar-002 --tma --skip-ashlar --ashlar-opts '-m 35 --pyramid'
+```
+
+All double-dashed arguments can be moved to a YAML file (e.g., **myexperiment.yml**) using the rules above:
 ``` yaml
 in: /data/exemplar-002
 tma: true
@@ -105,13 +114,9 @@ skip-ashlar: true
 ashlar-opts: -m 35 --pyramid
 ```
 
-The file can be fed to the pipeline via
+The YAML file can then be fed to the pipeline via
 ``` bash
 nextflow run labsyspharm/mcmicro-nf -params-file myexperiment.yml
-```
-which is equivalent to typing those options out by hand on the command line:
-``` bash
-nextflow run labsyspharm/mcmicro-nf --in /data/exemplar-002 --tma --skip-ashlar --ashlar-opts '-m 35 --pyramid'
 ```
 
 ### O2 execution
