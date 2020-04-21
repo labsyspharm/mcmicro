@@ -9,7 +9,7 @@ This command will create a `nextflow` executable in the current directory. To si
 ``` bash
 mkdir -p ~/bin                                      # Creates a bin directory in the home folder
 mv nextflow ~/bin                                   # Moves nextflow to that directory
-echo "export PATH=$HOME/bin:\$PATH" >> ~/.bashrc    # Make the directory accessible on $PATH
+echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc   # Make the directory accessible on $PATH
 source ~/.bashrc                                    # Reload the shell configuration
 ```
 
@@ -107,7 +107,7 @@ will provide `-m 35 --pyramid` as additional command line arguments to ASHLAR.
 
 ### Using YAML parameter files
 
-As the number of custom flags grows, providing them all on the command line can become unwieldly. Instead, parameter values can be stored in a YAML file, which is then provided to nextflow using `-params-file`. The general rules of thumb for composing YAML files:
+As the number of custom flags grows, providing them all on the command line can become unwieldy. Instead, parameter values can be stored in a YAML file, which is then provided to nextflow using `-params-file`. The general rules of thumb for composing YAML files:
 1. Anything that would appear as `--param value` on the command line should be `param: value` in the YAML file.
 1. Anything that would appear as --flag on the command line should be `flag: true` in the YAML file.
 1. The above only applies to double-dashed arguments (which are passed to the pipeline). The single-dash arguments (like `-profile`) cannot be moved to YAML, because they are given to nextflow; the pipeline never sees them.
@@ -132,7 +132,10 @@ nextflow run labsyspharm/mcmicro-nf -params-file myexperiment.yml
 
 ### O2 execution
 
-To run the pipeline on O2, three additional steps are required: 1) you must load the necessary O2 modules, 2) all pipeline calls need to have the flag `-profile O2`, and 3) the pipeline execution must be initiated on a compute node (the process is too resource-intensive for a login node and will be automatically terminated).
+To run the pipeline on O2, three additional steps are required:
+1. You must load the necessary O2 modules;
+2. All pipeline calls need to have the flag `-profile O2`;
+3. The pipeline execution must be initiated on a compute node (the process is too resource-intensive for a login node and will be automatically terminated).
 
 ``` bash
 # Load necessary modules (matlab is optional, if not working with TMA)
@@ -146,7 +149,7 @@ srun -p priority -t 0-12 --mem 8G nextflow run labsyspharm/mcmicro-nf --in path/
 srun -p priority -t 0-12 --mem 8G nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --tma -profile O2
 ```
 
-In the above, `-t 0-12 --mem 8G` requests 12 hours of compute time and 8GB of memory from the O2 cluster. To avoid running over on your disk quota, it is also recommended to use `/n/scratch2` for holding the `work/` directory:
+In the above, `-t 0-12 --mem 8G` requests 12 hours of compute time and 8GB of memory from the O2 cluster. To avoid running over on your disk quota, it is also recommended to use `/n/scratch2` for holding the `work/` directory. Furthermore, `n/scratch2` is faster than `/home` or `/n/groups`, so jobs will complete faster:
 
 ```
 srun -p priority -t 0-12 --mem 8G \
@@ -171,7 +174,7 @@ module load java matlab conda2
 ```
 replacing relevant fields (e.g., `user@university.edu`) with your own values.
 
-The pipeline run can then be kicked off with `source submit_mcmicro.sh`.
+The pipeline run can then be kicked off with `sbatch submit_mcmicro.sh`.
 
 ## Handling intermediate files
 
