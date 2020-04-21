@@ -171,6 +171,8 @@ module load java matlab conda2
 ```
 replacing relevant fields (e.g., `user@university.edu`) with your own values.
 
+The pipeline run can then be kicked off with `source submit_mcmicro.sh`.
+
 ## Handling intermediate files
 
 The intermediate files in the `work/` directory allow you to restart a pipeline partway, without re-running everything from scratch. For example, consider the following scenario on O2:
