@@ -155,24 +155,39 @@ else
 
 // Step 4 input
 // Add channel name file to every (image, mask) tuple
-s4in = s3out.combine(chNames)
+s3out.combine(chNames).into{ s4in_unmicst; s4in_ilastik }
 
 // Step 4 output - UNet classification
 process unmicst {
-    publishDir path_prob, mode: 'copy', pattern: '*PM*.tif'
+    publishDir "${path_prob}/unmicst", mode: 'copy', pattern: '*PM*.tif'
 
-    input: tuple file(core), val(mask), file(ch) from s4in
+    input: tuple file(core), val(mask), file(ch) from s4in_unmicst
     output:
 	tuple file(core), val(mask),
         file('*Nuclei*.tif'), file('*Contours*.tif'),
         file(ch) into s4out_unmicst
 
+    script:
     """
     python ${params.tool_unmicst}/UnMicst.py $core ${params.unmicstOpts} --outputPath .
     """
 }
 
 // Step 4 output - ilastik
+process ilastik {
+    publishDir "${path_prob}/ilastik", mode: 'copy', pattern: '*'
+
+    input: tuple file(core), val(mask), file(ch) from s4in_ilastik
+    output: file('*') into s4out_ilastik
+    when: params.probabilityMaps == 'all'
+    script:
+    """
+    python ${params.tool_mcilastik}/CommandIlastikPrepOME.py --input $core --output . \
+      --num_channels `tail -n +2 $ch | wc -l`
+    ${params.tool_ilastik}/run_ilastik.sh --headless \
+      --project=${params.tool_mcilastik}/classifiers/exemplar_001.ilp *.hdf5
+    """
+}
 
 // Step 5 output - segmentation
 process s3seg {
