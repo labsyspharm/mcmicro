@@ -38,7 +38,7 @@ process setup_coreograph {
     """
     git clone https://github.com/HMS-IDAC/Coreograph.git
     cd Coreograph
-    git checkout c4bd1432c3e01771f08ef6fed99d6bf5a98d37ef
+    git checkout af56eaba4df0163fa1c17ece8198a043d7d1929c
     curl -o TMAsegmentation/model1.mat https://mcmicro.s3.amazonaws.com/models/model1.mat
     """
 }
@@ -57,6 +57,27 @@ process setup_unmicst {
     git clone https://github.com/HMS-IDAC/UnMicst.git
     cd UnMicst
     git checkout tags/${params.unmicstVersion}
+    """
+}
+
+process setup_ilastik {
+    executor 'local'
+    publishDir params.tools, mode: 'copy'
+
+    output: file '**' into tool_ilastik
+    when: workflow.profile == "O2"
+
+    script:
+    def ilastik_binary = 'ilastik-1.3.3post2-Linux.tar.bz2'
+    """
+    wget http://files.ilastik.org/${ilastik_binary} && \
+      mkdir ilastik-release && \
+      tar xjvf $ilastik_binary -C ilastik-release --strip-components=1 && \
+      rm $ilastik_binary
+
+    git clone https://github.com/labsyspharm/mcmicro-ilastik.git
+    cd mcmicro-ilastik
+    git checkout tags/${params.mcilastikVersion}
     """
 }
 
