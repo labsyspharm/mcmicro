@@ -10,7 +10,7 @@ params.tma           = false    // whether to run Coreograph
 params.skipAshlar    = false    // whether to skip ASHLAR
 
 // Default selection of methods for each step
-params.probabilityMaps = 'all'
+params.probabilityMaps = 'unmicst'
 
 // Default parameters for individual modules
 params.ashlarOpts  = '-m 30 --pyramid'
