@@ -184,8 +184,8 @@ process ilastik {
     """
     python ${params.tool_mcilastik}/CommandIlastikPrepOME.py --input $core --output . \
       --num_channels `tail -n +2 $ch | wc -l`
-    ${params.tool_ilastik}/run_ilastik.sh --headless \
-      --project=${params.tool_mcilastik}/classifiers/exemplar_001.ilp *.hdf5
+    cp ${params.tool_mcilastik}/classifiers/exemplar_001.ilp ./model.ilp
+    ${params.tool_ilastik}/run_ilastik.sh --headless --project=model.ilp *.hdf5
     """
 }
 
