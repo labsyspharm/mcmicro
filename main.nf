@@ -18,6 +18,9 @@ params.unmicstOpts = ''
 params.s3segOpts   = ''
 params.quantOpts   = ''
 
+// Path-specific parameters that cannot be captured by the above *opts
+params.quantificationMask = 'cellMask.tif'
+
 // Define all subdirectories
 path_raw   = "${params.in}/raw_images"            // Step 0
 path_ilp   = "${params.in}/illumination_profiles" // Step 1
@@ -198,7 +201,7 @@ process s3seg {
 
     output:
       // tuples for quantification
-      tuple file(core), file('**cellMask.tif'), file(ch) into s5out
+      tuple file(core), file("**${params.quantificationMask}"), file(ch) into s5out
       // rest of the files for publishDir
       file '**' into seg_rest
 
