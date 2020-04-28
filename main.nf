@@ -4,10 +4,10 @@
 // .in - location of the data
 
 // Default parameters for the pipeline as a whole
-params.sample_name   = file(params.in).name
-params.illum         = false    // whether to run ImageJ+BaSiC
-params.tma           = false    // whether to run Coreograph
-params.skipAshlar    = false    // whether to skip ASHLAR
+params.sample_name = file(params.in).name
+params.startAt     = 'registration'
+params.stopAt      = 'quantification'
+params.tma         = false    // whether to run Coreograph
 
 // Default selection of methods for each step
 params.probabilityMaps = 'unmicst'
@@ -21,17 +21,41 @@ params.quantOpts   = ''
 // Path-specific parameters that cannot be captured by the above *opts
 params.quantificationMask = 'cellMask.tif'
 
+// Legacy parameters (to be deprecated in future versions)
+params.illum         = false    // whether to run ImageJ+BaSiC
+params.skipAshlar    = false    // whether to skip ASHLAR
+
+// Steps in the mcmicro pipeline
+mcmsteps = ["raw",		// Step 0
+	    "illumination",	// Step 1
+	    "registration",	// Step 2
+	    "dearray",		// Step 3
+	    "probability-maps", // Step 4
+	    "segmentation",	// Step 5
+	    "quantification"]	// Step 6
+
+// Identify starting and stopping index
+idxStart = mcmsteps.indexOf( params.startAt )
+idxStop  = mcmsteps.indexOf( params.stopAt )
+if( idxStart < 0 ) error "Unknown starting step ${params.startAt}"
+if( idxStop < 0 )  error "Unknown stopping step ${params.stopAt}"
+if( params.illum )      idxStart = 1
+if( params.skipAshlar ) idxStart = 3
+
+println idxStart
+println idxStop
+
 // Define all subdirectories
-path_raw   = "${params.in}/raw"                   // Step 0
-path_ilp   = "${params.in}/illumination"          // Step 1
-path_rg    = "${params.in}/registration"          // Step 2
-path_dr    = "${params.in}/dearray"               // Step 3
-path_prob  = "${params.in}/probability-maps"      // Step 4
-path_seg   = "${params.in}/segmentation"          // Step 5
-path_quant = "${params.in}/quantification"        // Step 6
+path_raw   = "${params.in}/${mcmsteps[0]}"
+path_ilp   = "${params.in}/${mcmsteps[1]}"
+path_rg    = "${params.in}/${mcmsteps[2]}"
+path_dr    = "${params.in}/${mcmsteps[3]}"
+path_prob  = "${params.in}/${mcmsteps[4]}"
+path_seg   = "${params.in}/${mcmsteps[5]}"
+path_quant = "${params.in}/${mcmsteps[6]}"
 path_qc    = "${params.in}/qc"
 
-// Check deprecated locations
+// Check that deprecated locations are empty
 msg_dprc = {a,b -> "The use of $a has been deprecated. Please use $b instead."}
 Channel.fromPath( "${params.in}/raw_images/*" )
     .subscribe{ it -> error msg_dprc("raw_images/", "raw/") }
