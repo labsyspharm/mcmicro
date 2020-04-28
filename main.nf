@@ -22,14 +22,21 @@ params.quantOpts   = ''
 params.quantificationMask = 'cellMask.tif'
 
 // Define all subdirectories
-path_raw   = "${params.in}/raw_images"            // Step 0
-path_ilp   = "${params.in}/illumination_profiles" // Step 1
+path_raw   = "${params.in}/raw"                   // Step 0
+path_ilp   = "${params.in}/illumination"          // Step 1
 path_rg    = "${params.in}/registration"          // Step 2
 path_dr    = "${params.in}/dearray"               // Step 3
 path_prob  = "${params.in}/probability-maps"      // Step 4
 path_seg   = "${params.in}/segmentation"          // Step 5
 path_quant = "${params.in}/quantification"        // Step 6
 path_qc    = "${params.in}/qc"
+
+// Check deprecated locations
+msg_dprc = {a,b -> "The use of $a has been deprecated. Please use $b instead."}
+Channel.fromPath( "${params.in}/raw_images/*" )
+    .subscribe{ it -> error msg_dprc("raw_images/", "raw/") }
+Channel.fromPath( "${params.in}/illumination_profiles/*" )
+    .subscribe{ it -> error msg_dprc("illumination_profiles/", "illumination/") }
 
 // Identify marker information
 Channel.fromPath( "${params.in}/markers.csv" ).set{ chNames }
