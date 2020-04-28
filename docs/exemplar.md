@@ -22,7 +22,7 @@ When working with exemplars on O2, please download your own copy to `/n/scratch2
 The exemplars demonstrate the directory structure assumed by the pipeline:
 ```
 exemplar-001
-├── illumination_profiles
+├── illumination
 │   ├── exemplar-001-cycle-01-dfp.tif
 │   ├── exemplar-001-cycle-01-ffp.tif
 │   ├── exemplar-001-cycle-02-dfp.tif
@@ -30,7 +30,7 @@ exemplar-001
 │   ├── exemplar-001-cycle-03-dfp.tif
 │   └── exemplar-001-cycle-03-ffp.tif
 ├── markers.csv
-└── raw_images
+└── raw
     ├── exemplar-001-cycle-01.ome.tiff
     ├── exemplar-001-cycle-02.ome.tiff
     └── exemplar-001-cycle-03.ome.tiff
@@ -40,7 +40,7 @@ An important set of assumptions to keep in mind:
 
 * The name of the parent directory (e.g., `exemplar-001`) is taken to be the sample name.
 * The pipeline can work with either raw images that still need to be stitched, or a pre-stitched image.
-  * Raw images must be placed inside `raw_images/` subdirectory.
+  * Raw images must be placed inside `raw/` subdirectory.
   * A prestitched image must be placed inside `registration/` subdirectory.
-* (Optional) Any precomputed illumination profiles must be placed in `illumination_profiles/`
+* (Optional) Any precomputed illumination profiles must be placed in `illumination/`
 * The order of markers in `markers.csv` must follow the channel order.
