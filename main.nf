@@ -37,13 +37,13 @@ mcmsteps = ["raw",		// Step 0
 // Identify starting and stopping index
 idxStart = mcmsteps.indexOf( params.startAt )
 idxStop  = mcmsteps.indexOf( params.stopAt )
-if( idxStart < 0 ) error "Unknown starting step ${params.startAt}"
-if( idxStop < 0 )  error "Unknown stopping step ${params.stopAt}"
-if( params.illum )      idxStart = 1
-if( params.skipAshlar ) idxStart = 3
-
-println idxStart
-println idxStop
+if( idxStart < 0 )       error "Unknown starting step ${params.startAt}"
+if( idxStop < 0 )        error "Unknown stopping step ${params.stopAt}"
+if( params.illum )       idxStart = 1
+if( params.skipAshlar )  idxStart = 3
+if( idxStop < idxStart ) error "Stopping step cannot come before starting step"
+if( idxStart > 4 )
+  error "Starting at steps beyond probability map computation is not yet supported."
 
 // Define all subdirectories
 path_raw   = "${params.in}/${mcmsteps[0]}"
@@ -63,31 +63,27 @@ Channel.fromPath( "${params.in}/illumination_profiles/*" )
     .subscribe{ it -> error msg_dprc("illumination_profiles/", "illumination/") }
 
 // Identify marker information
-Channel.fromPath( "${params.in}/markers.csv" ).set{ chNames }
+chNames = Channel.fromPath( "${params.in}/markers.csv" )
+    .ifEmpty{ error "No marker.csv found in ${params.in}" }
 
-// Step 1 and 2 input
-// Find raw images; feed them into separate channels for
-//   illumination (step 1 input) and ASHLAR (step 2 input)
+// Find raw images and precomputed intermediates
 formats = '{.ome.tiff,.ome.tif,.rcpnl,.xdce,.nd,.scan,.htd}'
-Channel.fromPath( "${path_raw}/**${formats}" )
-    .ifEmpty{ if(!params.skipAshlar) error "No images found in ${path_raw}" }
-    .into{ s1in; s2in_raw }
+s0          = Channel.fromPath( "${path_raw}/**${formats}" )
+s1pre_dfp   = Channel.fromPath( "${path_ilp}/*-dfp.tif" )
+s1pre_ffp   = Channel.fromPath( "${path_ilp}/*-ffp.tif" )
+s2pre       = Channel.fromPath( "${path_rg}/*.ome.tif" )
+s3pre_cores = Channel.fromPath( "${path_dr}/*.tif" )
+s3pre_masks = Channel.fromPath( "${path_dr}/masks/*.tif" )
 
-// Step 1 precomputed
-// If we're not running illumination, look for illumination profiles
-(s1pre_dfp, s1pre_ffp) = ( params.illum ? [Channel.empty(), Channel.empty()]
-			  : [Channel.fromPath("${path_ilp}/*-dfp.tif"),
-			     Channel.fromPath("${path_ilp}/*-ffp.tif")] )
+// Step 1 input
+// Duplicate the raw images channel for illumination and ASHLAR
+if( idxStart <= 1 ) s0.into{ s1in; s2in_raw }
+else {
+    s0.set{ s2in_raw }
+    Channel.empty().set{ s1in }
+}
 
-// Step 2 precomputed
-// If we're not running ASHLAR, find the pre-stitched image
-fn_stitched = "${params.sample_name}.ome.tif"
-s2pre = ( !params.skipAshlar ? Channel.empty()
-	 : Channel.fromPath("${path_rg}/*.ome.tif").ifEmpty{
-	error "Didn't find pre-stitched image in ${path_rg}" })
-
-// Step 1 output
-// Illumination profiles
+// Step 1 output - illumination profiles
 process illumination {
     publishDir path_ilp, mode: 'copy'
     
@@ -96,7 +92,7 @@ process illumination {
       file '*-dfp.tif' into s1out_dfp
       file '*-ffp.tif' into s1out_ffp
 
-    when: params.illum
+    when: idxStart <= 1
 
     script:
     def xpn = file(s1in).name.tokenize(".").get(0)
@@ -107,18 +103,23 @@ process illumination {
     """
 }
 
+// Step 2 input
+// Use basic-illumination output, if computed
+// Use pre-computed images (if available), otherwise
+if( idxStart <= 1 ) {
+    s1out_dfp.set{ s2in_dfp }
+    s1out_ffp.set{ s2in_ffp }
+}
+else {
+    s1pre_dfp.ifEmpty{ file('EMPTY1') }.set{ s2in_dfp }
+    s1pre_ffp.ifEmpty{ file('EMPTY2') }.set{ s2in_ffp }
+}
+
 // Closure for sorting by filename instead of the full path
 cls_fnsort = {a, b -> a.getName() <=> b.getName()}
 
-// Step 2 input
-// s1pre* will contain precomputed profiles (if !params.illum)
-// s1out* will contain profiles computed by the pipeline (if params.illum)
-// Mix them, as they are mutually exclusive
-s2in_ffp = s1out_ffp.mix( s1pre_ffp ).ifEmpty{ file('EMPTY1') }
-s2in_dfp = s1out_dfp.mix( s1pre_dfp ).ifEmpty{ file('EMPTY2') }
-
-// Step 2 output
-// Stitching and registration
+// Step 2 output - stitching and registration
+fn_stitched = "${params.sample_name}.ome.tif"
 process ashlar {
     publishDir path_rg, mode: 'copy'
     
@@ -129,26 +130,27 @@ process ashlar {
 
     output: file "${fn_stitched}" into s2out
 
-    when: !params.skipAshlar
-
+    when: idxStart <= 2
+    
     script:
-    def ilp = ( lffp.name == 'EMPTY1' | ldfp.name == 'EMPTY2' ) ?
+    def ilp = ( ldfp.name == 'EMPTY1' || lffp.name == 'EMPTY2' ) ?
 	"" : "--ffp $lffp --dfp $ldfp"
     """
     ashlar $lraw ${params.ashlarOpts} $ilp -f ${fn_stitched}
     """
 }
 
-// Step 3 input
-// Mix mutually-exclusive step 2 precomputed and step 2 output
-// Forward the result to channel tma or tissue based on params.tma flag
-s2out
-    .mix( s2pre )
-    .branch {
-      tissue: !params.tma
-      tma: params.tma
-    }
-    .set {s3in}
+// Step 3 input (TMA only)
+// Use ASHLAR output if computed
+// Use prestitched image otherwise
+if( params.tma )
+{
+    if( idxStart <= 2 ) s2out.set{s3in}
+    else if( idxStart == 3 )
+      s2pre.ifEmpty{ error "No pre-stitched image in ${path_rg}" }.set{s3in}
+    else Channel.empty().set{s3in}
+}
+else Channel.empty().set{s3in}
 
 // Step 3 output
 // De-arraying (if TMA)
@@ -156,14 +158,14 @@ process dearray {
     publishDir path_qc, mode: 'copy', pattern: 'TMA_MAP.tif'
     publishDir path_dr, mode: 'copy', pattern: '**{[0-9],mask}.tif'
 
-    input: file s from s3in.tma
+    input: file s from s3in
     
     output:
       file "**{,[A-Z],[A-Z][A-Z]}{[0-9],[0-9][0-9]}.tif" into s3out_cores
       file "**_mask.tif" into s3out_masks
       file "TMA_MAP.tif" into tmamap
 
-    when: params.tma
+    when: idxStart <= 3 && params.tma
 
     """
     matlab -nodesktop -nosplash -r \
@@ -172,21 +174,43 @@ process dearray {
     """
 }
 
-// Helper function (closures) to extract image ID from filename
-cls_fnid = { file -> file.getBaseName().toString().tokenize('._').head() }
 
 // Finalize step 3 output
-// Collapse the earlier branching between full-tissue and TMA into
-//   a single (core, mask) imgs channel for all downstream processing
+// Use Coreograph output, if computed
+// Use pre-computed cores+masks, otherwise
 if( params.tma ) {
+    if( idxStart <= 3 ) {
+	s3out_cores.set{tmp_cores}
+	s3out_masks.set{tmp_masks}
+    }
+    else if( idxStart == 4 ) {
+	s3pre_cores.ifEmpty{ error "No cores in ${path_dr}" }.set{tmp_cores}
+	s3pre_masks.ifEmpty{ error "No masks in ${path_dr}/masks" }.set{tmp_masks}
+    }
+    else {
+	Channel.empty().set{tmp_cores}
+	Channel.empty().set{tmp_masks}
+    }
+
     // Match up cores and masks by filename
-    id_cores = s3out_cores.flatten().map{ f -> tuple(cls_fnid(f),f) }
-    id_masks = s3out_masks.flatten().map{ f -> tuple(cls_fnid(f),f) }
-    s3out = id_cores.join( id_masks ).map{ id, c, m -> tuple(c, m) }
+    cls_fnid = { file -> file.getBaseName().toString().tokenize('._').head() }
+    tmp_cores.flatten().map{ f -> tuple(cls_fnid(f),f) }.set{id_cores}
+    tmp_masks.flatten().map{ f -> tuple(cls_fnid(f),f) }.set{id_masks}
+    id_cores.join( id_masks ).map{ id, c, m -> tuple(c, m) }.set{s3out}
 }
 else
-    s3out = s3in.tissue.map{ x -> tuple(x, file('NO_MASK')) }
+{
+    if( idxStart <= 2 ) s2out.map{ x -> tuple(x, file('NO_MASK')) }.set{s3out}
+    else if( idxStart == 3 || idxStart == 4 ) {
+	s2pre.ifEmpty{ error "No pre-stitched image in ${path_rg}" }
+	    .map{ x -> tuple(x, file('NO_MASK')) }.set{s3out}
+    }
+    else Channel.empty().set{s3out}
+}
 
+s3out.view()
+
+/*
 // Step 4 input
 // Add channel name file to every (image, mask) tuple
 s3out.combine(chNames).into{ s4in_unmicst; s4in_ilastik }
@@ -222,11 +246,11 @@ process ilastik {
     ${params.tool_ilastik}/run_ilastik.sh --headless --project=model.ilp *.hdf5
     """
 }
-
+*/
 // Step 5 output - segmentation
-process s3seg {
-    publishDir path_seg, mode: 'copy', pattern: '*/*'
-
+//process s3seg {
+//    publishDir path_seg, mode: 'copy', pattern: '*/*'
+/*
     input:
 	tuple file(core), file(mask), file(pmn), file(pmc), file(ch) from s4out_unmicst
 
@@ -279,3 +303,4 @@ process provenance {
 	}
     }
 }
+*/
