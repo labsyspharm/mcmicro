@@ -66,10 +66,12 @@ Channel.fromPath( "${params.in}/illumination_profiles/*" )
 chNames = Channel.fromPath( "${params.in}/markers.csv" )
     .ifEmpty{ error "No marker.csv found in ${params.in}" }
 
-// Find raw images
-// Duplicate the raw images channel for illumination and ASHLAR
+// Find raw images; feed them into separate channels for
+//   illumination (step 1 input) and ASHLAR (step 2 input)
 formats = '{.ome.tiff,.ome.tif,.rcpnl,.xdce,.nd,.scan,.htd}'
-Channel.fromPath( "${path_raw}/**${formats}" ).into{ s1in; s2in_raw}
+Channel.fromPath( "${path_raw}/**${formats}" )
+    .ifEmpty{ if(!params.skipAshlar) error "No images found in ${path_raw}" }
+    .into{ s1in; s2in_raw }
 
 // Find precomputed intermediates
 findFiles = { p, path, ife -> p ?
@@ -215,11 +217,11 @@ process ilastik {
     ${params.tool_ilastik}/run_ilastik.sh --headless --project=model.ilp *.hdf5
     """
 }
-*/
+
 // Step 5 output - segmentation
-//process s3seg {
-//    publishDir path_seg, mode: 'copy', pattern: '*/*'
-/*
+process s3seg {
+    publishDir path_seg, mode: 'copy', pattern: '*/*'
+
     input:
 	tuple file(core), file(mask), file(pmn), file(pmc), file(ch) from s4out_unmicst
 
@@ -272,4 +274,4 @@ process provenance {
 	}
     }
 }
-*/
+
