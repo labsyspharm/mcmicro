@@ -66,22 +66,22 @@ Channel.fromPath( "${params.in}/illumination_profiles/*" )
 chNames = Channel.fromPath( "${params.in}/markers.csv" )
     .ifEmpty{ error "No marker.csv found in ${params.in}" }
 
-// Find raw images and precomputed intermediates
-formats = '{.ome.tiff,.ome.tif,.rcpnl,.xdce,.nd,.scan,.htd}'
-s0          = Channel.fromPath( "${path_raw}/**${formats}" )
-s1pre_dfp   = Channel.fromPath( "${path_ilp}/*-dfp.tif" )
-s1pre_ffp   = Channel.fromPath( "${path_ilp}/*-ffp.tif" )
-s2pre       = Channel.fromPath( "${path_rg}/*.ome.tif" )
-s3pre_cores = Channel.fromPath( "${path_dr}/*.tif" )
-s3pre_masks = Channel.fromPath( "${path_dr}/masks/*.tif" )
-
-// Step 1 input
+// Find raw images
 // Duplicate the raw images channel for illumination and ASHLAR
-if( idxStart <= 1 ) s0.into{ s1in; s2in_raw }
-else {
-    s0.set{ s2in_raw }
-    Channel.empty().set{ s1in }
-}
+formats = '{.ome.tiff,.ome.tif,.rcpnl,.xdce,.nd,.scan,.htd}'
+Channel.fromPath( "${path_raw}/**${formats}" ).into{ s1in; s2in_raw}
+
+// Find precomputed intermediates
+findFiles = { p, path, ife -> p ?
+	     Channel.fromPath(path).ifEmpty(ife) : Channel.empty() }
+s1pre_dfp   = findFiles(idxStart == 2, "${path_ilp}/*-dfp.tif", {file("EMPTY1")})
+s1pre_ffp   = findFiles(idxStart == 2, "${path_ilp}/*-ffp.tif", {file("EMPTY2")})
+s2pre       = findFiles(idxStart == 3 || (idxStart > 3 && !params.tma), "${path_rg}/*.ome.tif",
+			{error "No pre-stitched image in ${path_rg}"} )
+s3pre_cores = findFiles(idxStart > 3 && params.tma, "${path_dr}/*.tif",
+			{error "No cores in ${path_dr}"})
+s3pre_masks = findFiles(idxStart > 3 && params.tma, "${path_dr}/masks/*.tif",
+			{error "No masks in ${path_dr}/masks"})
 
 // Step 1 output - illumination profiles
 process illumination {
@@ -104,19 +104,11 @@ process illumination {
 }
 
 // Step 2 input
-// Use basic-illumination output, if computed
-// Use pre-computed images (if available), otherwise
-if( idxStart <= 1 ) {
-    s1out_dfp.set{ s2in_dfp }
-    s1out_ffp.set{ s2in_ffp }
-}
-else {
-    s1pre_dfp.ifEmpty{ file('EMPTY1') }.set{ s2in_dfp }
-    s1pre_ffp.ifEmpty{ file('EMPTY2') }.set{ s2in_ffp }
-}
+s2in_dfp = s1out_dfp.mix( s1pre_dfp )
+s2in_ffp = s1out_ffp.mix( s1pre_ffp )
 
 // Closure for sorting by filename instead of the full path
-cls_fnsort = {a, b -> a.getName() <=> b.getName()}
+fnSort = {a, b -> a.getName() <=> b.getName()}
 
 // Step 2 output - stitching and registration
 fn_stitched = "${params.sample_name}.ome.tif"
@@ -125,8 +117,8 @@ process ashlar {
     
     input:
       file lraw from s2in_raw.toSortedList()
-      file lffp from s2in_ffp.toSortedList(cls_fnsort)
-      file ldfp from s2in_dfp.toSortedList(cls_fnsort)
+      file lffp from s2in_ffp.toSortedList(fnSort)
+      file ldfp from s2in_dfp.toSortedList(fnSort)
 
     output: file "${fn_stitched}" into s2out
 
@@ -140,17 +132,16 @@ process ashlar {
     """
 }
 
-// Step 3 input (TMA only)
-// Use ASHLAR output if computed
-// Use prestitched image otherwise
-if( params.tma )
-{
-    if( idxStart <= 2 ) s2out.set{s3in}
-    else if( idxStart == 3 )
-      s2pre.ifEmpty{ error "No pre-stitched image in ${path_rg}" }.set{s3in}
-    else Channel.empty().set{s3in}
-}
-else Channel.empty().set{s3in}
+// Step 3 input
+// Mix mutually-exclusive step 2 precomputed and step 2 output
+// Forward the result to channel tma or tissue based on params.tma flag
+s2out
+    .mix( s2pre )
+    .branch {
+      tissue: !params.tma
+      tma: params.tma
+    }
+    .set {s3in}
 
 // Step 3 output
 // De-arraying (if TMA)
@@ -158,7 +149,7 @@ process dearray {
     publishDir path_qc, mode: 'copy', pattern: 'TMA_MAP.tif'
     publishDir path_dr, mode: 'copy', pattern: '**{[0-9],mask}.tif'
 
-    input: file s from s3in
+    input: file s from s3in.tma
     
     output:
       file "**{,[A-Z],[A-Z][A-Z]}{[0-9],[0-9][0-9]}.tif" into s3out_cores
@@ -174,43 +165,21 @@ process dearray {
     """
 }
 
+// Helper function to extract image ID from filename
+getID = { file -> file.getBaseName().toString().tokenize('._').head() }
 
 // Finalize step 3 output
-// Use Coreograph output, if computed
-// Use pre-computed cores+masks, otherwise
+// Collapse the earlier branching between full-tissue and TMA into
+//   a single (core, mask) imgs channel for all downstream processing
 if( params.tma ) {
-    if( idxStart <= 3 ) {
-	s3out_cores.set{tmp_cores}
-	s3out_masks.set{tmp_masks}
-    }
-    else if( idxStart == 4 ) {
-	s3pre_cores.ifEmpty{ error "No cores in ${path_dr}" }.set{tmp_cores}
-	s3pre_masks.ifEmpty{ error "No masks in ${path_dr}/masks" }.set{tmp_masks}
-    }
-    else {
-	Channel.empty().set{tmp_cores}
-	Channel.empty().set{tmp_masks}
-    }
-
     // Match up cores and masks by filename
-    cls_fnid = { file -> file.getBaseName().toString().tokenize('._').head() }
-    tmp_cores.flatten().map{ f -> tuple(cls_fnid(f),f) }.set{id_cores}
-    tmp_masks.flatten().map{ f -> tuple(cls_fnid(f),f) }.set{id_masks}
-    id_cores.join( id_masks ).map{ id, c, m -> tuple(c, m) }.set{s3out}
+    id_cores = s3out_cores.flatten().mix(s3pre_cores).map{ f -> tuple(getID(f),f) }
+    id_masks = s3out_masks.flatten().mix(s3pre_masks).map{ f -> tuple(getID(f),f) }
+    s3out = id_cores.join( id_masks ).map{ id, c, m -> tuple(c, m) }
 }
 else
-{
-    if( idxStart <= 2 ) s2out.map{ x -> tuple(x, file('NO_MASK')) }.set{s3out}
-    else if( idxStart == 3 || idxStart == 4 ) {
-	s2pre.ifEmpty{ error "No pre-stitched image in ${path_rg}" }
-	    .map{ x -> tuple(x, file('NO_MASK')) }.set{s3out}
-    }
-    else Channel.empty().set{s3out}
-}
+    s3out = s3in.tissue.map{ x -> tuple(x, file('NO_MASK')) }
 
-s3out.view()
-
-/*
 // Step 4 input
 // Add channel name file to every (image, mask) tuple
 s3out.combine(chNames).into{ s4in_unmicst; s4in_ilastik }
