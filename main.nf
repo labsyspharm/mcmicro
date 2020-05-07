@@ -63,19 +63,19 @@ Channel.fromPath( "${params.in}/illumination_profiles/*" )
     .subscribe{ it -> error msg_dprc("illumination_profiles/", "illumination/") }
 
 // Identify marker information
-chNames = Channel.fromPath( "${params.in}/markers.csv" )
-    .ifEmpty{ error "No marker.csv found in ${params.in}" }
+chNames = Channel.fromPath( "${params.in}/markers.csv", checkIfExists: true )
 
-// Find raw images; feed them into separate channels for
-//   illumination (step 1 input) and ASHLAR (step 2 input)
-formats = '{.ome.tiff,.ome.tif,.rcpnl,.xdce,.nd,.scan,.htd}'
-Channel.fromPath( "${path_raw}/**${formats}" )
-    .ifEmpty{ if(!params.skipAshlar) error "No images found in ${path_raw}" }
-    .into{ s1in; s2in_raw }
-
-// Find precomputed intermediates
+// Helper function for finding raw images and precomputed intermediates
 findFiles = { p, path, ife -> p ?
 	     Channel.fromPath(path).ifEmpty(ife) : Channel.empty() }
+
+// Feed raw images into separate channels for
+//   illumination (step 1 input) and ASHLAR (step 2 input)
+formats = '{.ome.tiff,.ome.tif,.rcpnl,.xdce,.nd,.scan,.htd}'
+findFiles(idxStart <= 2, "${path_raw}/**${formats}",
+	  {error "No images found in ${path_raw}"}).into{ s1in; s2in_raw }
+
+// Each set of intermediates goes into a single channel (no splitting as with raw images)
 s1pre_dfp   = findFiles(idxStart == 2, "${path_ilp}/*-dfp.tif", {file("EMPTY1")})
 s1pre_ffp   = findFiles(idxStart == 2, "${path_ilp}/*-ffp.tif", {file("EMPTY2")})
 s2pre       = findFiles(idxStart == 3 || (idxStart > 3 && !params.tma), "${path_rg}/*.ome.tif",
@@ -94,7 +94,7 @@ process illumination {
       file '*-dfp.tif' into s1out_dfp
       file '*-ffp.tif' into s1out_ffp
 
-    when: idxStart <= 1
+    when: idxStart <= 1 && idxStop >= 1
 
     script:
     def xpn = file(s1in).name.tokenize(".").get(0)
@@ -124,7 +124,7 @@ process ashlar {
 
     output: file "${fn_stitched}" into s2out
 
-    when: idxStart <= 2
+    when: idxStart <= 2 && idxStop >= 2
     
     script:
     def ilp = ( ldfp.name == 'EMPTY1' || lffp.name == 'EMPTY2' ) ?
@@ -158,7 +158,7 @@ process dearray {
       file "**_mask.tif" into s3out_masks
       file "TMA_MAP.tif" into tmamap
 
-    when: idxStart <= 3 && params.tma
+    when: idxStart <= 3 && idxStop >= 3 && params.tma
 
     """
     matlab -nodesktop -nosplash -r \
@@ -195,7 +195,7 @@ process unmicst {
 	tuple file(core), val(mask),
         file('*Nuclei*.tif'), file('*Contours*.tif'),
         file(ch) into s4out_unmicst
-
+    when: idxStop >= 4
     script:
     """
     python ${params.tool_unmicst}/UnMicst.py $core ${params.unmicstOpts} --outputPath .
@@ -208,7 +208,7 @@ process ilastik {
 
     input: tuple file(core), val(mask), file(ch) from s4in_ilastik
     output: file('*') into s4out_ilastik
-    when: params.probabilityMaps == 'all'
+    when: params.probabilityMaps == 'all' && idxStop >= 4
     script:
     """
     python ${params.tool_mcilastik}/CommandIlastikPrepOME.py --input $core --output . \
@@ -231,6 +231,8 @@ process s3seg {
       // rest of the files for publishDir
       file '**' into seg_rest
 
+    when: idxStop >= 5
+    
     script:
     def crop = params.tma ? 'dearray' : 'noCrop'
     """
@@ -250,6 +252,8 @@ process quantification {
 
     input:  tuple file(core), file(mask), file(ch) from s5out
     output: file '**' into s6out
+
+    when: idxStop >= 6
 
     """
     python ${params.tool_quant}/CommandSingleCellExtraction.py \
