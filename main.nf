@@ -4,10 +4,10 @@
 // .in - location of the data
 
 // Default parameters for the pipeline as a whole
-params.sample_name   = file(params.in).name
-params.illum         = false    // whether to run ImageJ+BaSiC
-params.tma           = false    // whether to run Coreograph
-params.skipAshlar    = false    // whether to skip ASHLAR
+params.sample_name = file(params.in).name
+params.startAt     = 'registration'
+params.stopAt      = 'quantification'
+params.tma         = false    // whether to run Coreograph
 
 // Default selection of methods for each step
 params.probabilityMaps = 'unmicst'
@@ -21,17 +21,41 @@ params.quantOpts   = ''
 // Path-specific parameters that cannot be captured by the above *opts
 params.quantificationMask = 'cellMask.tif'
 
+// Legacy parameters (to be deprecated in future versions)
+params.illum         = false    // whether to run ImageJ+BaSiC
+params.skipAshlar    = false    // whether to skip ASHLAR
+
+// Steps in the mcmicro pipeline
+mcmsteps = ["raw",		// Step 0
+	    "illumination",	// Step 1
+	    "registration",	// Step 2
+	    "dearray",		// Step 3
+	    "probability-maps", // Step 4
+	    "segmentation",	// Step 5
+	    "quantification"]	// Step 6
+
+// Identify starting and stopping index
+idxStart = mcmsteps.indexOf( params.startAt )
+idxStop  = mcmsteps.indexOf( params.stopAt )
+if( idxStart < 0 )       error "Unknown starting step ${params.startAt}"
+if( idxStop < 0 )        error "Unknown stopping step ${params.stopAt}"
+if( params.illum )       idxStart = 1
+if( params.skipAshlar )  idxStart = 3
+if( idxStop < idxStart ) error "Stopping step cannot come before starting step"
+if( idxStart > 4 )
+  error "Starting at steps beyond probability map computation is not yet supported."
+
 // Define all subdirectories
-path_raw   = "${params.in}/raw"                   // Step 0
-path_ilp   = "${params.in}/illumination"          // Step 1
-path_rg    = "${params.in}/registration"          // Step 2
-path_dr    = "${params.in}/dearray"               // Step 3
-path_prob  = "${params.in}/probability-maps"      // Step 4
-path_seg   = "${params.in}/segmentation"          // Step 5
-path_quant = "${params.in}/quantification"        // Step 6
+path_raw   = "${params.in}/${mcmsteps[0]}"
+path_ilp   = "${params.in}/${mcmsteps[1]}"
+path_rg    = "${params.in}/${mcmsteps[2]}"
+path_dr    = "${params.in}/${mcmsteps[3]}"
+path_prob  = "${params.in}/${mcmsteps[4]}"
+path_seg   = "${params.in}/${mcmsteps[5]}"
+path_quant = "${params.in}/${mcmsteps[6]}"
 path_qc    = "${params.in}/qc"
 
-// Check deprecated locations
+// Check that deprecated locations are empty
 msg_dprc = {a,b -> "The use of $a has been deprecated. Please use $b instead."}
 Channel.fromPath( "${params.in}/raw_images/*" )
     .subscribe{ it -> error msg_dprc("raw_images/", "raw/") }
@@ -39,31 +63,29 @@ Channel.fromPath( "${params.in}/illumination_profiles/*" )
     .subscribe{ it -> error msg_dprc("illumination_profiles/", "illumination/") }
 
 // Identify marker information
-Channel.fromPath( "${params.in}/markers.csv" ).set{ chNames }
+chNames = Channel.fromPath( "${params.in}/markers.csv", checkIfExists: true )
 
-// Step 1 and 2 input
-// Find raw images; feed them into separate channels for
+// Helper function for finding raw images and precomputed intermediates
+findFiles = { p, path, ife -> p ?
+	     Channel.fromPath(path).ifEmpty(ife) : Channel.empty() }
+
+// Feed raw images into separate channels for
 //   illumination (step 1 input) and ASHLAR (step 2 input)
 formats = '{.ome.tiff,.ome.tif,.rcpnl,.xdce,.nd,.scan,.htd}'
-Channel.fromPath( "${path_raw}/**${formats}" )
-    .ifEmpty{ if(!params.skipAshlar) error "No images found in ${path_raw}" }
-    .into{ s1in; s2in_raw }
+findFiles(idxStart <= 2, "${path_raw}/**${formats}",
+	  {error "No images found in ${path_raw}"}).into{ s1in; s2in_raw }
 
-// Step 1 precomputed
-// If we're not running illumination, look for illumination profiles
-(s1pre_dfp, s1pre_ffp) = ( params.illum ? [Channel.empty(), Channel.empty()]
-			  : [Channel.fromPath("${path_ilp}/*-dfp.tif"),
-			     Channel.fromPath("${path_ilp}/*-ffp.tif")] )
+// Each set of intermediates goes into a single channel (no splitting as with raw images)
+s1pre_dfp   = findFiles(idxStart == 2, "${path_ilp}/*-dfp.tif", {file("EMPTY1")})
+s1pre_ffp   = findFiles(idxStart == 2, "${path_ilp}/*-ffp.tif", {file("EMPTY2")})
+s2pre       = findFiles(idxStart == 3 || (idxStart > 3 && !params.tma), "${path_rg}/*.ome.tif",
+			{error "No pre-stitched image in ${path_rg}"} )
+s3pre_cores = findFiles(idxStart > 3 && params.tma, "${path_dr}/*.tif",
+			{error "No cores in ${path_dr}"})
+s3pre_masks = findFiles(idxStart > 3 && params.tma, "${path_dr}/masks/*.tif",
+			{error "No masks in ${path_dr}/masks"})
 
-// Step 2 precomputed
-// If we're not running ASHLAR, find the pre-stitched image
-fn_stitched = "${params.sample_name}.ome.tif"
-s2pre = ( !params.skipAshlar ? Channel.empty()
-	 : Channel.fromPath("${path_rg}/*.ome.tif").ifEmpty{
-	error "Didn't find pre-stitched image in ${path_rg}" })
-
-// Step 1 output
-// Illumination profiles
+// Step 1 output - illumination profiles
 process illumination {
     publishDir path_ilp, mode: 'copy'
     
@@ -72,7 +94,7 @@ process illumination {
       file '*-dfp.tif' into s1out_dfp
       file '*-ffp.tif' into s1out_ffp
 
-    when: params.illum
+    when: idxStart <= 1 && idxStop >= 1
 
     script:
     def xpn = file(s1in).name.tokenize(".").get(0)
@@ -83,32 +105,29 @@ process illumination {
     """
 }
 
-// Closure for sorting by filename instead of the full path
-cls_fnsort = {a, b -> a.getName() <=> b.getName()}
-
 // Step 2 input
-// s1pre* will contain precomputed profiles (if !params.illum)
-// s1out* will contain profiles computed by the pipeline (if params.illum)
-// Mix them, as they are mutually exclusive
-s2in_ffp = s1out_ffp.mix( s1pre_ffp ).ifEmpty{ file('EMPTY1') }
-s2in_dfp = s1out_dfp.mix( s1pre_dfp ).ifEmpty{ file('EMPTY2') }
+s2in_dfp = s1out_dfp.mix( s1pre_dfp )
+s2in_ffp = s1out_ffp.mix( s1pre_ffp )
 
-// Step 2 output
-// Stitching and registration
+// Closure for sorting by filename instead of the full path
+fnSort = {a, b -> a.getName() <=> b.getName()}
+
+// Step 2 output - stitching and registration
+fn_stitched = "${params.sample_name}.ome.tif"
 process ashlar {
     publishDir path_rg, mode: 'copy'
     
     input:
       file lraw from s2in_raw.toSortedList()
-      file lffp from s2in_ffp.toSortedList(cls_fnsort)
-      file ldfp from s2in_dfp.toSortedList(cls_fnsort)
+      file lffp from s2in_ffp.toSortedList(fnSort)
+      file ldfp from s2in_dfp.toSortedList(fnSort)
 
     output: file "${fn_stitched}" into s2out
 
-    when: !params.skipAshlar
-
+    when: idxStart <= 2 && idxStop >= 2
+    
     script:
-    def ilp = ( lffp.name == 'EMPTY1' | ldfp.name == 'EMPTY2' ) ?
+    def ilp = ( ldfp.name == 'EMPTY1' || lffp.name == 'EMPTY2' ) ?
 	"" : "--ffp $lffp --dfp $ldfp"
     """
     ashlar $lraw ${params.ashlarOpts} $ilp -f ${fn_stitched}
@@ -139,7 +158,7 @@ process dearray {
       file "**_mask.tif" into s3out_masks
       file "TMA_MAP.tif" into tmamap
 
-    when: params.tma
+    when: idxStart <= 3 && idxStop >= 3 && params.tma
 
     """
     matlab -nodesktop -nosplash -r \
@@ -148,16 +167,16 @@ process dearray {
     """
 }
 
-// Helper function (closures) to extract image ID from filename
-cls_fnid = { file -> file.getBaseName().toString().tokenize('._').head() }
+// Helper function to extract image ID from filename
+getID = { file -> file.getBaseName().toString().tokenize('._').head() }
 
 // Finalize step 3 output
 // Collapse the earlier branching between full-tissue and TMA into
 //   a single (core, mask) imgs channel for all downstream processing
 if( params.tma ) {
     // Match up cores and masks by filename
-    id_cores = s3out_cores.flatten().map{ f -> tuple(cls_fnid(f),f) }
-    id_masks = s3out_masks.flatten().map{ f -> tuple(cls_fnid(f),f) }
+    id_cores = s3out_cores.flatten().mix(s3pre_cores).map{ f -> tuple(getID(f),f) }
+    id_masks = s3out_masks.flatten().mix(s3pre_masks).map{ f -> tuple(getID(f),f) }
     s3out = id_cores.join( id_masks ).map{ id, c, m -> tuple(c, m) }
 }
 else
@@ -176,7 +195,7 @@ process unmicst {
 	tuple file(core), val(mask),
         file('*Nuclei*.tif'), file('*Contours*.tif'),
         file(ch) into s4out_unmicst
-
+    when: idxStop >= 4
     script:
     """
     python ${params.tool_unmicst}/UnMicst.py $core ${params.unmicstOpts} --outputPath .
@@ -189,7 +208,7 @@ process ilastik {
 
     input: tuple file(core), val(mask), file(ch) from s4in_ilastik
     output: file('*') into s4out_ilastik
-    when: params.probabilityMaps == 'all'
+    when: params.probabilityMaps == 'all' && idxStop >= 4
     script:
     """
     python ${params.tool_mcilastik}/CommandIlastikPrepOME.py --input $core --output . \
@@ -212,6 +231,8 @@ process s3seg {
       // rest of the files for publishDir
       file '**' into seg_rest
 
+    when: idxStop >= 5
+    
     script:
     def crop = params.tma ? 'dearray' : 'noCrop'
     """
@@ -231,6 +252,8 @@ process quantification {
 
     input:  tuple file(core), file(mask), file(ch) from s5out
     output: file '**' into s6out
+
+    when: idxStop >= 6
 
     """
     python ${params.tool_quant}/CommandSingleCellExtraction.py \
@@ -255,3 +278,4 @@ process provenance {
 	}
     }
 }
+

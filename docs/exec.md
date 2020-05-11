@@ -13,14 +13,14 @@ nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001
 nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --tma
 ```
 
-Additional flags can be used to control inclusion and exclusion of individual modules in the pipeline.
+By default, the pipeline starts from the registration step. Use `--start-at` and `--stop-at` flags to execute any contiguous section of the pipeline instead. Any subdirectory name listed in [Directory Structure](dir.html) is a valid starting and stopping point. **Note that starting at any step beyond registration requires pre-computed output of the previous steps placed at the correct location in the project directory.**
 
 ``` bash
-# Use --skip-ashlar if you have a prestitched image in registration/ subfolder
-nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001 --skip-ashlar
+# If you already have a pre-stitched TMA image, start at the dearray step
+nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --tma --start-at dearray
 
-# Use --illum to run illumination profile computation, if you dont's have one precomputed
-nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001 --illum
+# If you want to run the illumination profile computation and registration only
+nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001 --start-at illumination --stop-at registration
 ```
 
 By default Nextflow writes intermediate files to a `work/` directory inside whatever location you initiate a pipeline run from. Use `-w` flag to provide a different location. (See below for more information about these files.)
@@ -101,6 +101,7 @@ An alternative to the above `srun` command is to compose an `sbatch` script that
 #SBATCH --mail-type=END         # Type of email notification- BEGIN,END,FAIL,ALL
 #SBATCH --mail-user=user@university.edu   # Email to which notifications will be sent
 
+module purge
 module load java matlab conda2
 /home/$USER/bin/nextflow labsyspharm/mcmicro-nf --in /n/scratch2/$USER/exemplar-001 -profile O2 -w /n/scratch2/$USER/work
 ```
