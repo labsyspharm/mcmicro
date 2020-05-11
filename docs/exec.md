@@ -13,11 +13,11 @@ nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001
 nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --tma
 ```
 
-By default, the pipeline starts from the registration step. Use `--start-at` and `--stop-at` flags to execute any contiguous section of the pipeline instead. (Note that starting at any step beyond registration requires pre-computed output of the previous steps placed at the correct location in the project directory.)
+By default, the pipeline starts from the registration step. Use `--start-at` and `--stop-at` flags to execute any contiguous section of the pipeline instead. Any subdirectory name listed in [Directory Structure](dir.html) is a valid starting and stopping point. **Note that starting at any step beyond registration requires pre-computed output of the previous steps placed at the correct location in the project directory.**
 
 ``` bash
 # If you already have a pre-stitched TMA image, start at the dearray step
-nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001 --tma --start-at dearray
+nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --tma --start-at dearray
 
 # If you want to run the illumination profile computation and registration only
 nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001 --start-at illumination --stop-at registration
