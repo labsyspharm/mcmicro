@@ -4,6 +4,8 @@ dependencies:
   - tensorflow=1.15.0
   - scikit-image
   - matplotlib
+  - nd2reader
+  - czifile
   - pip
   - pip:
     - tifffile
