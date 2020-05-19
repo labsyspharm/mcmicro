@@ -39,8 +39,14 @@ idxStart = mcmsteps.indexOf( params.startAt )
 idxStop  = mcmsteps.indexOf( params.stopAt )
 if( idxStart < 0 )       error "Unknown starting step ${params.startAt}"
 if( idxStop < 0 )        error "Unknown stopping step ${params.stopAt}"
-if( params.illum )       idxStart = 1
-if( params.skipAshlar )  idxStart = 3
+if( params.illum ) {
+    println "--illum is deprecated; please use --start-at illumination"
+    idxStart = 1
+}
+if( params.skipAshlar ) {
+    println "--skip-ashlar is deprecated; please use --start-at dearray or --start-at probability-maps"
+    idxStart = 3
+}
 if( idxStop < idxStart ) error "Stopping step cannot come before starting step"
 if( idxStart > 4 )
   error "Starting at steps beyond probability map computation is not yet supported."
@@ -71,7 +77,7 @@ findFiles = { p, path, ife -> p ?
 
 // Feed raw images into separate channels for
 //   illumination (step 1 input) and ASHLAR (step 2 input)
-formats = '{.ome.tiff,.ome.tif,.rcpnl,.xdce,.nd,.scan,.htd}'
+formats = '{.ome.tiff,.ome.tif,.rcpnl,.xdce,.nd,.scan,.htd,.btf,.nd2,.tif,.czi}'
 findFiles(idxStart <= 2, "${path_raw}/**${formats}",
 	  {error "No images found in ${path_raw}"}).into{ s1in; s2in_raw }
 
@@ -93,6 +99,7 @@ process illumination {
     output:
       file '*-dfp.tif' into s1out_dfp
       file '*-ffp.tif' into s1out_ffp
+      tuple val(task.name), val(task.workDir) into prov1
 
     when: idxStart <= 1 && idxStop >= 1
 
@@ -122,7 +129,9 @@ process ashlar {
       file lffp from s2in_ffp.toSortedList(fnSort)
       file ldfp from s2in_dfp.toSortedList(fnSort)
 
-    output: file "${fn_stitched}" into s2out
+    output:
+      file "${fn_stitched}" into s2out
+      tuple val(task.name), val(task.workDir) into prov2
 
     when: idxStart <= 2 && idxStop >= 2
     
@@ -157,6 +166,7 @@ process dearray {
       file "**{,[A-Z],[A-Z][A-Z]}{[0-9],[0-9][0-9]}.tif" into s3out_cores
       file "**_mask.tif" into s3out_masks
       file "TMA_MAP.tif" into tmamap
+      tuple val(task.name), val(task.workDir) into prov3
 
     when: idxStart <= 3 && idxStop >= 3 && params.tma
 
@@ -192,9 +202,11 @@ process unmicst {
 
     input: tuple file(core), val(mask), file(ch) from s4in_unmicst
     output:
-	tuple file(core), val(mask),
+      tuple file(core), val(mask),
         file('*Nuclei*.tif'), file('*Contours*.tif'),
         file(ch) into s4out_unmicst
+      tuple val(task.name), val(task.workDir) into prov4_unmicst
+
     when: idxStop >= 4
     script:
     """
@@ -207,7 +219,10 @@ process ilastik {
     publishDir "${path_prob}/ilastik", mode: 'copy', pattern: '*'
 
     input: tuple file(core), val(mask), file(ch) from s4in_ilastik
-    output: file('*') into s4out_ilastik
+    output:
+      file('*') into s4out_ilastik
+      tuple val(task.name), val(task.workDir) into prov4_ilastik
+
     when: params.probabilityMaps == 'all' && idxStop >= 4
     script:
     """
@@ -230,6 +245,7 @@ process s3seg {
       tuple file(core), file("**${params.quantificationMask}"), file(ch) into s5out
       // rest of the files for publishDir
       file '**' into seg_rest
+      tuple val(task.name), val(task.workDir) into prov5
 
     when: idxStop >= 5
     
@@ -251,7 +267,9 @@ process quantification {
     publishDir path_quant, mode: 'copy', pattern: '*.csv'
 
     input:  tuple file(core), file(mask), file(ch) from s5out
-    output: file '**' into s6out
+    output:
+      file '**' into s6out
+      tuple val(task.name), val(task.workDir) into prov6
 
     when: idxStop >= 6
 
@@ -264,18 +282,24 @@ process quantification {
 }
 
 // Provenance reconstruction
-process provenance {
-    executor 'local'
-    publishDir path_qc, mode: 'copy'
+workflow.onComplete {
+    // Create a provenance directory
+    path_prov = "${path_qc}/provenance"
+    file(path_prov).mkdirs()
 
-    output: file 'params.txt' into prov_params
-
-    exec:
-    file("${task.workDir}/params.txt").withWriter{ out ->
+    // Store parameters used
+    file("${path_prov}/params.yml").withWriter{ out ->
 	params.each{ key, val ->
 	    if( key.indexOf('-') == -1 )
 	    out.println "$key: $val"
 	}
     }
-}
 
+    // Combine the provenance of all tasks into a single channel
+    // Store commands and logs
+    prov1.mix(prov2, prov3, prov4_unmicst, prov4_ilastik, prov5, prov6)
+	.subscribe { name, wkdir ->
+	file("${wkdir}/.command.sh").copyTo("${path_prov}/${name}.sh")
+	file("${wkdir}/.command.log").copyTo("${path_prov}/${name}.log")
+    }
+}
