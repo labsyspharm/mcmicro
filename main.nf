@@ -84,7 +84,7 @@ findFiles(idxStart <= 2, "${path_raw}/**${formats}",
 // Each set of intermediates goes into a single channel (no splitting as with raw images)
 s1pre_dfp   = findFiles(idxStart == 2, "${path_ilp}/*-dfp.tif", {file("EMPTY1")})
 s1pre_ffp   = findFiles(idxStart == 2, "${path_ilp}/*-ffp.tif", {file("EMPTY2")})
-s2pre       = findFiles(idxStart == 3 || (idxStart > 3 && !params.tma), "${path_rg}/*.ome.tif",
+s2pre       = findFiles(idxStart == 3 || (idxStart > 3 && !params.tma), "${path_rg}/*${formats}",
 			{error "No pre-stitched image in ${path_rg}"} )
 s3pre_cores = findFiles(idxStart > 3 && params.tma, "${path_dr}/*.tif",
 			{error "No cores in ${path_dr}"})
