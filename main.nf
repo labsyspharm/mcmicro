@@ -13,7 +13,7 @@ params.tma         = false    // whether to run Coreograph
 params.probabilityMaps = 'unmicst'
 
 // Default parameters for individual modules
-params.ashlarOpts  = '-m 30 --pyramid'
+params.ashlarOpts  = '-m 30'
 params.unmicstOpts = ''
 params.s3segOpts   = ''
 params.quantOpts   = ''
@@ -139,7 +139,7 @@ process ashlar {
     def ilp = ( ldfp.name == 'EMPTY1' || lffp.name == 'EMPTY2' ) ?
 	"" : "--ffp $lffp --dfp $ldfp"
     """
-    ashlar $lraw ${params.ashlarOpts} $ilp -f ${fn_stitched}
+    ashlar $lraw ${params.ashlarOpts} $ilp --pyramid -f ${fn_stitched}
     """
 }
 
