@@ -320,7 +320,7 @@ workflow.onComplete {
 
     // Combine the provenance of all tasks into a single channel
     // Store commands and logs
-    prov1.mix(prov2, prov3, prov4_unmicst, prov4_ilastik, prov5, prov6)
+    prov1.mix(prov2, prov3, prov4_unmicst, prov4_ilastik, prov5, prov6, prov7)
 	.subscribe { name, wkdir ->  if( wkdir != null ) {
 	    file("${wkdir}/.command.sh").copyTo("${path_prov}/${name}.sh")
 	    file("${wkdir}/.command.log").copyTo("${path_prov}/${name}.log")
