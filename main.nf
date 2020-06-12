@@ -6,7 +6,7 @@
 // Default parameters for the pipeline as a whole
 params.sample_name = file(params.in).name
 params.startAt     = 'registration'
-params.stopAt      = 'quantification'
+params.stopAt      = 'cell-states'
 params.tma         = false    // whether to run Coreograph
 
 // Default selection of methods for each step
@@ -17,6 +17,7 @@ params.ashlarOpts  = '-m 30'
 params.unmicstOpts = ''
 params.s3segOpts   = ''
 params.quantOpts   = ''
+params.nstatesOpts = '--plots --log auto --id CellID'
 
 // Path-specific parameters that cannot be captured by the above *opts
 params.quantificationMask = 'cellMask.tif'
@@ -32,7 +33,8 @@ mcmsteps = ["raw",		// Step 0
 	    "dearray",		// Step 3
 	    "probability-maps", // Step 4
 	    "segmentation",	// Step 5
-	    "quantification"]	// Step 6
+	    "quantification",	// Step 6
+	    "cell-states"]      // Step 7
 
 // Identify starting and stopping index
 idxStart = mcmsteps.indexOf( params.startAt )
@@ -52,14 +54,15 @@ if( idxStart > 4 )
   error "Starting at steps beyond probability map computation is not yet supported."
 
 // Define all subdirectories
-path_raw   = "${params.in}/${mcmsteps[0]}"
-path_ilp   = "${params.in}/${mcmsteps[1]}"
-path_rg    = "${params.in}/${mcmsteps[2]}"
-path_dr    = "${params.in}/${mcmsteps[3]}"
-path_prob  = "${params.in}/${mcmsteps[4]}"
-path_seg   = "${params.in}/${mcmsteps[5]}"
-path_quant = "${params.in}/${mcmsteps[6]}"
-path_qc    = "${params.in}/qc"
+path_raw    = "${params.in}/${mcmsteps[0]}"
+path_ilp    = "${params.in}/${mcmsteps[1]}"
+path_rg     = "${params.in}/${mcmsteps[2]}"
+path_dr     = "${params.in}/${mcmsteps[3]}"
+path_prob   = "${params.in}/${mcmsteps[4]}"
+path_seg    = "${params.in}/${mcmsteps[5]}"
+path_quant  = "${params.in}/${mcmsteps[6]}"
+path_states = "${params.in}/${mcmsteps[7]}"
+path_qc     = "${params.in}/qc"
 
 // Check that deprecated locations are empty
 msg_dprc = {a,b -> "The use of $a has been deprecated. Please use $b instead."}
@@ -268,7 +271,7 @@ process quantification {
 
     input:  tuple file(core), file(mask), file(ch) from s5out
     output:
-      file '**' into s6out
+      file ('*.csv') into s6out
       tuple val(task.name), val(task.workDir) into prov6
 
     when: idxStop >= 6
@@ -278,6 +281,26 @@ process quantification {
     --mask $mask --image $core \
     ${params.quantOpts} \
     --output . --channel_names $ch
+    """
+}
+
+// Step 7 output
+process naivestates {
+    publishDir path_states, mode: 'copy', pattern: '*.csv'
+    publishDir path_states, mode: 'copy', pattern: 'plots/*.pdf'
+    publishDir "${path_qc}/naivestates", mode: 'copy', pattern: 'plots/*/*.pdf',
+      saveAs: { fn -> fn.replaceFirst("plots/","") }
+    
+    input: file(counts) from s6out
+    output:
+      file '**' into s7out
+      tuple val(task.name), val(task.workDir) into prov7
+
+    when: idxStop >= 7
+
+    """
+    ${params.tool_nstates}/main.R -i $counts -o . ${params.nstatesOpts} \
+    --mct ${params.tool_nstates}/typemap.csv
     """
 }
 
@@ -297,7 +320,7 @@ workflow.onComplete {
 
     // Combine the provenance of all tasks into a single channel
     // Store commands and logs
-    prov1.mix(prov2, prov3, prov4_unmicst, prov4_ilastik, prov5, prov6)
+    prov1.mix(prov2, prov3, prov4_unmicst, prov4_ilastik, prov5, prov6, prov7)
 	.subscribe { name, wkdir ->  if( wkdir != null ) {
 	    file("${wkdir}/.command.sh").copyTo("${path_prov}/${name}.sh")
 	    file("${wkdir}/.command.log").copyTo("${path_prov}/${name}.log")

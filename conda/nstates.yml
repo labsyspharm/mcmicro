@@ -1,0 +1,11 @@
+name: naivestates
+channels:
+  - conda-forge
+dependencies:
+  - r-tidyverse=1.3.0
+  - r-mixtools=1.2.0
+  - r-egg=0.4.5
+  - r-devtools=2.3.0
+  - r-optparse=1.6.6
+  - r-ggthemes=4.2.0
+  - r-uwot=0.1.8
