@@ -284,16 +284,6 @@ process quantification {
     """
 }
 
-/*
-process naivestates {
-    input: file(counts) from s6out
-
-    """
-    ls $counts
-    """
-}*/
-
-
 // Step 7 output
 process naivestates {
     publishDir path_states, mode: 'copy', pattern: '*.csv'
@@ -309,7 +299,8 @@ process naivestates {
     when: idxStop >= 7
 
     """
-    ${params.tool_nstates}/main.R -i $counts -o . ${params.nstatesOpts}
+    ${params.tool_nstates}/main.R -i $counts -o . ${params.nstatesOpts} \
+    --mct ${params.tool_nstates}/typemap.csv
     """
 }
 
