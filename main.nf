@@ -17,14 +17,20 @@ params.ashlarOpts  = '-m 30'
 params.unmicstOpts = ''
 params.s3segOpts   = ''
 params.quantOpts   = ''
-params.nstatesOpts = '--plots --log auto --id CellID'
+params.nstatesOpts = '-p png'
 
 // Path-specific parameters that cannot be captured by the above *opts
-params.quantificationMask = 'cellMask.tif'
+params.maskSpatial = 'cellMask.tif'
+params.maskAdd     = ''
 
 // Legacy parameters (to be deprecated in future versions)
 params.illum         = false    // whether to run ImageJ+BaSiC
 params.skipAshlar    = false    // whether to skip ASHLAR
+params.quantificationMask = ''
+
+// Deprecation messages
+if( params.quantificationMask != '' )
+    error "--quantification-mask is deprecated; please use --mask-spatial and --mask-add instead"
 
 // Steps in the mcmicro pipeline
 mcmsteps = ["raw",		// Step 0
@@ -41,14 +47,10 @@ idxStart = mcmsteps.indexOf( params.startAt )
 idxStop  = mcmsteps.indexOf( params.stopAt )
 if( idxStart < 0 )       error "Unknown starting step ${params.startAt}"
 if( idxStop < 0 )        error "Unknown stopping step ${params.stopAt}"
-if( params.illum ) {
-    println "--illum is deprecated; please use --start-at illumination"
-    idxStart = 1
-}
-if( params.skipAshlar ) {
-    println "--skip-ashlar is deprecated; please use --start-at dearray or --start-at probability-maps"
-    idxStart = 3
-}
+if( params.illum )
+    error "--illum is deprecated; please use --start-at illumination"
+if( params.skipAshlar )
+    error "--skip-ashlar is deprecated; please use --start-at dearray or --start-at probability-maps"
 if( idxStop < idxStart ) error "Stopping step cannot come before starting step"
 if( idxStart > 4 )
   error "Starting at steps beyond probability map computation is not yet supported."
@@ -236,6 +238,14 @@ process ilastik {
     """
 }
 
+// Determine which masks will be needed by quantification
+masks = params.maskAdd.tokenize()
+switch( masks.size() ) {
+    case 0: masks = ""; break;
+    case 1: masks = "**${masks[0]}"; break;
+    default: masks = "**{${masks.join(',')}}"
+}
+
 // Step 5 output - segmentation
 process s3seg {
     publishDir path_seg, mode: 'copy', pattern: '*/*'
@@ -244,11 +254,12 @@ process s3seg {
 	tuple file(core), file(mask), file(pmn), file(pmc), file(ch) from s4out_unmicst
 
     output:
-      // tuples for quantification
-      tuple file(core), file("**${params.quantificationMask}"), file(ch) into s5out
-      // rest of the files for publishDir
-      file '**' into seg_rest
-      tuple val(task.name), val(task.workDir) into prov5
+	// tuples for quantification
+        tuple file(core), file("**${params.maskSpatial}"),
+          file("$masks"), file(ch) into s5out
+        // rest of the files for publishDir
+        file '**' into s5out_pub
+        tuple val(task.name), val(task.workDir) into prov5
 
     when: idxStop >= 5
     
@@ -269,7 +280,7 @@ process s3seg {
 process quantification {
     publishDir path_quant, mode: 'copy', pattern: '*.csv'
 
-    input:  tuple file(core), file(mask), file(ch) from s5out
+    input:  tuple file(core), file(maskSpt), file(maskAdd), file(ch) from s5out
     output:
       file ('*.csv') into s6out
       tuple val(task.name), val(task.workDir) into prov6
@@ -278,7 +289,7 @@ process quantification {
 
     """
     python ${params.tool_quant}/CommandSingleCellExtraction.py \
-    --mask $mask --image $core \
+    --mask $maskSpt $maskAdd --image $core \
     ${params.quantOpts} \
     --output . --channel_names $ch
     """
@@ -287,8 +298,8 @@ process quantification {
 // Step 7 output
 process naivestates {
     publishDir path_states, mode: 'copy', pattern: '*.csv'
-    publishDir path_states, mode: 'copy', pattern: 'plots/*.pdf'
-    publishDir "${path_qc}/naivestates", mode: 'copy', pattern: 'plots/*/*.pdf',
+    publishDir path_states, mode: 'copy', pattern: 'plots/*.*'
+    publishDir "${path_qc}/naivestates", mode: 'copy', pattern: 'plots/*/*.*',
       saveAs: { fn -> fn.replaceFirst("plots/","") }
     
     input: file(counts) from s6out
