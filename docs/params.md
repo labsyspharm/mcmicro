@@ -2,17 +2,21 @@
 
 ## Parameters controlling the pipeline behavior
 
-The following parameters control the pipeline as a whole. These can be specified on the command line using the double-dash, e.g., `--my-parameter myvalue` or inside a YAML file as a key-value pair:
+The following parameters control the pipeline as a whole. These can be specified on the command line using the double-dash (e.g., `--in`) format, or inside a YAML file as key-value pairs. Parameters that don't require an explicit value because their presence controls the behavior instead (e.g., `--tma`) should instead be assigned to `true` in the YAML file. For example,
 
+On the command line: `nextflow run labsyspharm/mcmicro-nf --in /my/data --tma`
+
+or equivalently: `nextflow run labsyspharm/mcmicr-nf -params-file myparams.yml`, where `myparams.yml` contains
 ```
-my-parameter: myvalue
+in: /my/data
+tma: true
 ```
 
-Mandatory parameters:
+**Mandatory parameters:**
 
 * `--in /local/path` - specifies location of the data
 
-Optional parameters:
+**Optional parameters:**
 
 * `--sample-name <myname>` - the name of the experiment/specimen. By default, mcmicro extracts this from the path supplied to `--in`.
 * `--start-at <step>` - name of the first step to be executed by the pipeline. The value `<step>` must be one of `raw`, `illumination`, `registration`, `dearray` (TMA only), `probability-maps`, `segmentation`, `quantification`, `cell-states`. Default: `registration`.
