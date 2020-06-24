@@ -252,7 +252,8 @@ switch( masks.size() ) {
 
 // Step 5 output - segmentation
 process s3seg {
-    publishDir paths[5], mode: 'copy', pattern: '*/*'
+    publishDir paths[5],           mode: 'copy', pattern: '*/*Mask.tif'
+    publishDir "${path_qc}/s3seg", mode: 'copy', pattern: '*/*Outlines.tif'
 
     input:
 	tuple file(core), file(mask), file(pmn), file(pmc), file(ch) from s4out_unmicst
