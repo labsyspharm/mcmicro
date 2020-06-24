@@ -9,6 +9,12 @@ params.startAt     = 'registration'
 params.stopAt      = 'cell-states'
 params.tma         = false    // whether to run Coreograph
 
+// Pipeline will look for rawFormats first
+// If it finds none, it will look for flatFormats
+// This is needed to handle cases like .xdce indexing over multiple .tifs
+params.rawFormats  = '{.xdce,.nd,.scan,.htd}'
+params.flatFormats = '{.ome.tiff,.ome.tif,.rcpnl,.btf,.nd2,.tif,.czi}'
+
 // Default selection of methods for each step
 params.probabilityMaps = 'unmicst'
 
@@ -31,6 +37,10 @@ params.quantificationMask = ''
 // Deprecation messages
 if( params.quantificationMask != '' )
     error "--quantification-mask is deprecated; please use --mask-spatial and --mask-add instead"
+if( params.illum )
+    error "--illum is deprecated; please use --start-at illumination"
+if( params.skipAshlar )
+    error "--skip-ashlar is deprecated; please use --start-at dearray or --start-at probability-maps"
 
 // Steps in the mcmicro pipeline
 mcmsteps = ["raw",		// Step 0
@@ -47,10 +57,6 @@ idxStart = mcmsteps.indexOf( params.startAt )
 idxStop  = mcmsteps.indexOf( params.stopAt )
 if( idxStart < 0 )       error "Unknown starting step ${params.startAt}"
 if( idxStop < 0 )        error "Unknown stopping step ${params.stopAt}"
-if( params.illum )
-    error "--illum is deprecated; please use --start-at illumination"
-if( params.skipAshlar )
-    error "--skip-ashlar is deprecated; please use --start-at dearray or --start-at probability-maps"
 if( idxStop < idxStart ) error "Stopping step cannot come before starting step"
 if( idxStart > 4 )
   error "Starting at steps beyond probability map computation is not yet supported."
@@ -73,11 +79,16 @@ chNames = Channel.fromPath( "${params.in}/markers.csv", checkIfExists: true )
 findFiles = { p, path, ife -> p ?
 	     Channel.fromPath(path).ifEmpty(ife) : Channel.empty() }
 
+// Look for index formats; if none found, looks for flat formats
+// Look in raw/ or registration/, depending on --start-at argument
+chkdir  = idxStart <= 2 ? "${paths[0]}" : "${paths[2]}"
+formats = file("${chkdir}/**${params.rawFormats}") ?
+    params.rawFormats : params.flatFormats
+
 // Feed raw images into separate channels for
 //   illumination (step 1 input) and ASHLAR (step 2 input)
-formats = '{.ome.tiff,.ome.tif,.rcpnl,.xdce,.nd,.scan,.htd,.btf,.nd2,.tif,.czi}'
 findFiles(idxStart <= 2, "${paths[0]}/**${formats}",
-	  {error "No images found in ${path_raw}"}).into{ s1in; s2in_raw }
+	  {error "No images found in ${paths[0]}"}).into{ s1in; s2in_raw }
 
 // Each set of intermediates goes into a single channel (no splitting as with raw images)
 s1pre_dfp   = findFiles(idxStart == 2, "${paths[1]}/*-dfp.tif", {file("EMPTY1")})
