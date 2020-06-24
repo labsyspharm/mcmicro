@@ -25,7 +25,27 @@ tma: true
 * `--raw-formats <formats>` - one or more file formats that mcmicro should look for. Default: `{.ome.tiff,.ome.tif,.rcpnl,.xdce,.nd,.scan,.htd,.btf,.nd2,.tif,.czi}`
 * `--probability-maps <unmicst|ilastik|all>` - which module(s) to use for probability map computation. Default: `unmicst`
 
-## Parameters controlling the execution environment
+## Parameters for individual modules
 
-## Parameters of individual modules
+It is important to make a distinction between parameters that control behavior of individual modules, and parameters that specify which files the modules operate on. Because all file management is done at the level of the pipeline, special treatment is required for the latter set (e.g., specifying a different mask to use for quantification).
 
+**Arguments to handle file-referencing parameters:**
+
+* `--mask-spatial <filename>` - which segmentation mask should be used for extracting spatial features. Must be a filename produced by the s3segmenter. Default: `cellMask.tif`
+* `--mask-add <filenames>` - one or more filenames referencing masks produced by the s3segmenter that should also be quantified. The filenames should be surrounded with single quotes (`'`). For example, `--mask-add 'cytoMask.tif nucleiMask.tif'`. Default: none.
+
+**Plain arguments for individual modules:**
+
+Parameters don't reference any files can be fed directly to each module through the `--*-opts` arguments in mcmicro:
+
+| Module | mcmicro Argument |
+| --- | --- |
+| ASHLAR | `--ashlar-opts` |
+| UnMicst | `--unmicst-opts` |
+| S3Segmenter | `--s3seg-opts` |
+| quantification | `--quant-opts` |
+| naivestates | `--nstates-opts` |
+
+Surround module parameters with single quotes `'`.
+Example 1: `nextflow run labsyspharm/mcmicro-nf --in /my/data --ashlar-opts '-m 30 --pyramid'`
+Example 2: `nextflow run labsyspharm/mcmicro-nf --in /my/data --nstates-opts '--log no --plots pdf'`
