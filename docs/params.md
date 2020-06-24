@@ -6,7 +6,7 @@ The following parameters control the pipeline as a whole. These can be specified
 
 Example: `nextflow run labsyspharm/mcmicro-nf --in /my/data --tma`
 
-or equivalently: `nextflow run labsyspharm/mcmicr-nf -params-file myparams.yml`, where `myparams.yml` contains
+or equivalently: `nextflow run labsyspharm/mcmicro-nf -params-file myparams.yml`, where `myparams.yml` contains
 ```
 in: /my/data
 tma: true
@@ -22,6 +22,8 @@ tma: true
 * `--start-at <step>` - name of the first step to be executed by the pipeline. The value `<step>` must be one of `raw`, `illumination`, `registration`, `dearray` (TMA only), `probability-maps`, `segmentation`, `quantification`, `cell-states`. Default: `registration`.
 * `--stop-at <step>` - name of the final step to be executed by the pipeline. Spans the same vocabulary as `--start-at`. Default: `cell-states`.
 * `--tma` - if specified, mcmicro treats input data as a TMA. If omitted, the input is assumed to be a whole-slide image. Default: omitted.
+* `--raw-formats <formats>` - one or more file formats that mcmicro should look for. Default: `{.ome.tiff,.ome.tif,.rcpnl,.xdce,.nd,.scan,.htd,.btf,.nd2,.tif,.czi}`
+* `--probability-maps <unmicst|ilastik|all>` - which module(s) to use for probability map computation. Default: `unmicst`
 
 ## Parameters controlling the execution environment
 
