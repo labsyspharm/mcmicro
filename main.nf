@@ -9,6 +9,12 @@ params.startAt     = 'registration'
 params.stopAt      = 'cell-states'
 params.tma         = false    // whether to run Coreograph
 
+// Pipeline will look for rawFormats first
+// If it finds none, it will look for flatFormats
+// This is needed to handle cases like .xdce indexing over multiple .tifs
+params.rawFormats  = '{.xdce,.nd,.scan,.htd}'
+params.flatFormats = '{.ome.tiff,.ome.tif,.rcpnl,.btf,.nd2,.tif,.czi}'
+
 // Default selection of methods for each step
 params.probabilityMaps = 'unmicst'
 
@@ -31,6 +37,10 @@ params.quantificationMask = ''
 // Deprecation messages
 if( params.quantificationMask != '' )
     error "--quantification-mask is deprecated; please use --mask-spatial and --mask-add instead"
+if( params.illum )
+    error "--illum is deprecated; please use --start-at illumination"
+if( params.skipAshlar )
+    error "--skip-ashlar is deprecated; please use --start-at dearray or --start-at probability-maps"
 
 // Steps in the mcmicro pipeline
 mcmsteps = ["raw",		// Step 0
@@ -47,24 +57,13 @@ idxStart = mcmsteps.indexOf( params.startAt )
 idxStop  = mcmsteps.indexOf( params.stopAt )
 if( idxStart < 0 )       error "Unknown starting step ${params.startAt}"
 if( idxStop < 0 )        error "Unknown stopping step ${params.stopAt}"
-if( params.illum )
-    error "--illum is deprecated; please use --start-at illumination"
-if( params.skipAshlar )
-    error "--skip-ashlar is deprecated; please use --start-at dearray or --start-at probability-maps"
 if( idxStop < idxStart ) error "Stopping step cannot come before starting step"
 if( idxStart > 4 )
   error "Starting at steps beyond probability map computation is not yet supported."
 
 // Define all subdirectories
-path_raw    = "${params.in}/${mcmsteps[0]}"
-path_ilp    = "${params.in}/${mcmsteps[1]}"
-path_rg     = "${params.in}/${mcmsteps[2]}"
-path_dr     = "${params.in}/${mcmsteps[3]}"
-path_prob   = "${params.in}/${mcmsteps[4]}"
-path_seg    = "${params.in}/${mcmsteps[5]}"
-path_quant  = "${params.in}/${mcmsteps[6]}"
-path_states = "${params.in}/${mcmsteps[7]}"
-path_qc     = "${params.in}/qc"
+paths   = mcmsteps.collect{ "${params.in}/$it" }
+path_qc = "${params.in}/qc"
 
 // Check that deprecated locations are empty
 msg_dprc = {a,b -> "The use of $a has been deprecated. Please use $b instead."}
@@ -80,25 +79,30 @@ chNames = Channel.fromPath( "${params.in}/markers.csv", checkIfExists: true )
 findFiles = { p, path, ife -> p ?
 	     Channel.fromPath(path).ifEmpty(ife) : Channel.empty() }
 
+// Look for index formats; if none found, looks for flat formats
+// Look in raw/ or registration/, depending on --start-at argument
+chkdir  = idxStart <= 2 ? "${paths[0]}" : "${paths[2]}"
+formats = file("${chkdir}/**${params.rawFormats}") ?
+    params.rawFormats : params.flatFormats
+
 // Feed raw images into separate channels for
 //   illumination (step 1 input) and ASHLAR (step 2 input)
-formats = '{.ome.tiff,.ome.tif,.rcpnl,.xdce,.nd,.scan,.htd,.btf,.nd2,.tif,.czi}'
-findFiles(idxStart <= 2, "${path_raw}/**${formats}",
-	  {error "No images found in ${path_raw}"}).into{ s1in; s2in_raw }
+findFiles(idxStart <= 2, "${paths[0]}/**${formats}",
+	  {error "No images found in ${paths[0]}"}).into{ s1in; s2in_raw }
 
 // Each set of intermediates goes into a single channel (no splitting as with raw images)
-s1pre_dfp   = findFiles(idxStart == 2, "${path_ilp}/*-dfp.tif", {file("EMPTY1")})
-s1pre_ffp   = findFiles(idxStart == 2, "${path_ilp}/*-ffp.tif", {file("EMPTY2")})
-s2pre       = findFiles(idxStart == 3 || (idxStart > 3 && !params.tma), "${path_rg}/*${formats}",
-			{error "No pre-stitched image in ${path_rg}"} )
-s3pre_cores = findFiles(idxStart > 3 && params.tma, "${path_dr}/*.tif",
-			{error "No cores in ${path_dr}"})
-s3pre_masks = findFiles(idxStart > 3 && params.tma, "${path_dr}/masks/*.tif",
-			{error "No masks in ${path_dr}/masks"})
+s1pre_dfp   = findFiles(idxStart == 2, "${paths[1]}/*-dfp.tif", {file("EMPTY1")})
+s1pre_ffp   = findFiles(idxStart == 2, "${paths[1]}/*-ffp.tif", {file("EMPTY2")})
+s2pre       = findFiles(idxStart == 3 || (idxStart > 3 && !params.tma), "${paths[2]}/*${formats}",
+			{error "No pre-stitched image in ${paths[2]}"} )
+s3pre_cores = findFiles(idxStart > 3 && params.tma, "${paths[3]}/*.tif",
+			{error "No cores in ${paths[3]}"})
+s3pre_masks = findFiles(idxStart > 3 && params.tma, "${paths[3]}/masks/*.tif",
+			{error "No masks in ${paths[3]}/masks"})
 
 // Step 1 output - illumination profiles
 process illumination {
-    publishDir path_ilp, mode: 'copy'
+    publishDir paths[1], mode: 'copy'
     
     input: file s1in
     output:
@@ -127,7 +131,7 @@ fnSort = {a, b -> a.getName() <=> b.getName()}
 // Step 2 output - stitching and registration
 fn_stitched = "${params.sample_name}.ome.tif"
 process ashlar {
-    publishDir path_rg, mode: 'copy'
+    publishDir paths[2], mode: 'copy'
     
     input:
       file lraw from s2in_raw.toSortedList()
@@ -163,7 +167,7 @@ s2out
 // De-arraying (if TMA)
 process dearray {
     publishDir path_qc, mode: 'copy', pattern: 'TMA_MAP.tif'
-    publishDir path_dr, mode: 'copy', pattern: '**{[0-9],mask}.tif'
+    publishDir paths[3], mode: 'copy', pattern: '**{[0-9],mask}.tif'
 
     input: file s from s3in.tma
     
@@ -203,7 +207,7 @@ s3out.combine(chNames).into{ s4in_unmicst; s4in_ilastik }
 
 // Step 4 output - UNet classification
 process unmicst {
-    publishDir "${path_prob}/unmicst", mode: 'copy', pattern: '*PM*.tif'
+    publishDir "${paths[4]}/unmicst", mode: 'copy', pattern: '*PM*.tif'
 
     input: tuple file(core), val(mask), file(ch) from s4in_unmicst
     output:
@@ -221,7 +225,7 @@ process unmicst {
 
 // Step 4 output - ilastik
 process ilastik {
-    publishDir "${path_prob}/ilastik", mode: 'copy', pattern: '*'
+    publishDir "${paths[4]}/ilastik", mode: 'copy', pattern: '*'
 
     input: tuple file(core), val(mask), file(ch) from s4in_ilastik
     output:
@@ -248,7 +252,8 @@ switch( masks.size() ) {
 
 // Step 5 output - segmentation
 process s3seg {
-    publishDir path_seg, mode: 'copy', pattern: '*/*'
+    publishDir paths[5],           mode: 'copy', pattern: '*/*Mask.tif'
+    publishDir "${path_qc}/s3seg", mode: 'copy', pattern: '*/*Outlines.tif'
 
     input:
 	tuple file(core), file(mask), file(pmn), file(pmc), file(ch) from s4out_unmicst
@@ -278,7 +283,7 @@ process s3seg {
 
 // Step 6 output - quantification
 process quantification {
-    publishDir path_quant, mode: 'copy', pattern: '*.csv'
+    publishDir paths[6], mode: 'copy', pattern: '*.csv'
 
     input:  tuple file(core), file(maskSpt), file(maskAdd), file(ch) from s5out
     output:
@@ -297,8 +302,8 @@ process quantification {
 
 // Step 7 output
 process naivestates {
-    publishDir path_states, mode: 'copy', pattern: '*.csv'
-    publishDir path_states, mode: 'copy', pattern: 'plots/*.*'
+    publishDir paths[7], mode: 'copy', pattern: '*.csv'
+    publishDir paths[7], mode: 'copy', pattern: 'plots/*.*'
     publishDir "${path_qc}/naivestates", mode: 'copy', pattern: 'plots/*/*.*',
       saveAs: { fn -> fn.replaceFirst("plots/","") }
     
@@ -322,7 +327,7 @@ workflow.onComplete {
     file(path_prov).mkdirs()
 
     // Store parameters used
-    file("${path_prov}/params.yml").withWriter{ out ->
+    file("${path_qc}/params.yml").withWriter{ out ->
 	params.each{ key, val ->
 	    if( key.indexOf('-') == -1 )
 	    out.println "$key: $val"
