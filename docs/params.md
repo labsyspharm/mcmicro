@@ -2,9 +2,9 @@
 
 ## Parameters controlling the pipeline behavior
 
-The following parameters control the pipeline as a whole. These can be specified on the command line using the double-dash (e.g., `--in`) format, or inside a YAML file as key-value pairs. Parameters that don't require an explicit value because their presence controls the behavior instead (e.g., `--tma`) should instead be assigned to `true` in the YAML file. For example,
+The following parameters control the pipeline as a whole. These can be specified on the command line using the double-dash format (e.g., `--in`), or inside a YAML file as key-value pairs. Parameters that don't require an explicit value because their presence controls the behavior (e.g., `--tma`) should instead be assigned to `true` in the YAML file. For example,
 
-On the command line: `nextflow run labsyspharm/mcmicro-nf --in /my/data --tma`
+Example: `nextflow run labsyspharm/mcmicro-nf --in /my/data --tma`
 
 or equivalently: `nextflow run labsyspharm/mcmicr-nf -params-file myparams.yml`, where `myparams.yml` contains
 ```
