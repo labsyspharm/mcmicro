@@ -36,7 +36,7 @@ It is important to make a distinction between parameters that control behavior o
 
 **Plain arguments for individual modules:**
 
-Parameters don't reference any files can be fed directly to each module through the `--*-opts` arguments in mcmicro:
+Parameters that don't reference any files can be fed directly to each module through the `--*-opts` arguments in mcmicro:
 
 | Module | mcmicro Argument |
 | --- | --- |
@@ -47,5 +47,17 @@ Parameters don't reference any files can be fed directly to each module through 
 | naivestates | `--nstates-opts` |
 
 Surround module parameters with single quotes `'`.
+
 Example 1: `nextflow run labsyspharm/mcmicro-nf --in /my/data --ashlar-opts '-m 30 --pyramid'`
+
 Example 2: `nextflow run labsyspharm/mcmicro-nf --in /my/data --nstates-opts '--log no --plots pdf'`
+
+**ASHLAR arguments:** Up-to-date list can be viewed at https://github.com/labsyspharm/ashlar
+
+**UnMicst arguments:** TODO: Clarence, fill this out
+
+**S3Segmenter arguments:** TODO: Clarence, fill this out
+
+**quantification arguments:** TODO: Denis, fill this out
+
+**naivestates arguments:** Up-to-date list can be viewed at https://github.com/labsyspharm/naivestates
