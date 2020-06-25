@@ -57,28 +57,30 @@ Example 2: `nextflow run labsyspharm/mcmicro-nf --in /my/data --nstates-opts '--
 **Coreograph arguments:** Up-to-date list can be viewed at https://github.com/HMS-IDAC/UNetCoreograph
 
 **UnMicst arguments:**
-*--model - the name of the UNet model. By default, this is the human nuclei model that identifies nuclei centers, nuclei contours, and background from a DAPI channel. Other models include mouse nuclei from DAPI, and cytoplasm from stains resembling WGA
---channel - the channel used to infer and generate probability maps from. Default is the first channel (channel 0)
---classOrder - if your training data isn't in the order 1. background, 2. contours, 3. foreground, you can specify the order here. For example, if you had trained the class order backwards, specify --classOrder 2 1 0. If you only have background and contours, use --classOrder 0 1 0
--- mean - override the trained model's mean intensity. Useful if your images are significantly dimmer or brighter.
---std - override the trained model's standard deviation intensity. Useful if your images are significantly dimmer or brighter.
---scalingFactor - an upsample or downsample factor used to resize the image. Useful when the pixel sizes of your image differ from the model (ie. 0.65 microns/pixel for human nuclei model)
---stackOutput (NEW) - if selected, UnMicst will write all probability maps as a single multipage tiff file. By default, this is off causing UnMicst to write each class as separate files
+* `--model` - the name of the UNet model. By default, this is the human nuclei model that identifies nuclei centers, nuclei contours, and background from a DAPI channel. Other models include mouse nuclei from DAPI, and cytoplasm from stains resembling WGA
+* `--channel` - the channel used to infer and generate probability maps from. Default is the first channel (channel 0)
+* `--classOrder` - if your training data isn't in the order 1. background, 2. contours, 3. foreground, you can specify the order here. For example, if you had trained the class order backwards, specify --classOrder 2 1 0. If you only have background and contours, use --classOrder 0 1 0
+* `-- mean` - override the trained model's mean intensity. Useful if your images are significantly dimmer or brighter.
+* `--std` - override the trained model's standard deviation intensity. Useful if your images are significantly dimmer or brighter.
+* `--scalingFactor` - an upsample or downsample factor used to resize the image. Useful when the pixel sizes of your image differ from the model (ie. 0.65 microns/pixel for human nuclei model)
+* `--stackOutput` - (NEW) if selected, UnMicst will write all probability maps as a single multipage tiff file. By default, this is off causing UnMicst to write each class as separate files
 
 **S3Segmenter arguments:** 
-*--probMapChan - override the channel to use for nuclei segmentation. By default, this is extracted from the filename in the probabilty map 
---crop - select type of cropping to use. interactiveCrop - a window will appear for user input to crop a smaller region of the image. plate - this is for small fields of view such as from a multiwell plate. noCrop default option to use the entire image
+* `--probMapChan` - override the channel to use for nuclei segmentation. By default, this is extracted from the filename in the probabilty map 
+* `--crop` - select type of cropping to use. interactiveCrop - a window will appear for user input to crop a smaller region of the image. plate - this is for small fields of view such as from a multiwell plate. noCrop default option to use the entire image
 
 Nuclei parameters:
---nucleiFilter - the method to filter false positive nuclei. IntPM - filter based on probability intensity. Int - filted based on raw image intensity
---logSigma - a range of nuclei diameters to search for. Default is 3 to 60 pixels.
+
+* `--nucleiFilter` - the method to filter false positive nuclei. IntPM - filter based on probability intensity. Int - filted based on raw image intensity
+*`--logSigma` - a range of nuclei diameters to search for. Default is 3 to 60 pixels.
 
 Cytoplasm parameters:
---segmentCytoplasm - select whether to : segmentCytoplasm - segment the cytoplasm or ignoreCytoplasm - do NOT segment cytoplasm
---CytoMaskChan - select one or more channels to use for segmenting cytoplasm. Default is the 2nd channel.
---cytoMethod - select the method to segment cytoplasm. distanceTransform - take the distance transform outwards from each nucleus and mask with the tissue mask. ring - take an annulus of a certain pixel size around the nucleus (see next argument). Default ring thickness is 5 pixels. hybrid - this uses a combination of greyscale intensity and distance transform to more accurately approximate the extent of the cytoplasm. Similar to Cellprofiler's implementation.
---cytoDilation - the number of pixels to expand from the nucleus to get the cytoplasm ring. Default is 5 pixels.
---TissueMaskChan - select one or more channels to use for identifying the general tissue area for masking purposes. Default is to use a combination of nuclei and cytoplasm channels.
+
+* `--segmentCytoplasm` - select whether to : segmentCytoplasm - segment the cytoplasm or ignoreCytoplasm - do NOT segment cytoplasm
+* `--CytoMaskChan` - select one or more channels to use for segmenting cytoplasm. Default is the 2nd channel.
+* `--cytoMethod` - select the method to segment cytoplasm. distanceTransform - take the distance transform outwards from each nucleus and mask with the tissue mask. ring - take an annulus of a certain pixel size around the nucleus (see next argument). Default ring thickness is 5 pixels. hybrid - this uses a combination of greyscale intensity and distance transform to more accurately approximate the extent of the cytoplasm. Similar to Cellprofiler's implementation.
+* `--cytoDilation` - the number of pixels to expand from the nucleus to get the cytoplasm ring. Default is 5 pixels.
+* `--TissueMaskChan` - select one or more channels to use for identifying the general tissue area for masking purposes. Default is to use a combination of nuclei and cytoplasm channels.
 
 **quantification arguments:** TODO: Denis, fill this out
 
