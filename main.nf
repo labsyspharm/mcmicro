@@ -4,7 +4,7 @@
 // .in - location of the data
 
 // Default parameters for the pipeline as a whole
-params.sample_name = file(params.in).name
+params.sampleName = file(params.in).name
 params.startAt     = 'registration'
 params.stopAt      = 'cell-states'
 params.tma         = false    // whether to run Coreograph
@@ -129,7 +129,7 @@ s2in_ffp = s1out_ffp.mix( s1pre_ffp )
 fnSort = {a, b -> a.getName() <=> b.getName()}
 
 // Step 2 output - stitching and registration
-fn_stitched = "${params.sample_name}.ome.tif"
+fn_stitched = "${params.sampleName}.ome.tif"
 process ashlar {
     publishDir paths[2], mode: 'copy'
     

@@ -7,3 +7,4 @@
 {% include_relative exec.md %}
 {% include_relative post.md %}
 {% include_relative dev.md %}
+{% include_relative params.md %}
