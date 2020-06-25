@@ -64,8 +64,8 @@ Up-to-date list can be viewed at https://github.com/HMS-IDAC/UNetCoreograph
 
 * `--model` - the name of the UNet model. By default, this is the human nuclei model that identifies nuclei centers, nuclei contours, and background from a DAPI channel. Other models include mouse nuclei from DAPI, and cytoplasm from stains resembling WGA
 * `--channel` - the channel used to infer and generate probability maps from. Default is the first channel (channel 0)
-* `--classOrder` - if your training data isn't in the order 1. background, 2. contours, 3. foreground, you can specify the order here. For example, if you had trained the class order backwards, specify --classOrder 2 1 0. If you only have background and contours, use --classOrder 0 1 0
-* `-- mean` - override the trained model's mean intensity. Useful if your images are significantly dimmer or brighter.
+* `--classOrder` - if your training data isn't in the order 1. background, 2. contours, 3. foreground, you can specify the order here. For example, if you had trained the class order backwards, specify `--classOrder 2 1 0`. If you only have background and contours, use `--classOrder 0 1 0`
+* `--mean` - override the trained model's mean intensity. Useful if your images are significantly dimmer or brighter.
 * `--std` - override the trained model's standard deviation intensity. Useful if your images are significantly dimmer or brighter.
 * `--scalingFactor` - an upsample or downsample factor used to resize the image. Useful when the pixel sizes of your image differ from the model (ie. 0.65 microns/pixel for human nuclei model)
 * `--stackOutput` - (NEW) if selected, UnMicst will write all probability maps as a single multipage tiff file. By default, this is off causing UnMicst to write each class as separate files
