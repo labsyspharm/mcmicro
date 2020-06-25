@@ -27,15 +27,15 @@ tma: true
 
 ## Parameters for individual modules
 
-It is important to make a distinction between parameters that control the behavior of individual modules, and parameters that specify which files the modules operate on. Because all file management is done at the level of the pipeline, the latter set is marked with `[mcmicro]` in the below lists to indicate that the parameters must be provided to mcmicro instead.
-
-Surround module parameters with single quotes `'`.
+It is important to make a distinction between parameters that control the behavior of individual modules, and parameters that specify which files the modules operate on. Because all file management is done at the level of the pipeline, **the latter set is marked with `[mcmicro]` in the below lists to indicate that the parameters must be provided to mcmicro instead.**
 
 Example 1: `nextflow run labsyspharm/mcmicro-nf --in /my/data --ashlar-opts '-m 30 --pyramid'`
 
 Example 2: `nextflow run labsyspharm/mcmicro-nf --in /my/data --nstates-opts '--log no --plots pdf'`
 
 Example 3: `nextflow run labsyspharm/mcmicro-nf --in /my/data --mask-add 'cytoMask.tif nucleiMask.tif'`
+
+Note that because `cytoMask.tif` and `nucleiMask.tif` reference filenames, the argument `--mask-add` is provided directly to nextflow, as opposed to `--quant-opts`.
 
 ### Arguments to ASHLAR (`--ashlar-opts`):
 
@@ -84,8 +84,8 @@ Up-to-date list can be viewed at https://github.com/labsyspharm/mcmicro-ilastik
 
 ### Arguments to quantification(`--quant-opts`):
 
-* [mcmicro] `--mask-spatial <filename>` - which segmentation mask should be used for extracting spatial features. Must be a filename produced by the s3segmenter. Default: `cellMask.tif`
-* [mcmicro] `--mask-add <filenames>` - one or more filenames referencing masks produced by the s3segmenter that should also be quantified. The filenames should be surrounded with single quotes (`'`). Default: none.
+* **[mcmicro]** `--mask-spatial <filename>` - which segmentation mask should be used for extracting spatial features. Must be a filename produced by the s3segmenter. Default: `cellMask.tif`
+* **[mcmicro]** `--mask-add <filenames>` - one or more filenames referencing masks produced by the s3segmenter that should also be quantified. The filenames should be surrounded with single quotes (`'`). Default: none.
 
 Up-to-date list can be viewed at https://github.com/labsyspharm/quantification
 
