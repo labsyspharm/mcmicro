@@ -46,14 +46,14 @@ As the number of custom flags grows, providing them all on the command line can 
 
 For example, consider the following command:
 ``` bash
-nextflow run labsyspharm/mcmicro-nf --in /data/exemplar-002 --tma --skip-ashlar --ashlar-opts '-m 35 --pyramid'
+nextflow run labsyspharm/mcmicro-nf --in /data/exemplar-002 --tma --start-at dearray --ashlar-opts '-m 35 --pyramid'
 ```
 
 All double-dashed arguments can be moved to a YAML file (e.g., **myexperiment.yml**) using the rules above:
 ``` yaml
 in: /data/exemplar-002
 tma: true
-skip-ashlar: true
+start-at: dearray
 ashlar-opts: -m 35 --pyramid
 ```
 
