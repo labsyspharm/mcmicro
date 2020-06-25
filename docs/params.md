@@ -27,50 +27,36 @@ tma: true
 
 ## Parameters for individual modules
 
-It is important to make a distinction between parameters that control behavior of individual modules, and parameters that specify which files the modules operate on. Because all file management is done at the level of the pipeline, special treatment is required for the latter set (e.g., specifying a different mask to use for quantification).
-
-### Arguments to handle file-referencing parameters:
-
-* `--mask-spatial <filename>` - which segmentation mask should be used for extracting spatial features. Must be a filename produced by the s3segmenter. Default: `cellMask.tif`
-* `--mask-add <filenames>` - one or more filenames referencing masks produced by the s3segmenter that should also be quantified. The filenames should be surrounded with single quotes (`'`). For example, `--mask-add 'cytoMask.tif nucleiMask.tif'`. Default: none.
-
-### Plain arguments for individual modules:
-
-Parameters that don't reference any files can be fed directly to each module through the `--*-opts` arguments in mcmicro:
-
-| Module | mcmicro Argument |
-| --- | --- |
-| ASHLAR | `--ashlar-opts` |
-| UnMicst | `--unmicst-opts` |
-| S3Segmenter | `--s3seg-opts` |
-| quantification | `--quant-opts` |
-| naivestates | `--nstates-opts` |
-
-Surround module parameters with single quotes `'`.
+It is important to make a distinction between parameters that control the behavior of individual modules, and parameters that specify which files the modules operate on. Because all file management is done at the level of the pipeline, **the latter set is marked with `[mcmicro]` in the below lists to indicate that the parameters must be provided to mcmicro instead.**
 
 Example 1: `nextflow run labsyspharm/mcmicro-nf --in /my/data --ashlar-opts '-m 30 --pyramid'`
 
 Example 2: `nextflow run labsyspharm/mcmicro-nf --in /my/data --nstates-opts '--log no --plots pdf'`
 
-### ASHLAR arguments:
+Example 3: `nextflow run labsyspharm/mcmicro-nf --in /my/data --mask-add 'cytoMask.tif nucleiMask.tif'`
+
+Note that because `cytoMask.tif` and `nucleiMask.tif` reference filenames, the argument `--mask-add` is provided directly to nextflow, as opposed to `--quant-opts`.
+
+### Arguments to ASHLAR (`--ashlar-opts`):
 
 Up-to-date list can be viewed at https://github.com/labsyspharm/ashlar
 
-### Coreograph arguments:
+### Arguments to Coreograph(`--core-opts`):
 
 Up-to-date list can be viewed at https://github.com/HMS-IDAC/UNetCoreograph
 
-### UnMicst arguments:
+### Arguments to UnMicst(`--unmicst-opts`):
 
 * `--model` - the name of the UNet model. By default, this is the human nuclei model that identifies nuclei centers, nuclei contours, and background from a DAPI channel. Other models include mouse nuclei from DAPI, and cytoplasm from stains resembling WGA
 * `--channel` - the channel used to infer and generate probability maps from. Default is the first channel (channel 0)
-* `--classOrder` - if your training data isn't in the order 1. background, 2. contours, 3. foreground, you can specify the order here. For example, if you had trained the class order backwards, specify --classOrder 2 1 0. If you only have background and contours, use --classOrder 0 1 0
-* `-- mean` - override the trained model's mean intensity. Useful if your images are significantly dimmer or brighter.
+* `--classOrder` - if your training data isn't in the order 1. background, 2. contours, 3. foreground, you can specify the order here. For example, if you had trained the class order backwards, specify `--classOrder 2 1 0`. If you only have background and contours, use `--classOrder 0 1 0`
+* `--mean` - override the trained model's mean intensity. Useful if your images are significantly dimmer or brighter.
 * `--std` - override the trained model's standard deviation intensity. Useful if your images are significantly dimmer or brighter.
 * `--scalingFactor` - an upsample or downsample factor used to resize the image. Useful when the pixel sizes of your image differ from the model (ie. 0.65 microns/pixel for human nuclei model)
 * `--stackOutput` - (NEW) if selected, UnMicst will write all probability maps as a single multipage tiff file. By default, this is off causing UnMicst to write each class as separate files
 
-### Ilastik arguments:
+### Arguments to Ilastik(`--ilastik-opts`):
+
 * `--nonzero_fraction` - Indicates fraction of pixels per crop above global threshold to ensure
 * `--nuclei_index` - Index of nuclei channel to use for nonzero_fraction argument
 * `--crop` - Include if you choose to crop regions for ilastik training, if not, do not include this argument
@@ -80,7 +66,8 @@ Up-to-date list can be viewed at https://github.com/HMS-IDAC/UNetCoreograph
 
 Up-to-date list can be viewed at https://github.com/labsyspharm/mcmicro-ilastik
 
-### S3Segmenter arguments:
+### Arguments to S3Segmenter(`--s3seg-opts`):
+
 * `--probMapChan` - override the channel to use for nuclei segmentation. By default, this is extracted from the filename in the probabilty map 
 * `--crop` - select type of cropping to use. interactiveCrop - a window will appear for user input to crop a smaller region of the image. plate - this is for small fields of view such as from a multiwell plate. noCrop default option to use the entire image
 
@@ -95,12 +82,13 @@ Up-to-date list can be viewed at https://github.com/labsyspharm/mcmicro-ilastik
 * `--cytoDilation` - the number of pixels to expand from the nucleus to get the cytoplasm ring. Default is 5 pixels.
 * `--TissueMaskChan` - select one or more channels to use for identifying the general tissue area for masking purposes. Default is to use a combination of nuclei and cytoplasm channels.
 
-### quantification arguments:
-* `--masks` - Paths to where masks are stored (Ex: ./segmentation/cellMask.tif) -> If multiple masks are selected the first mask will be used for spatial feature extraction but all will be quantified
+### Arguments to quantification(`--quant-opts`):
+
+* **[mcmicro]** `--mask-spatial <filename>` - which segmentation mask should be used for extracting spatial features. Must be a filename produced by the s3segmenter. Default: `cellMask.tif`
+* **[mcmicro]** `--mask-add <filenames>` - one or more filenames referencing masks produced by the s3segmenter that should also be quantified. The filenames should be surrounded with single quotes (`'`). Default: none.
 
 Up-to-date list can be viewed at https://github.com/labsyspharm/quantification
 
-
-### naivestates arguments:
+### Arguments to naivestates(`--nstates-opts`):
 
 Up-to-date list can be viewed at https://github.com/labsyspharm/naivestates

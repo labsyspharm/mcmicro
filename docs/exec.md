@@ -46,14 +46,14 @@ As the number of custom flags grows, providing them all on the command line can 
 
 For example, consider the following command:
 ``` bash
-nextflow run labsyspharm/mcmicro-nf --in /data/exemplar-002 --tma --skip-ashlar --ashlar-opts '-m 35 --pyramid'
+nextflow run labsyspharm/mcmicro-nf --in /data/exemplar-002 --tma --start-at dearray --ashlar-opts '-m 35 --pyramid'
 ```
 
 All double-dashed arguments can be moved to a YAML file (e.g., **myexperiment.yml**) using the rules above:
 ``` yaml
 in: /data/exemplar-002
 tma: true
-skip-ashlar: true
+start-at: dearray
 ashlar-opts: -m 35 --pyramid
 ```
 
@@ -65,8 +65,8 @@ nextflow run labsyspharm/mcmicro-nf -params-file myexperiment.yml
 ## O2 execution
 
 To run the pipeline on O2, three additional steps are required:
-1. You must load the necessary O2 modules;
-2. All pipeline calls need to have the flag `-profile O2`;
+1. You must load the necessary O2 modules.
+2. All pipeline calls need to have the flag `-profile O2`. Use `-profile O2large` or `-profile O2massive` for large or very large whole-slide images, respectively. Use `-profile O2TMA` or `-profile O2TMAlarge` for TMAs. The profiles differ in the amount of resources requested for each module.
 3. The pipeline execution must be initiated on a compute node (the process is too resource-intensive for a login node and will be automatically terminated).
 
 ``` bash
@@ -78,15 +78,17 @@ nextflow pull labsyspharm/mcmicro-nf
 
 # All previous commands require an additional `-profile O2` flag and must be run from a compute node
 srun -p priority -t 0-12 --mem 8G nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001 -profile O2
-srun -p priority -t 0-12 --mem 8G nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --tma -profile O2
+srun -p priority -t 0-12 --mem 8G nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --tma -profile O2TMA
 ```
 
-In the above, `-t 0-12 --mem 8G` requests 12 hours of compute time and 8GB of memory from the O2 cluster. To avoid running over on your disk quota, it is also recommended to use `/n/scratch2` for holding the `work/` directory. Furthermore, `n/scratch2` is faster than `/home` or `/n/groups`, so jobs will complete faster:
+In the above, `-t 0-12 --mem 8G` requests 12 hours of compute time and 8GB of memory from the O2 cluster. To avoid running over on your disk quota, it is also recommended to use `/n/scratch3` for holding the `work/` directory. Furthermore, `n/scratch3` is faster than `/home` or `/n/groups`, so jobs will complete faster:
 
 ```
 srun -p priority -t 0-12 --mem 8G \
-  nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001 -profile O2 -w /n/scratch2/$USER/work
+  nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-001 -profile O2 -w /n/scratch3/users/.../$USER/work
 ```
+
+where `...` should be replaced with the first letter of your username.
 
 An alternative to the above `srun` command is to compose an `sbatch` script that encapsulates resource requests, module loading and the `nextflow` command into a single entity. Create a `submit_mcmicro.sh` file based on the following template:
 
@@ -103,9 +105,9 @@ An alternative to the above `srun` command is to compose an `sbatch` script that
 
 module purge
 module load java matlab conda2
-/home/$USER/bin/nextflow labsyspharm/mcmicro-nf --in /n/scratch2/$USER/exemplar-001 -profile O2 -w /n/scratch2/$USER/work
+/home/$USER/bin/nextflow labsyspharm/mcmicro-nf --in /n/scratch3/users/.../$USER/exemplar-001 -profile O2 -w /n/scratch3/users/.../$USER/work
 ```
-replacing relevant fields (e.g., `user@university.edu`) with your own values.
+replacing relevant fields (e.g., `user@university.edu` and `...`) with your own values.
 
 The pipeline run can then be kicked off with `sbatch submit_mcmicro.sh`.
 

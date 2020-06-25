@@ -15,5 +15,5 @@ with `/local/path/` pointing to a local directory where the exemplars should be 
 
 ## O2 notes
 
-When working with exemplars on O2, please download your own copy to `/n/scratch2/$USER/` (where `$USER` is your eCommons ID). A fully processed version is available in `/n/groups/lsp/cycif/exemplars`, but this version is meant to serve as a reference only. The directory permissions are set to read-only, preventing your pipeline run from writing its output there.
+When working with exemplars on O2, please download your own copy to `/n/scratch3/users/.../$USER/` (where `$USER` is your eCommons ID and `...` is its first letter). A fully processed version is available in `/n/groups/lsp/cycif/exemplars`, but this version is meant to serve as a reference only. The directory permissions are set to read-only, preventing your pipeline run from writing its output there.
 
