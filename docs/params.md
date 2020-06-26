@@ -39,11 +39,11 @@ Note that because `cytoMask.tif` and `nucleiMask.tif` reference filenames, the a
 
 ### Arguments to ASHLAR (`--ashlar-opts`):
 
-Up-to-date list can be viewed at https://github.com/labsyspharm/ashlar
+Up-to-date list can be viewed at [https://github.com/labsyspharm/ashlar](https://github.com/labsyspharm/ashlar)
 
 ### Arguments to Coreograph(`--core-opts`):
 
-Up-to-date list can be viewed at https://github.com/HMS-IDAC/UNetCoreograph
+Up-to-date list can be viewed at [https://github.com/HMS-IDAC/UNetCoreograph](https://github.com/HMS-IDAC/UNetCoreograph)
 
 ### Arguments to UnMicst(`--unmicst-opts`):
 
@@ -64,7 +64,7 @@ Up-to-date list can be viewed at https://github.com/HMS-IDAC/UNetCoreograph
 * `--ring_mask` - Include if you have a ring mask in the same directory to use for reducing size of hdf5 image. do not include if not
 * `--crop_amount` -  Number of crops you would like to extract
 
-Up-to-date list can be viewed at https://github.com/labsyspharm/mcmicro-ilastik
+Up-to-date list can be viewed at [https://github.com/labsyspharm/mcmicro-ilastik](https://github.com/labsyspharm/mcmicro-ilastik)
 
 ### Arguments to S3Segmenter(`--s3seg-opts`):
 
@@ -87,8 +87,8 @@ Up-to-date list can be viewed at https://github.com/labsyspharm/mcmicro-ilastik
 * **[mcmicro]** `--mask-spatial <filename>` - which segmentation mask should be used for extracting spatial features. Must be a filename produced by the s3segmenter. Default: `cellMask.tif`
 * **[mcmicro]** `--mask-add <filenames>` - one or more filenames referencing masks produced by the s3segmenter that should also be quantified. The filenames should be surrounded with single quotes (`'`). Default: none.
 
-Up-to-date list can be viewed at https://github.com/labsyspharm/quantification
+Up-to-date list can be viewed at [https://github.com/labsyspharm/quantification](https://github.com/labsyspharm/quantification)
 
 ### Arguments to naivestates(`--nstates-opts`):
 
-Up-to-date list can be viewed at https://github.com/labsyspharm/naivestates
+Up-to-date list can be viewed at [https://github.com/labsyspharm/naivestates](https://github.com/labsyspharm/naivestates)
