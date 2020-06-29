@@ -164,7 +164,7 @@ s2out
 // Step 3 output
 // De-arraying (if TMA)
 process dearray {
-    publishDir path_qc, mode: 'copy', pattern: 'TMA_MAP.tif'
+    publishDir "${path_qc}/dearray", mode: 'copy', pattern: 'TMA_MAP.tif'
     publishDir paths[3], mode: 'copy', pattern: '**{[0-9],mask}.tif'
 
     input: file s from s3in.tma
