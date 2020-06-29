@@ -1,0 +1,8 @@
+jdk: openjdk8
+services:
+- docker
+install:
+- curl -fsSL get.nextflow.io | bash
+script:
+- ./nextflow exemplar.nf --name exemplar-001 --path ~/data
+- ./nextflow main.nf --in ~/data/exemplar-001
