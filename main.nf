@@ -147,9 +147,7 @@ process ashlar {
     script:
     def ilp = ( ldfp.name == 'EMPTY1' || lffp.name == 'EMPTY2' ) ?
 	"" : "--ffp $lffp --dfp $ldfp"
-    """
-    ashlar $lraw ${params.ashlarOpts} $ilp --pyramid -f ${fn_stitched}
-    """
+    "ashlar $lraw ${params.ashlarOpts} $ilp --pyramid -f ${fn_stitched}"
 }
 
 // Step 3 input
@@ -207,19 +205,21 @@ s3out.combine(chNames).into{ s4in_unmicst; s4in_ilastik }
 
 // Step 4 output - UNet classification
 process unmicst {
-    publishDir "${paths[4]}/unmicst", mode: 'copy', pattern: '*PM*.tif'
+    publishDir "${paths[4]}/unmicst", mode: 'copy', pattern: '*Probabilities*.tif'
+    publishDir "${path_qc}/unmicst", mode: 'copy', pattern: '*Preview*.tif'
 
     input: tuple file(core), val(mask), file(ch) from s4in_unmicst
     output:
-      tuple file(core), val(mask),
-        file('*Nuclei*.tif'), file('*Contours*.tif'),
+      tuple file(core), val(mask), file('*Probabilities*.tif'),
         file(ch) into s4out_unmicst
+      file('*Preview*.tif') into s4out_pub
       tuple val(task.name), val(task.workDir) into prov4_unmicst
 
     when: idxStop >= 4
     script:
     """
-    python ${params.tool_unmicst}/UnMicst.py $core ${params.unmicstOpts} --outputPath .
+    python ${params.tool_unmicst}/UnMicst.py $core ${params.unmicstOpts} \
+      --stackOutput --outputPath .
     """
 }
 
@@ -256,7 +256,7 @@ process s3seg {
     publishDir "${path_qc}/s3seg", mode: 'copy', pattern: '*/*Outlines.tif'
 
     input:
-	tuple file(core), file(mask), file(pmn), file(pmc), file(ch) from s4out_unmicst
+	tuple file(core), file(mask), file(probs), file(ch) from s4out_unmicst
 
     output:
 	// tuples for quantification
@@ -274,8 +274,7 @@ process s3seg {
     python ${params.tool_segment}/S3segmenter.py --crop $crop \
        --imagePath $core \
        --maskPath $mask \
-       --nucleiClassProbPath $pmn \
-       --contoursClassProbPath $pmc \
+       --stackProbPath $probs \
        ${params.s3segOpts} \
        --outputPath .
     """
