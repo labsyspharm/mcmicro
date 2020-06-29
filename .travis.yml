@@ -1,8 +1,16 @@
 jdk: openjdk8
+cache:
+  directories:
+    - ~/data/downloads
 services:
 - docker
 install:
 - curl -fsSL get.nextflow.io | bash
 script:
-- ./nextflow exemplar.nf --name exemplar-001 --path ~/data
+- if [ -d ~/data/downloads/exemplar-001 ]; then
+    echo "Using cached exemplar-001 download";
+  else
+    ./nextflow exemplar.nf --name exemplar-001 --path ~/data/downloads;
+  fi
+- cp -r ~/data/downloads/exemplar-001 ~/data/
 - ./nextflow main.nf --in ~/data/exemplar-001
