@@ -58,8 +58,8 @@ idxStop  = mcmsteps.indexOf( params.stopAt )
 if( idxStart < 0 )       error "Unknown starting step ${params.startAt}"
 if( idxStop < 0 )        error "Unknown stopping step ${params.stopAt}"
 if( idxStop < idxStart ) error "Stopping step cannot come before starting step"
-if( idxStart > 4 )
-  error "Starting at steps beyond probability map computation is not yet supported."
+if( idxStart > 5 )
+  error "Starting at steps beyond segmentation is not yet supported."
 
 // Define all subdirectories
 paths   = mcmsteps.collect{ "${params.in}/$it" }
@@ -73,11 +73,15 @@ Channel.fromPath( "${params.in}/illumination_profiles/*" )
     .subscribe{ it -> error msg_dprc("illumination_profiles/", "illumination/") }
 
 // Identify marker information
-chNames = Channel.fromPath( "${params.in}/markers.csv", checkIfExists: true )
+Channel.fromPath( "${params.in}/markers.csv", checkIfExists: true ).into{ch4; ch6}
 
 // Helper function for finding raw images and precomputed intermediates
 findFiles = { p, path, ife -> p ?
 	     Channel.fromPath(path).ifEmpty(ife) : Channel.empty() }
+
+// Helper function to extract image ID from filename
+getID = { f, delim ->
+    tuple( f.getBaseName().toString().split(delim).head(), f ) }
 
 // Look for index formats; if none found, looks for flat formats
 // Look in raw/ or registration/, depending on --start-at argument
@@ -90,15 +94,34 @@ formats = file("${chkdir}/**${params.rawFormats}") ?
 findFiles(idxStart <= 2, "${paths[0]}/**${formats}",
 	  {error "No images found in ${paths[0]}"}).into{ s1in; s2in_raw }
 
-// Each set of intermediates goes into a single channel (no splitting as with raw images)
-s1pre_dfp   = findFiles(idxStart == 2, "${paths[1]}/*-dfp.tif", {file("EMPTY1")})
-s1pre_ffp   = findFiles(idxStart == 2, "${paths[1]}/*-ffp.tif", {file("EMPTY2")})
-s2pre       = findFiles(idxStart == 3 || (idxStart > 3 && !params.tma), "${paths[2]}/*${formats}",
-			{error "No pre-stitched image in ${paths[2]}"} )
-s3pre_cores = findFiles(idxStart > 3 && params.tma, "${paths[3]}/*.tif",
-			{error "No cores in ${paths[3]}"})
-s3pre_masks = findFiles(idxStart > 3 && params.tma, "${paths[3]}/masks/*.tif",
-			{error "No masks in ${paths[3]}/masks"})
+// Find precomputed intermediates
+// Extract samples ID from each filename for subsequent tuple matching
+findFiles(idxStart == 2, "${paths[1]}/*-dfp.tif", {file("EMPTY1")}).set{s1pre_dfp}
+findFiles(idxStart == 2, "${paths[1]}/*-ffp.tif", {file("EMPTY2")}).set{s1pre_ffp}
+findFiles(idxStart == 3 || (idxStart > 3 && !params.tma), "${paths[2]}/*${formats}",
+	  {error "No pre-stitched image in ${paths[2]}"} )
+    .map{ f -> getID(f,'\\.') }.set{pre_img}
+findFiles(idxStart > 3 && params.tma, "${paths[3]}/*.tif",
+	  {error "No cores in ${paths[3]}"})
+    .map{ f -> getID(f,'\\.tif') }.set{pre_cores}
+findFiles(idxStart > 3 && params.tma, "${paths[3]}/masks/*.tif",
+	  {error "No masks in ${paths[3]}/masks"})
+    .map{ f -> getID(f,'_mask') }.set{pre_masks}
+findFiles(idxStart == 5, "${paths[4]}/unmicst/*Probabilities*.tif",
+	  {error "No probability maps found in ${paths[4]}/unmicst"})
+    .map{ f -> getID(f,'_Probabilities') }.set{pre_probs}
+
+// Match up precomputed intermediates into tuples for each step
+pre_img.into{ pre_s2; pre_wsi }
+pre_cores.join( pre_masks ).set{ pre_tma }
+pre_wsi.map{ id, x -> tuple(id, x, file('NO_MASK')) }
+    .mix( pre_tma ).into{ pre_s3; pre_cm }
+pre_cm.join( pre_probs ).set{ pre_s4 }
+
+// Finalize the tuple format to match process outputs
+pre_s2.map{ id, f -> f }.set{s2pre}
+pre_s3.map{ id, c, m -> tuple(c,m) }.set{s3pre}
+pre_s4.map{ id, c, m, p -> tuple(c,m,p) }.set{s4pre}
 
 // Step 1 output - illumination profiles
 process illumination {
@@ -184,34 +207,29 @@ process dearray {
     """
 }
 
-// Helper function to extract image ID from filename
-getID = { file -> file.getBaseName().toString().tokenize('._').head() }
-
-// Finalize step 3 output
-// Collapse the earlier branching between full-tissue and TMA into
-//   a single (core, mask) imgs channel for all downstream processing
+// Finalize step 3 output by matching up cores to masks
 if( params.tma ) {
-    // Match up cores and masks by filename
-    id_cores = s3out_cores.flatten().mix(s3pre_cores).map{ f -> tuple(getID(f),f) }
-    id_masks = s3out_masks.flatten().mix(s3pre_masks).map{ f -> tuple(getID(f),f) }
+    id_cores = s3out_cores.flatten().map{ f -> getID(f,'\\.tif') }
+    id_masks = s3out_masks.flatten().map{ f -> getID(f,'_mask') }
     s3out = id_cores.join( id_masks ).map{ id, c, m -> tuple(c, m) }
 }
-else
-    s3out = s3in.tissue.map{ x -> tuple(x, file('NO_MASK')) }
+else s3out = Channel.empty()
 
 // Step 4 input
 // Add channel name file to every (image, mask) tuple
-s3out.combine(chNames).into{ s4in_unmicst; s4in_ilastik }
+s3out
+    .mix( s3pre )
+    .combine(ch4)
+    .into{ s4in_unmicst; s4in_ilastik }
 
-// Step 4 output - UNet classification
+// Step 4 output - UnMicst
 process unmicst {
     publishDir "${paths[4]}/unmicst", mode: 'copy', pattern: '*Probabilities*.tif'
     publishDir "${path_qc}/unmicst", mode: 'copy', pattern: '*Preview*.tif'
 
     input: tuple file(core), val(mask), file(ch) from s4in_unmicst
     output:
-      tuple file(core), val(mask), file('*Probabilities*.tif'),
-        file(ch) into s4out_unmicst
+      tuple file(core), val(mask), file('*Probabilities*.tif') into s4out_unmicst
       file('*Preview*.tif') into s4out_pub
       tuple val(task.name), val(task.workDir) into prov4_unmicst
 
@@ -242,6 +260,9 @@ process ilastik {
     """
 }
 
+// Step 5 input
+s5in = s4out_unmicst.mix( s4pre )
+
 // Determine which masks will be needed by quantification
 masks = params.maskAdd.tokenize()
 switch( masks.size() ) {
@@ -256,12 +277,12 @@ process s3seg {
     publishDir "${path_qc}/s3seg", mode: 'copy', pattern: '*/*Outlines.tif'
 
     input:
-	tuple file(core), file(mask), file(probs), file(ch) from s4out_unmicst
+	tuple file(core), file(mask), file(probs) from s5in
 
     output:
 	// tuples for quantification
         tuple file(core), file("**${params.maskSpatial}"),
-          file("$masks"), file(ch) into s5out
+          file("$masks") into s5out
         // rest of the files for publishDir
         file '**' into s5out_pub
         tuple val(task.name), val(task.workDir) into prov5
@@ -280,11 +301,15 @@ process s3seg {
     """
 }
 
+// Step 6 input
+s6in = s5out.combine(ch6)
+
+
 // Step 6 output - quantification
 process quantification {
     publishDir paths[6], mode: 'copy', pattern: '*.csv'
 
-    input:  tuple file(core), file(maskSpt), file(maskAdd), file(ch) from s5out
+    input:  tuple file(core), file(maskSpt), file(maskAdd), file(ch) from s6in
     output:
       file ('*.csv') into s6out
       tuple val(task.name), val(task.workDir) into prov6
@@ -342,3 +367,4 @@ workflow.onComplete {
 	}
     }
 }
+
