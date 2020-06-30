@@ -113,10 +113,9 @@ findFiles(idxStart == 5, "${paths[4]}/unmicst/*Probabilities*.tif",
 
 // Match up precomputed intermediates into tuples for each step
 pre_img.into{ pre_s2; pre_wsi }
-pre_cores.join( pre_masks ).set{ pre_tma }
+pre_cores.join( pre_masks ).into{ pre_s3; pre_tma }
 pre_wsi.map{ id, x -> tuple(id, x, file('NO_MASK')) }
-    .mix( pre_tma ).into{ pre_s3; pre_cm }
-pre_cm.join( pre_probs ).set{ pre_s4 }
+    .mix( pre_tma ).join( pre_probs ).set{ pre_s4 }
 
 // Finalize the tuple format to match process outputs
 pre_s2.map{ id, f -> f }.set{s2pre}
@@ -213,7 +212,7 @@ if( params.tma ) {
     id_masks = s3out_masks.flatten().map{ f -> getID(f,'_mask') }
     s3out = id_cores.join( id_masks ).map{ id, c, m -> tuple(c, m) }
 }
-else s3out = Channel.empty()
+else s3out = s3in.tissue.map{ x -> tuple(x, file('NO_MASK')) }
 
 // Step 4 input
 // Add channel name file to every (image, mask) tuple
