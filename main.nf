@@ -215,7 +215,7 @@ process unmicst {
       file('*Preview*.tif') into s4out_pub
       tuple val(task.name), val(task.workDir) into prov4_unmicst
 
-    when: idxStop >= 4
+    when: idxStart <= 4 && idxStop >= 4
     script:
     """
     python ${params.tool_unmicst}/UnMicst.py $core ${params.unmicstOpts} \
@@ -266,7 +266,7 @@ process s3seg {
         file '**' into s5out_pub
         tuple val(task.name), val(task.workDir) into prov5
 
-    when: idxStop >= 5
+    when: idxStart <= 5 && idxStop >= 5
     
     script:
     def crop = params.tma ? 'dearray' : 'noCrop'
@@ -289,7 +289,7 @@ process quantification {
       file ('*.csv') into s6out
       tuple val(task.name), val(task.workDir) into prov6
 
-    when: idxStop >= 6
+    when: idxStart <= 6 && idxStop >= 6
 
     """
     python ${params.tool_quant}/CommandSingleCellExtraction.py \
@@ -311,7 +311,7 @@ process naivestates {
       file '**' into s7out
       tuple val(task.name), val(task.workDir) into prov7
 
-    when: idxStop >= 7
+    when: idxStart <= 7 && idxStop >= 7
 
     """
     ${params.tool_nstates}/main.R -i $counts -o . ${params.nstatesOpts} \
