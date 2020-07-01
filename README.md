@@ -1,4 +1,4 @@
-# mcmicro-nf: Multiple-choice microscopy pipeline
+# mcmicro: Multiple-choice microscopy pipeline
 
 **Funding:** This work is supported by the following:
 
