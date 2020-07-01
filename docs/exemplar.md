@@ -8,8 +8,8 @@ Two exemplars are currently available for demonstration purposes:
 
 Both exemplars can be downloaded using the following commands:
 ``` bash
-nextflow run labsyspharm/mcmicro-nf/exemplar.nf --name exemplar-001 --path /local/path/
-nextflow run labsyspharm/mcmicro-nf/exemplar.nf --name exemplar-002 --path /local/path/
+nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-001 --path /local/path/
+nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-002 --path /local/path/
 ```
 with `/local/path/` pointing to a local directory where the exemplars should be downloaded to.
 
