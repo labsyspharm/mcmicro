@@ -15,4 +15,4 @@ Verify that Nextflow is accessible by going to your home directory (`cd ~`) and 
 
 ## Additional steps for local installation
 * Install [Docker](https://docs.docker.com/install/). Ensure that the Docker engine is running by typing `docker images`. If the engine is running, it should return a (possibly empty) list of container images currently downloaded to your system.
-* (Optional) If working with TMAs, you will need MATLAB 2018a or later. MATLAB has to be available on `$PATH`, so it can be executed by typing `matlab` on the command line. Additionally, you will need to install Coreograph locally by running `nextflow run labsyspharm/mcmicro-nf/setup.nf`.
+* (Optional) If working with TMAs, you will need MATLAB 2018a or later. MATLAB has to be available on `$PATH`, so it can be executed by typing `matlab` on the command line. Additionally, you will need to install Coreograph locally by running `nextflow run labsyspharm/mcmicro/setup.nf`.

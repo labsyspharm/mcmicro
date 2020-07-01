@@ -4,9 +4,9 @@
 
 The following parameters control the pipeline as a whole. These can be specified on the command line using the double-dash format (e.g., `--in`), or inside a YAML file as key-value pairs. Parameters that don't require an explicit value because their presence controls the behavior (e.g., `--tma`) should instead be assigned to `true` in the YAML file. For example,
 
-Example: `nextflow run labsyspharm/mcmicro-nf --in /my/data --tma`
+Example: `nextflow run labsyspharm/mcmicro --in /my/data --tma`
 
-or equivalently: `nextflow run labsyspharm/mcmicro-nf -params-file myparams.yml`, where `myparams.yml` contains
+or equivalently: `nextflow run labsyspharm/mcmicro -params-file myparams.yml`, where `myparams.yml` contains
 ```
 in: /my/data
 tma: true
@@ -29,11 +29,11 @@ tma: true
 
 It is important to make a distinction between parameters that control the behavior of individual modules, and parameters that specify which files the modules operate on. Because all file management is done at the level of the pipeline, **the latter set is marked with `[mcmicro]` in the below lists to indicate that the parameters must be provided to mcmicro instead.**
 
-Example 1: `nextflow run labsyspharm/mcmicro-nf --in /my/data --ashlar-opts '-m 30 --pyramid'`
+Example 1: `nextflow run labsyspharm/mcmicro --in /my/data --ashlar-opts '-m 30 --pyramid'`
 
-Example 2: `nextflow run labsyspharm/mcmicro-nf --in /my/data --nstates-opts '--log no --plots pdf'`
+Example 2: `nextflow run labsyspharm/mcmicro --in /my/data --nstates-opts '--log no --plots pdf'`
 
-Example 3: `nextflow run labsyspharm/mcmicro-nf --in /my/data --mask-add 'cytoMask.tif nucleiMask.tif'`
+Example 3: `nextflow run labsyspharm/mcmicro --in /my/data --mask-add 'cytoMask.tif nucleiMask.tif'`
 
 Note that because `cytoMask.tif` and `nucleiMask.tif` reference filenames, the argument `--mask-add` is provided directly to nextflow, as opposed to `--quant-opts`.
 

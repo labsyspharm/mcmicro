@@ -11,6 +11,6 @@ The versions of individual modules are pinned for standard pipeline runs. When a
 5. Once the PR is merged, update the O2 install by doing
 
 ```
-nextflow pull labsyspharm/mcmicro-nf
-nextflow run labsyspharm/mcmicro-nf/setup.nf -profile O2
+nextflow pull labsyspharm/mcmicro
+nextflow run labsyspharm/mcmicro/setup.nf -profile O2
 ```
