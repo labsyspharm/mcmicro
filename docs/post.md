@@ -8,10 +8,10 @@ The intermediate files in the `work/` directory allow you to restart a pipeline 
 module load java conda2      # <--- OOPS, forgot matlab
 
 # This run will fail with "matlab: command not found"
-nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --tma -profile O2
+nextflow run labsyspharm/mcmicro --in path/to/exemplar-002 --tma -profile O2
 
 # N E X T F L O W  ~  version 20.01.0
-# Launching `labsyspharm/mcmicro-nf` [backstabbing_fermi] - revision: e5ff35c351 [master]
+# Launching `labsyspharm/mcmicro` [backstabbing_fermi] - revision: e5ff35c351 [master]
 # executor >  slurm (2)
 # [-        ] process > illumination   -
 # [57/1c3712] process > ashlar         [100%] 1 of 1 ✔
@@ -24,10 +24,10 @@ nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --tma -profile O2
 module load matlab
 
 # Restart the pipeline from the dearray step using `-resume`
-nextflow run labsyspharm/mcmicro-nf --in path/to/exemplar-002 --tma -profile O2 -resume
+nextflow run labsyspharm/mcmicro --in path/to/exemplar-002 --tma -profile O2 -resume
 
 # N E X T F L O W  ~  version 20.01.0
-# Launching `labsyspharm/mcmicro-nf` [condescending_wing] - revision: e5ff35c351 [master]
+# Launching `labsyspharm/mcmicro` [condescending_wing] - revision: e5ff35c351 [master]
 # executor >  slurm (13)
 # [-        ] process > illumination   -
 # [57/1c3712] process > ashlar         [100%] 1 of 1, cached: 1 ✔      <- NOTE: cached
