@@ -7,5 +7,5 @@
 * *NCI grant 1U2CCA233280:  Omic and Multidimensional Spatial Atlas of Metastatic Breast and Prostate Cancers*
 * Ludwig Center at Harvard Medical School and the Ludwig Cancer Research Foundation
 
-**Instructions:** https://labsyspharm.github.io/mcmicro-nf/
+**Instructions:** https://labsyspharm.github.io/mcmicro/
 
