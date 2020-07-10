@@ -125,7 +125,7 @@ pre_wsi.map{ id, x -> tuple(id, x, file('NO_MASK')) }
 // Finalize the tuple format to match process outputs
 pre_s2.map{ id, f -> f }.set{s2pre}
 pre_s3.map{ id, c, m -> tuple(c,m) }.set{s3pre}
-pre_s4.map{ id, c, m, p -> tuple(c,m,p) }.set{s4pre}
+pre_s4.map{ id, c, m, p -> tuple('unmicst',c,m,p) }.set{s4pre}
 
 // Step 1 output - illumination profiles
 process illumination {
@@ -232,7 +232,8 @@ process unmicst {
 
     input: tuple file(core), val(mask) from s4in_unmicst
     output:
-      tuple file(core), val(mask), file('*Probabilities*.tif') into s4out_unmicst
+      tuple val('unmicst'), file(core), val(mask),
+        file('*Probabilities*.tif') into s4out_unmicst
       file('*Preview*.tif') into s4out_pub
       tuple val(task.name), val(task.workDir) into prov4_unmicst
 
@@ -250,7 +251,8 @@ process ilastik {
 
     input: tuple file(core), val(mask) from s4in_ilastik
     output:
-      file('*') into s4out_ilastik
+      tuple val('ilastik'), file(core), val(mask),
+        file('*Probabilities*.tif') into s4out_ilastik
       tuple val(task.name), val(task.workDir) into prov4_ilastik
 
     when: idxStart <= 4 && idxStop >= 4 && params.probabilityMaps != 'unmicst'
@@ -263,8 +265,13 @@ process ilastik {
     """
 }
 
+// Consolidate step 4 outputs
+s4out = s4out_unmicst.mix( s4out_ilastik )
+
 // Step 5 input
-s5in = s4out_unmicst.mix( s4pre )
+// Stage each image as method-core.tif (e.g., "unmicst-exemplar-001.tif")
+s5in = s4out.mix( s4pre )
+    .map{ s, c, m, p -> tuple("${s}-${c.getName()}", c, m, p) }
 
 // Step 5 output - segmentation
 process s3seg {
@@ -272,11 +279,11 @@ process s3seg {
     publishDir "${path_qc}/s3seg", mode: 'copy', pattern: '*/*Outlines.tif'
 
     input:
-	tuple file(core), file(mask), file(probs) from s5in
+	tuple val(core), file("${core}"), file(mask), file(probs) from s5in
 
     output:
 	// tuples for quantification
-        tuple file(core), file("**${params.maskSpatial}"),
+        tuple file("${core}"), file("**${params.maskSpatial}"),
           file("$masks") into s5out
         // rest of the files for publishDir
         file '**' into s5out_pub
@@ -298,7 +305,6 @@ process s3seg {
 
 // Step 6 input
 s6in = s5out.combine(ch6)
-
 
 // Step 6 output - quantification
 process quantification {
@@ -323,6 +329,7 @@ process quantification {
 process naivestates {
     publishDir paths[7], mode: 'copy', pattern: '*.csv'
     publishDir paths[7], mode: 'copy', pattern: 'plots/*.*'
+
     publishDir "${path_qc}/naivestates", mode: 'copy', pattern: 'plots/*/*.*',
       saveAs: { fn -> fn.replaceFirst("plots/","") }
     
@@ -362,4 +369,3 @@ workflow.onComplete {
 	}
     }
 }
-
