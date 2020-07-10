@@ -20,7 +20,9 @@ params.probabilityMaps = 'unmicst'
 
 // Default parameters for individual modules
 params.ashlarOpts  = '-m 30'
+params.coreOpts    = ''
 params.unmicstOpts = ''
+params.ilastikOpts = ''
 params.s3segOpts   = ''
 params.quantOpts   = ''
 params.nstatesOpts = '-p png'
@@ -31,7 +33,6 @@ params.maskAdd     = ''
 
 // Legacy parameters (to be deprecated in future versions)
 params.illum         = false    // whether to run ImageJ+BaSiC
-params.skipAshlar    = false    // whether to skip ASHLAR
 params.quantificationMask = ''
 
 // Deprecation messages
@@ -39,8 +40,6 @@ if( params.quantificationMask != '' )
     error "--quantification-mask is deprecated; please use --mask-spatial and --mask-add instead"
 if( params.illum )
     error "--illum is deprecated; please use --start-at illumination"
-if( params.skipAshlar )
-    error "--skip-ashlar is deprecated; please use --start-at dearray or --start-at probability-maps"
 
 // Steps in the mcmicro pipeline
 mcmsteps = ["raw",		// Step 0
@@ -67,13 +66,19 @@ path_qc = "${params.in}/qc"
 
 // Check that deprecated locations are empty
 msg_dprc = {a,b -> "The use of $a has been deprecated. Please use $b instead."}
-Channel.fromPath( "${params.in}/raw_images/*" )
-    .subscribe{ it -> error msg_dprc("raw_images/", "raw/") }
 Channel.fromPath( "${params.in}/illumination_profiles/*" )
     .subscribe{ it -> error msg_dprc("illumination_profiles/", "illumination/") }
 
 // Identify marker information
 Channel.fromPath( "${params.in}/markers.csv", checkIfExists: true ).into{ch4; ch6}
+
+// Determine which masks will be needed by quantification
+masks = params.maskAdd.tokenize()
+switch( masks.size() ) {
+    case 0: masks = ""; break;
+    case 1: masks = "**${masks[0]}"; break;
+    default: masks = "**{${masks.join(',')}}"
+}
 
 // Helper function for finding raw images and precomputed intermediates
 findFiles = { p, path, ife -> p ?
@@ -218,7 +223,6 @@ else s3out = s3in.tissue.map{ x -> tuple(x, file('NO_MASK')) }
 // Add channel name file to every (image, mask) tuple
 s3out
     .mix( s3pre )
-    .combine(ch4)
     .into{ s4in_unmicst; s4in_ilastik }
 
 // Step 4 output - UnMicst
@@ -226,13 +230,13 @@ process unmicst {
     publishDir "${paths[4]}/unmicst", mode: 'copy', pattern: '*Probabilities*.tif'
     publishDir "${path_qc}/unmicst", mode: 'copy', pattern: '*Preview*.tif'
 
-    input: tuple file(core), val(mask), file(ch) from s4in_unmicst
+    input: tuple file(core), val(mask) from s4in_unmicst
     output:
       tuple file(core), val(mask), file('*Probabilities*.tif') into s4out_unmicst
       file('*Preview*.tif') into s4out_pub
       tuple val(task.name), val(task.workDir) into prov4_unmicst
 
-    when: idxStart <= 4 && idxStop >= 4
+    when: idxStart <= 4 && idxStop >= 4 && params.probabilityMaps != 'ilastik'
     script:
     """
     python ${params.tool_unmicst}/UnMicst.py $core ${params.unmicstOpts} \
@@ -244,31 +248,23 @@ process unmicst {
 process ilastik {
     publishDir "${paths[4]}/ilastik", mode: 'copy', pattern: '*'
 
-    input: tuple file(core), val(mask), file(ch) from s4in_ilastik
+    input: tuple file(core), val(mask) from s4in_ilastik
     output:
       file('*') into s4out_ilastik
       tuple val(task.name), val(task.workDir) into prov4_ilastik
 
-    when: params.probabilityMaps == 'all' && idxStop >= 4
+    when: idxStart <= 4 && idxStop >= 4 && params.probabilityMaps != 'unmicst'
     script:
+    def model = "${params.tool_mcilastik}/classifiers/exemplar_001_nuclei.ilp"
     """
     python ${params.tool_mcilastik}/CommandIlastikPrepOME.py --input $core --output . \
-      --num_channels `tail -n +2 $ch | wc -l`
-    cp ${params.tool_mcilastik}/classifiers/exemplar_001.ilp ./model.ilp
-    ${params.tool_ilastik}/run_ilastik.sh --headless --project=model.ilp *.hdf5
+      --num_channels 1
+    ${params.tool_ilastik}/run_ilastik.sh --headless --project=$model *.hdf5
     """
 }
 
 // Step 5 input
 s5in = s4out_unmicst.mix( s4pre )
-
-// Determine which masks will be needed by quantification
-masks = params.maskAdd.tokenize()
-switch( masks.size() ) {
-    case 0: masks = ""; break;
-    case 1: masks = "**${masks[0]}"; break;
-    default: masks = "**{${masks.join(',')}}"
-}
 
 // Step 5 output - segmentation
 process s3seg {
