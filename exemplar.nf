@@ -4,8 +4,8 @@
 // .name - Name of the exemplar, e.g., "exemplar-001", "exemplar-002", etc.
 // .path - Path of the local folder for downloading to
 
-dir_raw = "raw_images"
-dir_ilp = "illumination_profiles"
+dir_raw = "raw"
+dir_ilp = "illumination"
 
 // Map the exemplar name to remote URL
 switch( params.name ) {

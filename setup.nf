@@ -115,3 +115,16 @@ process setup_quantification {
     """
 }
 
+process setup_naivestates {
+    executor 'local'
+    publishDir params.tools, mode: 'copy'
+
+    output: file '**' into tool_nstates
+    when: workflow.profile == "O2"
+
+    """
+    git clone https://github.com/labsyspharm/naivestates.git
+    cd naivestates
+    git checkout tags/${params.nstatesVersion}
+    """
+}
