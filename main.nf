@@ -271,7 +271,8 @@ process ilastik {
     """
     python ${params.tool_mcilastik}/CommandIlastikPrepOME.py --input $core --output . \
       --num_channels 1
-    ${params.tool_ilastik}/run_ilastik.sh --headless --project=$model *.hdf5
+    cp $model ./model.ilp
+    ${params.tool_ilastik}/run_ilastik.sh --headless --project=model.ilp *.hdf5
     """
 }
 
