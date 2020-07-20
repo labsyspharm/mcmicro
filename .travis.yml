@@ -13,7 +13,7 @@ script:
     ./nextflow exemplar.nf --name exemplar-001 --path ~/data/downloads;
   fi
 - cp -r ~/data/downloads/exemplar-001 ~/data/
-- ./nextflow main.nf --in ~/data/exemplar-001
+- ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps all
 - rm -r ~/data/exemplar-001
 - cp -r ~/data/downloads/exemplar-001 ~/data/
 - ./nextflow main.nf --in ~/data/exemplar-001 --start-at registration --stop-at registration
