@@ -20,7 +20,9 @@ params.probabilityMaps = 'unmicst'
 
 // Default parameters for individual modules
 params.ashlarOpts  = '-m 30'
+params.coreOpts    = ''
 params.unmicstOpts = ''
+params.ilastikOpts = ''
 params.s3segOpts   = ''
 params.quantOpts   = ''
 params.nstatesOpts = '-p png'
@@ -31,7 +33,6 @@ params.maskAdd     = ''
 
 // Legacy parameters (to be deprecated in future versions)
 params.illum         = false    // whether to run ImageJ+BaSiC
-params.skipAshlar    = false    // whether to skip ASHLAR
 params.quantificationMask = ''
 
 // Deprecation messages
@@ -39,8 +40,6 @@ if( params.quantificationMask != '' )
     error "--quantification-mask is deprecated; please use --mask-spatial and --mask-add instead"
 if( params.illum )
     error "--illum is deprecated; please use --start-at illumination"
-if( params.skipAshlar )
-    error "--skip-ashlar is deprecated; please use --start-at dearray or --start-at probability-maps"
 
 // Steps in the mcmicro pipeline
 mcmsteps = ["raw",		// Step 0
@@ -67,13 +66,19 @@ path_qc = "${params.in}/qc"
 
 // Check that deprecated locations are empty
 msg_dprc = {a,b -> "The use of $a has been deprecated. Please use $b instead."}
-Channel.fromPath( "${params.in}/raw_images/*" )
-    .subscribe{ it -> error msg_dprc("raw_images/", "raw/") }
 Channel.fromPath( "${params.in}/illumination_profiles/*" )
     .subscribe{ it -> error msg_dprc("illumination_profiles/", "illumination/") }
 
 // Identify marker information
 Channel.fromPath( "${params.in}/markers.csv", checkIfExists: true ).into{ch4; ch6}
+
+// Determine which masks will be needed by quantification
+masks = params.maskAdd.tokenize()
+switch( masks.size() ) {
+    case 0: masks = ""; break;
+    case 1: masks = "**${masks[0]}"; break;
+    default: masks = "**{${masks.join(',')}}"
+}
 
 // Helper function for finding raw images and precomputed intermediates
 findFiles = { p, path, ife -> p ?
@@ -107,20 +112,30 @@ findFiles(idxStart > 3 && params.tma, "${paths[3]}/*.tif",
 findFiles(idxStart > 3 && params.tma, "${paths[3]}/masks/*.tif",
 	  {error "No masks in ${paths[3]}/masks"})
     .map{ f -> getID(f,'_mask') }.set{pre_masks}
-findFiles(idxStart == 5, "${paths[4]}/unmicst/*Probabilities*.tif",
+findFiles(idxStart == 5 && params.probabilityMaps != 'ilastik',
+	  "${paths[4]}/unmicst/*Probabilities*.tif",
 	  {error "No probability maps found in ${paths[4]}/unmicst"})
-    .map{ f -> getID(f,'_Probabilities') }.set{pre_probs}
+    .map{ f -> getID(f,'_Probabilities') }
+    .map{ id, f -> tuple(id, f, 'unmicst') }.set{pre_unmicst}
+findFiles(idxStart == 5 && params.probabilityMaps != 'unmicst',
+	  "${paths[4]}/ilastik/*Probabilities*.tif",
+	  {error "No probability maps found in ${paths[4]}/ilastik"})
+    .map{ f -> getID(f,'_Probabilities') }
+    .map{ id, f -> tuple(id, f, 'ilastik') }.set{pre_ilastik}
 
 // Match up precomputed intermediates into tuples for each step
 pre_img.into{ pre_s2; pre_wsi }
 pre_cores.join( pre_masks ).into{ pre_s3; pre_tma }
 pre_wsi.map{ id, x -> tuple(id, x, file('NO_MASK')) }
-    .mix( pre_tma ).join( pre_probs ).set{ pre_s4 }
+    .mix( pre_tma ).into{ pre_cm_un; pre_cm_il }
+pre_cm_un.join( pre_unmicst ).set{ pre_s4_un }
+pre_cm_il.join( pre_ilastik ).set{ pre_s4_il }
+pre_s4_un.mix( pre_s4_il ).set{ pre_s4 }
 
 // Finalize the tuple format to match process outputs
 pre_s2.map{ id, f -> f }.set{s2pre}
 pre_s3.map{ id, c, m -> tuple(c,m) }.set{s3pre}
-pre_s4.map{ id, c, m, p -> tuple(c,m,p) }.set{s4pre}
+pre_s4.map{ id, c, m, p, mtd -> tuple(mtd,c,m,p) }.set{s4pre}
 
 // Step 1 output - illumination profiles
 process illumination {
@@ -218,7 +233,6 @@ else s3out = s3in.tissue.map{ x -> tuple(x, file('NO_MASK')) }
 // Add channel name file to every (image, mask) tuple
 s3out
     .mix( s3pre )
-    .combine(ch4)
     .into{ s4in_unmicst; s4in_ilastik }
 
 // Step 4 output - UnMicst
@@ -226,13 +240,14 @@ process unmicst {
     publishDir "${paths[4]}/unmicst", mode: 'copy', pattern: '*Probabilities*.tif'
     publishDir "${path_qc}/unmicst", mode: 'copy', pattern: '*Preview*.tif'
 
-    input: tuple file(core), val(mask), file(ch) from s4in_unmicst
+    input: tuple file(core), val(mask) from s4in_unmicst
     output:
-      tuple file(core), val(mask), file('*Probabilities*.tif') into s4out_unmicst
+      tuple val('unmicst'), file(core), val(mask),
+        file('*Probabilities*.tif') into s4out_unmicst
       file('*Preview*.tif') into s4out_pub
       tuple val(task.name), val(task.workDir) into prov4_unmicst
 
-    when: idxStart <= 4 && idxStop >= 4
+    when: idxStart <= 4 && idxStop >= 4 && params.probabilityMaps != 'ilastik'
     script:
     """
     python ${params.tool_unmicst}/UnMicst.py $core ${params.unmicstOpts} \
@@ -242,33 +257,32 @@ process unmicst {
 
 // Step 4 output - ilastik
 process ilastik {
-    publishDir "${paths[4]}/ilastik", mode: 'copy', pattern: '*'
+    publishDir "${paths[4]}/ilastik", mode: 'copy', pattern: '*Probabilities*.tif'
 
-    input: tuple file(core), val(mask), file(ch) from s4in_ilastik
+    input: tuple file(core), val(mask) from s4in_ilastik
     output:
-      file('*') into s4out_ilastik
+      tuple val('ilastik'), file(core), val(mask),
+        file('*Probabilities*.tif') into s4out_ilastik
       tuple val(task.name), val(task.workDir) into prov4_ilastik
 
-    when: params.probabilityMaps == 'all' && idxStop >= 4
+    when: idxStart <= 4 && idxStop >= 4 && params.probabilityMaps != 'unmicst'
     script:
+    def model = "${params.tool_mcilastik}/classifiers/exemplar_001_nuclei.ilp"
     """
     python ${params.tool_mcilastik}/CommandIlastikPrepOME.py --input $core --output . \
-      --num_channels `tail -n +2 $ch | wc -l`
-    cp ${params.tool_mcilastik}/classifiers/exemplar_001.ilp ./model.ilp
+      --num_channels 1
+    cp $model ./model.ilp
     ${params.tool_ilastik}/run_ilastik.sh --headless --project=model.ilp *.hdf5
     """
 }
 
-// Step 5 input
-s5in = s4out_unmicst.mix( s4pre )
+// Consolidate step 4 outputs
+s4out = s4out_unmicst.mix( s4out_ilastik )
 
-// Determine which masks will be needed by quantification
-masks = params.maskAdd.tokenize()
-switch( masks.size() ) {
-    case 0: masks = ""; break;
-    case 1: masks = "**${masks[0]}"; break;
-    default: masks = "**{${masks.join(',')}}"
-}
+// Step 5 input
+// Stage each image as method-core.tif (e.g., "unmicst-exemplar-001.tif")
+s5in = s4out.mix( s4pre )
+    .map{ s, c, m, p -> tuple("${s}-${c.getName()}", c, m, p) }
 
 // Step 5 output - segmentation
 process s3seg {
@@ -276,11 +290,11 @@ process s3seg {
     publishDir "${path_qc}/s3seg", mode: 'copy', pattern: '*/*Outlines.tif'
 
     input:
-	tuple file(core), file(mask), file(probs) from s5in
+	tuple val(core), file("${core}"), file(mask), file(probs) from s5in
 
     output:
 	// tuples for quantification
-        tuple file(core), file("**${params.maskSpatial}"),
+        tuple file("${core}"), file("**${params.maskSpatial}"),
           file("$masks") into s5out
         // rest of the files for publishDir
         file '**' into s5out_pub
@@ -302,7 +316,6 @@ process s3seg {
 
 // Step 6 input
 s6in = s5out.combine(ch6)
-
 
 // Step 6 output - quantification
 process quantification {
@@ -327,6 +340,7 @@ process quantification {
 process naivestates {
     publishDir paths[7], mode: 'copy', pattern: '*.csv'
     publishDir paths[7], mode: 'copy', pattern: 'plots/*.*'
+
     publishDir "${path_qc}/naivestates", mode: 'copy', pattern: 'plots/*/*.*',
       saveAs: { fn -> fn.replaceFirst("plots/","") }
     
@@ -366,4 +380,3 @@ workflow.onComplete {
 	}
     }
 }
-
