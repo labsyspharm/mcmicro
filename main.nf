@@ -112,20 +112,30 @@ findFiles(idxStart > 3 && params.tma, "${paths[3]}/*.tif",
 findFiles(idxStart > 3 && params.tma, "${paths[3]}/masks/*.tif",
 	  {error "No masks in ${paths[3]}/masks"})
     .map{ f -> getID(f,'_mask') }.set{pre_masks}
-findFiles(idxStart == 5, "${paths[4]}/unmicst/*Probabilities*.tif",
+findFiles(idxStart == 5 && params.probabilityMaps != 'ilastik',
+	  "${paths[4]}/unmicst/*Probabilities*.tif",
 	  {error "No probability maps found in ${paths[4]}/unmicst"})
-    .map{ f -> getID(f,'_Probabilities') }.set{pre_probs}
+    .map{ f -> getID(f,'_Probabilities') }
+    .map{ id, f -> tuple(id, f, 'unmicst') }.set{pre_unmicst}
+findFiles(idxStart == 5 && params.probabilityMaps != 'unmicst',
+	  "${paths[4]}/ilastik/*Probabilities*.tif",
+	  {error "No probability maps found in ${paths[4]}/ilastik"})
+    .map{ f -> getID(f,'_Probabilities') }
+    .map{ id, f -> tuple(id, f, 'ilastik') }.set{pre_ilastik}
 
 // Match up precomputed intermediates into tuples for each step
 pre_img.into{ pre_s2; pre_wsi }
 pre_cores.join( pre_masks ).into{ pre_s3; pre_tma }
 pre_wsi.map{ id, x -> tuple(id, x, file('NO_MASK')) }
-    .mix( pre_tma ).join( pre_probs ).set{ pre_s4 }
+    .mix( pre_tma ).into{ pre_cm_un; pre_cm_il }
+pre_cm_un.join( pre_unmicst ).set{ pre_s4_un }
+pre_cm_il.join( pre_ilastik ).set{ pre_s4_il }
+pre_s4_un.mix( pre_s4_il ).set{ pre_s4 }
 
 // Finalize the tuple format to match process outputs
 pre_s2.map{ id, f -> f }.set{s2pre}
 pre_s3.map{ id, c, m -> tuple(c,m) }.set{s3pre}
-pre_s4.map{ id, c, m, p -> tuple('unmicst',c,m,p) }.set{s4pre}
+pre_s4.map{ id, c, m, p, mtd -> tuple(mtd,c,m,p) }.set{s4pre}
 
 // Step 1 output - illumination profiles
 process illumination {
