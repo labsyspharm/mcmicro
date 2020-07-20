@@ -247,7 +247,7 @@ process unmicst {
 
 // Step 4 output - ilastik
 process ilastik {
-    publishDir "${paths[4]}/ilastik", mode: 'copy', pattern: '*'
+    publishDir "${paths[4]}/ilastik", mode: 'copy', pattern: '*Probabilities*.tif'
 
     input: tuple file(core), val(mask) from s4in_ilastik
     output:
