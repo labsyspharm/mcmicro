@@ -281,7 +281,7 @@ process ilastik {
     def model = "${params.tool_mcilastik}/classifiers/exemplar_001_nuclei.ilp"
     """
     python ${params.tool_mcilastik}/CommandIlastikPrepOME.py \
-      ${params.ilastikOpts} --input $core --output . \
+      ${params.ilastikOpts} --input $core --output .
     cp $model ./model.ilp
     ${params.tool_ilastik}/run_ilastik.sh --headless --project=model.ilp *.hdf5
     """
