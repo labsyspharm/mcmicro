@@ -2,7 +2,12 @@
 
 # Usage: ./O2conda.sh /path/to/conda/destination
 
+module load tiff conda2
+export LDFLAGS=`pkg-config --libs libtiff-4`
+export CFLAGS=`pkg-config --cflags libtiff-4`
+
 conda env create -f conda/ashlar.yml         -p "$1/ashlar"
+conda env create -f conda/coreo.yml          -p "$1/unetcoreo"
 conda env create -f conda/unmicst.yml        -p "$1/unmicst-2020-06-06"
 conda env create -f conda/s3seg.yml          -p "$1/s3seg"
 conda env create -f conda/quantification.yml -p "$1/quantification"

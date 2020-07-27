@@ -16,13 +16,14 @@ params.rawFormats  = '{.xdce,.nd,.scan,.htd}'
 params.flatFormats = '{.ome.tiff,.ome.tif,.rcpnl,.btf,.nd2,.tif,.czi}'
 
 // Default selection of methods for each step
+params.dearray         = 'unet'
 params.probabilityMaps = 'unmicst'
 
 // Default parameters for individual modules
 params.ashlarOpts  = '-m 30'
 params.coreOpts    = ''
 params.unmicstOpts = ''
-params.ilastikOpts = ''
+params.ilastikOpts = '--num_channels 1'
 params.s3segOpts   = ''
 params.quantOpts   = ''
 params.nstatesOpts = '-p png'
@@ -201,6 +202,8 @@ s2out
 // Step 3 output
 // De-arraying (if TMA)
 process dearray {
+    if( params.dearray == 'unet' && workflow.profile == 'standard' )
+        container "labsyspharm/unetcoreograph:${params.coreoVersion}"
     publishDir "${path_qc}/dearray", mode: 'copy', pattern: 'TMA_MAP.tif'
     publishDir paths[3], mode: 'copy', pattern: '**{[0-9],mask}.tif'
 
@@ -214,11 +217,19 @@ process dearray {
 
     when: idxStart <= 3 && idxStop >= 3 && params.tma
 
-    """
-    matlab -nodesktop -nosplash -r \
-    "addpath(genpath('${params.tool_core}')); \
-     tmaDearray('./$s','outputPath','.','useGrid','false','cluster',true); exit"
-    """
+    script:
+    if( params.dearray == 'unet' )
+        """
+        python ${params.tool_coreo}/UNetCoreograph.py ${params.coreOpts}\
+          --imagePath $s --outputPath .
+        """
+    
+    else
+        """
+        matlab -nodesktop -nosplash -r \
+        "addpath(genpath('${params.tool_corematlab}')); \
+         tmaDearray('./$s','outputPath','.','useGrid','false','cluster',true); exit"
+        """
 }
 
 // Finalize step 3 output by matching up cores to masks
@@ -269,8 +280,8 @@ process ilastik {
     script:
     def model = "${params.tool_mcilastik}/classifiers/exemplar_001_nuclei.ilp"
     """
-    python ${params.tool_mcilastik}/CommandIlastikPrepOME.py --input $core --output . \
-      --num_channels 1
+    python ${params.tool_mcilastik}/CommandIlastikPrepOME.py \
+      ${params.ilastikOpts} --input $core --output .
     cp $model ./model.ilp
     ${params.tool_ilastik}/run_ilastik.sh --headless --project=model.ilp *.hdf5
     """

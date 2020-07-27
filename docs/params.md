@@ -23,6 +23,9 @@ tma: true
 * `--stop-at <step>` - name of the final step to be executed by the pipeline. Spans the same vocabulary as `--start-at`. Default: `cell-states`.
 * `--tma` - if specified, mcmicro treats input data as a TMA. If omitted, the input is assumed to be a whole-slide image. Default: omitted.
 * `--raw-formats <formats>` - one or more file formats that mcmicro should look for. Default: `{.ome.tiff,.ome.tif,.rcpnl,.xdce,.nd,.scan,.htd,.btf,.nd2,.tif,.czi}`
+
+**Module selection**
+* `--dearray <unet|legacy>` - which module to use for TMA dearraying. Default: `unet`
 * `--probability-maps <unmicst|ilastik|all>` - which module(s) to use for probability map computation. Default: `unmicst`
 
 ## Parameters for individual modules
@@ -53,7 +56,7 @@ Up-to-date list can be viewed at [https://github.com/HMS-IDAC/UNetCoreograph](ht
 * `--mean` - override the trained model's mean intensity. Useful if your images are significantly dimmer or brighter.
 * `--std` - override the trained model's standard deviation intensity. Useful if your images are significantly dimmer or brighter.
 * `--scalingFactor` - an upsample or downsample factor used to resize the image. Useful when the pixel sizes of your image differ from the model (ie. 0.65 microns/pixel for human nuclei model)
-* `--stackOutput` - (NEW) if selected, UnMicst will write all probability maps as a single multipage tiff file. By default, this is off causing UnMicst to write each class as separate files
+* `--stackOutput` - if selected, UnMicst will write all probability maps as a single multipage tiff file. By default, this is off causing UnMicst to write each class as separate files
 
 ### Arguments to Ilastik(`--ilastik-opts`):
 

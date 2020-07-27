@@ -1,0 +1,13 @@
+name: coreograph
+dependencies:
+  - python=3.6
+  - tensorflow=1.15.0
+  - scikit-image=0.14.2
+  - matplotlib
+  - scipy=1.1.0
+  - cython
+  - opencv
+  - pip
+  - pip:
+    - tifffile==2020.2.16
+    - git+https://github.com/FZJ-INM1-BDA/pytiff.git@0701f28e5862c26024e8daa34201005b16db4c8f
