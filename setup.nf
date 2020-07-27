@@ -28,18 +28,32 @@ process setup_illumination {
     """
 }
 
-process setup_coreograph {
+process setup_coreolegacy {
     executor 'local'
     publishDir params.tools, mode: 'copy'
 
     output:
-    file '**' into tool_core
+    file '**' into tool_corelegacy
     
     """
     git clone https://github.com/HMS-IDAC/Coreograph.git
     cd Coreograph
     git checkout af56eaba4df0163fa1c17ece8198a043d7d1929c
     curl -o TMAsegmentation/model1.mat https://mcmicro.s3.amazonaws.com/models/model1.mat
+    """
+}
+
+process setup_unetcoreo {
+    executor 'local'
+    publishDir params.tools, mode: 'copy'
+
+    output: file '**' into tool_coreo
+    when:   workflow.profile == "O2"
+
+    """
+    git clone https://github.com/HMS-IDAC/UNetCoreograph.git
+    cd UNetCoreograph
+    git checkout tags/${params.coreoVersion}
     """
 }
 
