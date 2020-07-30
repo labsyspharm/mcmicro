@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/labsyspharm/mcmicro.svg?branch=master)](https://travis-ci.com/labsyspharm/mcmicro)
+
 # mcmicro: Multiple-choice microscopy pipeline
 
 **Funding:** This work is supported by the following:

@@ -6,14 +6,14 @@ The basic pipeline execution consists of 1) ensuring you have the latest version
 # Get the latest version of the pipeline
 nextflow pull labsyspharm/mcmicro
 
-# Run the pipeline on exemplar data
+# Run the pipeline on exemplar data (starting from the registration step, by default)
 nextflow run labsyspharm/mcmicro --in path/to/exemplar-001
 
 # Use --tma to dearray a tissue microarray and process each core in parallel
 nextflow run labsyspharm/mcmicro --in path/to/exemplar-002 --tma
 ```
 
-By default, the pipeline starts from the registration step. Use `--start-at` and `--stop-at` flags to execute any contiguous section of the pipeline instead. Any subdirectory name listed in [Directory Structure](dir.html) is a valid starting and stopping point. **Note that starting at any step beyond registration requires pre-computed output of the previous steps placed at the correct location in the project directory.**
+By default, the pipeline starts from the registration step. Use `--start-at` and `--stop-at` flags to execute any contiguous section of the pipeline instead. Any subdirectory name listed in [Directory Structure](#directory-structure) is a valid starting and stopping point. **Note that starting at any step beyond registration requires pre-computed output of the previous steps placed at the correct location in the project directory.**
 
 ``` bash
 # If you already have a pre-stitched TMA image, start at the dearray step
@@ -41,7 +41,7 @@ will provide `-m 35 --pyramid` as additional command line arguments to ASHLAR.
 
 As the number of custom flags grows, providing them all on the command line can become unwieldy. Instead, parameter values can be stored in a YAML file, which is then provided to nextflow using `-params-file`. The general rules of thumb for composing YAML files:
 1. Anything that would appear as `--param value` on the command line should be `param: value` in the YAML file.
-1. Anything that would appear as --flag on the command line should be `flag: true` in the YAML file.
+1. Anything that would appear as `--flag` on the command line should be `flag: true` in the YAML file.
 1. The above only applies to double-dashed arguments (which are passed to the pipeline). The single-dash arguments (like `-profile`) cannot be moved to YAML, because they are given to nextflow; the pipeline never sees them.
 
 For example, consider the following command:
@@ -66,35 +66,14 @@ nextflow run labsyspharm/mcmicro -params-file myexperiment.yml
 
 To run the pipeline on O2, three additional steps are required:
 1. You must load the necessary O2 modules.
-2. All pipeline calls need to have the flag `-profile O2`. Use `-profile O2large` or `-profile O2massive` for large or very large whole-slide images, respectively. Use `-profile O2TMA` or `-profile O2TMAlarge` for TMAs. The profiles differ in the amount of resources requested for each module.
-3. The pipeline execution must be initiated on a compute node (the process is too resource-intensive for a login node and will be automatically terminated).
+1. All pipeline calls need to have the flag `-profile O2`. Use `-profile O2large` or `-profile O2massive` for large or very large whole-slide images, respectively. Use `-profile O2TMA` or `-profile O2TMAlarge` for TMAs. The profiles differ in the amount of resources requested for each module.
+1. To avoid running over on your disk quota, it is also recommended to use `/n/scratch3` for holding the `work/` directory. Furthermore, `n/scratch3` is faster than `/home` or `/n/groups`, so jobs will complete faster. 
 
-``` bash
-# Load necessary modules (matlab is optional, if not working with TMA)
-module load java matlab conda2
-
-# Get the latest version of the pipeline
-nextflow pull labsyspharm/mcmicro
-
-# All previous commands require an additional `-profile O2` flag and must be run from a compute node
-srun -p priority -t 0-12 --mem 8G nextflow run labsyspharm/mcmicro --in path/to/exemplar-001 -profile O2
-srun -p priority -t 0-12 --mem 8G nextflow run labsyspharm/mcmicro --in path/to/exemplar-002 --tma -profile O2TMA
-```
-
-In the above, `-t 0-12 --mem 8G` requests 12 hours of compute time and 8GB of memory from the O2 cluster. To avoid running over on your disk quota, it is also recommended to use `/n/scratch3` for holding the `work/` directory. Furthermore, `n/scratch3` is faster than `/home` or `/n/groups`, so jobs will complete faster:
-
-```
-srun -p priority -t 0-12 --mem 8G \
-  nextflow run labsyspharm/mcmicro --in path/to/exemplar-001 -profile O2 -w /n/scratch3/users/.../$USER/work
-```
-
-where `...` should be replaced with the first letter of your username.
-
-An alternative to the above `srun` command is to compose an `sbatch` script that encapsulates resource requests, module loading and the `nextflow` command into a single entity. Create a `submit_mcmicro.sh` file based on the following template:
+Compose an `sbatch` script that encapsulates resource requests, module loading and the `nextflow` command into a single entity. Create a `submit_mcmicro.sh` file based on the following template:
 
 ```
 #!/bin/sh
-#SBATCH -p medium
+#SBATCH -p short
 #SBATCH -J nextflow_O2              
 #SBATCH -o run.o
 #SBATCH -e run.e
@@ -104,10 +83,10 @@ An alternative to the above `srun` command is to compose an `sbatch` script that
 #SBATCH --mail-user=user@university.edu   # Email to which notifications will be sent
 
 module purge
-module load java matlab conda2
-/home/$USER/bin/nextflow labsyspharm/mcmicro --in /n/scratch3/users/.../$USER/exemplar-001 -profile O2 -w /n/scratch3/users/.../$USER/work
+module load java conda2
+/home/$USER/bin/nextflow run labsyspharm/mcmicro --in /n/scratch3/users/${USER:0:1}/$USER/exemplar-001 -profile O2 -w /n/scratch3/users/${USER:0:1}/$USER/work
 ```
-replacing relevant fields (e.g., `user@university.edu` and `...`) with your own values.
+replacing relevant fields (e.g., `user@university.edu`) with your own values.
 
 The pipeline run can then be kicked off with `sbatch submit_mcmicro.sh`.
 

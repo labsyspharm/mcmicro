@@ -204,7 +204,7 @@ s2out
 process dearray {
     if( params.dearray == 'unet' && workflow.profile == 'standard' )
         container "labsyspharm/unetcoreograph:${params.coreoVersion}"
-    publishDir "${path_qc}/dearray", mode: 'copy', pattern: 'TMA_MAP.tif'
+    publishDir "${path_qc}/coreo", mode: 'copy', pattern: 'TMA_MAP.tif'
     publishDir paths[3], mode: 'copy', pattern: '**{[0-9],mask}.tif'
 
     input: file s from s3in.tma
