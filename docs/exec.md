@@ -41,7 +41,7 @@ will provide `-m 35 --pyramid` as additional command line arguments to ASHLAR.
 
 As the number of custom flags grows, providing them all on the command line can become unwieldy. Instead, parameter values can be stored in a YAML file, which is then provided to nextflow using `-params-file`. The general rules of thumb for composing YAML files:
 1. Anything that would appear as `--param value` on the command line should be `param: value` in the YAML file.
-1. Anything that would appear as --flag on the command line should be `flag: true` in the YAML file.
+1. Anything that would appear as `--flag` on the command line should be `flag: true` in the YAML file.
 1. The above only applies to double-dashed arguments (which are passed to the pipeline). The single-dash arguments (like `-profile`) cannot be moved to YAML, because they are given to nextflow; the pipeline never sees them.
 
 For example, consider the following command:
@@ -66,31 +66,10 @@ nextflow run labsyspharm/mcmicro -params-file myexperiment.yml
 
 To run the pipeline on O2, three additional steps are required:
 1. You must load the necessary O2 modules.
-2. All pipeline calls need to have the flag `-profile O2`. Use `-profile O2large` or `-profile O2massive` for large or very large whole-slide images, respectively. Use `-profile O2TMA` or `-profile O2TMAlarge` for TMAs. The profiles differ in the amount of resources requested for each module.
-3. The pipeline execution must be initiated on a compute node (the process is too resource-intensive for a login node and will be automatically terminated).
+1. All pipeline calls need to have the flag `-profile O2`. Use `-profile O2large` or `-profile O2massive` for large or very large whole-slide images, respectively. Use `-profile O2TMA` or `-profile O2TMAlarge` for TMAs. The profiles differ in the amount of resources requested for each module.
+1. To avoid running over on your disk quota, it is also recommended to use `/n/scratch3` for holding the `work/` directory. Furthermore, `n/scratch3` is faster than `/home` or `/n/groups`, so jobs will complete faster. 
 
-``` bash
-# Load necessary modules
-module load java conda2
-
-# Get the latest version of the pipeline
-nextflow pull labsyspharm/mcmicro
-
-# All previous commands require an additional `-profile O2` flag and must be run from a compute node
-srun -p priority -t 0-12 --mem 8G nextflow run labsyspharm/mcmicro --in path/to/exemplar-001 -profile O2
-srun -p priority -t 0-12 --mem 8G nextflow run labsyspharm/mcmicro --in path/to/exemplar-002 --tma -profile O2TMA
-```
-
-In the above, `-t 0-12 --mem 8G` requests 12 hours of compute time and 8GB of memory from the O2 cluster. To avoid running over on your disk quota, it is also recommended to use `/n/scratch3` for holding the `work/` directory. Furthermore, `n/scratch3` is faster than `/home` or `/n/groups`, so jobs will complete faster:
-
-```
-srun -p priority -t 0-12 --mem 8G \
-  nextflow run labsyspharm/mcmicro --in path/to/exemplar-001 -profile O2 -w /n/scratch3/users/${USER:0:1}/$USER/work
-```
-
-where `${USER:0:1}` will return the first letter of your username.
-
-The above `srun` command requires that you leave your session open, which may not be convenient for large datasets that take many hours to process. An alternative is to compose an `sbatch` script that encapsulates resource requests, module loading and the `nextflow` command into a single entity. Create a `submit_mcmicro.sh` file based on the following template:
+Compose an `sbatch` script that encapsulates resource requests, module loading and the `nextflow` command into a single entity. Create a `submit_mcmicro.sh` file based on the following template:
 
 ```
 #!/bin/sh
@@ -104,7 +83,7 @@ The above `srun` command requires that you leave your session open, which may no
 #SBATCH --mail-user=user@university.edu   # Email to which notifications will be sent
 
 module purge
-module load java matlab conda2
+module load java conda2
 /home/$USER/bin/nextflow run labsyspharm/mcmicro --in /n/scratch3/users/${USER:0:1}/$USER/exemplar-001 -profile O2 -w /n/scratch3/users/${USER:0:1}/$USER/work
 ```
 replacing relevant fields (e.g., `user@university.edu`) with your own values.
