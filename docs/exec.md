@@ -6,7 +6,7 @@ The basic pipeline execution consists of 1) ensuring you have the latest version
 # Get the latest version of the pipeline
 nextflow pull labsyspharm/mcmicro
 
-# Run the pipeline on exemplar data
+# Run the pipeline on exemplar data (starting from the registration step, by default)
 nextflow run labsyspharm/mcmicro --in path/to/exemplar-001
 
 # Use --tma to dearray a tissue microarray and process each core in parallel
