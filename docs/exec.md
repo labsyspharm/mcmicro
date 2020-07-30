@@ -13,7 +13,7 @@ nextflow run labsyspharm/mcmicro --in path/to/exemplar-001
 nextflow run labsyspharm/mcmicro --in path/to/exemplar-002 --tma
 ```
 
-By default, the pipeline starts from the registration step. Use `--start-at` and `--stop-at` flags to execute any contiguous section of the pipeline instead. Any subdirectory name listed in [Directory Structure](dir.html) is a valid starting and stopping point. **Note that starting at any step beyond registration requires pre-computed output of the previous steps placed at the correct location in the project directory.**
+By default, the pipeline starts from the registration step. Use `--start-at` and `--stop-at` flags to execute any contiguous section of the pipeline instead. Any subdirectory name listed in [Directory Structure](#directory-structure) is a valid starting and stopping point. **Note that starting at any step beyond registration requires pre-computed output of the previous steps placed at the correct location in the project directory.**
 
 ``` bash
 # If you already have a pre-stitched TMA image, start at the dearray step
@@ -70,8 +70,8 @@ To run the pipeline on O2, three additional steps are required:
 3. The pipeline execution must be initiated on a compute node (the process is too resource-intensive for a login node and will be automatically terminated).
 
 ``` bash
-# Load necessary modules (matlab is optional, if not working with TMA)
-module load java matlab conda2
+# Load necessary modules
+module load java conda2
 
 # Get the latest version of the pipeline
 nextflow pull labsyspharm/mcmicro
@@ -85,16 +85,16 @@ In the above, `-t 0-12 --mem 8G` requests 12 hours of compute time and 8GB of me
 
 ```
 srun -p priority -t 0-12 --mem 8G \
-  nextflow run labsyspharm/mcmicro --in path/to/exemplar-001 -profile O2 -w /n/scratch3/users/.../$USER/work
+  nextflow run labsyspharm/mcmicro --in path/to/exemplar-001 -profile O2 -w /n/scratch3/users/${USER:0:1}/$USER/work
 ```
 
-where `...` should be replaced with the first letter of your username.
+where `${USER:0:1}` will return the first letter of your username.
 
-An alternative to the above `srun` command is to compose an `sbatch` script that encapsulates resource requests, module loading and the `nextflow` command into a single entity. Create a `submit_mcmicro.sh` file based on the following template:
+The above `srun` command requires that you leave your session open, which may not be convenient for large datasets that take many hours to process. An alternative is to compose an `sbatch` script that encapsulates resource requests, module loading and the `nextflow` command into a single entity. Create a `submit_mcmicro.sh` file based on the following template:
 
 ```
 #!/bin/sh
-#SBATCH -p medium
+#SBATCH -p short
 #SBATCH -J nextflow_O2              
 #SBATCH -o run.o
 #SBATCH -e run.e
@@ -105,9 +105,9 @@ An alternative to the above `srun` command is to compose an `sbatch` script that
 
 module purge
 module load java matlab conda2
-/home/$USER/bin/nextflow labsyspharm/mcmicro --in /n/scratch3/users/.../$USER/exemplar-001 -profile O2 -w /n/scratch3/users/.../$USER/work
+/home/$USER/bin/nextflow run labsyspharm/mcmicro --in /n/scratch3/users/${USER:0:1}/$USER/exemplar-001 -profile O2 -w /n/scratch3/users/${USER:0:1}/$USER/work
 ```
-replacing relevant fields (e.g., `user@university.edu` and `...`) with your own values.
+replacing relevant fields (e.g., `user@university.edu`) with your own values.
 
 The pipeline run can then be kicked off with `sbatch submit_mcmicro.sh`.
 
