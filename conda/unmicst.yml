@@ -1,11 +1,12 @@
-name: unmicst
+name: unmicst-gpu
 dependencies:
-  - python=3.6
-  - tensorflow=1.15.0
-  - scikit-image=0.14.2
+  - cudatoolkit
+  - python
+  - tensorflow-gpu
+  - cudnn
+  - scikit-image
   - matplotlib
-  - nd2reader
-  - czifile
-  - pip
-  - pip:
-    - tifffile
+  - scipy
+  - tifffile
+  - czifile=2019.7.2
+  - nd2reader=3.2.3
