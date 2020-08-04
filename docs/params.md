@@ -66,6 +66,7 @@ Up-to-date list can be viewed at [https://github.com/HMS-IDAC/UNetCoreograph](ht
 * `--num_channels` - Number of channels to export per image (Ex: 40 corresponds to a 40 channel ome.tif image)
 * `--ring_mask` - Include if you have a ring mask in the same directory to use for reducing size of hdf5 image. do not include if not
 * `--crop_amount` -  Number of crops you would like to extract
+* **[mcmicro]** `--ilastik-model` - A custom `.ilp` file to be used as the classifier model
 
 Up-to-date list can be viewed at [https://github.com/labsyspharm/mcmicro-ilastik](https://github.com/labsyspharm/mcmicro-ilastik)
 
