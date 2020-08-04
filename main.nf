@@ -29,8 +29,9 @@ params.quantOpts   = ''
 params.nstatesOpts = '-p png'
 
 // Path-specific parameters that cannot be captured by the above *opts
-params.maskSpatial = 'cellMask.tif'
-params.maskAdd     = ''
+params.maskSpatial  = 'cellMask.tif'
+params.maskAdd      = ''
+params.ilastikModel = 'NO_MODEL'
 
 // Legacy parameters (to be deprecated in future versions)
 params.illum         = false    // whether to run ImageJ+BaSiC
@@ -80,6 +81,9 @@ switch( masks.size() ) {
     case 1: masks = "**${masks[0]}"; break;
     default: masks = "**{${masks.join(',')}}"
 }
+
+// Identify the ilastik model
+s4_mdl = file( params.ilastikModel )
 
 // Helper function for finding raw images and precomputed intermediates
 findFiles = { p, path, ife -> p ?
@@ -270,7 +274,9 @@ process unmicst {
 process ilastik {
     publishDir "${paths[4]}/ilastik", mode: 'copy', pattern: '*Probabilities*.tif'
 
-    input: tuple file(core), val(mask) from s4in_ilastik
+    input:
+	tuple file(core), val(mask) from s4in_ilastik
+        file(mdl) from s4_mdl
     output:
       tuple val('ilastik'), file(core), val(mask),
         file('*Probabilities*.tif') into s4out_ilastik
@@ -278,7 +284,8 @@ process ilastik {
 
     when: idxStart <= 4 && idxStop >= 4 && params.probabilityMaps != 'unmicst'
     script:
-    def model = "${params.tool_mcilastik}/classifiers/exemplar_001_nuclei.ilp"
+        def model = mdl.name != "NO_MODEL" ? mdl.name :
+	"${params.tool_mcilastik}/classifiers/exemplar_001_nuclei.ilp"
     """
     python ${params.tool_mcilastik}/CommandIlastikPrepOME.py \
       ${params.ilastikOpts} --input $core --output .
