@@ -8,7 +8,7 @@ export CFLAGS=`pkg-config --cflags libtiff-4`
 
 conda env create -f conda/ashlar.yml         -p "$1/ashlar"
 conda env create -f conda/coreo.yml          -p "$1/unetcoreo"
-conda env create -f conda/unmicst.yml        -p "$1/unmicst-2020-06-06"
+conda env create -f conda/unmicst.yml        -p "$1/unmicst-gpu"
 conda env create -f conda/s3seg.yml          -p "$1/s3seg"
 conda env create -f conda/quantification.yml -p "$1/quantification"
 conda env create -f conda/mc_ilastik.yml     -p "$1/mc_ilastik"
