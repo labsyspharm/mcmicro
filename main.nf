@@ -206,7 +206,7 @@ s2out
 // Step 3 output
 // De-arraying (if TMA)
 process dearray {
-    if( params.dearray == 'unet' && workflow.profile == 'standard' )
+    if( params.dearray == 'unet' && (workflow.profile == 'standard' || workflow.profile.contains('AWS')))
         container "labsyspharm/unetcoreograph:${params.coreoVersion}"
     publishDir "${path_qc}/coreo", mode: 'copy', pattern: 'TMA_MAP.tif'
     publishDir paths[3], mode: 'copy', pattern: '**{[0-9],mask}.tif'
