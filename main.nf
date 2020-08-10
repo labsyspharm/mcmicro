@@ -83,7 +83,8 @@ switch( masks.size() ) {
 }
 
 // Identify the ilastik model
-s4_mdl = file( params.ilastikModel )
+s4_mdl = params.ilastikModel != 'NO_MODEL' ?
+    file(params.ilastikModel) : 'NO_MODEL'
 
 // Helper function for finding raw images and precomputed intermediates
 findFiles = { p, path, ife -> p ?
@@ -131,7 +132,7 @@ findFiles(idxStart == 5 && params.probabilityMaps != 'unmicst',
 // Match up precomputed intermediates into tuples for each step
 pre_img.into{ pre_s2; pre_wsi }
 pre_cores.join( pre_masks ).into{ pre_s3; pre_tma }
-pre_wsi.map{ id, x -> tuple(id, x, file('NO_MASK')) }
+pre_wsi.map{ id, x -> tuple(id, x, 'NO_MASK') }
     .mix( pre_tma ).into{ pre_cm_un; pre_cm_il }
 pre_cm_un.join( pre_unmicst ).set{ pre_s4_un }
 pre_cm_il.join( pre_ilastik ).set{ pre_s4_il }
@@ -242,7 +243,7 @@ if( params.tma ) {
     id_masks = s3out_masks.flatten().map{ f -> getID(f,'_mask') }
     s3out = id_cores.join( id_masks ).map{ id, c, m -> tuple(c, m) }
 }
-else s3out = s3in.tissue.map{ x -> tuple(x, file('NO_MASK')) }
+else s3out = s3in.tissue.map{ x -> tuple(x, 'NO_MASK') }
 
 // Step 4 input
 // Add channel name file to every (image, mask) tuple
@@ -276,7 +277,7 @@ process ilastik {
 
     input:
 	tuple file(core), val(mask) from s4in_ilastik
-        file(mdl) from s4_mdl
+        file(mdl) name 'input.ilp' from s4_mdl
     output:
       tuple val('ilastik'), file(core), val(mask),
         file('*Probabilities*.tif') into s4out_ilastik
@@ -284,7 +285,7 @@ process ilastik {
 
     when: idxStart <= 4 && idxStop >= 4 && params.probabilityMaps != 'unmicst'
     script:
-        def model = mdl.name != "NO_MODEL" ? mdl.name :
+        def model = params.ilastikModel != "NO_MODEL" ? 'input.ilp' :
 	"${params.tool_mcilastik}/classifiers/exemplar_001_nuclei.ilp"
     """
     python ${params.tool_mcilastik}/CommandIlastikPrepOME.py \
@@ -308,7 +309,7 @@ process s3seg {
     publishDir "${path_qc}/s3seg", mode: 'copy', pattern: '*/*Outlines.tif'
 
     input:
-	tuple val(core), file("${core}"), file(mask), file(probs) from s5in
+	tuple val(core), file("${core}"), file('mask.tif'), file(probs) from s5in
 
     output:
 	// tuples for quantification
@@ -321,14 +322,13 @@ process s3seg {
     when: idxStart <= 5 && idxStop >= 5
     
     script:
-    def crop = params.tma ? 'dearray' : 'noCrop'
+	def crop = params.tma ?
+	'--crop dearray --maskPath mask.tif' :
+	'--crop noCrop'
     """
-    python ${params.tool_segment}/S3segmenter.py --crop $crop \
-       --imagePath $core \
-       --maskPath $mask \
-       --stackProbPath $probs \
-       ${params.s3segOpts} \
-       --outputPath .
+    python ${params.tool_segment}/S3segmenter.py $crop \
+       --imagePath $core --stackProbPath $probs \
+       ${params.s3segOpts} --outputPath .
     """
 }
 
@@ -349,8 +349,7 @@ process quantification {
     """
     python ${params.tool_quant}/CommandSingleCellExtraction.py \
     --mask $maskSpt $maskAdd --image $core \
-    ${params.quantOpts} \
-    --output . --channel_names $ch
+    ${params.quantOpts} --output . --channel_names $ch
     """
 }
 
