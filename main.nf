@@ -83,7 +83,8 @@ switch( masks.size() ) {
 }
 
 // Identify the ilastik model
-s4_mdl = file( params.ilastikModel )
+s4_mdl = params.ilastikModel != 'NO_MODEL' ?
+    file(params.ilastikModel) : 'NO_MODEL'
 
 // Helper function for finding raw images and precomputed intermediates
 findFiles = { p, path, ife -> p ?
@@ -276,7 +277,7 @@ process ilastik {
 
     input:
 	tuple file(core), val(mask) from s4in_ilastik
-        file(mdl) from s4_mdl
+        file(mdl) name 'input.ilp' from s4_mdl
     output:
       tuple val('ilastik'), file(core), val(mask),
         file('*Probabilities*.tif') into s4out_ilastik
@@ -284,7 +285,7 @@ process ilastik {
 
     when: idxStart <= 4 && idxStop >= 4 && params.probabilityMaps != 'unmicst'
     script:
-        def model = mdl.name != "NO_MODEL" ? mdl.name :
+        def model = params.ilastikModel != "NO_MODEL" ? 'input.ilp' :
 	"${params.tool_mcilastik}/classifiers/exemplar_001_nuclei.ilp"
     """
     python ${params.tool_mcilastik}/CommandIlastikPrepOME.py \
