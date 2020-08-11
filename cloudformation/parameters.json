@@ -1,0 +1,59 @@
+[
+    {
+        "ParameterKey":"VpcId",
+        "ParameterValue":"vpc-77548c11"
+    },
+    {
+        "ParameterKey":"BucketPrefix",
+        "ParameterValue":"mcmicro"
+    },
+    {
+        "ParameterKey":"ComputeEnvironmentNamePrefix",
+        "ParameterValue":"mcmicro-compute"
+    },
+    {
+        "ParameterKey":"ProjectTag",
+        "ParameterValue":"ccsp"
+    },
+    {
+        "ParameterKey":"NextflowAMI",
+        "ParameterValue":"ami-08c1bd5176f3daa3e"
+    },
+
+    {
+        "ParameterKey":"BatchClusterEC2MinCpus",
+        "ParameterValue": "0"
+    },
+    {
+        "ParameterKey":"BatchClusterEC2MaxCpus",
+        "ParameterValue": "256"
+    },
+    {
+        "ParameterKey":"BatchClusterEC2DesiredCpus",
+        "ParameterValue": "0"
+    },
+    {
+        "ParameterKey":"BatchClusterSpotMinCpus",
+        "ParameterValue": "0"
+    },
+    {
+        "ParameterKey":"BatchClusterSpotMaxCpus",
+        "ParameterValue": "256"
+    },
+    {
+        "ParameterKey":"BatchClusterSpotDesiredCpus",
+        "ParameterValue": "0"
+    },
+    {
+        "ParameterKey":"BatchClusterSpotDesiredCpus",
+        "ParameterValue": "0"
+    },
+    {
+        "ParameterKey":"BatchClusterSpotBidPercentage",
+        "ParameterValue":"50"
+    },
+    {
+        "ParameterKey":"BatchSubnets",
+        "ParameterValue": "subnet-7f4f8118,subnet-950ecebb"
+    }
+]
