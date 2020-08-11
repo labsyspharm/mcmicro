@@ -4,6 +4,7 @@ dependencies:
   - scikit-learn
   - scikit-image
   - matplotlib
+  - joblib
   - pip
   - pip:
     - tifffile
