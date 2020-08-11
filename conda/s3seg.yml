@@ -1,4 +1,4 @@
-name: s3segmenter
+name: s3seg-2020-08-11
 dependencies:
   - python=3.6
   - scikit-learn
