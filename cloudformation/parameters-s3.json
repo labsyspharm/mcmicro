@@ -1,0 +1,10 @@
+[
+    {
+        "ParameterKey":"BucketPrefix",
+        "ParameterValue":"mcmicro"
+    },
+    {
+        "ParameterKey":"ProjectTag",
+        "ParameterValue":"ccsp"
+    }
+]

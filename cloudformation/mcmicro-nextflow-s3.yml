@@ -1,0 +1,54 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >-
+  S3 resources for running mcmicro pipeline in AWS Batch
+
+Parameters:
+  BucketPrefix:
+    Type: String
+    Description: Prefix for the Nextflow S3 buckets
+  ProjectTag:
+    Type: String
+    Description: Project tag
+
+Resources:
+  McmicroNextflowWorkBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${BucketPrefix}-work
+      Tags:
+        - Key: project
+          Value: !Ref ProjectTag
+
+  McmicroNextflowInBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${BucketPrefix}-in
+      Tags:
+        - Key: project
+          Value: !Ref ProjectTag  
+
+  McmicroNextflowOutBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub ${BucketPrefix}-out
+      Tags:
+        - Key: project
+          Value: !Ref ProjectTag
+
+Outputs:
+  McmicroNextflowWorkBucketArn:
+    Description: S3 work bucket Arn
+    Value: !GetAtt McmicroNextflowWorkBucket.Arn
+    Export:
+      Name: mcmicro-nextflow-work-bucket-arn
+  McmicroNextflowInBucketArn:
+    Description: S3 in bucket Arn
+    Value: !GetAtt McmicroNextflowInBucket.Arn
+    Export:
+      Name: mcmicro-nextflow-in-bucket-arn      
+  McmicroNextflowOutBucketArn:
+    Description: S3 out bucket Arn
+    Value: !GetAtt McmicroNextflowOutBucket.Arn
+    Export:
+      Name: mcmicro-nextflow-out-bucket-arn

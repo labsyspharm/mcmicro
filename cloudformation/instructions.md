@@ -4,8 +4,8 @@
 This folder contains the AWS CloudFormation template to create the needed AWS resources for running mcmicro pipeline in AWS. To create the stack, you need to have AWS command line tools installed and configured. Follow the official instructions from here:
 - https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html
 
-## Configure parameters.json
-You also have to configure a few things in the parameters.json file. Here is a list of the parameters, star denotes a parameter that must be changed from its default value.
+## Configure parameters-batch.json
+You also have to configure a few things in the parameters-batch.json file. Here is a list of the parameters, star denotes a parameter that must be changed from its default value.
 
 | ParameterKey | ParameterValue |
 | ------------ | -------------- |
@@ -18,10 +18,24 @@ You also have to configure a few things in the parameters.json file. Here is a l
 | BatchClusterEC2Min/Max/DesiredCpus | These parameters control what type of EC2 instances will be created for the pipeline jobs. Best to leave them as-is, and let Nextflow have the control. |
 | BatchClusterSpotBidPercentage | Bid percentage, i.e. how much you are prepared to pay for the Spot instances |
 
-## Create CloudFormation stack
-After everything is configured, run the bash script `create-stack.sh`
+## Create CloudFormation stacks
+After everything is configured, run the bash scripts (in this order)
+- `create-s3.sh`
+- `create-batch.sh`
 
-If later on you need to change something, e.g. project tag, you need to run the bash script `update-stack.sh`
+If later on you need to change something, e.g. project tag, you need to run the bash script `update-s3.sh` and `update-batch.sh` 
+(Updating AWS Batch resources often require that the whole stack is deleted and created from scratch)
 
 You should be all set now to run mcmicro in AWS!
+
+## Running mcmicro with an EC2 instance
+
+### Create and configure EC2 instance
+When using AWS, it's recommended to run Nextflow within an EC2 instance. Network access to S3 work bucket will be much faster. Follow these steps to create and configure the EC2 instance:
+- Create a new EC2 instance. The instance is used only to run Nextflow and orchestrate the pipeline, it will not be used to run actual jobs. Hence a low performance type such as t3.small/medium should suffice.
+- The instance needs an IAM role which allows access to AWS Batch and S3. You can use the provided IAM role: mcmicro-nextflow-batch-McmicroEC2ClientProfile
+- Start the instance, and install AWS CLI, Nextflow and mcmicro
+
+### Run mcmicro pipeline
+
 

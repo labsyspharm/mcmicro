@@ -4,10 +4,6 @@
         "ParameterValue":"vpc-77548c11"
     },
     {
-        "ParameterKey":"BucketPrefix",
-        "ParameterValue":"mcmicro"
-    },
-    {
         "ParameterKey":"ComputeEnvironmentNamePrefix",
         "ParameterValue":"mcmicro-compute"
     },
@@ -19,7 +15,10 @@
         "ParameterKey":"NextflowAMI",
         "ParameterValue":"ami-08c1bd5176f3daa3e"
     },
-
+    {
+        "ParameterKey":"NextflowAMIGPU",
+        "ParameterValue":"ami-0e2c49a125d6cf87f"
+    },
     {
         "ParameterKey":"BatchClusterEC2MinCpus",
         "ParameterValue": "0"
