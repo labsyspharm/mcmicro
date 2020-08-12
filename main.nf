@@ -324,7 +324,7 @@ process s3seg {
     script:
 	def crop = params.tma ?
 	'--crop dearray --maskPath mask.tif' :
-	'--crop noCrop'
+	''
     """
     python ${params.tool_segment}/S3segmenter.py $crop \
        --imagePath $core --stackProbPath $probs \
