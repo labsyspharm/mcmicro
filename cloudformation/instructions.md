@@ -1,4 +1,4 @@
-# Instructions how to configure AWS resources for mcmicro
+# Instructions for configuring AWS resources for mcmicro
 
 ## Install AWS CLI tool
 This folder contains the AWS CloudFormation template to create the needed AWS resources for running mcmicro pipeline in AWS. To create the stack, you need to have AWS command line tools installed and configured. Follow the official instructions from here:
@@ -24,7 +24,7 @@ After everything is configured, run the bash scripts (in this order)
 - `create-batch.sh`
 
 If later on you need to change something, e.g. project tag, you need to run the bash script `update-s3.sh` and `update-batch.sh` 
-(Updating AWS Batch resources often require that the whole stack is deleted and created from scratch)
+(When updating AWS Batch resources you might need to delete the stack from AWS console first and then recreate it from scratch)
 
 You should be all set now to run mcmicro in AWS!
 
@@ -37,5 +37,14 @@ When using AWS, it's recommended to run Nextflow within an EC2 instance. Network
 - Start the instance, and install AWS CLI, Nextflow and mcmicro
 
 ### Run mcmicro pipeline
+Input data can either be in local computer or in S3 bucket. If the data is local, Nextflow will
+upload it automatically to S3 anyway (staging).
 
+Log in EC2 instance
 
+Run mcmicro pipeline according to normal instructions, but with a few changes:
+- use one of the AWS profiles, e.g. AWSTMA
+- give the S3 work bucket with parameter -bucket-dir
+- give the S3 out bucket with parameter --out
+- give the S3 in bucket with parameter --in (if input data was copied to S3)
+`nextflow run labsyspharm/mcmicro -profile AWSTMA -bucket-dir s3://mcmicro-work/imagename --in s3://mcmicro-in/imagename --out s3://mcmicro-out/imagename`
