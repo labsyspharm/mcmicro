@@ -1,0 +1,58 @@
+[
+    {
+        "ParameterKey":"VpcId",
+        "ParameterValue":"vpc-xxxxxxxx"
+    },
+    {
+        "ParameterKey":"ComputeEnvironmentNamePrefix",
+        "ParameterValue":"mcmicro-compute"
+    },
+    {
+        "ParameterKey":"ProjectTag",
+        "ParameterValue":"mcmicro"
+    },
+    {
+        "ParameterKey":"NextflowAMI",
+        "ParameterValue":"ami-08c1bd5176f3daa3e"
+    },
+    {
+        "ParameterKey":"NextflowAMIGPU",
+        "ParameterValue":"ami-0e2c49a125d6cf87f"
+    },
+    {
+        "ParameterKey":"BatchClusterEC2MinCpus",
+        "ParameterValue": "0"
+    },
+    {
+        "ParameterKey":"BatchClusterEC2MaxCpus",
+        "ParameterValue": "256"
+    },
+    {
+        "ParameterKey":"BatchClusterEC2DesiredCpus",
+        "ParameterValue": "0"
+    },
+    {
+        "ParameterKey":"BatchClusterSpotMinCpus",
+        "ParameterValue": "0"
+    },
+    {
+        "ParameterKey":"BatchClusterSpotMaxCpus",
+        "ParameterValue": "256"
+    },
+    {
+        "ParameterKey":"BatchClusterSpotDesiredCpus",
+        "ParameterValue": "0"
+    },
+    {
+        "ParameterKey":"BatchClusterSpotDesiredCpus",
+        "ParameterValue": "0"
+    },
+    {
+        "ParameterKey":"BatchClusterSpotBidPercentage",
+        "ParameterValue":"50"
+    },
+    {
+        "ParameterKey":"BatchSubnets",
+        "ParameterValue": "subnet-xxxxxx,subnet-xxxxxx"
+    }
+]

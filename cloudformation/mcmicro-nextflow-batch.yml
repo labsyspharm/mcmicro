@@ -1,0 +1,256 @@
+---
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >-
+  Batch resources for running mcmicro pipeline in AWS Batch
+
+Parameters:
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: VPC ID
+  ComputeEnvironmentNamePrefix:
+    Type: String
+    Description: Prefix for the AWS Batch Compute Environments
+  ProjectTag:
+    Type: String
+    Description: Project tag
+  NextflowAMI:
+    Type: AWS::EC2::Image::Id
+    Description: AMI Image ID configured for Nextflow    
+  NextflowAMIGPU:
+    Type: AWS::EC2::Image::Id
+    Description: GPU supported AMI Image ID configured for Nextflow
+  BatchClusterEC2MinCpus:
+    Type: Number
+    Description: Minimum EC2 cluster size
+  BatchClusterEC2MaxCpus:
+    Type: Number
+    Description: Maximum EC2 cluster size
+  BatchClusterEC2DesiredCpus:
+    Type: Number
+    Description: Desired EC2 cluster size
+  BatchClusterSpotMinCpus:
+    Type: Number
+    Description: Minimum Spot cluster size
+  BatchClusterSpotMaxCpus:
+    Type: Number
+    Description: Maximum Spot cluster size
+  BatchClusterSpotDesiredCpus:
+    Type: Number
+    Description: Desired Spot cluster size
+  BatchClusterSpotBidPercentage:
+    Type: String
+    Description: Spot cluster maximum bid percentage
+  BatchSubnets:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: Public subnet IDs
+
+Resources:
+  McmicroSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: General Security Group for mcmicro
+      Tags:
+        - Key: project
+          Value: !Ref ProjectTag
+      VpcId: !Ref VpcId
+
+  McmicroBatchSpotFleetRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: mcmicro-nextflow-spotfleet
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: spotfleet.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2SpotFleetTaggingRole      
+
+  McmicroBatchServiceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: mcmicro-nextflow-service-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: batch.amazonaws.com
+            Action: sts:AssumeRole
+      Path: /service-role/
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/service-role/AWSBatchServiceRole
+
+  McmicroBatchInstanceRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: mcmicro-nextflow-instance-role
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: mcmicro-nextflow-S3Bucket-Access
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Sid: S3BucketAllowAllObjectOps
+                Effect: Allow
+                Resource: 
+                  - Fn::Sub:
+                    - "${S3WorkBucketARN}/*"
+                    - S3WorkBucketARN:
+                        Fn::ImportValue: mcmicro-nextflow-work-bucket-arn
+                  - Fn::Sub:
+                    - "${S3InBucketARN}/*"
+                    - S3InBucketARN:
+                        Fn::ImportValue: mcmicro-nextflow-in-bucket-arn
+                  - Fn::Sub:
+                    - "${S3OutBucketARN}/*"
+                    - S3OutBucketARN:
+                        Fn::ImportValue: mcmicro-nextflow-out-bucket-arn
+
+                  - Fn::ImportValue: mcmicro-nextflow-work-bucket-arn
+                  - Fn::ImportValue: mcmicro-nextflow-in-bucket-arn
+                  - Fn::ImportValue: mcmicro-nextflow-out-bucket-arn
+                Action:
+                  - "s3:*"
+
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
+
+  McmicroBatchInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+        - !Ref McmicroBatchInstanceRole
+
+  McmicroEC2ClientRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: mcmicro-nextflow-ec2
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ec2.amazonaws.com
+            Action: sts:AssumeRole
+      Path: /
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/AmazonS3FullAccess
+      - arn:aws:iam::aws:policy/AWSBatchFullAccess
+
+  McmicroEC2ClientProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+        - !Ref McmicroEC2ClientRole
+
+  McmicroEC2ComputeEnvironment:
+    Type: AWS::Batch::ComputeEnvironment
+    Properties:
+      Type: MANAGED
+      ComputeEnvironmentName: !Sub ${ComputeEnvironmentNamePrefix}-ec2
+      ServiceRole: !GetAtt McmicroBatchServiceRole.Arn
+      ComputeResources:
+        Type: EC2
+        MinvCpus: !Ref BatchClusterEC2MinCpus
+        MaxvCpus: !Ref BatchClusterEC2MaxCpus
+        DesiredvCpus: !Ref BatchClusterEC2DesiredCpus
+        InstanceRole: !GetAtt McmicroBatchInstanceProfile.Arn
+        #Ec2KeyPair: Optional, set key ID here to be able to ssh into instances
+        ImageId: !Ref NextflowAMI
+        InstanceTypes:
+          - optimal
+        SecurityGroupIds:
+          - !GetAtt McmicroSecurityGroup.GroupId
+        Subnets: !Ref BatchSubnets
+        Tags:
+          project: !Ref ProjectTag
+      State: ENABLED
+
+  JobQueuePriority:
+    Type: AWS::Batch::JobQueue
+    Properties:
+      JobQueueName: mcmicro-queue-priority
+      ComputeEnvironmentOrder:
+        - ComputeEnvironment: !Ref McmicroEC2ComputeEnvironment
+          Order: 1
+      Priority: 1
+
+  McmicroSpotComputeEnvironment:
+    Type: AWS::Batch::ComputeEnvironment
+    Properties:
+      Type: MANAGED
+      ComputeEnvironmentName: !Sub ${ComputeEnvironmentNamePrefix}-spot
+      ServiceRole: !GetAtt McmicroBatchServiceRole.Arn
+      ComputeResources:
+        Type: SPOT
+        MinvCpus: !Ref BatchClusterEC2MinCpus
+        MaxvCpus: !Ref BatchClusterEC2MaxCpus
+        DesiredvCpus: !Ref BatchClusterEC2DesiredCpus
+        InstanceRole: !GetAtt McmicroBatchInstanceProfile.Arn
+        #Ec2KeyPair: Optional, set key ID here to be able to ssh into instances
+        ImageId: !Ref NextflowAMI
+        InstanceTypes:
+          - optimal
+        SecurityGroupIds:
+          - !GetAtt McmicroSecurityGroup.GroupId
+        Subnets: !Ref BatchSubnets  
+        Tags:
+          project: !Ref ProjectTag
+        SpotIamFleetRole: !GetAtt McmicroBatchSpotFleetRole.Arn
+        BidPercentage: !Ref BatchClusterSpotBidPercentage
+      State: ENABLED
+
+  JobQueue:
+    Type: AWS::Batch::JobQueue
+    Properties:
+      JobQueueName: mcmicro-queue
+      ComputeEnvironmentOrder:
+        - ComputeEnvironment: !Ref McmicroSpotComputeEnvironment
+          Order: 1
+      Priority: 1
+
+  McmicroGPUComputeEnvironment:
+    Type: AWS::Batch::ComputeEnvironment
+    Properties:
+      Type: MANAGED
+      ComputeEnvironmentName: !Sub ${ComputeEnvironmentNamePrefix}-gpu
+      ServiceRole: !GetAtt McmicroBatchServiceRole.Arn
+      ComputeResources:
+        Type: EC2
+        MinvCpus: !Ref BatchClusterEC2MinCpus
+        MaxvCpus: !Ref BatchClusterEC2MaxCpus
+        DesiredvCpus: !Ref BatchClusterEC2DesiredCpus
+        InstanceRole: !GetAtt McmicroBatchInstanceProfile.Arn
+        #Ec2KeyPair: Optional, set key ID here to be able to ssh into instances
+        ImageId: !Ref NextflowAMIGPU
+        InstanceTypes:
+          - p2
+          - p3
+          - g4dn
+        SecurityGroupIds:
+          - !GetAtt McmicroSecurityGroup.GroupId
+        Subnets: !Ref BatchSubnets
+        Tags:
+          project: !Ref ProjectTag
+      State: ENABLED
+
+  JobQueueGPU:
+    Type: AWS::Batch::JobQueue
+    Properties:
+      JobQueueName: mcmicro-queue-gpu
+      ComputeEnvironmentOrder:
+        - ComputeEnvironment: !Ref McmicroGPUComputeEnvironment
+          Order: 1
+      Priority: 1
