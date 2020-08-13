@@ -123,6 +123,11 @@ findFiles(idxStart == 5 && params.probabilityMaps != 'ilastik',
 	  {error "No probability maps found in ${paths[4]}/unmicst"})
     .map{ f -> getID(f,'_Probabilities') }
     .map{ id, f -> tuple(id, f, 'unmicst') }.set{pre_unmicst}
+((idxStart == 5 && params.probabilityMaps != 'ilastik') ?
+ Channel.fromPath("${paths[4]}/unmicst2/*Probabilities*.tif") :
+ Channel.empty())
+    .map{ f -> getID(f,'_Probabilities') }
+    .map{ id, f -> tuple(id, f, 'unmicst2') }.set{pre_unmicst2}
 findFiles(idxStart == 5 && params.probabilityMaps != 'unmicst',
 	  "${paths[4]}/ilastik/*Probabilities*.tif",
 	  {error "No probability maps found in ${paths[4]}/ilastik"})
@@ -133,10 +138,11 @@ findFiles(idxStart == 5 && params.probabilityMaps != 'unmicst',
 pre_img.into{ pre_s2; pre_wsi }
 pre_cores.join( pre_masks ).into{ pre_s3; pre_tma }
 pre_wsi.map{ id, x -> tuple(id, x, 'NO_MASK') }
-    .mix( pre_tma ).into{ pre_cm_un; pre_cm_il }
+    .mix( pre_tma ).into{ pre_cm_un; pre_cm_un2; pre_cm_il }
 pre_cm_un.join( pre_unmicst ).set{ pre_s4_un }
+pre_cm_un2.join( pre_unmicst2 ).set{ pre_s4_un2 }
 pre_cm_il.join( pre_ilastik ).set{ pre_s4_il }
-pre_s4_un.mix( pre_s4_il ).set{ pre_s4 }
+pre_s4_un.mix( pre_s4_un2 ).mix( pre_s4_il ).set{ pre_s4 }
 
 // Finalize the tuple format to match process outputs
 pre_s2.map{ id, f -> f }.set{s2pre}
