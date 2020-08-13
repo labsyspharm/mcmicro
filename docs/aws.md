@@ -1,7 +1,7 @@
-# Instructions for configuring AWS resources for mcmicro
+# AWS configuration
 
 ## Install AWS CLI tool
-This folder contains the AWS CloudFormation template to create the needed AWS resources for running mcmicro pipeline in AWS. To create the stack, you need to have AWS command line tools installed and configured. Follow the official instructions from here:
+The folder `cloudformation` contains the AWS CloudFormation template to create the needed AWS resources for running mcmicro pipeline in AWS. To create the stack, you need to have AWS command line tools installed and configured. Follow the official instructions from here:
 - https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html
 
 ## Configure parameters-batch.json
