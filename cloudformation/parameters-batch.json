@@ -1,7 +1,7 @@
 [
     {
         "ParameterKey":"VpcId",
-        "ParameterValue":"vpc-77548c11"
+        "ParameterValue":"vpc-xxxxxxxx"
     },
     {
         "ParameterKey":"ComputeEnvironmentNamePrefix",
@@ -9,7 +9,7 @@
     },
     {
         "ParameterKey":"ProjectTag",
-        "ParameterValue":"ccsp"
+        "ParameterValue":"mcmicro"
     },
     {
         "ParameterKey":"NextflowAMI",
@@ -53,6 +53,6 @@
     },
     {
         "ParameterKey":"BatchSubnets",
-        "ParameterValue": "subnet-7f4f8118,subnet-950ecebb"
+        "ParameterValue": "subnet-xxxxxx,subnet-xxxxxx"
     }
 ]
