@@ -25,7 +25,6 @@ tma: true
 * `--raw-formats <formats>` - one or more file formats that mcmicro should look for. Default: `{.ome.tiff,.ome.tif,.rcpnl,.xdce,.nd,.scan,.htd,.btf,.nd2,.tif,.czi}`
 
 **Module selection**
-* `--dearray <unet|legacy>` - which module to use for TMA dearraying. Default: `unet`
 * `--probability-maps <unmicst|ilastik|all>` - which module(s) to use for probability map computation. Default: `unmicst`
 
 ## Parameters for individual modules
@@ -64,6 +63,7 @@ Up-to-date list can be viewed at [https://github.com/HMS-IDAC/UNetCoreograph](ht
 * `--nuclei_index` - Index of nuclei channel to use for nonzero_fraction argument
 * `--crop` - Include if you choose to crop regions for ilastik training, if not, do not include this argument
 * `--num_channels` - Number of channels to export per image (Ex: 40 corresponds to a 40 channel ome.tif image)
+* `--channelIDs` - Integer indices specifying which channels to export (Ex: 1 2 4)
 * `--ring_mask` - Include if you have a ring mask in the same directory to use for reducing size of hdf5 image. do not include if not
 * `--crop_amount` -  Number of crops you would like to extract
 * **[mcmicro]** `--ilastik-model` - A custom `.ilp` file to be used as the classifier model
