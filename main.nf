@@ -19,13 +19,14 @@ params.flatFormats = '{.ome.tiff,.ome.tif,.rcpnl,.btf,.nd2,.tif,.czi}'
 params.probabilityMaps = 'unmicst'
 
 // Default parameters for individual modules
-params.ashlarOpts  = '-m 30'
-params.coreOpts    = ''
-params.unmicstOpts = ''
-params.ilastikOpts = '--num_channels 1'
-params.s3segOpts   = ''
-params.quantOpts   = ''
-params.nstatesOpts = '-p png'
+params.ashlarOpts   = '-m 30'
+params.coreOpts     = ''
+params.unmicstOpts  = ''
+params.unmicst2Opts = '--channel 0'
+params.ilastikOpts  = '--num_channels 1'
+params.s3segOpts    = ''
+params.quantOpts    = ''
+params.nstatesOpts  = '-p png'
 
 // Path-specific parameters that cannot be captured by the above *opts
 params.maskSpatial  = 'cellMask.tif'
@@ -122,6 +123,11 @@ findFiles(idxStart == 5 && params.probabilityMaps != 'ilastik',
 	  {error "No probability maps found in ${paths[4]}/unmicst"})
     .map{ f -> getID(f,'_Probabilities') }
     .map{ id, f -> tuple(id, f, 'unmicst') }.set{pre_unmicst}
+((idxStart == 5 && params.probabilityMaps != 'ilastik') ?
+ Channel.fromPath("${paths[4]}/unmicst2/*Probabilities*.tif") :
+ Channel.empty())
+    .map{ f -> getID(f,'_Probabilities') }
+    .map{ id, f -> tuple(id, f, 'unmicst2') }.set{pre_unmicst2}
 findFiles(idxStart == 5 && params.probabilityMaps != 'unmicst',
 	  "${paths[4]}/ilastik/*Probabilities*.tif",
 	  {error "No probability maps found in ${paths[4]}/ilastik"})
@@ -132,10 +138,11 @@ findFiles(idxStart == 5 && params.probabilityMaps != 'unmicst',
 pre_img.into{ pre_s2; pre_wsi }
 pre_cores.join( pre_masks ).into{ pre_s3; pre_tma }
 pre_wsi.map{ id, x -> tuple(id, x, 'NO_MASK') }
-    .mix( pre_tma ).into{ pre_cm_un; pre_cm_il }
+    .mix( pre_tma ).into{ pre_cm_un; pre_cm_un2; pre_cm_il }
 pre_cm_un.join( pre_unmicst ).set{ pre_s4_un }
+pre_cm_un2.join( pre_unmicst2 ).set{ pre_s4_un2 }
 pre_cm_il.join( pre_ilastik ).set{ pre_s4_il }
-pre_s4_un.mix( pre_s4_il ).set{ pre_s4 }
+pre_s4_un.mix( pre_s4_un2 ).mix( pre_s4_il ).set{ pre_s4 }
 
 // Finalize the tuple format to match process outputs
 pre_s2.map{ id, f -> f }.set{s2pre}
@@ -157,8 +164,8 @@ process illumination {
     script:
     def xpn = file(s1in).name.tokenize(".").get(0)
     """
-    ${params.tool_imagej}/ImageJ-linux64 --ij2 --headless \
-      --run ${params.tool_illum}/imagej_basic_ashlar.py \
+    /opt/fiji/Fiji.app/ImageJ-linux64 --ij2 --headless \
+      --run /opt/fiji/imagej_basic_ashlar.py \
       "filename='${s1in}',output_dir='.',experiment_name='${xpn}'"
     """
 }
@@ -220,7 +227,7 @@ process dearray {
     when: idxStart <= 3 && idxStop >= 3 && params.tma
 
     """
-    python ${params.tool_coreo}/UNetCoreograph.py ${params.coreOpts}\
+    python /app/UNetCoreograph.py ${params.coreOpts}\
       --imagePath $s --outputPath .
     """
 }
@@ -237,7 +244,7 @@ else s3out = s3in.tissue.map{ x -> tuple(x, 'NO_MASK') }
 // Add channel name file to every (image, mask) tuple
 s3out
     .mix( s3pre )
-    .into{ s4in_unmicst; s4in_ilastik }
+    .into{ s4in_unmicst; s4in_unmicst2; s4in_ilastik }
 
 // Step 4 output - UnMicst
 process unmicst {
@@ -254,7 +261,27 @@ process unmicst {
     when: idxStart <= 4 && idxStop >= 4 && params.probabilityMaps != 'ilastik'
     script:
     """
-    python ${params.tool_unmicst}/UnMicst.py $core ${params.unmicstOpts} \
+    python /app/UnMicst.py $core ${params.unmicstOpts} \
+      --stackOutput --outputPath .
+    """
+}
+
+// Step 4 output - UnMicst v2
+process unmicst2 {
+    publishDir "${paths[4]}/unmicst2", mode: 'copy', pattern: '*Probabilities*.tif'
+    publishDir "${path_qc}/unmicst2", mode: 'copy', pattern: '*Preview*.tif'
+
+    input: tuple file(core), val(mask) from s4in_unmicst2
+    output:
+      tuple val('unmicst2'), file(core), val(mask),
+        file('*Probabilities*.tif') into s4out_unmicst2
+      file('*Preview*.tif') into s4out_pub2
+      tuple val(task.name), val(task.workDir) into prov4_unmicst2
+
+    when: idxStart <= 4 && idxStop >= 4 && params.probabilityMaps != 'ilastik'
+    script:
+    """
+    python /app/UnMicst2.py $core ${params.unmicst2Opts} \
       --stackOutput --outputPath .
     """
 }
@@ -274,17 +301,17 @@ process ilastik {
     when: idxStart <= 4 && idxStop >= 4 && params.probabilityMaps != 'unmicst'
     script:
         def model = params.ilastikModel != "NO_MODEL" ? 'input.ilp' :
-	"${params.tool_mcilastik}/classifiers/exemplar_001_nuclei.ilp"
+	"/app/classifiers/exemplar_001_nuclei.ilp"
     """
-    python ${params.tool_mcilastik}/CommandIlastikPrepOME.py \
+    python /app/CommandIlastikPrepOME.py \
       ${params.ilastikOpts} --input $core --output .
     cp $model ./model.ilp
-    ${params.tool_ilastik}/run_ilastik.sh --headless --project=model.ilp *.hdf5
+    /ilastik-release/run_ilastik.sh --headless --project=model.ilp *.hdf5
     """
 }
 
 // Consolidate step 4 outputs
-s4out = s4out_unmicst.mix( s4out_ilastik )
+s4out = s4out_unmicst.mix(s4out_unmicst2).mix( s4out_ilastik )
 
 // Step 5 input
 // Stage each image as method-core.tif (e.g., "unmicst-exemplar-001.tif")
@@ -314,7 +341,7 @@ process s3seg {
 	'--crop dearray --maskPath mask.tif' :
 	''
     """
-    python ${params.tool_segment}/S3segmenter.py $crop \
+    python /app/S3segmenter.py $crop \
        --imagePath $core --stackProbPath $probs \
        ${params.s3segOpts} --outputPath .
     """
@@ -335,7 +362,7 @@ process quantification {
     when: idxStart <= 6 && idxStop >= 6
 
     """
-    python ${params.tool_quant}/CommandSingleCellExtraction.py \
+    python /app/CommandSingleCellExtraction.py \
     --mask $maskSpt $maskAdd --image $core \
     ${params.quantOpts} --output . --channel_names $ch
     """
@@ -357,8 +384,8 @@ process naivestates {
     when: idxStart <= 7 && idxStop >= 7
 
     """
-    ${params.tool_nstates}/main.R -i $counts -o . ${params.nstatesOpts} \
-    --mct ${params.tool_nstates}/typemap.csv
+    /app/main.R -i $counts -o . ${params.nstatesOpts} \
+    --mct /app/typemap.csv
     """
 }
 
