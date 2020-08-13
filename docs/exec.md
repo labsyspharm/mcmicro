@@ -66,7 +66,7 @@ nextflow run labsyspharm/mcmicro -params-file myexperiment.yml
 
 To run the pipeline on O2, three additional steps are required:
 1. You must load the necessary O2 modules.
-1. All pipeline calls need to have the flag `-profile O2`. Use `-profile O2large` or `-profile O2massive` for large or very large whole-slide images, respectively. Use `-profile O2TMA` or `-profile O2TMAlarge` for TMAs. The profiles differ in the amount of resources requested for each module.
+1. All pipeline calls need to have the flag `-profile O2`. Use `-profile O2large` or `-profile O2massive` for large or very large whole-slide images, respectively. Use `-profile O2TMA` for TMAs. The profiles differ in the amount of resources requested for each module.
 1. To avoid running over on your disk quota, it is also recommended to use `/n/scratch3` for holding the `work/` directory. Furthermore, `n/scratch3` is faster than `/home` or `/n/groups`, so jobs will complete faster. 
 
 Compose an `sbatch` script that encapsulates resource requests, module loading and the `nextflow` command into a single entity. Create a `submit_mcmicro.sh` file based on the following template:
@@ -83,7 +83,7 @@ Compose an `sbatch` script that encapsulates resource requests, module loading a
 #SBATCH --mail-user=user@university.edu   # Email to which notifications will be sent
 
 module purge
-module load java conda2
+module load java
 /home/$USER/bin/nextflow run labsyspharm/mcmicro --in /n/scratch3/users/${USER:0:1}/$USER/exemplar-001 -profile O2 -w /n/scratch3/users/${USER:0:1}/$USER/work
 ```
 replacing relevant fields (e.g., `user@university.edu`) with your own values.
