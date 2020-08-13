@@ -246,7 +246,7 @@ Resources:
           project: !Ref ProjectTag
       State: ENABLED
 
-  JobQueuePriority:
+  JobQueueGPU:
     Type: AWS::Batch::JobQueue
     Properties:
       JobQueueName: mcmicro-queue-gpu
