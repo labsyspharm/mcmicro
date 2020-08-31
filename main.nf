@@ -100,10 +100,6 @@ findFiles0 = { p, path -> p ?
 findFiles  = { p, path, ife -> p ?
 	      Channel.fromPath(path).ifEmpty(ife) : Channel.empty() }
 
-// Helper function to extract image ID from filename
-getID = { f, delim ->
-    tuple( f.getBaseName().toString().split(delim).head(), f ) }
-
 // Look for index formats; if none found, looks for flat formats
 // Look in raw/ or registration/, depending on --start-at argument
 chkdir  = idxStart <= 2 ? "${paths[0]}" : "${paths[2]}"
@@ -115,19 +111,23 @@ formats = file("${chkdir}/**${params.rawFormats}") ?
 raw = findFiles(idxStart <= 2, "${paths[0]}/**${formats}",
 		{error "No images found in ${paths[0]}"})
 
+// Helper function to extract image ID from filename
+def getID (f, delim) {
+    tuple( f.getBaseName().toString().split(delim).head(), f )
+}
+
 // Find precomputed intermediates
-// Extract samples ID from each filename for subsequent tuple matching
-s1pre_dfp = findFiles0(idxStart == 2, "${paths[1]}/*-dfp.tif")
-s1pre_ffp = findFiles0(idxStart == 2, "${paths[1]}/*-ffp.tif")
-findFiles(idxStart == 3 || (idxStart > 3 && !params.tma), "${paths[2]}/*${formats}",
-	  {error "No pre-stitched image in ${paths[2]}"} )
-    .map{ f -> getID(f,'\\.') }.set{pre_img}
-findFiles(idxStart > 3 && params.tma, "${paths[3]}/*.tif",
-	  {error "No cores in ${paths[3]}"})
-    .map{ f -> getID(f,'\\.tif') }.set{pre_cores}
-findFiles(idxStart > 3 && params.tma, "${paths[3]}/masks/*.tif",
-	  {error "No masks in ${paths[3]}/masks"})
-    .map{ f -> getID(f,'_mask') }.set{pre_masks}
+pre_dfp = findFiles0(idxStart == 2, "${paths[1]}/*-dfp.tif")
+pre_ffp = findFiles0(idxStart == 2, "${paths[1]}/*-ffp.tif")
+pre_img = findFiles(idxStart == 3 || (idxStart > 3 && !params.tma),
+		    "${paths[2]}/*${formats}",
+		    {error "No pre-stitched image in ${paths[2]}"})
+pre_cores = findFiles(idxStart > 3 && params.tma,
+		      "${paths[3]}/*.tif",
+		      {error "No cores in ${paths[3]}"})
+pre_masks = findFiles(idxStart > 3 && params.tma,
+		      "${paths[3]}/masks/*.tif",
+		      {error "No masks in ${paths[3]}/masks"})
 findFiles(idxStart == 5 && params.probabilityMaps != 'ilastik',
 	  "${paths[4]}/unmicst/*Probabilities*.tif",
 	  {error "No probability maps found in ${paths[4]}/unmicst"})
@@ -144,8 +144,16 @@ findFiles(idxStart == 5 && params.probabilityMaps != 'unmicst',
     .map{ f -> getID(f,'_Probabilities') }
     .map{ id, f -> tuple(id, f, 'ilastik') }.set{pre_ilastik}
 
-/*
+// Compute sample IDs for each found intermediate
+id_img   = pre_img.map{ f -> getID(f,'\\.') }
+id_cores = pre_cores.map{ f -> getID(f,'\\.tif') }
+id_masks = pre_masks.map{ f -> getID(f,'_mask') }
+
 // Match up precomputed intermediates into tuples for each step
+pre_tma = id_cores.join( id_masks ).map{ id, c, m -> tuple(c,m) }
+
+
+/*
 pre_img.into{ pre_s2; pre_wsi }
 pre_cores.join( pre_masks ).into{ pre_s3; pre_tma }
 pre_wsi.map{ id, x -> tuple(id, x, 'NO_MASK') }
@@ -156,20 +164,41 @@ pre_cm_il.join( pre_ilastik ).set{ pre_s4_il }
 pre_s4_un.mix( pre_s4_un2 ).mix( pre_s4_il ).set{ pre_s4 }
 
 // Finalize the tuple format to match process outputs
-pre_s2.map{ id, f -> f }.set{s2pre}
 pre_s3.map{ id, c, m -> tuple(c,m) }.set{s3pre}
 pre_s4.map{ id, c, m, p, mtd -> tuple(mtd,c,m,p) }.set{s4pre}
 */
 
+// The following parameters are shared by all modules
 params.idxStart = idxStart
 params.idxStop  = idxStop
+params.path_qc  = path_qc
 
+// Import individual modules
 include {illumination} from './modules/illumination' addParams(pubDir: paths[1])
 include {registration} from './modules/registration' addParams(pubDir: paths[2])
+include {dearray}      from './modules/dearray'      addParams(pubDir: paths[3])
 
+// Define the primary mcmicro workflow
 workflow {
     illumination(raw)
     registration(raw,
-		 illumination.out.ffp.mix( s1pre_ffp ),
-		 illumination.out.dfp.mix( s1pre_dfp ))
+		 illumination.out.ffp.mix( pre_ffp ),
+		 illumination.out.dfp.mix( pre_dfp ))
+
+    // Are we working with a TMA or a whole-slide image?
+    img = registration.out
+	.mix(pre_img)
+	.branch {
+	  wsi: !params.tma
+	  tma: params.tma
+        }
+
+    // Apply dearray to TMAs only
+    dearray(img.tma)
+
+    // Whole slide images have no TMA mask
+    img.wsi.map{ x -> tuple(x, 'NO_MASK') }
+	.mix(dearray.out)
+	.mix(pre_tma)
+	.view()
 }
