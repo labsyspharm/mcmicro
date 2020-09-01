@@ -82,14 +82,6 @@ Channel.fromPath( "${params.in}/illumination_profiles/*" )
 // Identify marker information
 chMrk = Channel.fromPath( "${params.in}/markers.csv", checkIfExists: true )
 
-// Determine which masks will be needed by quantification
-masks = params.maskAdd.tokenize()
-switch( masks.size() ) {
-    case 0: masks = ""; break;
-    case 1: masks = "**${masks[0]}"; break;
-    default: masks = "**{${masks.join(',')}}"
-}
-
 // Identify the ilastik model
 s4_mdl = params.ilastikModel != 'NO_MODEL' ?
     file(params.ilastikModel) : 'NO_MODEL'
@@ -167,6 +159,7 @@ include {illumination} from './modules/illumination'     addParams(pubDir: paths
 include {registration} from './modules/registration'     addParams(pubDir: paths[2])
 include {dearray}      from './modules/dearray'          addParams(pubDir: paths[3])
 include {probmaps}     from './modules/probability-maps' addParams(pubDir: paths[4])
+include {segmentation} from './modules/segmentation'     addParams(pubDir: paths[5])
 
 // Define the primary mcmicro workflow
 workflow {
@@ -191,8 +184,11 @@ workflow {
 	.mix(dearray.out)
 	.mix(pre_tma) |
 	probmaps
-    
-    probmaps.out
-	.mix(pre_pmap)
-	.view()
+
+    // Combine probability map output with precomputed one
+    // Forward the result to segmentation
+    probmaps.out.mix(pre_pmap) |
+	segmentation
+
+    segmentation.out.view()
 }
