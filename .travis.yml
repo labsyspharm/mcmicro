@@ -27,4 +27,4 @@ script:
     ./nextflow exemplar.nf --name exemplar-002 --path ~/data/downloads;
   fi
 - cp -r ~/data/downloads/exemplar-002 ~/data/
-- ./nextflow main.nf --in ~/data/exemplar-002 --tma --probability-maps all
+- travis_wait 30 ./nextflow main.nf --in ~/data/exemplar-002 --tma --probability-maps all
