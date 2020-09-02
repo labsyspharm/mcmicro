@@ -25,6 +25,7 @@ params.flatFormats = '{.ome.tiff,.ome.tif,.rcpnl,.btf,.nd2,.tif,.czi}'
 
 // Default selection of methods for each step
 params.probabilityMaps = 'unmicst'
+params.unmicstPy       = 'UnMicst2.py'
 
 // Default parameters for individual modules
 params.ashlarOpts   = '-m 30'
@@ -161,6 +162,7 @@ include {dearray}        from './modules/dearray'          addParams(pubDir: pat
 include {probmaps}       from './modules/probability-maps' addParams(pubDir: paths[4])
 include {segmentation}   from './modules/segmentation'     addParams(pubDir: paths[5])
 include {quantification} from './modules/quantification'   addParams(pubDir: paths[6])
+include {naivestates}    from './modules/cell-states'      addParams(pubDir: paths[7])
 
 // Define the primary mcmicro workflow
 workflow {
@@ -193,6 +195,9 @@ workflow {
 
     // Append markers.csv to every tuple
     segmentation.out.combine(chMrk) | quantification
+
+    // Cell type callers
+    naivestates( quantification.out )
 }
 
 // Provenance reconstruction
