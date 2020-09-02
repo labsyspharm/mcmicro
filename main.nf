@@ -202,6 +202,10 @@ workflow {
 
 // Provenance reconstruction
 workflow.onComplete {
+    // Create a provenance directory
+    path_prov = "${path_qc}/provenance"
+    file(path_prov).mkdirs()
+    
     // Store parameters used
     file("${path_qc}/params.yml").withWriter{ out ->
 	params.each{ key, val ->
