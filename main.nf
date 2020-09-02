@@ -2,7 +2,7 @@
 
 if( !nextflow.version.matches('20.07+') ) {
     println "mcmicro requires Nextflow version 20.08 or greater"
-    println "Run the following command: nextflow self-update"
+    println "Run the following command to update: nextflow self-update"
     exit 1
 }
 
@@ -155,11 +155,12 @@ params.idxStop  = idxStop
 params.path_qc  = path_qc
 
 // Import individual modules
-include {illumination} from './modules/illumination'     addParams(pubDir: paths[1])
-include {registration} from './modules/registration'     addParams(pubDir: paths[2])
-include {dearray}      from './modules/dearray'          addParams(pubDir: paths[3])
-include {probmaps}     from './modules/probability-maps' addParams(pubDir: paths[4])
-include {segmentation} from './modules/segmentation'     addParams(pubDir: paths[5])
+include {illumination}   from './modules/illumination'     addParams(pubDir: paths[1])
+include {registration}   from './modules/registration'     addParams(pubDir: paths[2])
+include {dearray}        from './modules/dearray'          addParams(pubDir: paths[3])
+include {probmaps}       from './modules/probability-maps' addParams(pubDir: paths[4])
+include {segmentation}   from './modules/segmentation'     addParams(pubDir: paths[5])
+include {quantification} from './modules/quantification'   addParams(pubDir: paths[6])
 
 // Define the primary mcmicro workflow
 workflow {
@@ -190,5 +191,17 @@ workflow {
     probmaps.out.mix(pre_pmap) |
 	segmentation
 
-    segmentation.out.view()
+    // Append markers.csv to every tuple
+    segmentation.out.combine(chMrk) | quantification
+}
+
+// Provenance reconstruction
+workflow.onComplete {
+    // Store parameters used
+    file("${path_qc}/params.yml").withWriter{ out ->
+	params.each{ key, val ->
+	    if( key.indexOf('-') == -1 )
+	    out.println "$key: $val"
+	}
+    }
 }
