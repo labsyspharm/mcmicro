@@ -25,6 +25,7 @@ jobs:
       script:
       - cp -r ~/data/downloads/exemplar-001 ~/data/
       - ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps all
+      - tree ~/data/exemplar-001
     - name: "Exemplar-001 step by step"
       script:
       - cp -r ~/data/downloads/exemplar-001 ~/data/exemplar-001-ss
@@ -34,6 +35,7 @@ jobs:
       - ./nextflow main.nf --in ~/data/exemplar-001-ss --start-at probability-maps --stop-at probability-maps --probability-maps unmicst
       - ./nextflow main.nf --in ~/data/exemplar-001-ss --start-at segmentation --stop-at segmentation --probability-maps unmicst
       - ./nextflow main.nf --in ~/data/exemplar-001-ss --start-at quantification --stop-at quantification
+      - ./nextflow main.nf --in ~/data/exemplar-001-ss --start-at cell-states
     - name: "Exemplar-002"
       script:
       - cp -r ~/data/downloads/exemplar-002 ~/data/

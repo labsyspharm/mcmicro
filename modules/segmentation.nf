@@ -1,13 +1,15 @@
 process s3seg {
-    publishDir params.pubDir,             mode: 'copy', pattern: '*/*Mask.tif'
-    publishDir "${params.path_qc}/s3seg", mode: 'copy', pattern: '*/*Outlines.tif'
+    publishDir "${params.pubDir}/$tag",
+      mode: 'copy', pattern: '*/*Mask.tif', saveAs: {f -> file(f).name}
+    publishDir "${params.path_qc}/s3seg/$tag",
+      mode: 'copy', pattern: '*/*Outlines.tif', saveAs: {f -> file(f).name}
 
     input:
-	tuple val(core), path("${core}"), file('mask.tif'), path(probs)
+	tuple val(tag), val(method), path(core), file('mask.tif'), path(probs)
 
     output:
 	// tuples for quantification
-        tuple path("${core}"), path("**${params.maskSpatial}"),
+        tuple val(method), path(core), path("**${params.maskSpatial}"),
           path("$params.qtym"), emit: segmasks
 
         // rest of the files for publishDir
@@ -31,7 +33,7 @@ workflow segmentation {
 	input
 
     main:
-        input.map{ s, c, m, p -> tuple("${s}-${c.getName()}", c, m, p) } |
+        input.map{ s, c, m, p -> tuple("${s}-${c.getBaseName()}", s, c, m, p) } |
 	s3seg
 
     emit:

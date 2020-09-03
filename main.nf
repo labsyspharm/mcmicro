@@ -161,7 +161,7 @@ id_addMsk  = pre_addMsk.map{ f -> tuple(f.getParent().getBaseName(), f) }
 id_qtyMsk  = (params.qtym == '' ?
 	      id_sptMsk.map{ id, m -> tuple(id, m, []) } :
 	      id_sptMsk.join( id_addMsk ))
-    .map{ id, sm, am -> tuple(id.split('-',2)[1], sm, am) }
+    .map{ id, sm, am -> x = id.split('-',2); tuple(x[1], x[0], sm, am) }
 
 // Match up precomputed intermediates into tuples for each step
 id_cm   = id_cores.join( id_masks )
@@ -172,7 +172,7 @@ id_qty  = id_img.mix( id_cores ).combine( id_qtyMsk, by:0 )
 // Finalize the tuple format to match process outputs
 pre_tma  = id_cm.map{ id, c, m -> tuple(c,m) }
 pre_pmap = id_pmap.map{ id, c, m, p, mtd -> tuple(mtd,c,m,p) }
-pre_seg  = id_qty.map{ id, i, sm, am -> tuple(i,sm,am) }
+pre_seg  = id_qty.map{ id, i, mtd, sm, am -> tuple(mtd,i,sm,am) }
 
 // The following parameters are shared by all modules
 params.idxStart = idxStart
@@ -219,10 +219,14 @@ workflow {
 
     // Append markers.csv to every tuple
     segmentation.out.mix(pre_seg)
-	.combine(chMrk) | quantification
+	.combine(chMrk)
+	.map{ mtd, c, ms, ma, ch ->
+          tuple("${mtd}-${c.getName()}", c, ms, ma, ch) } |
+	quantification
 
     // Cell type callers
-//    naivestates( quantification.out )
+    quantification.out.mix(pre_qty) |
+	naivestates
 }
 
 // Provenance reconstruction
