@@ -27,5 +27,6 @@ jobs:
       script: bash tests/exemplar-001-ss.sh
     - name: "Exemplar-002"
       script:
-      - export -f travis_wait
-      - bash tests/exemplar-002.sh
+      - cp -r ~/data/downloads/exemplar-002 ~/data/
+      - travis_wait ./nextflow main.nf --in ~/data/exemplar-002 --tma --stop-at registration
+      - ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at dearray --probability-maps all

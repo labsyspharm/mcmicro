@@ -115,6 +115,13 @@ def getID (f, delim) {
     tuple( f.getBaseName().toString().split(delim).head(), f )
 }
 
+// Same as above but remove the method prefix first
+def getID1 (f, delim) {
+    fn = f.getBaseName().toString()
+    fn2 = fn.split('-',2)[0]
+    tuple( fn2.split(delim).head(), f )
+}
+
 // Find precomputed intermediates
 pre_dfp = findFiles0(idxStart == 2, "${paths[1]}/*-dfp.tif")
 pre_ffp = findFiles0(idxStart == 2, "${paths[1]}/*-ffp.tif")
@@ -143,6 +150,8 @@ pre_sptMsk = findFiles(idxStart == 6,
 pre_addMsk = findFiles(idxStart == 6 && params.qtym != '',
 		       "${paths[5]}/${params.qtym}",
 		       {error "No additional masks in ${paths[5]}"})
+
+
 
 // Compute sample IDs for each found intermediate
 id_img     = pre_img.map{ f -> getID(f,'\\.') }
