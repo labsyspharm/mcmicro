@@ -23,5 +23,7 @@ jobs:
     - stage: "Exemplars"
       name: "Exemplar-001"
       script: bash tests/exemplar-001.sh
+    - name: "Exemplar-001 step by step"
+      script: bash tests/exemplar-001-ss.sh
     - name: "Exemplar-002"
-      script: bash tests/exemplar-002.sh
+      script: travis_wait bash tests/exemplar-002.sh
