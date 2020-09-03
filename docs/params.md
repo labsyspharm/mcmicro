@@ -49,7 +49,7 @@ Up-to-date list can be viewed at [https://github.com/HMS-IDAC/UNetCoreograph](ht
 
 ### Arguments to UnMicst(`--unmicst-opts`):
 
-* `--tool` - the name of the UnMicst version. Version 1 is the old single channel model. Version 2 uses DAPI and lamin. Defult is UnMicst version 1 (ONE).
+* `--tool` - the name of the UnMicst version. Version 1 is the old single channel model. Version 2 uses DAPI and lamin. Default is UnMicst version 1 (ONE).
 * `--model` - the name of the UNet model. By default, this is the human nuclei model that identifies nuclei centers, nuclei contours, and background from a DAPI channel. Other models include mouse nuclei from DAPI, and cytoplasm from stains resembling WGA
 * `--channel` - the channel used to infer and generate probability maps from. Default is the first channel (channel 0). If using UnMicst2, then specify 2 channels. If only 1 channel is specified, it will simply be duplicated.
 * `--classOrder` - if your training data isn't in the order 1. background, 2. contours, 3. foreground, you can specify the order here. For example, if you had trained the class order backwards, specify `--classOrder 2 1 0`. If you only have background and contours, use `--classOrder 0 1 0`
