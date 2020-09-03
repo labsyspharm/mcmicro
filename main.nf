@@ -115,11 +115,11 @@ def getID (f, delim) {
     tuple( f.getBaseName().toString().split(delim).head(), f )
 }
 
-// Same as above but remove the method prefix first
-def getID1 (f, delim) {
-    fn = f.getBaseName().toString()
-    fn2 = fn.split('-',2)[0]
-    tuple( fn2.split(delim).head(), f )
+// As above, but retrieves the image ID from the parent folder
+//   strips the first '-' token, which captures segmenter name
+def getParentID (f) {
+    fn = f.getParent().getBaseName().toString()
+    tuple( fn.split('-',2)[1], f )
 }
 
 // Find precomputed intermediates
@@ -151,8 +151,6 @@ pre_addMsk = findFiles(idxStart == 6 && params.qtym != '',
 		       "${paths[5]}/${params.qtym}",
 		       {error "No additional masks in ${paths[5]}"})
 
-
-
 // Compute sample IDs for each found intermediate
 id_img     = pre_img.map{ f -> getID(f,'\\.') }
 id_cores   = pre_cores.map{ f -> getID(f,'\\.tif') }
@@ -161,6 +159,8 @@ id_unmicst = pre_unmicst.map{ f -> getID(f,'_Probabilities') }
     .map{ id, f -> tuple(id, f, 'unmicst') }
 id_ilastik = pre_ilastik.map{ f -> getID(f,'_Probabilities') }
     .map{ id, f -> tuple(id, f, 'ilastik') }
+id_sptMsk  = pre_sptMsk.map{ f -> getParentID(f) }
+id_sptMsk.view()
 
 // Match up precomputed intermediates into tuples for each step
 id_cm   = id_cores.join( id_masks )

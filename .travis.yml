@@ -22,11 +22,20 @@ jobs:
         fi
     - stage: "Exemplars"
       name: "Exemplar-001"
-      script: bash tests/exemplar-001.sh
+      script:
+      - cp -r ~/data/downloads/exemplar-001 ~/data/
+      - ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps all
     - name: "Exemplar-001 step by step"
-      script: bash tests/exemplar-001-ss.sh
+      script:
+      - cp -r ~/data/downloads/exemplar-001 ~/data/exemplar-001-ss
+      - ./nextflow main.nf --in ~/data/exemplar-001-ss --start-at registration --stop-at registration
+      - ./nextflow main.nf --in ~/data/exemplar-001-ss --start-at probability-maps --stop-at probability-maps --probability-maps ilastik
+      - ./nextflow main.nf --in ~/data/exemplar-001-ss --start-at segmentation --stop-at segmentation --probability-maps ilastik
+      - ./nextflow main.nf --in ~/data/exemplar-001-ss --start-at probability-maps --stop-at probability-maps --probability-maps unmicst
+      - ./nextflow main.nf --in ~/data/exemplar-001-ss --start-at segmentation --stop-at segmentation --probability-maps unmicst
     - name: "Exemplar-002"
       script:
       - cp -r ~/data/downloads/exemplar-002 ~/data/
-      - travis_wait ./nextflow main.nf --in ~/data/exemplar-002 --tma --stop-at registration
-      - ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at dearray --probability-maps all
+      - travis_wait ./nextflow main.nf --in ~/data/exemplar-002 --tma --stop-at dearray
+      - travis_wait ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at probability-maps --stop-at probability-maps --probability-maps all
+      - ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at segmentation --probability-maps all
