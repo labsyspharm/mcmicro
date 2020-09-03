@@ -140,7 +140,6 @@ pre_ilastik = findFiles(idxStart == 5 &&
 pre_sptMsk = findFiles(idxStart == 6,
 		       "${paths[5]}/**${params.maskSpatial}",
 		       {error "No spatial masks in ${paths[5]}"})
-
 pre_addMsk = findFiles(idxStart == 6 && params.qtym != '',
 		       "${paths[5]}/${params.qtym}",
 		       {error "No additional masks in ${paths[5]}"})
