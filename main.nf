@@ -115,13 +115,6 @@ def getID (f, delim) {
     tuple( f.getBaseName().toString().split(delim).head(), f )
 }
 
-// As above, but retrieves the image ID from the parent folder
-//   strips the first '-' token, which captures segmenter name
-def getParentID (f) {
-    fn = f.getParent().getBaseName().toString()
-    tuple( fn.split('-',2)[1], f )
-}
-
 // Find precomputed intermediates
 pre_dfp = findFiles0(idxStart == 2, "${paths[1]}/*-dfp.tif")
 pre_ffp = findFiles0(idxStart == 2, "${paths[1]}/*-ffp.tif")
@@ -150,6 +143,9 @@ pre_sptMsk = findFiles(idxStart == 6,
 pre_addMsk = findFiles(idxStart == 6 && params.qtym != '',
 		       "${paths[5]}/${params.qtym}",
 		       {error "No additional masks in ${paths[5]}"})
+pre_qty    = findFiles(idxStart == 7,
+		       "${paths[6]}/*.csv",
+		       {error "No quantification tables in ${paths[6]}"})
 
 // Compute sample IDs for each found intermediate
 id_img     = pre_img.map{ f -> getID(f,'\\.') }
@@ -159,17 +155,24 @@ id_unmicst = pre_unmicst.map{ f -> getID(f,'_Probabilities') }
     .map{ id, f -> tuple(id, f, 'unmicst') }
 id_ilastik = pre_ilastik.map{ f -> getID(f,'_Probabilities') }
     .map{ id, f -> tuple(id, f, 'ilastik') }
-id_sptMsk  = pre_sptMsk.map{ f -> getParentID(f) }
-id_sptMsk.view()
+id_sptMsk  = pre_sptMsk.map{ f -> tuple(f.getParent().getBaseName(), f) }
+id_addMsk  = pre_addMsk.map{ f -> tuple(f.getParent().getBaseName(), f) }
+    .groupTuple()
+id_qtyMsk  = (params.qtym == '' ?
+	      id_sptMsk.map{ id, m -> tuple(id, m, []) } :
+	      id_sptMsk.join( id_addMsk ))
+    .map{ id, sm, am -> tuple(id.split('-',2)[1], sm, am) }
 
 // Match up precomputed intermediates into tuples for each step
 id_cm   = id_cores.join( id_masks )
 id_cm2  = id_img.map{ id, x -> tuple(id, x, 'NO_MASK') }.mix(id_cm)
 id_pmap = id_cm2.join( id_unmicst ).mix( id_cm2.join( id_ilastik ) )
+id_qty  = id_img.mix( id_cores ).combine( id_qtyMsk, by:0 )
 
 // Finalize the tuple format to match process outputs
 pre_tma  = id_cm.map{ id, c, m -> tuple(c,m) }
 pre_pmap = id_pmap.map{ id, c, m, p, mtd -> tuple(mtd,c,m,p) }
+pre_seg  = id_qty.map{ id, i, sm, am -> tuple(i,sm,am) }
 
 // The following parameters are shared by all modules
 params.idxStart = idxStart
@@ -215,10 +218,11 @@ workflow {
 	segmentation
 
     // Append markers.csv to every tuple
-    segmentation.out.combine(chMrk) | quantification
+    segmentation.out.mix(pre_seg)
+	.combine(chMrk) | quantification
 
     // Cell type callers
-    naivestates( quantification.out )
+//    naivestates( quantification.out )
 }
 
 // Provenance reconstruction

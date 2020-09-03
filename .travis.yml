@@ -33,9 +33,9 @@ jobs:
       - ./nextflow main.nf --in ~/data/exemplar-001-ss --start-at segmentation --stop-at segmentation --probability-maps ilastik
       - ./nextflow main.nf --in ~/data/exemplar-001-ss --start-at probability-maps --stop-at probability-maps --probability-maps unmicst
       - ./nextflow main.nf --in ~/data/exemplar-001-ss --start-at segmentation --stop-at segmentation --probability-maps unmicst
+      - ./nextflow main.nf --in ~/data/exemplar-001-ss --start-at quantification --stop-at quantification
     - name: "Exemplar-002"
       script:
       - cp -r ~/data/downloads/exemplar-002 ~/data/
-      - travis_wait ./nextflow main.nf --in ~/data/exemplar-002 --tma --stop-at dearray
-      - travis_wait ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at probability-maps --stop-at probability-maps --probability-maps ilastik
-      - ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at segmentation --probability-maps ilastik
+      - travis_wait 30 ./nextflow main.nf --in ~/data/exemplar-002 --tma --stop-at dearray
+      - ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at probability-maps --probability-maps ilastik
