@@ -31,14 +31,6 @@ workflow segmentation {
 	input
 
     main:
-	// Determine which masks will be needed by quantification
-        masks = params.maskAdd.tokenize()
-        switch( masks.size() ) {
-          case 0: params.qtym = ""; break;
-  	  case 1: params.qtym = "**${masks[0]}"; break;
-          default: params.qtym = "**{${masks.join(',')}}"
-        }
-
         input.map{ s, c, m, p -> tuple("${s}-${c.getName()}", c, m, p) } |
 	s3seg
 

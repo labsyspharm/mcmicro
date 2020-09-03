@@ -8,5 +8,20 @@ install:
 - curl -fsSL get.nextflow.io | bash
 jobs:
   include:
-    - script: bash tests/exemplar-001.sh
-    - script: bash tests/exemplar-002.sh
+    - stage: "Data Download"
+      script:
+      - if [ -d ~/data/downloads/exemplar-001 ]; then
+          echo "Using cached exemplar-001 download";
+        else
+          ./nextflow exemplar.nf --name exemplar-001 --path ~/data/downloads;
+        fi
+      - if [ -d ~/data/downloads/exemplar-002 ]; then
+          echo "Using cached exemplar-002 download";
+        else
+          ./nextflow exemplar.nf --name exemplar-002 --path ~/data/downloads;
+        fi
+    - stage: "Exemplars"
+      name: "Exemplar-001"
+      script: bash tests/exemplar-001.sh
+    - name: "Exemplar-002"
+      script: bash tests/exemplar-002.sh

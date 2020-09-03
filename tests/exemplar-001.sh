@@ -1,11 +1,5 @@
 #!/bin/bash
 
-if [ -d ~/data/downloads/exemplar-001 ]; then
-  echo "Using cached exemplar-001 download";
-else
-  ./nextflow exemplar.nf --name exemplar-001 --path ~/data/downloads;
-fi
-
 cp -r ~/data/downloads/exemplar-001 ~/data/
 ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps all
 rm -r ~/data/exemplar-001

@@ -68,8 +68,6 @@ idxStop  = mcmsteps.indexOf( params.stopAt )
 if( idxStart < 0 )       error "Unknown starting step ${params.startAt}"
 if( idxStop < 0 )        error "Unknown stopping step ${params.stopAt}"
 if( idxStop < idxStart ) error "Stopping step cannot come before starting step"
-if( idxStart > 5 )
-  error "Starting at steps beyond segmentation is not yet supported."
 
 // Define all subdirectories
 paths   = mcmsteps.collect{ "${params.in}/$it" }
@@ -86,6 +84,14 @@ chMrk = Channel.fromPath( "${params.in}/markers.csv", checkIfExists: true )
 // Identify the ilastik model
 s4_mdl = params.ilastikModel != 'NO_MODEL' ?
     file(params.ilastikModel) : 'NO_MODEL'
+
+// Determine which masks will be needed by quantification
+masks = params.maskAdd.tokenize()
+switch( masks.size() ) {
+    case 0: params.qtym = ""; break;
+    case 1: params.qtym = "**${masks[0]}"; break;
+    default: params.qtym = "**{${masks.join(',')}}"
+}
 
 // Helper functions for finding raw images and precomputed intermediates
 findFiles0 = { p, path -> p ?
@@ -120,7 +126,7 @@ pre_cores = findFiles(idxStart > 3 && params.tma,
 		      {error "No cores in ${paths[3]}"})
 pre_masks = findFiles(idxStart > 3 && params.tma,
 		      "${paths[3]}/masks/*.tif",
-		      {error "No masks in ${paths[3]}/masks"})
+		      {error "No TMA masks in ${paths[3]}/masks"})
 pre_unmicst = findFiles(idxStart == 5 &&
 			(params.probabilityMaps == 'unmicst' ||
 			 params.probabilityMaps == 'all'),
@@ -131,6 +137,13 @@ pre_ilastik = findFiles(idxStart == 5 &&
 			 params.probabilityMaps == 'all'),
 			"${paths[4]}/ilastik/*Probabilities*.tif",
 			{error "No probability maps found in ${paths[4]}/ilastik"})
+pre_sptMsk = findFiles(idxStart == 6,
+		       "${paths[5]}/**${params.maskSpatial}",
+		       {error "No spatial masks in ${paths[5]}"})
+
+pre_addMsk = findFiles(idxStart == 6 && params.qtym != '',
+		       "${paths[5]}/${params.qtym}",
+		       {error "No additional masks in ${paths[5]}"})
 
 // Compute sample IDs for each found intermediate
 id_img     = pre_img.map{ f -> getID(f,'\\.') }
