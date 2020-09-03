@@ -21,6 +21,7 @@ script:
 - ./nextflow main.nf --in ~/data/exemplar-001 --start-at segmentation --stop-at segmentation --probability-maps ilastik
 - ./nextflow main.nf --in ~/data/exemplar-001 --start-at probability-maps --stop-at probability-maps --probability-maps unmicst
 - ./nextflow main.nf --in ~/data/exemplar-001 --start-at segmentation --stop-at segmentation --probability-maps unmicst
+script:
 - if [ -d ~/data/downloads/exemplar-002 ]; then
     echo "Using cached exemplar-002 download";
   else
