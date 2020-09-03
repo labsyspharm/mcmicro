@@ -6,27 +6,7 @@ services:
 - docker
 install:
 - curl -fsSL get.nextflow.io | bash
-script:
-- if [ -d ~/data/downloads/exemplar-001 ]; then
-    echo "Using cached exemplar-001 download";
-  else
-    ./nextflow exemplar.nf --name exemplar-001 --path ~/data/downloads;
-  fi
-- cp -r ~/data/downloads/exemplar-001 ~/data/
-- ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps all
-- rm -r ~/data/exemplar-001
-- cp -r ~/data/downloads/exemplar-001 ~/data/
-- ./nextflow main.nf --in ~/data/exemplar-001 --start-at registration --stop-at registration
-- ./nextflow main.nf --in ~/data/exemplar-001 --start-at probability-maps --stop-at probability-maps --probability-maps ilastik
-- ./nextflow main.nf --in ~/data/exemplar-001 --start-at segmentation --stop-at segmentation --probability-maps ilastik
-- ./nextflow main.nf --in ~/data/exemplar-001 --start-at probability-maps --stop-at probability-maps --probability-maps unmicst
-- ./nextflow main.nf --in ~/data/exemplar-001 --start-at segmentation --stop-at segmentation --probability-maps unmicst
-script:
-- if [ -d ~/data/downloads/exemplar-002 ]; then
-    echo "Using cached exemplar-002 download";
-  else
-    ./nextflow exemplar.nf --name exemplar-002 --path ~/data/downloads;
-  fi
-- cp -r ~/data/downloads/exemplar-002 ~/data/
-- travis_wait 30 ./nextflow main.nf --in ~/data/exemplar-002 --tma --stop-at registration
-- ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at dearray --probability-maps all
+jobs:
+  include:
+    - script: bash tests/exemplar-001.sh
+    - script: bash tests/exemplar-002.sh
