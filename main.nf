@@ -25,6 +25,7 @@ params.flatFormats = '{.ome.tiff,.ome.tif,.rcpnl,.btf,.nd2,.tif,.czi}'
 
 // Default selection of methods for each step
 params.probabilityMaps = 'unmicst'
+params.unmicstPy       = 'UnMicst.py'
 
 // Default parameters for individual modules
 params.ashlarOpts   = '-m 30'

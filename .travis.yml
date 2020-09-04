@@ -41,5 +41,5 @@ jobs:
       script:
       - cp -r ~/data/downloads/exemplar-002 ~/data/
       - travis_wait 30 ./nextflow main.nf --in ~/data/exemplar-002 --tma --stop-at dearray
-      - ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at probability-maps --probability-maps ilastik
+      - ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at probability-maps --probability-maps unmicst
       - ls ~/data/exemplar-002/*

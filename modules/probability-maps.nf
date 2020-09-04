@@ -16,7 +16,7 @@ process unmicst {
 	 params.probabilityMaps == 'all')
 
     """
-    python /app/unmicstWrapper.py $core ${params.unmicstOpts} --stackOutput --outputPath .
+    python /app/${params.unmicstPy} $core ${params.unmicstOpts} --stackOutput --outputPath .
     """
 }
 
