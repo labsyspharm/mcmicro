@@ -1,5 +1,13 @@
 #!/usr/bin/env nextflow
 
+if( !nextflow.version.matches('20.07+') ) {
+    println "mcmicro requires Nextflow version 20.08 or greater"
+    println "Run the following command to update: nextflow self-update"
+    exit 1
+}
+
+nextflow.enable.dsl=2
+
 // Expecting params
 // .in - location of the data
 
@@ -59,8 +67,6 @@ idxStop  = mcmsteps.indexOf( params.stopAt )
 if( idxStart < 0 )       error "Unknown starting step ${params.startAt}"
 if( idxStop < 0 )        error "Unknown stopping step ${params.stopAt}"
 if( idxStop < idxStart ) error "Stopping step cannot come before starting step"
-if( idxStart > 5 )
-  error "Starting at steps beyond segmentation is not yet supported."
 
 // Define all subdirectories
 paths   = mcmsteps.collect{ "${params.in}/$it" }
@@ -72,27 +78,25 @@ Channel.fromPath( "${params.in}/illumination_profiles/*" )
     .subscribe{ it -> error msg_dprc("illumination_profiles/", "illumination/") }
 
 // Identify marker information
-Channel.fromPath( "${params.in}/markers.csv", checkIfExists: true ).into{ch4; ch6}
-
-// Determine which masks will be needed by quantification
-masks = params.maskAdd.tokenize()
-switch( masks.size() ) {
-    case 0: masks = ""; break;
-    case 1: masks = "**${masks[0]}"; break;
-    default: masks = "**{${masks.join(',')}}"
-}
+chMrk = Channel.fromPath( "${params.in}/markers.csv", checkIfExists: true )
 
 // Identify the ilastik model
 s4_mdl = params.ilastikModel != 'NO_MODEL' ?
     file(params.ilastikModel) : 'NO_MODEL'
 
-// Helper function for finding raw images and precomputed intermediates
-findFiles = { p, path, ife -> p ?
-	     Channel.fromPath(path).ifEmpty(ife) : Channel.empty() }
+// Determine which masks will be needed by quantification
+masks = params.maskAdd.tokenize()
+switch( masks.size() ) {
+    case 0: params.qtym = ""; break;
+    case 1: params.qtym = "**${masks[0]}"; break;
+    default: params.qtym = "**{${masks.join(',')}}"
+}
 
-// Helper function to extract image ID from filename
-getID = { f, delim ->
-    tuple( f.getBaseName().toString().split(delim).head(), f ) }
+// Helper functions for finding raw images and precomputed intermediates
+findFiles0 = { p, path -> p ?
+	      Channel.fromPath(path) : Channel.empty() }
+findFiles  = { p, path, ife -> p ?
+	      Channel.fromPath(path).ifEmpty(ife) : Channel.empty() }
 
 // Look for index formats; if none found, looks for flat formats
 // Look in raw/ or registration/, depending on --start-at argument
@@ -102,291 +106,126 @@ formats = file("${chkdir}/**${params.rawFormats}") ?
 
 // Feed raw images into separate channels for
 //   illumination (step 1 input) and ASHLAR (step 2 input)
-findFiles(idxStart <= 2, "${paths[0]}/**${formats}",
-	  {error "No images found in ${paths[0]}"}).into{ s1in; s2in_raw }
+raw = findFiles(idxStart <= 2, "${paths[0]}/**${formats}",
+		{error "No images found in ${paths[0]}"})
+
+// Helper function to extract image ID from filename
+def getID (f, delim) {
+    tuple( f.getBaseName().toString().split(delim).head(), f )
+}
 
 // Find precomputed intermediates
-// Extract samples ID from each filename for subsequent tuple matching
-findFiles(idxStart == 2, "${paths[1]}/*-dfp.tif", {file("EMPTY1")}).set{s1pre_dfp}
-findFiles(idxStart == 2, "${paths[1]}/*-ffp.tif", {file("EMPTY2")}).set{s1pre_ffp}
-findFiles(idxStart == 3 || (idxStart > 3 && !params.tma), "${paths[2]}/*${formats}",
-	  {error "No pre-stitched image in ${paths[2]}"} )
-    .map{ f -> getID(f,'\\.') }.set{pre_img}
-findFiles(idxStart > 3 && params.tma, "${paths[3]}/*.tif",
-	  {error "No cores in ${paths[3]}"})
-    .map{ f -> getID(f,'\\.tif') }.set{pre_cores}
-findFiles(idxStart > 3 && params.tma, "${paths[3]}/masks/*.tif",
-	  {error "No masks in ${paths[3]}/masks"})
-    .map{ f -> getID(f,'_mask') }.set{pre_masks}
-findFiles(idxStart == 5 && params.probabilityMaps != 'ilastik',
-	  "${paths[4]}/unmicst/*Probabilities*.tif",
-	  {error "No probability maps found in ${paths[4]}/unmicst"})
-    .map{ f -> getID(f,'_Probabilities') }
-    .map{ id, f -> tuple(id, f, 'unmicst') }.set{pre_unmicst}
-((idxStart == 5 && params.probabilityMaps != 'ilastik') ?
- Channel.fromPath("${paths[4]}/unmicst2/*Probabilities*.tif") :
- Channel.empty())
-    .map{ f -> getID(f,'_Probabilities') }
-    .map{ id, f -> tuple(id, f, 'unmicst2') }.set{pre_unmicst2}
-findFiles(idxStart == 5 && params.probabilityMaps != 'unmicst',
-	  "${paths[4]}/ilastik/*Probabilities*.tif",
-	  {error "No probability maps found in ${paths[4]}/ilastik"})
-    .map{ f -> getID(f,'_Probabilities') }
-    .map{ id, f -> tuple(id, f, 'ilastik') }.set{pre_ilastik}
+pre_dfp = findFiles0(idxStart == 2, "${paths[1]}/*-dfp.tif")
+pre_ffp = findFiles0(idxStart == 2, "${paths[1]}/*-ffp.tif")
+pre_img = findFiles(idxStart == 3 || (idxStart > 3 && !params.tma),
+		    "${paths[2]}/*${formats}",
+		    {error "No pre-stitched image in ${paths[2]}"})
+pre_cores = findFiles(idxStart > 3 && params.tma,
+		      "${paths[3]}/*.tif",
+		      {error "No cores in ${paths[3]}"})
+pre_masks = findFiles(idxStart > 3 && params.tma,
+		      "${paths[3]}/masks/*.tif",
+		      {error "No TMA masks in ${paths[3]}/masks"})
+pre_unmicst = findFiles(idxStart == 5 &&
+			(params.probabilityMaps == 'unmicst' ||
+			 params.probabilityMaps == 'all'),
+			"${paths[4]}/unmicst/*Probabilities*.tif",
+			{error "No probability maps found in ${paths[4]}/unmicst"})
+pre_ilastik = findFiles(idxStart == 5 &&
+			(params.probabilityMaps == 'ilastik' ||
+			 params.probabilityMaps == 'all'),
+			"${paths[4]}/ilastik/*Probabilities*.tif",
+			{error "No probability maps found in ${paths[4]}/ilastik"})
+pre_sptMsk = findFiles(idxStart == 6,
+		       "${paths[5]}/**${params.maskSpatial}",
+		       {error "No spatial masks in ${paths[5]}"})
+pre_addMsk = findFiles(idxStart == 6 && params.qtym != '',
+		       "${paths[5]}/${params.qtym}",
+		       {error "No additional masks in ${paths[5]}"})
+pre_qty    = findFiles(idxStart == 7,
+		       "${paths[6]}/*.csv",
+		       {error "No quantification tables in ${paths[6]}"})
+
+// Compute sample IDs for each found intermediate
+id_img     = pre_img.map{ f -> getID(f,'\\.') }
+id_cores   = pre_cores.map{ f -> getID(f,'\\.tif') }
+id_masks   = pre_masks.map{ f -> getID(f,'_mask') }
+id_unmicst = pre_unmicst.map{ f -> getID(f,'_Probabilities') }
+    .map{ id, f -> tuple(id, f, 'unmicst') }
+id_ilastik = pre_ilastik.map{ f -> getID(f,'_Probabilities') }
+    .map{ id, f -> tuple(id, f, 'ilastik') }
+id_sptMsk  = pre_sptMsk.map{ f -> tuple(f.getParent().getBaseName(), f) }
+id_addMsk  = pre_addMsk.map{ f -> tuple(f.getParent().getBaseName(), f) }
+    .groupTuple()
+id_qtyMsk  = (params.qtym == '' ?
+	      id_sptMsk.map{ id, m -> tuple(id, m, []) } :
+	      id_sptMsk.join( id_addMsk ))
+    .map{ id, sm, am -> x = id.split('-',2); tuple(x[1], x[0], sm, am) }
 
 // Match up precomputed intermediates into tuples for each step
-pre_img.into{ pre_s2; pre_wsi }
-pre_cores.join( pre_masks ).into{ pre_s3; pre_tma }
-pre_wsi.map{ id, x -> tuple(id, x, 'NO_MASK') }
-    .mix( pre_tma ).into{ pre_cm_un; pre_cm_un2; pre_cm_il }
-pre_cm_un.join( pre_unmicst ).set{ pre_s4_un }
-pre_cm_un2.join( pre_unmicst2 ).set{ pre_s4_un2 }
-pre_cm_il.join( pre_ilastik ).set{ pre_s4_il }
-pre_s4_un.mix( pre_s4_un2 ).mix( pre_s4_il ).set{ pre_s4 }
+id_cm   = id_cores.join( id_masks )
+id_cm2  = id_img.map{ id, x -> tuple(id, x, 'NO_MASK') }.mix(id_cm)
+id_pmap = id_cm2.join( id_unmicst ).mix( id_cm2.join( id_ilastik ) )
+id_qty  = id_img.mix( id_cores ).combine( id_qtyMsk, by:0 )
 
 // Finalize the tuple format to match process outputs
-pre_s2.map{ id, f -> f }.set{s2pre}
-pre_s3.map{ id, c, m -> tuple(c,m) }.set{s3pre}
-pre_s4.map{ id, c, m, p, mtd -> tuple(mtd,c,m,p) }.set{s4pre}
+pre_tma  = id_cm.map{ id, c, m -> tuple(c,m) }
+pre_pmap = id_pmap.map{ id, c, m, p, mtd -> tuple(mtd,c,m,p) }
+pre_seg  = id_qty.map{ id, i, mtd, sm, am -> tuple(mtd,i,sm,am) }
 
-// Step 1 output - illumination profiles
-process illumination {
-    publishDir paths[1], mode: 'copy'
-    
-    input: file s1in
-    output:
-      file '*-dfp.tif' into s1out_dfp
-      file '*-ffp.tif' into s1out_ffp
-      tuple val(task.name), val(task.workDir) into prov1
+// The following parameters are shared by all modules
+params.idxStart = idxStart
+params.idxStop  = idxStop
+params.path_qc  = path_qc
 
-    when: idxStart <= 1 && idxStop >= 1
+// Import individual modules
+include {illumination}   from './modules/illumination'     addParams(pubDir: paths[1])
+include {registration}   from './modules/registration'     addParams(pubDir: paths[2])
+include {dearray}        from './modules/dearray'          addParams(pubDir: paths[3])
+include {probmaps}       from './modules/probability-maps' addParams(pubDir: paths[4])
+include {segmentation}   from './modules/segmentation'     addParams(pubDir: paths[5])
+include {quantification} from './modules/quantification'   addParams(pubDir: paths[6])
+include {naivestates}    from './modules/cell-states'      addParams(pubDir: paths[7])
 
-    script:
-    def xpn = file(s1in).name.tokenize(".").get(0)
-    """
-    /opt/fiji/Fiji.app/ImageJ-linux64 --ij2 --headless \
-      --run /opt/fiji/imagej_basic_ashlar.py \
-      "filename='${s1in}',output_dir='.',experiment_name='${xpn}'"
-    """
-}
+// Define the primary mcmicro workflow
+workflow {
+    illumination(raw)
+    registration(raw,
+		 illumination.out.ffp.mix( pre_ffp ),
+		 illumination.out.dfp.mix( pre_dfp ))
 
-// Step 2 input
-s2in_dfp = s1out_dfp.mix( s1pre_dfp )
-s2in_ffp = s1out_ffp.mix( s1pre_ffp )
+    // Are we working with a TMA or a whole-slide image?
+    img = registration.out
+	.mix(pre_img)
+	.branch {
+	  wsi: !params.tma
+	  tma: params.tma
+        }
 
-// Closure for sorting by filename instead of the full path
-fnSort = {a, b -> a.getName() <=> b.getName()}
+    // Apply dearray to TMAs only
+    dearray(img.tma)
 
-// Step 2 output - stitching and registration
-fn_stitched = "${params.sampleName}.ome.tif"
-process ashlar {
-    publishDir paths[2], mode: 'copy'
-    
-    input:
-      file lraw from s2in_raw.toSortedList()
-      file lffp from s2in_ffp.toSortedList(fnSort)
-      file ldfp from s2in_dfp.toSortedList(fnSort)
+    // Whole slide images have no TMA mask
+    img.wsi.map{ x -> tuple(x, 'NO_MASK') }
+	.mix(dearray.out)
+	.mix(pre_tma) |
+	probmaps
 
-    output:
-      file "${fn_stitched}" into s2out
-      tuple val(task.name), val(task.workDir) into prov2
+    // Combine probability map output with precomputed one
+    // Forward the result to segmentation
+    probmaps.out.mix(pre_pmap) |
+	segmentation
 
-    when: idxStart <= 2 && idxStop >= 2
-    
-    script:
-    def ilp = ( ldfp.name == 'EMPTY1' || lffp.name == 'EMPTY2' ) ?
-	"" : "--ffp $lffp --dfp $ldfp"
-    "ashlar $lraw ${params.ashlarOpts} $ilp --pyramid -f ${fn_stitched}"
-}
+    // Append markers.csv to every tuple
+    segmentation.out.mix(pre_seg)
+	.combine(chMrk)
+	.map{ mtd, c, ms, ma, ch ->
+          tuple("${mtd}-${c.getName()}", c, ms, ma, ch) } |
+	quantification
 
-// Step 3 input
-// Mix mutually-exclusive step 2 precomputed and step 2 output
-// Forward the result to channel tma or tissue based on params.tma flag
-s2out
-    .mix( s2pre )
-    .branch {
-      tissue: !params.tma
-      tma: params.tma
-    }
-    .set {s3in}
-
-// Step 3 output
-// De-arraying (if TMA)
-process dearray {
-    publishDir "${path_qc}/coreo", mode: 'copy', pattern: 'TMA_MAP.tif'
-    publishDir paths[3], mode: 'copy', pattern: '**{[0-9],mask}.tif'
-
-    input: file s from s3in.tma
-    
-    output:
-      file "**{,[A-Z],[A-Z][A-Z]}{[0-9],[0-9][0-9]}.tif" into s3out_cores
-      file "**_mask.tif" into s3out_masks
-      file "TMA_MAP.tif" into tmamap
-      tuple val(task.name), val(task.workDir) into prov3
-
-    when: idxStart <= 3 && idxStop >= 3 && params.tma
-
-    """
-    python /app/UNetCoreograph.py ${params.coreOpts}\
-      --imagePath $s --outputPath .
-    """
-}
-
-// Finalize step 3 output by matching up cores to masks
-if( params.tma ) {
-    id_cores = s3out_cores.flatten().map{ f -> getID(f,'\\.tif') }
-    id_masks = s3out_masks.flatten().map{ f -> getID(f,'_mask') }
-    s3out = id_cores.join( id_masks ).map{ id, c, m -> tuple(c, m) }
-}
-else s3out = s3in.tissue.map{ x -> tuple(x, 'NO_MASK') }
-
-// Step 4 input
-// Add channel name file to every (image, mask) tuple
-s3out
-    .mix( s3pre )
-    .into{ s4in_unmicst; s4in_unmicst2; s4in_ilastik }
-
-// Step 4 output - UnMicst
-process unmicst {
-    publishDir "${paths[4]}/unmicst", mode: 'copy', pattern: '*Probabilities*.tif'
-    publishDir "${path_qc}/unmicst", mode: 'copy', pattern: '*Preview*.tif'
-
-    input: tuple file(core), val(mask) from s4in_unmicst
-    output:
-      tuple val('unmicst'), file(core), val(mask),
-        file('*Probabilities*.tif') into s4out_unmicst
-      file('*Preview*.tif') into s4out_pub
-      tuple val(task.name), val(task.workDir) into prov4_unmicst
-
-    when: idxStart <= 4 && idxStop >= 4 && params.probabilityMaps != 'ilastik'
-    script:
-    """
-    python /app/UnMicst.py $core ${params.unmicstOpts} \
-      --stackOutput --outputPath .
-    """
-}
-
-// Step 4 output - UnMicst v2
-process unmicst2 {
-    publishDir "${paths[4]}/unmicst2", mode: 'copy', pattern: '*Probabilities*.tif'
-    publishDir "${path_qc}/unmicst2", mode: 'copy', pattern: '*Preview*.tif'
-
-    input: tuple file(core), val(mask) from s4in_unmicst2
-    output:
-      tuple val('unmicst2'), file(core), val(mask),
-        file('*Probabilities*.tif') into s4out_unmicst2
-      file('*Preview*.tif') into s4out_pub2
-      tuple val(task.name), val(task.workDir) into prov4_unmicst2
-
-    when: idxStart <= 4 && idxStop >= 4 && params.probabilityMaps != 'ilastik'
-    script:
-    """
-    python /app/UnMicst2.py $core ${params.unmicst2Opts} \
-      --stackOutput --outputPath .
-    """
-}
-
-// Step 4 output - ilastik
-process ilastik {
-    publishDir "${paths[4]}/ilastik", mode: 'copy', pattern: '*Probabilities*.tif'
-
-    input:
-	tuple file(core), val(mask) from s4in_ilastik
-        file(mdl) name 'input.ilp' from s4_mdl
-    output:
-      tuple val('ilastik'), file(core), val(mask),
-        file('*Probabilities*.tif') into s4out_ilastik
-      tuple val(task.name), val(task.workDir) into prov4_ilastik
-
-    when: idxStart <= 4 && idxStop >= 4 && params.probabilityMaps != 'unmicst'
-    script:
-        def model = params.ilastikModel != "NO_MODEL" ? 'input.ilp' :
-	"/app/classifiers/exemplar_001_nuclei.ilp"
-    """
-    python /app/CommandIlastikPrepOME.py \
-      ${params.ilastikOpts} --input $core --output .
-    cp $model ./model.ilp
-    /ilastik-release/run_ilastik.sh --headless --project=model.ilp *.hdf5
-    """
-}
-
-// Consolidate step 4 outputs
-s4out = s4out_unmicst.mix(s4out_unmicst2).mix( s4out_ilastik )
-
-// Step 5 input
-// Stage each image as method-core.tif (e.g., "unmicst-exemplar-001.tif")
-s5in = s4out.mix( s4pre )
-    .map{ s, c, m, p -> tuple("${s}-${c.getName()}", c, m, p) }
-
-// Step 5 output - segmentation
-process s3seg {
-    publishDir paths[5],           mode: 'copy', pattern: '*/*Mask.tif'
-    publishDir "${path_qc}/s3seg", mode: 'copy', pattern: '*/*Outlines.tif'
-
-    input:
-	tuple val(core), file("${core}"), file('mask.tif'), file(probs) from s5in
-
-    output:
-	// tuples for quantification
-        tuple file("${core}"), file("**${params.maskSpatial}"),
-          file("$masks") into s5out
-        // rest of the files for publishDir
-        file '**' into s5out_pub
-        tuple val(task.name), val(task.workDir) into prov5
-
-    when: idxStart <= 5 && idxStop >= 5
-    
-    script:
-	def crop = params.tma ?
-	'--crop dearray --maskPath mask.tif' :
-	''
-    """
-    python /app/S3segmenter.py $crop \
-       --imagePath $core --stackProbPath $probs \
-       ${params.s3segOpts} --outputPath .
-    """
-}
-
-// Step 6 input
-s6in = s5out.combine(ch6)
-
-// Step 6 output - quantification
-process quantification {
-    publishDir paths[6], mode: 'copy', pattern: '*.csv'
-
-    input:  tuple file(core), file(maskSpt), file(maskAdd), file(ch) from s6in
-    output:
-      file ('*.csv') into s6out
-      tuple val(task.name), val(task.workDir) into prov6
-
-    when: idxStart <= 6 && idxStop >= 6
-
-    """
-    python /app/CommandSingleCellExtraction.py \
-    --mask $maskSpt $maskAdd --image $core \
-    ${params.quantOpts} --output . --channel_names $ch
-    """
-}
-
-// Step 7 output
-process naivestates {
-    publishDir paths[7], mode: 'copy', pattern: '*.csv'
-    publishDir paths[7], mode: 'copy', pattern: 'plots/*.*'
-
-    publishDir "${path_qc}/naivestates", mode: 'copy', pattern: 'plots/*/*.*',
-      saveAs: { fn -> fn.replaceFirst("plots/","") }
-    
-    input: file(counts) from s6out
-    output:
-      file '**' into s7out
-      tuple val(task.name), val(task.workDir) into prov7
-
-    when: idxStart <= 7 && idxStop >= 7
-
-    """
-    /app/main.R -i $counts -o . ${params.nstatesOpts} \
-    --mct /app/typemap.csv
-    """
+    // Cell type callers
+    quantification.out.mix(pre_qty) |
+	naivestates
 }
 
 // Provenance reconstruction
@@ -394,21 +233,12 @@ workflow.onComplete {
     // Create a provenance directory
     path_prov = "${path_qc}/provenance"
     file(path_prov).mkdirs()
-
+    
     // Store parameters used
     file("${path_qc}/params.yml").withWriter{ out ->
 	params.each{ key, val ->
 	    if( key.indexOf('-') == -1 )
 	    out.println "$key: $val"
-	}
-    }
-
-    // Combine the provenance of all tasks into a single channel
-    // Store commands and logs
-    prov1.mix(prov2, prov3, prov4_unmicst, prov4_ilastik, prov5, prov6, prov7)
-	.subscribe { name, wkdir ->  if( wkdir != null ) {
-	    file("${wkdir}/.command.sh").copyTo("${path_prov}/${name}.sh")
-	    file("${wkdir}/.command.log").copyTo("${path_prov}/${name}.log")
 	}
     }
 }
