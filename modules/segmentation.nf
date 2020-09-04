@@ -33,7 +33,8 @@ workflow segmentation {
 	input
 
     main:
-        input.map{ s, c, m, p -> tuple("${s}-${c.getBaseName()}", s, c, m, p) } |
+        input.map{ s, c, m, p ->
+	  tuple("${s}-${c.getBaseName().split('\\.').head()}", s, c, m, p) } |
 	s3seg
 
     emit:
