@@ -73,9 +73,10 @@ paths   = mcmsteps.collect{ "${params.in}/$it" }
 path_qc = "${params.in}/qc"
 
 // Check that deprecated locations are empty
-msg_dprc = {a,b -> "The use of $a has been deprecated. Please use $b instead."}
 Channel.fromPath( "${params.in}/illumination_profiles/*" )
-    .subscribe{ it -> error msg_dprc("illumination_profiles/", "illumination/") }
+    .subscribe{ it ->
+    error "illumination_profiles/ is deprecated; please use illumination/ instead"
+}
 
 // Identify marker information
 chMrk = Channel.fromPath( "${params.in}/markers.csv", checkIfExists: true )
