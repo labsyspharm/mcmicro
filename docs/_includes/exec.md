@@ -90,3 +90,6 @@ replacing relevant fields (e.g., `user@university.edu`) with your own values.
 
 The pipeline run can then be kicked off with `sbatch submit_mcmicro.sh`.
 
+### Requesting resources
+
+The default profiles `O2`, `O2large` and `O2massive` establish reasonable defaults for O2 resource requests. These will work for most scenarios, but individual projects may require additional customization of time and memory requirements. To overwrite the defaults, compose a new config file (e.g., `myproject.config`) specifying the desired requirements. For example, to 
