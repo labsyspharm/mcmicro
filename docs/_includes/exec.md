@@ -90,3 +90,22 @@ replacing relevant fields (e.g., `user@university.edu`) with your own values.
 
 The pipeline run can then be kicked off with `sbatch submit_mcmicro.sh`.
 
+### Requesting O2 resources
+
+The default profiles `O2`, `O2large` and `O2massive` establish reasonable defaults for O2 resource requests. These will work for most scenarios, but individual projects may also have custom time and memory requirements. To overwrite the defaults, compose a new config file (e.g., `myproject.config`) specifying the desired custom requirements using [process selectors](https://www.nextflow.io/docs/latest/config.html#process-selectors). For example, to request 128GB of memory and 96 hours in the `medium` queue for ASHLAR, one would specify
+```
+process{
+  withName:ashlar {
+    queue  = 'medium'
+    time   = '96h'
+    memory = '128G'
+  }
+}
+```
+Use [existing profiles](https://github.com/labsyspharm/mcmicro/blob/master/config/large.config) as examples. Once `myproject.config` is composed, it can be provided to a `nextflow run` command using the `-c` flag:
+
+```
+nextflow run labsyspharm/mcmicro --in /path/to/exemplar-001 -profile O2 -c myproject.config
+```
+
+Note that `-profile` is still needed because it defines additional configurations, such as where to find the container modules. `myproject.config` simply overrides a portion of the fields in the overall profile.
