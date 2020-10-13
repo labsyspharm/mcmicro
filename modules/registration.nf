@@ -1,5 +1,11 @@
 process ashlar {
-    publishDir params.pubDir, mode: 'copy'
+    publishDir params.pubDir, mode: 'copy', pattern: '*.tif'
+    
+    // Provenance
+    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
+      saveAs: {fn -> "${task.name}.sh"}
+    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
+      saveAs: {fn -> "${task.name}.log"}
     
     input:
       path lraw
@@ -7,7 +13,8 @@ process ashlar {
       path ldfp
 
     output:
-	path "${params.sampleName}.ome.tif"
+	path "${params.sampleName}.ome.tif", emit: img
+        tuple path('.command.sh'), path('.command.log')
 
     when: params.idxStart <= 2 && params.idxStop >= 2
     
@@ -31,5 +38,5 @@ workflow registration {
       )
 
     emit:
-      ashlar.out
+      ashlar.out.img
 }

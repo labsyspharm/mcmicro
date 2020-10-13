@@ -1,8 +1,18 @@
 process s3seg {
+    // Output
     publishDir "${params.pubDir}/$tag",
       mode: 'copy', pattern: '*/*Mask.tif', saveAs: {f -> file(f).name}
+
+    // QC
     publishDir "${params.path_qc}/s3seg/$tag",
       mode: 'copy', pattern: '*/*Outlines.tif', saveAs: {f -> file(f).name}
+
+    // Provenance
+    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
+      saveAs: {fn -> "${task.name}.sh"}
+    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
+      saveAs: {fn -> "${task.name}.log"}
+    
 
     input:
 	tuple val(tag), val(method), path(core), file('mask.tif'), path(probs)
@@ -14,6 +24,7 @@ process s3seg {
 
         // rest of the files for publishDir
         path('**')
+        tuple path('.command.sh'), path('.command.log')
 
     when: params.idxStart <= 5 && params.idxStop >= 5
     

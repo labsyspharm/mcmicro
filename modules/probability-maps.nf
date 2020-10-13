@@ -1,6 +1,15 @@
 process unmicst {
+    // Output probability map
     publishDir "${params.pubDir}/unmicst", mode: 'copy', pattern: '*Probabilities*.tif'
+
+    // QC
     publishDir "${params.path_qc}/unmicst", mode: 'copy', pattern: '*Preview*.tif'
+
+    // Provenance
+    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
+      saveAs: {fn -> "${task.name}.sh"}
+    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
+      saveAs: {fn -> "${task.name}.log"}
 
     input:
 	tuple path(core), val(mask)
@@ -9,6 +18,7 @@ process unmicst {
       tuple val('unmicst'), path(core), val(mask),
         path('*Probabilities*.tif'), emit: pm
       path('*Preview*.tif')
+      tuple path('.command.sh'), path('.command.log')
 
     when:
 	params.idxStart <= 4 && params.idxStop >= 4 &&
@@ -21,7 +31,14 @@ process unmicst {
 }
 
 process ilastik {
+    // Output probability map
     publishDir "${params.pubDir}/ilastik", mode: 'copy', pattern: '*Probabilities*.tif'
+
+    // Provenance
+    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
+      saveAs: {fn -> "${task.name}.sh"}
+    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
+      saveAs: {fn -> "${task.name}.log"}
 
     input:
 	tuple path(core), val(mask)
@@ -30,6 +47,7 @@ process ilastik {
     output:
       tuple val('ilastik'), path(core), val(mask),
         path('*Probabilities*.tif'), emit: pm
+      tuple path('.command.sh'), path('.command.log')
 
     when: params.idxStart <= 4 && params.idxStop >= 4 &&
 	(params.probabilityMaps == 'ilastik' ||

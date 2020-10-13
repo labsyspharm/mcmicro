@@ -1,10 +1,19 @@
 process quantification {
+    // Output
     publishDir params.pubDir, mode: 'copy', pattern: '*.csv'
+
+    // Provenance
+    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
+      saveAs: {fn -> "${task.name}.sh"}
+    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
+      saveAs: {fn -> "${task.name}.log"}
     
     input:
 	tuple val(tag), path("$tag"),
           path(maskSpt), path(maskAdd), path(ch)
-    output: path('*.csv')
+    output:
+	path '*.csv', emit: tables
+        tuple path('.command.sh'), path('.command.log')
 
     when: params.idxStart <= 6 && params.idxStop >= 6
 
