@@ -39,7 +39,7 @@ params.nstatesOpts  = '-p png'
 // Path-specific parameters that cannot be captured by the above *opts
 params.maskSpatial  = 'cellMask.tif'
 params.maskAdd      = ''
-params.ilastikModel = 'NO_MODEL'
+params.ilastikModel = 'built-in'
 
 // Legacy parameters (to be deprecated in future versions)
 params.illum         = false    // whether to run ImageJ+BaSiC
@@ -80,10 +80,6 @@ Channel.fromPath( "${params.in}/illumination_profiles/*" )
 
 // Identify marker information
 chMrk = Channel.fromPath( "${params.in}/markers.csv", checkIfExists: true )
-
-// Identify the ilastik model
-s4_mdl = params.ilastikModel != 'NO_MODEL' ?
-    file(params.ilastikModel) : 'NO_MODEL'
 
 // Determine which masks will be needed by quantification
 masks = params.maskAdd.tokenize()

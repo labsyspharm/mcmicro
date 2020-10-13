@@ -36,7 +36,7 @@ process ilastik {
 	 params.probabilityMaps == 'all')
     
     script:
-        def model = params.ilastikModel != "NO_MODEL" ? 'input.ilp' :
+        def model = params.ilastikModel != "built-in" ? 'input.ilp' :
 	"/app/classifiers/exemplar_001_nuclei.ilp"
     """
     python /app/CommandIlastikPrepOME.py \
@@ -52,8 +52,8 @@ workflow probmaps {
 
     main:
 	// Identify the ilastik model
-        ilastik_mdl = params.ilastikModel != 'NO_MODEL' ?
-	  file(params.ilastikModel) : 'NO_MODEL'
+        ilastik_mdl = params.ilastikModel != 'built-in' ?
+	  file(params.ilastikModel) : 'built-in'
 
 	unmicst(input)
         ilastik(input, ilastik_mdl)
