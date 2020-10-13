@@ -22,8 +22,6 @@ process naivestates {
     when: params.idxStart <= 7 && params.idxStop >= 7
 
     """
-    /app/main.R -i $counts -o . ${params.nstatesOpts} \
-    --mct /app/typemap.csv
+    /app/main.R -i $counts -o . ${params.nstatesOpts}
     """
 }
-
