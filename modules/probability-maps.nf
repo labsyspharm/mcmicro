@@ -1,6 +1,15 @@
 process unmicst {
+    // Output probability map
     publishDir "${params.pubDir}/unmicst", mode: 'copy', pattern: '*Probabilities*.tif'
+
+    // QC
     publishDir "${params.path_qc}/unmicst", mode: 'copy', pattern: '*Preview*.tif'
+
+    // Provenance
+    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
+      saveAs: {fn -> "${task.name}.sh"}
+    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
+      saveAs: {fn -> "${task.name}.log"}
 
     input:
 	tuple path(core), val(mask)
@@ -9,6 +18,7 @@ process unmicst {
       tuple val('unmicst'), path(core), val(mask),
         path('*Probabilities*.tif'), emit: pm
       path('*Preview*.tif')
+      tuple path('.command.sh'), path('.command.log')
 
     when:
 	params.idxStart <= 4 && params.idxStop >= 4 &&
@@ -21,7 +31,14 @@ process unmicst {
 }
 
 process ilastik {
+    // Output probability map
     publishDir "${params.pubDir}/ilastik", mode: 'copy', pattern: '*Probabilities*.tif'
+
+    // Provenance
+    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
+      saveAs: {fn -> "${task.name}.sh"}
+    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
+      saveAs: {fn -> "${task.name}.log"}
 
     input:
 	tuple path(core), val(mask)
@@ -30,13 +47,14 @@ process ilastik {
     output:
       tuple val('ilastik'), path(core), val(mask),
         path('*Probabilities*.tif'), emit: pm
+      tuple path('.command.sh'), path('.command.log')
 
     when: params.idxStart <= 4 && params.idxStop >= 4 &&
 	(params.probabilityMaps == 'ilastik' ||
 	 params.probabilityMaps == 'all')
     
     script:
-        def model = params.ilastikModel != "NO_MODEL" ? 'input.ilp' :
+        def model = params.ilastikModel != "built-in" ? 'input.ilp' :
 	"/app/classifiers/exemplar_001_nuclei.ilp"
     """
     python /app/CommandIlastikPrepOME.py \
@@ -52,8 +70,8 @@ workflow probmaps {
 
     main:
 	// Identify the ilastik model
-        ilastik_mdl = params.ilastikModel != 'NO_MODEL' ?
-	  file(params.ilastikModel) : 'NO_MODEL'
+        ilastik_mdl = params.ilastikModel != 'built-in' ?
+	  file(params.ilastikModel) : 'built-in'
 
 	unmicst(input)
         ilastik(input, ilastik_mdl)

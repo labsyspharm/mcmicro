@@ -1,10 +1,18 @@
 process illumination {
-    publishDir params.pubDir, mode: 'copy'
+    // Output profiles
+    publishDir params.pubDir, mode: 'copy', pattern: '*.tif'
+
+    // Provenance
+    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
+      saveAs: {fn -> "${task.name}.sh"}
+    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
+      saveAs: {fn -> "${task.name}.log"}
     
     input: path fn
     output:
-	path '*-dfp.tif', emit: dfp
-        path '*-ffp.tif', emit: ffp
+      path '*-dfp.tif', emit: dfp
+      path '*-ffp.tif', emit: ffp
+      tuple path('.command.sh'), path('.command.log')
 
     when: params.idxStart <= 1 && params.idxStop >= 1
     

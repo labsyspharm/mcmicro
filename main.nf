@@ -39,7 +39,7 @@ params.nstatesOpts  = '-p png'
 // Path-specific parameters that cannot be captured by the above *opts
 params.maskSpatial  = 'cellMask.tif'
 params.maskAdd      = ''
-params.ilastikModel = 'NO_MODEL'
+params.ilastikModel = 'built-in'
 
 // Legacy parameters (to be deprecated in future versions)
 params.illum         = false    // whether to run ImageJ+BaSiC
@@ -80,10 +80,6 @@ Channel.fromPath( "${params.in}/illumination_profiles/*" )
 
 // Identify marker information
 chMrk = Channel.fromPath( "${params.in}/markers.csv", checkIfExists: true )
-
-// Identify the ilastik model
-s4_mdl = params.ilastikModel != 'NO_MODEL' ?
-    file(params.ilastikModel) : 'NO_MODEL'
 
 // Determine which masks will be needed by quantification
 masks = params.maskAdd.tokenize()
@@ -175,9 +171,10 @@ pre_pmap = id_pmap.map{ id, c, m, p, mtd -> tuple(mtd,c,m,p) }
 pre_seg  = id_qty.map{ id, i, mtd, sm, am -> tuple(mtd,i,sm,am) }
 
 // The following parameters are shared by all modules
-params.idxStart = idxStart
-params.idxStop  = idxStop
-params.path_qc  = path_qc
+params.idxStart  = idxStart
+params.idxStop   = idxStop
+params.path_qc   = path_qc
+params.path_prov = "${path_qc}/provenance"
 
 // Import individual modules
 include {illumination}   from './modules/illumination'     addParams(pubDir: paths[1])
@@ -225,15 +222,14 @@ workflow {
 	quantification
 
     // Cell type callers
-    quantification.out.mix(pre_qty) |
+    quantification.out.tables.mix(pre_qty) |
 	naivestates
 }
 
-// Provenance reconstruction
+// Write out parameters used
 workflow.onComplete {
     // Create a provenance directory
-    path_prov = "${path_qc}/provenance"
-    file(path_prov).mkdirs()
+    file(path_qc).mkdirs()
     
     // Store parameters used
     file("${path_qc}/params.yml").withWriter{ out ->
