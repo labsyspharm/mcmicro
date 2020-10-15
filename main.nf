@@ -33,7 +33,7 @@ params.unmicstOpts  = ''
 params.unmicst2Opts = '--channel 0'
 params.ilastikOpts  = '--num_channels 1'
 params.s3segOpts    = ''
-params.quantOpts    = '--mask cellMask.tif'
+params.quantOpts    = '--masks cellMask.tif'
 params.nstatesOpts  = '-p png'
 
 // Path-specific parameters that cannot be captured by the above *opts
@@ -51,9 +51,9 @@ if( params.quantificationMask != '' )
 if( params.illum )
     error "--illum is deprecated; please use --start-at illumination"
 if( params.maskSpatial != '' )
-    error "--maskSpatial is deprecated; please use --quant-opts '--mask ...'"
+    error "--maskSpatial is deprecated; please use --quant-opts '--masks ...'"
 if( params.maskAdd != '' )
-    error "--maskAdd is deprecated; please use --quant-opts '--mask ...'"
+    error "--maskAdd is deprecated; please use --quant-opts '--masks ...'"
 
 // Steps in the mcmicro pipeline
 mcmsteps = ["raw",		// Step 0
