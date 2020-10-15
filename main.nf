@@ -33,11 +33,11 @@ params.unmicstOpts  = ''
 params.unmicst2Opts = '--channel 0'
 params.ilastikOpts  = '--num_channels 1'
 params.s3segOpts    = ''
-params.quantOpts    = ''
+params.quantOpts    = '--masks cellMask.tif'
 params.nstatesOpts  = '-p png'
 
 // Path-specific parameters that cannot be captured by the above *opts
-params.maskSpatial  = 'cellMask.tif'
+params.maskSpatial  = ''
 params.maskAdd      = ''
 params.ilastikModel = 'built-in'
 
@@ -50,6 +50,10 @@ if( params.quantificationMask != '' )
     error "--quantification-mask is deprecated; please use --mask-spatial and --mask-add instead"
 if( params.illum )
     error "--illum is deprecated; please use --start-at illumination"
+if( params.maskSpatial != '' )
+    error "--maskSpatial is deprecated; please use --quant-opts '--masks ...'"
+if( params.maskAdd != '' )
+    error "--maskAdd is deprecated; please use --quant-opts '--masks ...'"
 
 // Steps in the mcmicro pipeline
 mcmsteps = ["raw",		// Step 0
@@ -80,14 +84,6 @@ Channel.fromPath( "${params.in}/illumination_profiles/*" )
 
 // Identify marker information
 chMrk = Channel.fromPath( "${params.in}/markers.csv", checkIfExists: true )
-
-// Determine which masks will be needed by quantification
-masks = params.maskAdd.tokenize()
-switch( masks.size() ) {
-    case 0: params.qtym = ""; break;
-    case 1: params.qtym = "**${masks[0]}"; break;
-    default: params.qtym = "**{${masks.join(',')}}"
-}
 
 // Helper functions for finding raw images and precomputed intermediates
 findFiles0 = { p, path -> p ?
@@ -133,12 +129,9 @@ pre_ilastik = findFiles(idxStart == 5 &&
 			 params.probabilityMaps == 'all'),
 			"${paths[4]}/ilastik/*Probabilities*.tif",
 			{error "No probability maps found in ${paths[4]}/ilastik"})
-pre_sptMsk = findFiles(idxStart == 6,
-		       "${paths[5]}/**${params.maskSpatial}",
-		       {error "No spatial masks in ${paths[5]}"})
-pre_addMsk = findFiles(idxStart == 6 && params.qtym != '',
-		       "${paths[5]}/${params.qtym}",
-		       {error "No additional masks in ${paths[5]}"})
+pre_segMsk = findFiles(idxStart == 6,
+		       "${paths[5]}/**Mask.tif",
+		       {error "No segmentation masks in ${paths[5]}"})
 pre_qty    = findFiles(idxStart == 7,
 		       "${paths[6]}/*.csv",
 		       {error "No quantification tables in ${paths[6]}"})
@@ -151,24 +144,19 @@ id_unmicst = pre_unmicst.map{ f -> getID(f,'_Probabilities') }
     .map{ id, f -> tuple(id, f, 'unmicst') }
 id_ilastik = pre_ilastik.map{ f -> getID(f,'_Probabilities') }
     .map{ id, f -> tuple(id, f, 'ilastik') }
-id_sptMsk  = pre_sptMsk.map{ f -> tuple(f.getParent().getBaseName(), f) }
-id_addMsk  = pre_addMsk.map{ f -> tuple(f.getParent().getBaseName(), f) }
-    .groupTuple()
-id_qtyMsk  = (params.qtym == '' ?
-	      id_sptMsk.map{ id, m -> tuple(id, m, []) } :
-	      id_sptMsk.join( id_addMsk ))
-    .map{ id, sm, am -> x = id.split('-',2); tuple(x[1], x[0], sm, am) }
+id_segMsk  = pre_segMsk.map{ f -> tuple(f.getParent().getBaseName(), f) }
+    .groupTuple().map{ id, msk -> x = id.split('-',2); tuple(x[1], x[0], msk) }
 
 // Match up precomputed intermediates into tuples for each step
 id_cm   = id_cores.join( id_masks )
 id_cm2  = id_img.map{ id, x -> tuple(id, x, 'NO_MASK') }.mix(id_cm)
 id_pmap = id_cm2.join( id_unmicst ).mix( id_cm2.join( id_ilastik ) )
-id_qty  = id_img.mix( id_cores ).combine( id_qtyMsk, by:0 )
+id_seg  = id_img.mix( id_cores ).combine( id_segMsk, by:0 )
 
 // Finalize the tuple format to match process outputs
 pre_tma  = id_cm.map{ id, c, m -> tuple(c,m) }
 pre_pmap = id_pmap.map{ id, c, m, p, mtd -> tuple(mtd,c,m,p) }
-pre_seg  = id_qty.map{ id, i, mtd, sm, am -> tuple(mtd,i,sm,am) }
+pre_seg  = id_seg.map{ id, i, mtd, msk -> tuple(mtd,i,msk) }
 
 // The following parameters are shared by all modules
 params.idxStart  = idxStart
@@ -216,9 +204,8 @@ workflow {
 
     // Append markers.csv to every tuple
     segmentation.out.mix(pre_seg)
-	.combine(chMrk)
-	.map{ mtd, c, ms, ma, ch ->
-          tuple("${mtd}-${c.getName()}", c, ms, ma, ch) } |
+	.map{ mtd, c, msk -> tuple("${mtd}-${c.getName()}", c, msk) }
+    	.combine(chMrk) |
 	quantification
 
     // Cell type callers
