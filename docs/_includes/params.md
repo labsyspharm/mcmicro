@@ -23,21 +23,20 @@ tma: true
 * `--stop-at <step>` - name of the final step to be executed by the pipeline. Spans the same vocabulary as `--start-at`. Default: `cell-states`.
 * `--tma` - if specified, mcmicro treats input data as a TMA. If omitted, the input is assumed to be a whole-slide image. Default: omitted.
 * `--raw-formats <formats>` - one or more file formats that mcmicro should look for. Default: `{.ome.tiff,.ome.tif,.rcpnl,.xdce,.nd,.scan,.htd,.btf,.nd2,.tif,.czi}`
+* `--ilastik-model` - A custom `.ilp` file to be used as the classifier model for ilastik
 
 **Module selection**
 * `--probability-maps <unmicst|ilastik|all>` - which module(s) to use for probability map computation. Default: `unmicst`
 
 ## Parameters for individual modules
 
-It is important to make a distinction between parameters that control the behavior of individual modules, and parameters that specify which files the modules operate on. Because all file management is done at the level of the pipeline, **the latter set is marked with `[mcmicro]` in the below lists to indicate that the parameters must be provided to mcmicro instead.**
+Module-specific parameters can be specified using the various `opts` arguments, followed by the parameters enclosed inside single quotes `'`:
 
 Example 1: `nextflow run labsyspharm/mcmicro --in /my/data --ashlar-opts '-m 30 --pyramid'`
 
 Example 2: `nextflow run labsyspharm/mcmicro --in /my/data --nstates-opts '--log no --plots pdf'`
 
-Example 3: `nextflow run labsyspharm/mcmicro --in /my/data --mask-add 'cytoMask.tif nucleiMask.tif'`
-
-Note that because `cytoMask.tif` and `nucleiMask.tif` reference filenames, the argument `--mask-add` is provided directly to nextflow, as opposed to `--quant-opts`.
+Example 3: `nextflow run labsyspharm/mcmicro --in /my/data --quant-opts '--masks cytoMask.tif nucleiMask.tif'`
 
 ### Arguments to ASHLAR (`--ashlar-opts`):
 
@@ -68,7 +67,6 @@ Up-to-date list can be viewed at [https://github.com/HMS-IDAC/UNetCoreograph](ht
 * `--channelIDs` - Integer indices specifying which channels to export (Ex: 1 2 4)
 * `--ring_mask` - Include if you have a ring mask in the same directory to use for reducing size of hdf5 image. do not include if not
 * `--crop_amount` -  Number of crops you would like to extract
-* **[mcmicro]** `--ilastik-model` - A custom `.ilp` file to be used as the classifier model
 
 Up-to-date list can be viewed at [https://github.com/labsyspharm/mcmicro-ilastik](https://github.com/labsyspharm/mcmicro-ilastik)
 
@@ -89,9 +87,6 @@ Up-to-date list can be viewed at [https://github.com/labsyspharm/mcmicro-ilastik
 * `--TissueMaskChan` - select one or more channels to use for identifying the general tissue area for masking purposes. Default is to use a combination of nuclei and cytoplasm channels.
 
 ### Arguments to quantification(`--quant-opts`):
-
-* **[mcmicro]** `--mask-spatial <filename>` - which segmentation mask should be used for extracting spatial features. Must be a filename produced by the s3segmenter. Default: `cellMask.tif`
-* **[mcmicro]** `--mask-add <filenames>` - one or more filenames referencing masks produced by the s3segmenter that should also be quantified. The filenames should be surrounded with single quotes (`'`). Default: none.
 
 Up-to-date list can be viewed at [https://github.com/labsyspharm/quantification](https://github.com/labsyspharm/quantification)
 
