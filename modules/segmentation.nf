@@ -18,11 +18,10 @@ process s3seg {
 	tuple val(tag), val(method), path(core), file('mask.tif'), path(probs)
 
     output:
-	// tuples for quantification
-        tuple val(method), path(core), path("**${params.maskSpatial}"),
-          path("$params.qtym"), emit: segmasks
+	// output for quantification
+        tuple val(method), path(core), path("**Mask.tif"), emit: segmasks
 
-        // rest of the files for publishDir
+        // qc and provenance
         path('**')
         tuple path('.command.sh'), path('.command.log')
 

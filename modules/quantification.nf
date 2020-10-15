@@ -9,8 +9,7 @@ process quantification {
       saveAs: {fn -> "${task.name}.log"}
     
     input:
-	tuple val(tag), path("$tag"),
-          path(maskSpt), path(maskAdd), path(ch)
+	tuple val(tag), path("$tag"), path(masks), path(ch)
     output:
 	path '*.csv', emit: tables
         tuple path('.command.sh'), path('.command.log')
@@ -18,8 +17,7 @@ process quantification {
     when: params.idxStart <= 6 && params.idxStop >= 6
 
     """
-    python /app/CommandSingleCellExtraction.py \
-    --mask $maskSpt $maskAdd --image $tag \
+    python /app/CommandSingleCellExtraction.py --image $tag \
     ${params.quantOpts} --output . --channel_names $ch
     """
 }
