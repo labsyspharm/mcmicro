@@ -17,11 +17,15 @@ params.startAt     = 'registration'
 params.stopAt      = 'cell-states'
 params.tma         = false    // whether to run Coreograph
 
-// Pipeline will look for rawFormats first
-// If it finds none, it will look for flatFormats
-// This is needed to handle cases like .xdce indexing over multiple .tifs
-params.rawFormats  = '{.xdce,.nd,.scan,.htd}'
-params.flatFormats = '{.ome.tiff,.ome.tif,.rcpnl,.btf,.nd2,.tif,.czi}'
+// Some image formats store multiple fields of view in a single file. Other
+// formats store each field separately, typically in .tif files, with a separate
+// index file to tie them together. We will look for the index files from
+// multiple-file formats in a first, separate pass in order to avoid finding the
+// individual .tif files instead. If no multi-file formats are detected, then we
+// look for the single-file formats. Also, for multi-file formats we need to
+// stage the parent directory and not just the index file.
+params.multiFormats  = '{.xdce,.nd,.scan,.htd}'
+params.singleFormats = '{.ome.tiff,.ome.tif,.rcpnl,.btf,.nd2,.tif,.czi}'
 
 // Default selection of methods for each step
 params.probabilityMaps = 'unmicst'
@@ -91,16 +95,24 @@ findFiles0 = { p, path -> p ?
 findFiles  = { p, path, ife -> p ?
 	      Channel.fromPath(path).ifEmpty(ife) : Channel.empty() }
 
-// Look for index formats; if none found, looks for flat formats
-// Look in raw/ or registration/, depending on --start-at argument
-chkdir  = idxStart <= 2 ? "${paths[0]}" : "${paths[2]}"
-formats = file("${chkdir}/**${params.rawFormats}") ?
-    params.rawFormats : params.flatFormats
+// Look for multi formats first, then single formats.
+(formatType, formatPattern) =
+    file("${paths[0]}/**${params.multiFormats}") ?
+    ["multi", params.multiFormats] : ["single", params.singleFormats]
+rawFiles = findFiles(idxStart <= 2, "${paths[0]}/**${formatPattern}",
+		     {error "No images found in ${paths[0]}"})
 
-// Feed raw images into separate channels for
-//   illumination (step 1 input) and ASHLAR (step 2 input)
-raw = findFiles(idxStart <= 2, "${paths[0]}/**${formats}",
-		{error "No images found in ${paths[0]}"})
+// Here we assemble tuples of 1) path to stage for each raw image (might be a
+// directory) and 2) relative path to the main file for each image. Processes
+// must input the first as a path and the second as a val to avoid incorrect or
+// redundant file staging. They must also only use the second (relative) path to
+// construct pathnames for scripts etc. mcmicro.Util.escapePathForShell must be
+// used when interpolating these paths into script strings, as we are bypassing
+// the normal way that paths are passed to channels which handles this escaping
+// automatically.
+raw = rawFiles
+    .map{ tuple(formatType == "single" ? it : it.parent, it) }
+    .map{ toStage, relPath -> tuple(toStage, toStage.parent.relativize(relPath)) }
 
 // Helper function to extract image ID from filename
 def getID (f, delim) {
@@ -111,7 +123,7 @@ def getID (f, delim) {
 pre_dfp = findFiles0(idxStart == 2, "${paths[1]}/*-dfp.tif")
 pre_ffp = findFiles0(idxStart == 2, "${paths[1]}/*-ffp.tif")
 pre_img = findFiles(idxStart == 3 || (idxStart > 3 && !params.tma),
-		    "${paths[2]}/*${formats}",
+		    "${paths[2]}/*.ome.tif{,f}",
 		    {error "No pre-stitched image in ${paths[2]}"})
 pre_cores = findFiles(idxStart > 3 && params.tma,
 		      "${paths[3]}/*.tif",
