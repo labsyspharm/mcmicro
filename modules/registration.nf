@@ -1,3 +1,5 @@
+import mcmicro.Util
+
 process ashlar {
     publishDir params.pubDir, mode: 'copy', pattern: '*.tif'
     
@@ -8,7 +10,8 @@ process ashlar {
       saveAs: {fn -> "${task.name}.log"}
     
     input:
-      path lraw
+      path lraw // Only for staging
+      val lrelPath // Use this for paths
       path lffp
       path ldfp
 
@@ -19,9 +22,10 @@ process ashlar {
     when: params.idxStart <= 2 && params.idxStop >= 2
     
     script:
+    def imgs = lrelPath.collect{ Util.escapeForShell(it) }.join(" ")
     def ilp = "--ffp $lffp --dfp $ldfp"
-    if (ilp == '--ffp  --dfp ') ilp = ''  // Don't supply empty --ffp --dfp 
-    "ashlar $lraw ${params.ashlarOpts} $ilp --pyramid -f ${params.sampleName}.ome.tif"
+    if (ilp == '--ffp  --dfp ') ilp = ''  // Don't supply empty --ffp --dfp
+    "ashlar $imgs ${params.ashlarOpts} $ilp --pyramid -f ${params.sampleName}.ome.tif"
 }
 
 workflow registration {
@@ -31,8 +35,10 @@ workflow registration {
       dfp
 
     main:
-      ashlar( 
-        raw.toSortedList(),
+      rawst = raw.toSortedList{a, b -> a[0] <=> b[0]}.transpose()
+      ashlar(
+        rawst.first(),
+        rawst.last(),
         ffp.toSortedList{a, b -> a.getName() <=> b.getName()},
         dfp.toSortedList{a, b -> a.getName() <=> b.getName()}
       )
