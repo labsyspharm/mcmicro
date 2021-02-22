@@ -123,7 +123,7 @@ def getID (f, delim) {
 pre_dfp = findFiles0(idxStart == 2, "${paths[1]}/*-dfp.tif")
 pre_ffp = findFiles0(idxStart == 2, "${paths[1]}/*-ffp.tif")
 pre_img = findFiles(idxStart == 3 || (idxStart > 3 && !params.tma),
-		    "${paths[2]}/*.ome.tif{,f}",
+		    "${paths[2]}/*.{ome.tiff,ome.tif,tif,tiff,btf}",
 		    {error "No pre-stitched image in ${paths[2]}"})
 pre_cores = findFiles(idxStart > 3 && params.tma,
 		      "${paths[3]}/*.tif",
