@@ -30,17 +30,17 @@ jobs:
       #   run: nextflow exemplar.nf --name exemplar-002 --path ~/data/downloads
       - name: Store Nextflow executable
         uses: actions/upload-artifact@v2
-	with:
-	  name: nfexe
-	  path: /usr/local/bin/nextflow
+        with:
+          name: nfexe
+          path: /usr/local/bin/nextflow
   test-ex001:
     needs: setup
     runs-on: ubuntu-latest
     steps:
       - name: Retrieve Nextflow executable
         uses: actions/download-artifact@v2
-	with:
-	  name: nfexe
+        with:
+          name: nfexe
       - name: Test exemplar-001
         run: |
           cp -r ~/data/downloads/exemplar-001 ~/data/
