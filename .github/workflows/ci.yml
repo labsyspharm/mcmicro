@@ -17,7 +17,6 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - name: Install Nextflow
         run: curl -fsSL get.nextflow.io | bash
@@ -35,23 +34,15 @@ jobs:
           fi
       # - name: Download exemplar-002
       #   run: nextflow exemplar.nf --name exemplar-002 --path ~/data
-      - name: Store Nextflow executable
-        uses: actions/upload-artifact@v2
-        with:
-          name: nfexe
-          path: ./nextflow
 
   # One-shot test of exemplar-001
   test-ex001:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - name: Retrieve Nextflow executable
-        uses: actions/download-artifact@v2
-        with:
-          name: nfexe
-      - name: Make nextflow executable
-        run: chmod +x nextflow
+      - uses: actions/checkout@v2
+      - name: Install Nextflow
+        run: curl -fsSL get.nextflow.io | bash
       - name: Restore exemplar-001 cache
         uses: actions/cache@v2
         with:
