@@ -23,9 +23,9 @@ jobs:
           sudo mv nextflow /usr/local/bin/
       - name: Restore exemplar cache
         uses: actions/cache@v2
-	with:
-	  path: ~/data
-	  key: ${{ runner.os }}-mcmicro-exemplars
+        with:
+          path: ~/data
+          key: ${{ runner.os }}-mcmicro-exemplars
       - name: Download exemplar-001
         run: |
           if [ -d ~/data/exemplar-001 ]; then
