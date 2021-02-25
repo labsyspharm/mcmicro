@@ -26,3 +26,20 @@ jobs:
           sudo mv nextflow /usr/local/bin/
       - name: Test Nextflow
         run: nextflow -v
+  data:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download exemplar-001
+        run: ./nextflow exemplar.nf --name exemplar-001 --path ~/data/downloads
+      - name: Download exemplar-002
+        run: ./nextflow exemplar.nf --name exemplar-002 --path ~/data/downloads
+  test-ex001:
+    needs: data
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test exemplar-001
+        run: |
+	  cp -r ~/data/downloads/exemplar-001 ~/data/
+      	  ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps all --s3seg-opts '--probMapChan 0'
+	  ls ~/data/exemplar-001/*
