@@ -21,11 +21,11 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install Nextflow
         run: curl -fsSL get.nextflow.io | bash
-      - name: Exemplar cache
+      - name: Exemplar-001 cache
         uses: actions/cache@v2
         with:
-          path: ~/data
-          key: ${{ runner.os }}-mcmicro-exemplars
+          path: ~/data/exemplar-001
+          key: ${{ runner.os }}-mcmicro-exemplar-001
       - name: Exemplar-001 download
         run: |
           if [ -d ~/data/exemplar-001 ]; then
@@ -50,11 +50,11 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: nfexe
-      - name: Restore exemplar cache
+      - name: Restore exemplar-001 cache
         uses: actions/cache@v2
         with:
-          path: ~/data
-          key: ${{ runner.os }}-mcmicro-exemplars
+          path: ~/data/exemplar-001
+          key: ${{ runner.os }}-mcmicro-exemplar-001
       - name: Test exemplar-001
         run: |
           ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps all --s3seg-opts '--probMapChan 0'
