@@ -28,9 +28,10 @@ jobs:
       - name: Exemplar-001 download
         run: |
           if [ -d ~/data/exemplar-001 ]; then
-            echo "Using cached exemplar-001 download";
+            echo "Using cached exemplar-001 download"
+	    ls ~/data/exemplar-001/*
           else
-            ./nextflow exemplar.nf --name exemplar-001 --path ~/data;
+            ./nextflow exemplar.nf --name exemplar-001 --path ~/data
           fi
       # - name: Download exemplar-002
       #   run: nextflow exemplar.nf --name exemplar-002 --path ~/data
