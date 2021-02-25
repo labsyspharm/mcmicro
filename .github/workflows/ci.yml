@@ -24,20 +24,23 @@ jobs:
         run: |
           curl -fsSL get.nextflow.io | bash
           sudo mv nextflow /usr/local/bin/
-      - name: Test Nextflow
-        run: nextflow -v
-  data:
+      - name: Download exemplar-001
+        run: nextflow exemplar.nf --name exemplar-001 --path ~/data/downloads
+      # - name: Download exemplar-002
+      #   run: nextflow exemplar.nf --name exemplar-002 --path ~/data/downloads
+      - name: Store Nextflow executable
+        uses: actions/upload-artifact@v2
+	with:
+	  name: nfexe
+	  path: /usr/local/bin/nextflow
+  test-ex001:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - name: Download exemplar-001
-        run: nextflow exemplar.nf --name exemplar-001 --path ~/data/downloads
-      - name: Download exemplar-002
-        run: nextflow exemplar.nf --name exemplar-002 --path ~/data/downloads
-  test-ex001:
-    needs: data
-    runs-on: ubuntu-latest
-    steps:
+      - name: Retrieve Nextflow executable
+        uses: actions/download-artifact@v2
+	with:
+	  name: nfexe
       - name: Test exemplar-001
         run: |
           cp -r ~/data/downloads/exemplar-001 ~/data/
