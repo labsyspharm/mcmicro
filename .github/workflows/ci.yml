@@ -17,17 +17,24 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
-        with:
-          java-version: '8'
       - name: Install Nextflow
         run: |
           curl -fsSL get.nextflow.io | bash
           sudo mv nextflow /usr/local/bin/
+      - name: Restore exemplar cache
+        uses: actions/cache@v2
+	with:
+	  path: ~/data
+	  key: ${{ runner.os }}-mcmicro-exemplars
       - name: Download exemplar-001
-        run: nextflow exemplar.nf --name exemplar-001 --path ~/data/downloads
+        run: |
+          if [ -d ~/data/exemplar-001 ]; then
+            echo "Using cached exemplar-001 download";
+          else
+            nextflow exemplar.nf --name exemplar-001 --path ~/data;
+          fi
       # - name: Download exemplar-002
-      #   run: nextflow exemplar.nf --name exemplar-002 --path ~/data/downloads
+      #   run: nextflow exemplar.nf --name exemplar-002 --path ~/data
       - name: Store Nextflow executable
         uses: actions/upload-artifact@v2
         with:
@@ -41,8 +48,8 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: nfexe
-      - name: Test exemplar-001
-        run: |
-          cp -r ~/data/downloads/exemplar-001 ~/data/
-          nextflow main.nf --in ~/data/exemplar-001 --probability-maps all --s3seg-opts '--probMapChan 0'
-          ls ~/data/exemplar-001/*
+      # - name: Test exemplar-001
+      #   run: |
+      #     cp -r ~/data/downloads/exemplar-001 ~/data/
+      #     nextflow main.nf --in ~/data/exemplar-001 --probability-maps all --s3seg-opts '--probMapChan 0'
+      #     ls ~/data/exemplar-001/*
