@@ -12,6 +12,8 @@ on:
   workflow_dispatch:
 
 jobs:
+
+  # Installs Nextflow and restores exemplar data from cache or downloads it from S3
   setup:
     runs-on: ubuntu-latest
     steps:
@@ -21,12 +23,12 @@ jobs:
         run: |
           curl -fsSL get.nextflow.io | bash
           sudo mv nextflow /usr/local/bin/
-      - name: Restore exemplar cache
+      - name: Exemplar cache
         uses: actions/cache@v2
         with:
           path: ~/data
           key: ${{ runner.os }}-mcmicro-exemplars
-      - name: Download exemplar-001
+      - name: Exemplar-001 download
         run: |
           if [ -d ~/data/exemplar-001 ]; then
             echo "Using cached exemplar-001 download";
@@ -40,6 +42,8 @@ jobs:
         with:
           name: nfexe
           path: /usr/local/bin/nextflow
+
+  # One-shot test of exemplar-001
   test-ex001:
     needs: setup
     runs-on: ubuntu-latest
@@ -48,8 +52,12 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: nfexe
-      # - name: Test exemplar-001
-      #   run: |
-      #     cp -r ~/data/downloads/exemplar-001 ~/data/
-      #     nextflow main.nf --in ~/data/exemplar-001 --probability-maps all --s3seg-opts '--probMapChan 0'
-      #     ls ~/data/exemplar-001/*
+      - name: Restore exemplar cache
+        uses: actions/cache@v2
+        with:
+          path: ~/data
+          key: ${{ runner.os }}-mcmicro-exemplars
+      - name: Test exemplar-001
+        run: |
+          nextflow main.nf --in ~/data/exemplar-001 --probability-maps all --s3seg-opts '--probMapChan 0'
+          ls ~/data/exemplar-001/*
