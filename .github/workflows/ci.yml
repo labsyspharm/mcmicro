@@ -50,6 +50,8 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: nfexe
+      - name: Make nextflow executable
+        run: chmod +x nextflow
       - name: Restore exemplar-001 cache
         uses: actions/cache@v2
         with:
