@@ -40,6 +40,6 @@ jobs:
     steps:
       - name: Test exemplar-001
         run: |
-	  cp -r ~/data/downloads/exemplar-001 ~/data/
-      	  ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps all --s3seg-opts '--probMapChan 0'
-	  ls ~/data/exemplar-001/*
+          cp -r ~/data/downloads/exemplar-001 ~/data/
+          ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps all --s3seg-opts '--probMapChan 0'
+          ls ~/data/exemplar-001/*
