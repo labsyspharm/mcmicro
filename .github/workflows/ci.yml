@@ -52,6 +52,7 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: nfexe
+          path: /usr/local/bin/nextflow
       - name: Restore exemplar cache
         uses: actions/cache@v2
         with:
