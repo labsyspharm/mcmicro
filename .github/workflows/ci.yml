@@ -110,5 +110,7 @@ jobs:
         run: |
           ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at registration --stop-at registration
           rm -r ~/data/exemplar-002/raw ~/data/exemplar-002/illumination
-          ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at dearray --stop-at cell-states
+          ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at dearray --stop-at dearray
+          rm -r ~/data/exemplar-002/registration
+          ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at probability-maps --stop-at cell-states
           ls ~/data/exemplar-002/*
