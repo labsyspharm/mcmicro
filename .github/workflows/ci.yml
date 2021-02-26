@@ -31,7 +31,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/data/exemplar-002
-          key: mcmicro-exemplar-002
+          key: mcmicro-exemplar-002-2cycle
 
       # Download data only if no cache is available
       - name: Exemplar-001 download
@@ -48,7 +48,7 @@ jobs:
             echo "Using exemplar-002 cache"
             ls ~/data/exemplar-002/*
           else
-            ./nextflow exemplar.nf --name exemplar-002 --path ~/data
+            ./nextflow exemplar.nf --name exemplar-002 --path ~/data --nc 2
           fi
 
   # One-shot test of exemplar-001
@@ -105,12 +105,12 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/data/exemplar-002
-          key: mcmicro-exemplar-002
+          key: mcmicro-exemplar-002-2cycle
       - name: Test exemplar-002
         run: |
-          ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at registration --stop-at registration
-          rm -r ~/data/exemplar-002/raw ~/data/exemplar-002/illumination
-          ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at dearray --stop-at dearray
-          rm -r ~/data/exemplar-002/registration
-          ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at probability-maps --stop-at cell-states
+          ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at registration --stop-at cell-states
+          # rm -r ~/data/exemplar-002/raw ~/data/exemplar-002/illumination
+          # ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at dearray --stop-at cell-states
+          # rm -r ~/data/exemplar-002/registration
+          # ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at probability-maps --stop-at cell-states
           ls ~/data/exemplar-002/*
