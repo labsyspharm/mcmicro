@@ -13,18 +13,27 @@ on:
 
 jobs:
 
-  # Installs Nextflow and restores exemplar data from cache or downloads it from S3
+  # Downloads exemplar data from S3 as needed
   setup:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - name: Install Nextflow
         run: curl -fsSL get.nextflow.io | bash
+
+      # Exemplars will be cached
       - name: Exemplar-001 cache
         uses: actions/cache@v2
         with:
           path: ~/data/exemplar-001
           key: mcmicro-exemplar-001
+      - name: Exemplar-002 cache
+        uses: actions/cache@v2
+        with:
+          path: ~/data/exemplar-002
+          key: mcmicro-exemplar-002
+
+      # Download data only if no cache is available
       - name: Exemplar-001 download
         run: |
           if [ -d ~/data/exemplar-001 ]; then
@@ -33,8 +42,14 @@ jobs:
           else
             ./nextflow exemplar.nf --name exemplar-001 --path ~/data
           fi
-      # - name: Download exemplar-002
-      #   run: nextflow exemplar.nf --name exemplar-002 --path ~/data
+      - name: Exemplar-002 download
+        run: |
+          if [ -d ~/data/exemplar-002 ]; then
+            echo "Using exemplar-002 cache"
+            ls ~/data/exemplar-002/*
+          else
+            ./nextflow exemplar.nf --name exemplar-002 --path ~/data
+          fi
 
   # One-shot test of exemplar-001
   test-ex001:
@@ -77,3 +92,21 @@ jobs:
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at quantification --stop-at quantification
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at cell-states
           ls ~/data/exemplar-001/*
+
+  # One-shot test of exemplar-002
+  test-ex002:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Nextflow
+        run: curl -fsSL get.nextflow.io | bash
+      - name: Restore exemplar-002 cache
+        uses: actions/cache@v2
+        with:
+          path: ~/data/exemplar-002
+          key: mcmicro-exemplar-002
+      - name: Test exemplar-002
+        run: |
+          ./nextflow main.nf --in ~/data/exemplar-002 --tma
+          ls ~/data/exemplar-002/*
