@@ -28,9 +28,6 @@ switch( params.name ) {
 seq = Channel.of( 1..params.nc )
 nm = params.nc * 4 + 1			// Four markers per channel, plus header
 
-println nm
-error "Stop"
-
 process getImages {
     publishDir "${params.path}/${params.name}", mode: 'copy'
 
