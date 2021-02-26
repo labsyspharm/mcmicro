@@ -4,6 +4,9 @@
 // .name - Name of the exemplar, e.g., "exemplar-001", "exemplar-002", etc.
 // .path - Path of the local folder for downloading to
 
+// Optional parameters
+// .nc - Number of cycles to download (between 1 and 10)
+
 dir_raw = "raw"
 dir_ilp = "illumination"
 
@@ -11,19 +14,19 @@ dir_ilp = "illumination"
 switch( params.name ) {
     case "exemplar-001":
 	url = 'https://mcmicro.s3.amazonaws.com/exemplars/001/exemplar-001'
-	nc  = 3
+	params.nc  = 3
 	break
     case "exemplar-002":
 	url = 'https://mcmicro.s3.amazonaws.com/exemplars/002/exemplar-002'
-	nc  = 10
+	params.nc  = 10
 	break
     default:
 	error "Unknown exemplar name"
 }
 
 // Sequence of individual cycles to download
-seq = Channel.of( 1..nc )
-nm = nc * 4 + 1			// Four markers per channel, plus header
+seq = Channel.of( 1..params.nc )
+nm = params.nc * 4 + 1			// Four markers per channel, plus header
 
 process getImages {
     publishDir "${params.path}/${params.name}", mode: 'copy'
