@@ -90,7 +90,7 @@ jobs:
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at probability-maps --stop-at probability-maps --probability-maps unmicst
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at segmentation --stop-at segmentation --probability-maps unmicst
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at quantification --stop-at quantification
-          ./nextflow main.nf --in ~/data/exemplar-001 --start-at cell-states
+          ./nextflow main.nf --in ~/data/exemplar-001 --start-at cell-states --stop-at cell-states
           ls ~/data/exemplar-001/*
 
   # One-shot test of exemplar-002
@@ -108,5 +108,7 @@ jobs:
           key: mcmicro-exemplar-002
       - name: Test exemplar-002
         run: |
-          ./nextflow main.nf --in ~/data/exemplar-002 --tma
+          ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at registration --stop-at registration
+          rm -r ~/data/exemplar-002/raw ~/data/exemplar-002/illumination
+          ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at dearray --stop-at cell-states
           ls ~/data/exemplar-002/*
