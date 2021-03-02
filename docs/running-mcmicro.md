@@ -1,18 +1,8 @@
 ---
 layout: default
 title: Running mcmicro
-nav_order: 4
+nav_order: 5
 ---
 
-# Running mcmicro
-
-## Table of contents
-{: .no_toc .text-delta }
-
-1. TOC
-{:toc}
----
-
-{% include dir.md %}
 {% include exec.md %}
 {% include post.md %}
