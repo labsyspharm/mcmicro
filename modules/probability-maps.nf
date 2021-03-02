@@ -30,6 +30,37 @@ process unmicst {
     """
 }
 
+process cypository {
+    // Output probability map
+    publishDir "${params.pubDir}/cypository", mode: 'copy', pattern: '*Probabilities*.tif'
+
+    // QC
+    publishDir "${params.path_qc}/cypository", mode: 'copy', pattern: '*Preview*.tif'
+
+    // Provenance
+    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
+      saveAs: {fn -> "${task.name}.sh"}
+    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
+      saveAs: {fn -> "${task.name}.log"}
+
+    input:
+	tuple path(core), val(mask)
+
+    output:
+      tuple val('cypository'), path(core), val(mask),
+        path('*Probabilities*.tif'), emit: pm
+      path('*Preview*.tif')
+      tuple path('.command.sh'), path('.command.log')
+
+    when:
+	params.idxStart <= 4 && params.idxStop >= 4 &&
+	params.probabilityMaps == 'cypository'
+
+    """
+    python /app/deployMaskRCNN.py $core ${params.cypositoryOpts} --stackOutput --outputPath .
+    """
+}
+
 process ilastik {
     // Output probability map
     publishDir "${params.pubDir}/ilastik", mode: 'copy', pattern: '*Probabilities*.tif'
@@ -73,9 +104,12 @@ workflow probmaps {
         ilastik_mdl = params.ilastikModel != 'built-in' ?
 	  file(params.ilastikModel) : 'built-in'
 
-	unmicst(input)
-        ilastik(input, ilastik_mdl)
+    unmicst(input)
+	cypository(input)
+    ilastik(input, ilastik_mdl)
 
     emit:
-	unmicst.out.pm.mix( ilastik.out.pm )
+	unmicst.out.pm
+        .mix( cypository.out.pm )
+        .mix( ilastik.out.pm )
 }
