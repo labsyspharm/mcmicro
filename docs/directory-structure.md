@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Running mcmicro
+title: Directory Structure
 nav_order: 4
 ---
 
