@@ -5,3 +5,4 @@ nav_order: 3
 ---
 
 {% include install.md %}
+{% include exemplar.md %}

@@ -2,7 +2,7 @@
 
 ## Install Nextflow
 
-If not already installed, install Java: https://adoptopenjdk.net/
+If not already installed, install Java: [https://adoptopenjdk.net/](https://adoptopenjdk.net/)
 
 Install [Nextflow](https://www.nextflow.io/): `curl -s https://get.nextflow.io | bash`
 

@@ -1,7 +1,7 @@
 ---
 layout: default
 title: AWS configuration
-nav_order: 5
+nav_order: 6
 ---
 
 {% include aws.md %}

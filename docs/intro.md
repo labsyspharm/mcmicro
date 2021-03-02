@@ -10,8 +10,8 @@ This section covers microscopy basics relevant to tissue imaging. If you are fam
 
 Biomedical microscopy comprises an increasing diversity of imaging methods that differ in how a sample is
 illuminated and data collected. Classical methods such as transmission light microscopy and epifluorescence
-microscopy have been joined more recently by structured illumination and light-sheet microscopy, as well as by
-non-optical methods that generate images using mass spectrometers. What is common to all of these methods
+microscopy have been joined more recently by structured illumination<sup>1</sup> and light-sheet microscopy<sup>2</sup>, as well as by
+non-optical methods that generate images using mass spectrometers<sup>3</sup>. What is common to all of these methods
 is that they generate data that can be represented as a series of intensity values on a two-dimensional raster –
 i.e. an image. Three-dimensional data is commonly represented as a stack of images along the Z axis (which is
 parallel to the objective lens in most cases) and multi-spectral data is represented as a series of images of the
