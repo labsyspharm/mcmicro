@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Running mcmicro
-nav_order: 2
+nav_order: 4
 ---
 
 # Running mcmicro
