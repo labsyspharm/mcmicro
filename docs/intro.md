@@ -53,3 +53,9 @@ The OME community is welcoming and it has many on-line resources that discuss th
 much greater detail. OME also sponsors multiple workshops and conferences of interest to new and
 experienced microscopists.
 
+---
+
+1. Wu, Yicong, and Hari Shroff. "Faster, sharper, and deeper: structured illumination microscopy for biological imaging." Nature methods 15.12 (2018): 1011-1019.
+1. Power, Rory M., and Jan Huisken. "A guide to light-sheet fluorescence microscopy for multiscale imaging." Nature methods 14.4 (2017): 360-373.
+1. Angelo, Michael, et al. "Multiplexed ion beam imaging of human breast tumors." Nature medicine 20.4 (2014): 436-442.
+
