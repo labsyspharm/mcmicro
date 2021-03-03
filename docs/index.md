@@ -16,6 +16,7 @@ mcmicro is an end-to-end processing pipeline for multiplexed whole tissue imagin
 
 ## Contributors
 Development of mcmicro is led by [Artem Sokolov](https://github.com/ArtemSokolov) and [Denis Schapiro](https://github.com/DenisSch) at [Laboratory of Systems Pharmacology](https://hits.harvard.edu/the-program/laboratory-of-systems-pharmacology/about/), Harvard Medical School.
+
 Full list of [Contributors]() and [Code of Conduct](https://github.com/labsyspharm/mcmicro/blob/DenisSch-CODEOFCONDUCT/docs/code_of_conduct.md) is available. 
 
 ## Funding
