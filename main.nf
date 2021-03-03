@@ -35,6 +35,7 @@ params.ashlarOpts   = '-m 30'
 params.coreOpts     = ''
 params.unmicstOpts  = ''
 params.unmicst2Opts = '--channel 0'
+params.cypositoryOpts = '--model zeisscyto'
 params.ilastikOpts  = '--num_channels 1'
 params.s3segOpts    = ''
 params.quantOpts    = '--masks cellMask.tif'
@@ -136,6 +137,10 @@ pre_unmicst = findFiles(idxStart == 5 &&
 			 params.probabilityMaps == 'all'),
 			"${paths[4]}/unmicst/*Probabilities*.tif",
 			{error "No probability maps found in ${paths[4]}/unmicst"})
+pre_cypository = findFiles(idxStart == 5 &&
+			params.probabilityMaps == 'cypository',
+			"${paths[4]}/cypository/*Probabilities*.tif",
+			{error "No probability maps found in ${paths[4]}/cypository"})
 pre_ilastik = findFiles(idxStart == 5 &&
 			(params.probabilityMaps == 'ilastik' ||
 			 params.probabilityMaps == 'all'),
@@ -154,6 +159,8 @@ id_cores   = pre_cores.map{ f -> getID(f,'\\.tif') }
 id_masks   = pre_masks.map{ f -> getID(f,'_mask') }
 id_unmicst = pre_unmicst.map{ f -> getID(f,'_Probabilities') }
     .map{ id, f -> tuple(id, f, 'unmicst') }
+id_cypository = pre_cypository.map{ f -> getID(f,'_Probabilities') }
+    .map{ id, f -> tuple(id, f, 'cypository') }
 id_ilastik = pre_ilastik.map{ f -> getID(f,'_Probabilities') }
     .map{ id, f -> tuple(id, f, 'ilastik') }
 id_segMsk  = pre_segMsk.map{ f -> tuple(f.getParent().getBaseName(), f) }
@@ -162,7 +169,7 @@ id_segMsk  = pre_segMsk.map{ f -> tuple(f.getParent().getBaseName(), f) }
 // Match up precomputed intermediates into tuples for each step
 id_cm   = id_cores.join( id_masks )
 id_cm2  = id_img.map{ id, x -> tuple(id, x, 'NO_MASK') }.mix(id_cm)
-id_pmap = id_cm2.join( id_unmicst ).mix( id_cm2.join( id_ilastik ) )
+id_pmap = id_cm2.join( id_unmicst ).mix( id_cm2.join( id_ilastik ) ).mix( id_cm2.join( id_cypository ) )
 id_seg  = id_img.mix( id_cores ).combine( id_segMsk, by:0 )
 
 // Finalize the tuple format to match process outputs
