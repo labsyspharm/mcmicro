@@ -71,7 +71,7 @@ jobs:
 
 
   # One-shot test of exemplar-001 using Cypository
-  test-ex001:
+  test-ex001-cypo:
     needs: setup
     runs-on: ubuntu-latest
     steps:
@@ -134,7 +134,7 @@ jobs:
           ls ~/data/exemplar-002/*
 
   # One-shot test of exemplar-002 with Cypository
-  test-ex002:
+  test-ex002-cypo:
     needs: setup
     runs-on: ubuntu-latest
     steps:
