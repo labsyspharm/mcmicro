@@ -1,5 +1,4 @@
-|Build Status|
-.. |Build Status| image:: https://github.com/labsyspharm/mcmicro/actions/workflows/ci.yml/badge.svg
+!|Build Status|(https://github.com/labsyspharm/mcmicro/actions/workflows/ci.yml/badge.svg)
 
 # mcmicro: Multiple-choice microscopy pipeline
 
