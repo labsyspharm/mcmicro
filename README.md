@@ -9,9 +9,9 @@
 **Instructions:** https://labsyspharm.github.io/mcmicro/
 
 **Key Contributors**
-*[Denis Schapiro](https://github.com/DenisSch)
-*[Artem Sokolov](https://github.com/ArtemSokolov)
-*[Clarence Yapp](https://github.com/clarenceyapp)
-*[Jeremy Muhlich](https://github.com/jmuhlich)
-*[Peter Sorger](https://github.com/sorgerlab)
-*[Laboratory of Systems Pharmacology](https://github.com/labsyspharm)
+* [Denis Schapiro](https://github.com/DenisSch)
+* [Artem Sokolov](https://github.com/ArtemSokolov)
+* [Clarence Yapp](https://github.com/clarenceyapp)
+* [Jeremy Muhlich](https://github.com/jmuhlich)
+* [Peter Sorger](https://github.com/sorgerlab)
+* [Laboratory of Systems Pharmacology](https://github.com/labsyspharm)
