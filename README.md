@@ -18,4 +18,5 @@ mcmicro is an end-to-end processing pipeline for multiplexed whole tissue imagin
 * [Clarence Yapp](https://github.com/clarenceyapp)
 * [Jeremy Muhlich](https://github.com/jmuhlich)
 * [Peter Sorger](https://github.com/sorgerlab)
+
 Full list: [Contributors]()
