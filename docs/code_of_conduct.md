@@ -61,7 +61,7 @@ If your report involves any members of the committee, or if they feel they have 
 
 ## Incident reporting resolution & Code of Conduct enforcement
 
-*This section summarizes the most important points, more details can be found in [MCMICRO Code of Conduct - How to follow up on a report.](https://github.com/labsyspharm/mcmicro/docs/CODE_OF_CONDUCT_REPORTING.md)*
+*This section summarizes the most important points, more details can be found in [MCMICRO Code of Conduct - How to follow up on a report.](https://github.com/labsyspharm/mcmicro/blob/DenisSch-CODEOFCONDUCT/docs/CODE_OF_CONDUCT_REPORTING.md)*
 
 We will investigate and respond to all complaints. The MCMICRO Code of Conduct Committee will protect the identity of the reporter, and treat the content of complaints as confidential (unless the reporter agrees otherwise).
 
