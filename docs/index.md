@@ -12,11 +12,11 @@ last_modified_date: 2020-03-03
 Multiple-choice microscopy pipeline
 {: .fs-6 .fw-300 }
 
-mcmicro is the end-to-end processing pipeline for multiplexed whole tissue imaging and tissue microarrays. It comprises stitching and registration, segmentation, and single-cell feature extraction. Each step of the pipeline is containerized to enable portable deployment across an array of compute environments, including local machines, job-scheduling clusters and cloud environments like AWS and GCP. The pipeline execution is implemented in [Nextflow](https://www.nextflow.io/), a workflow language that facilitates caching of partial results, dynamic restarts, extensive logging and resource usage reports.
+mcmicro is an end-to-end processing pipeline for multiplexed whole tissue imaging and tissue microarrays. It comprises stitching and registration, segmentation, and single-cell feature extraction. Each step of the pipeline is containerized to enable portable deployment across an array of compute environments, including local machines, job-scheduling clusters and cloud environments like AWS and GCP. The pipeline execution is implemented in [Nextflow](https://www.nextflow.io/), a workflow language that facilitates caching of partial results, dynamic restarts, extensive logging and resource usage reports.
 
 ## Contributors
 Development of mcmicro is led by [Artem Sokolov](https://github.com/ArtemSokolov) and [Denis Schapiro](https://github.com/DenisSch) at [Laboratory of Systems Pharmacology](https://hits.harvard.edu/the-program/laboratory-of-systems-pharmacology/about/), Harvard Medical School.
-Full list of [Contributors]() and [Code of Conduct](https://github.com/labsyspharm/mcmicro/blob/DenisSch-CODEOFCONDUCT/docs/code_of_conduct.md) available. 
+Full list of [Contributors]() and [Code of Conduct](https://github.com/labsyspharm/mcmicro/blob/DenisSch-CODEOFCONDUCT/docs/code_of_conduct.md) is available. 
 
 ## Funding
 
