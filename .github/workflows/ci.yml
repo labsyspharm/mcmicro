@@ -148,5 +148,5 @@ jobs:
           key: mcmicro-exemplar-002-2cycle
       - name: Test exemplar-002
         run: |
-          ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at registration --probability-maps cypository --s3seg-opts '--probMapChan 0 --nucleiRegion bypass --logSigma 45 300'
+          ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at registration --probability-maps cypository --cypositoryOpts '--threshold 0.1' --s3seg-opts '--probMapChan 0 --nucleiRegion bypass --logSigma 45 300'
           ls ~/data/exemplar-002/*
