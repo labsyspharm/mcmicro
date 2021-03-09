@@ -10,6 +10,16 @@ Current developers
 * [Yu-An Chen](https://github.com/Yu-AnChen)
 * [Juha Ruokonen](https://github.com/Juha-Ruokonen)
 
-Other roles
+Early adapters
 -----------
-**Testing**
+* [Roxy Pelletier](https://github.com/rjp21)
+* [Ajit Johnson](https://github.com/ajitjohnson) 
+* [Greg Baker](https://github.com/gjbaker)
+* Zoltan 
+* Janae
+* [Edward Novikov] (https://github.com/edn314)
+* Hani
+* Tuulia
+* Connor
+* Claire
+* Nomeda
