@@ -6,22 +6,23 @@ nav_order: 4
 
 # Directory structure
 
-Exemplar datasets demonstrate the directory structure expected by mcmicro:
+The directory structure follows Fig. 1A of our manuscript (link to be included here):
+
+![](images/Fig1.png)
+
+Upon the full successful completion of a pipeline run, the directory structure will be as follows:
 
 ```
-exemplar-001
+exemplar-002
 ├── markers.csv
-├── raw
-│   ├── exemplar-001-cycle-01.ome.tiff
-│   ├── exemplar-001-cycle-02.ome.tiff
-│   └── exemplar-001-cycle-03.ome.tiff
-└── illumination
-    ├── exemplar-001-cycle-01-dfp.tif
-    ├── exemplar-001-cycle-01-ffp.tif
-    ├── exemplar-001-cycle-02-dfp.tif
-    ├── exemplar-001-cycle-02-ffp.tif
-    ├── exemplar-001-cycle-03-dfp.tif
-    └── exemplar-001-cycle-03-ffp.tif
+├── raw/
+├── illumination/
+├── registration/
+├── dearray/
+├── probability-maps/
+├── segmentation/
+├── quantification/
+└── qc/
 ```
 
 The name of the parent directory (e.g., `exemplar-001`) is assumed by the pipeline to be the sample name.
@@ -44,11 +45,24 @@ channel_number,cycle_number,marker_name
 12,3,CD1D
 ```
 
-Additional columns are optional but can be used to specify additional metadata (e.g., excitation and emissions wavelengths) to be used by individual modules.
+Other columns are optional but can be used to specify additional metadata (e.g., excitation and emissions wavelengths) to be used by individual modules.
 
 The exemplar `raw/` files are in the open standard OME-TIFF format, but in practice your input files will be in whatever format your microscope produces. The pipeline supports all [Bio-Formats-compatible](https://docs.openmicroscopy.org/bio-formats/6.0.1/supported-formats.html) image formats.
 
 ## (Optional) Illumination correction
+
+```
+exemplar-001
+├── markers.csv
+├── raw/
+└── illumination/
+    ├── exemplar-001-cycle-01-dfp.tif
+    ├── exemplar-001-cycle-01-ffp.tif
+    ├── exemplar-001-cycle-02-dfp.tif
+    ├── exemplar-001-cycle-02-ffp.tif
+    ├── exemplar-001-cycle-03-dfp.tif
+    └── exemplar-001-cycle-03-ffp.tif
+```
 
 Precomputed flat-field and dark-field illumination profiles must be places in the `illumination/ directory`. If no precomputed profiles are available, mcmicro can compute these using [BaSiC](https://www.nature.com/articles/ncomms14836). This step is not executed by default, because proper illumination correction requires careful curation and visual inspection of the profiles produced by computational tools. After familiarizing yourself with the general concepts [ [1](https://emsis.eu/olh/HTML/topics_glossary_tem_shading_correction.html), [2](https://en.wikipedia.org/wiki/Flat-field_correction) ], the profiles can be computed by specifying `--start-at illumination` during [pipeline execution](running-mcmicro.html).
 
@@ -59,9 +73,9 @@ The first step of the pipeline will aggregate individual image tiles in `raw/` a
 ```
 exemplar-001
 ├── markers.csv
-├── raw
-├── illumination
-└── registration
+├── raw/
+├── illumination/
+└── registration/
     └── exemplar-001.ome.tif
 ```
 
@@ -74,14 +88,14 @@ When working with Tissue Microarrays (TMA), the `registration/` folder will cont
 ```
 exemplar-002
 ├── ...
-├── registration
+├── registration/
 │   └── exemplar-002.ome.tiff
-└── dearray
+└── dearray/
     ├── 1.tif
     ├── 2.tif
     ├── 3.tif
     ├── 4.tif
-    └── masks
+    └── masks/
         ├── 1_mask.tif
         ├── 2_mask.tif
         ├── 3_mask.tif
@@ -97,18 +111,16 @@ Cell segmentation is carried out in two steps. First, the pipeline generates pro
 ```
 exemplar-001
 ├── ...
-├── registration
-│   └── exemplar-001.ome.tiff
-├── probability-maps
-│   ├── ilastik
+├── probability-maps/
+│   ├── ilastik/
 │   │   └── exemplar-001_Probabilities.tif
-│   └── unmicst
+│   └── unmicst/
 │       └── exemplar-001_Probabilities_0.tif
-└── segmentation
-    ├── ilastik-exemplar-001
+└── segmentation/
+    ├── ilastik-exemplar-001/
     │   ├── cellMask.tif
     │   └── nucleiMask.tif
-    └── unmicst-exemplar-001
+    └── unmicst-exemplar-001/
         ├── cellMask.tif
         └── nucleiMask.tif
 ```
@@ -120,9 +132,8 @@ The final step combines information in segmentation masks, the original stitched
 ```
 exemplar-001
 ├── ...
-├── segmentation
-│   └── ...
-└── quantification
+├── segmentation/
+└── quantification/
     ├── ilastik-exemplar-001.csv
     └── unmicst-exemplar-001.csv
 ```
@@ -136,25 +147,17 @@ exemplar-002
 ├── ...
 └── qc
     ├── params.yml
-    ├── provenance
+    ├── provenance/
     │   ├── probmaps:ilastik (1).log
     │   ├── probmaps:ilastik (1).sh
     │   ├── probmaps:unmicst (1).log
     │   ├── probmaps:unmicst (1).sh
     │   ├── quantification (1).log
     │   ├── quantification (1).sh
-    │   ├── quantification (2).log
-    │   ├── quantification (2).sh
-    │   ├── registration:ashlar.log
-    │   ├── registration:ashlar.sh
-    │   ├── segmentation:s3seg (1).log
-    │   ├── segmentation:s3seg (1).sh
-    │   ├── segmentation:s3seg (2).log
-    │   └── segmentation:s3seg (2).sh
-    ├── s3seg
-    │   └── ...
-    └── unmicst
-        └── ...
+    │   └── ...
+    ├── coreo/
+    ├── s3seg/
+    └── unmicst/
 ```
 
 While the exact content of the `qc/` directory will depend on which modules were executed, two sources of information can always be found there:
