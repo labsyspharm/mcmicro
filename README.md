@@ -12,10 +12,8 @@ mcmicro is an end-to-end processing pipeline for multiplexed whole tissue imagin
 * Ludwig Center at Harvard Medical School and the Ludwig Cancer Research Foundation
 * Denis Schapiro was supported by the University of Zurich BioEntrepreneur-Fellowship (BIOEF-17-001) and a Swiss National Science Foundation Early Postdoc Mobility fellowship (P2ZHP3_181475). He is currently a [Damon Runyon Quantitative Biology Fellow](https://www.damonrunyon.org/news/entries/5551/Damon%20Runyon%20Cancer%20Research%20Foundation%20awards%20new%20Quantitative%20Biology%20Fellowships)
 
-**Key Contributors**
-* [Denis Schapiro](https://github.com/DenisSch)
-* [Artem Sokolov](https://github.com/ArtemSokolov)
-* [Clarence Yapp](https://github.com/clarenceyapp)
-* [Jeremy Muhlich](https://github.com/jmuhlich)
+**Key Contributors:**
+
+[Denis Schapiro](https://github.com/DenisSch), [Artem Sokolov](https://github.com/ArtemSokolov), [Clarence Yapp](https://github.com/clarenceyapp), [Jeremy Muhlich](https://github.com/jmuhlich)
 
 Full list: [Contributors](https://github.com/labsyspharm/mcmicro/blob/DenisSch-CODEOFCONDUCT/docs/_includes/contributors.md)
