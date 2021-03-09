@@ -1,12 +1,10 @@
 ---
 layout: default
-title: Introduction
-nav_order: 2
+title: Appendix: Microscopy Basics
+nav_order: 10
 ---
 
-# Introduction
-
-This section covers microscopy basics relevant to tissue imaging. If you are familiar with basic image analysis concepts, please proceed to [Installation](installation.html).
+# Microscopy Basics
 
 Biomedical microscopy comprises an increasing diversity of imaging methods that differ in how a sample is
 illuminated and data collected. Classical methods such as transmission light microscopy and epifluorescence
