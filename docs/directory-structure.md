@@ -25,7 +25,7 @@ exemplar-002
 └── qc/
 ```
 
-The name of the parent directory (e.g., `exemplar-001`) is assumed by the pipeline to be the sample name.
+The name of the parent directory (e.g., `exemplar-002`) is assumed by the pipeline to be the sample name.
 At the very minimum, the pipeline expects `markers.csv`, containing metadata about markers, in the parent directory and raw images in the `raw/` subdirectory.
 The file `markers.csv` must have at least three columns that define marker names for each channel in each cycle:
 
