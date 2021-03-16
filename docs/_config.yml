@@ -27,8 +27,7 @@ last_edit_time_format: "%b %e %Y" # format: https://ruby-doc.org/stdlib-2.7.0/li
 
 
 # Google Analytics 
-# FIXME this is copied from cycif.org
-# ga_tracking: UA-41775478-2
+ga_tracking: G-EBP7DZSHEP
 ga_tracking_anonymize_ip: true # Use GDPR compliant Google Analytics settings
 
 
