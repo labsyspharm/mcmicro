@@ -28,6 +28,7 @@ last_edit_time_format: "%b %e %Y" # format: https://ruby-doc.org/stdlib-2.7.0/li
 
 # Google Analytics 
 ga_tracking: G-EBP7DZSHEP
+google_analytics: G-EBP7DZSHEP
 ga_tracking_anonymize_ip: true # Use GDPR compliant Google Analytics settings
 
 
