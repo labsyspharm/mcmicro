@@ -20,7 +20,7 @@ tma: true
 
 ### Optional parameters:
 
-| <div style="width:200px">Parameter</div> | Default &nbsp; &nbsp; &nbsp; &nbsp;  | Description |
+| Parameter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Default&nbsp;&nbsp;&nbsp;&nbsp; | Description |
 | --- | --- | --- |
 | `--sample-name <myname>` | Directory name supplied to `--in` | The name of the experiment/specimen |
 | `--start-at <step>` | `registration` | Name of the first step to be executed by the pipeline. Must be one of `illumination`, `registration`, `dearray` (TMA only), `probability-maps`, `segmentation`, `quantification`, `cell-states` |
