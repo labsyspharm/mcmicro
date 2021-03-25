@@ -14,22 +14,20 @@ tma: true
 
 ### Mandatory parameters:
 
-| Parameter | Default | Description |
-| --- | --- | --- |
-| `--in /local/path` | | Location of the data |
+| Parameter | Description |
+| --- | --- |
+| `--in /local/path` | Location of the data |
 
 ### Optional parameters:
 
-| Parameter | Default | Description |
+| Parameter &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Default &nbsp; &nbsp; &nbsp; &nbsp;  | Description |
 | --- | --- | --- |
 | `--sample-name <myname>` | Directory name supplied to `--in` | The name of the experiment/specimen |
 | `--start-at <step>` | `registration` | Name of the first step to be executed by the pipeline. Must be one of `illumination`, `registration`, `dearray` (TMA only), `probability-maps`, `segmentation`, `quantification`, `cell-states` |
 | `--stop-at <step>` | `quantification` | Name of the final step to be executed by the pipeline. Spans the same vocabulary as `--start-at`. |
 | `--tma` | Omitted | If specified, mcmicro treats input data as a TMA. If omitted, the input is assumed to be a whole-slide image. |
 | `--ilastik-model <model.ilp>` | None | A custom `.ilp` file to be used as the classifier model for ilastik. |
-
-**Module selection**
-* `--probability-maps <unmicst|ilastik|all>` - which module(s) to use for probability map computation. Default: `unmicst`
+| `--probability-maps <choice>` | `unmicst` | Which module(s) to use for probability map computation. Must be one of `unmicst`, `ilastik`, `all` (`unmicst` AND `ilastik`), and `cypository` for cytoplasm segmentation |
 
 ## Parameters for individual modules
 
@@ -51,15 +49,17 @@ Up-to-date list can be viewed at [https://github.com/HMS-IDAC/UNetCoreograph](ht
 
 ### Arguments to UnMicst(`--unmicst-opts`):
 
-* `--tool` - the name of the UnMicst version. Version 1 is the old single channel model. Version 2 uses DAPI and lamin. Default is UnMicst version 1 (ONE).
-* `--model` - the name of the UNet model. By default, this is the human nuclei model that identifies nuclei centers, nuclei contours, and background from a DAPI channel. Other models include mouse nuclei from DAPI, and cytoplasm from stains resembling WGA
-* `--channel` - the channel used to infer and generate probability maps from. Default is the first channel (channel 0). If using UnMicst2, then specify 2 channels. If only 1 channel is specified, it will simply be duplicated.
-* `--classOrder` - if your training data isn't in the order 1. background, 2. contours, 3. foreground, you can specify the order here. For example, if you had trained the class order backwards, specify `--classOrder 2 1 0`. If you only have background and contours, use `--classOrder 0 1 0`
-* `--mean` - override the trained model's mean intensity. Useful if your images are significantly dimmer or brighter.
-* `--std` - override the trained model's standard deviation intensity. Useful if your images are significantly dimmer or brighter.
-* `--scalingFactor` - an upsample or downsample factor used to resize the image. Useful when the pixel sizes of your image differ from the model (ie. 0.65 microns/pixel for human nuclei model)
-* `--stackOutput` - if selected, UnMicst will write all probability maps as a single multipage tiff file. By default, this is off causing UnMicst to write each class as separate files
-* `--GPU` - explicitly specify which GPU (0 indexing) you want to use. Useful for running on local workstations with multiple GPUs
+| Parameter &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Default &nbsp; &nbsp; &nbsp; &nbsp;  | Description |
+| --- | --- | --- |
+| `--tool <version>` | `1` | UnMicst version: version 1 is the old single channel model. version 2 uses DAPI and lamin. |
+| `--model` | human nuclei from DAPI | The name of the UNet model. By default, this is the human nuclei model that identifies nuclei centers, nuclei contours, and background from a DAPI channel. Other models include mouse nuclei from DAPI, and cytoplasm from stains resembling WGA |
+| `--channel <number>` | `0` | The channel used to infer and generate probability maps from. If using UnMicst2, then specify 2 channels. If only 1 channel is specified, it will simply be duplicated. |
+| `--classOrder` | None | If your training data isn't in the order 1. background, 2. contours, 3. foreground, you can specify the order here. For example, if you had trained the class order backwards, specify `--classOrder 2 1 0`. If you only have background and contours, use `--classOrder 0 1 0`. |
+| `--mean <value>` | Extracted from the model | Override the trained model's mean intensity. Useful if your images are significantly dimmer or brighter. |
+| `--std <value>` | Extracted from the model | Override the trained model's standard deviation intensity. Useful if your images are significantly dimmer or brighter. |
+| `--scalingFactor <value>` | `1` | An upsample or downsample factor used to resize the image. Useful when the pixel sizes of your image differ from the model (ie. 0.65 microns/pixel for human nuclei model) |
+| `--stackOutput` | Specified | If selected, UnMicst will write all probability maps as a single multipage tiff file. Otherwise, UnMicst will write each class as a separate file. |
+| `--GPU <index>` | Automatic | Explicitly specify which GPU (0 indexing) you want to use. Useful for running on local workstations with multiple GPUs. |
 
 ### Arguments to Ilastik(`--ilastik-opts`):
 
