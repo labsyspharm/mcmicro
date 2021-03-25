@@ -20,7 +20,7 @@ tma: true
 
 ### Optional parameters:
 
-| Parameter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Default&nbsp;&nbsp;&nbsp;&nbsp; | Description |
+| Parameter | Default | Description |
 | --- | --- | --- |
 | `--sample-name <myname>` | Directory name supplied to `--in` | The name of the experiment/specimen |
 | `--start-at <step>` | `registration` | Name of the first step to be executed by the pipeline. Must be one of `illumination`, `registration`, `dearray` (TMA only), `probability-maps`, `segmentation`, `quantification`, `cell-states` |
@@ -49,7 +49,7 @@ Up-to-date list can be viewed at [https://github.com/HMS-IDAC/UNetCoreograph](ht
 
 ### Arguments to UnMicst(`--unmicst-opts`):
 
-| Parameter &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; | Default &nbsp; &nbsp; &nbsp; &nbsp;  | Description |
+| Parameter | Default | Description |
 | --- | --- | --- |
 | `--tool <version>` | `1` | UnMicst version: version 1 is the old single channel model. version 2 uses DAPI and lamin. |
 | `--model` | human nuclei from DAPI | The name of the UNet model. By default, this is the human nuclei model that identifies nuclei centers, nuclei contours, and background from a DAPI channel. Other models include mouse nuclei from DAPI, and cytoplasm from stains resembling WGA |
@@ -63,31 +63,39 @@ Up-to-date list can be viewed at [https://github.com/HMS-IDAC/UNetCoreograph](ht
 
 ### Arguments to Ilastik(`--ilastik-opts`):
 
-* `--nonzero_fraction` - Indicates fraction of pixels per crop above global threshold to ensure
-* `--nuclei_index` - Index of nuclei channel to use for nonzero_fraction argument
-* `--crop` - Include if you choose to crop regions for ilastik training, if not, do not include this argument
-* `--num_channels` - Number of channels to export per image (Ex: 40 corresponds to a 40 channel ome.tif image)
-* `--channelIDs` - Integer indices specifying which channels to export (Ex: 1 2 4)
-* `--ring_mask` - Include if you have a ring mask in the same directory to use for reducing size of hdf5 image. do not include if not
-* `--crop_amount` -  Number of crops you would like to extract
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `--nonzero_fraction <value>` | | Indicates fraction of pixels per crop above global threshold to ensure |
+| `--nuclei_index <index>` | | Index of nuclei channel to use for nonzero_fraction argument |
+| `--crop` | Omitted | If specified, crop regions for ilastik training |
+| `--num_channels <value>` | | Number of channels to export per image (Ex: 40 corresponds to a 40 channel ome.tif image) |
+| `--channelIDs <indices>` | | Integer indices specifying which channels to export (Ex: 1 2 4) |
+| `--ring_mask`| Omitted | Specify if you have a ring mask in the same directory to use for reducing size of hdf5 image |
+| `--crop_amount <integer>`| | Number of crops you would like to extract |
 
 Up-to-date list can be viewed at [https://github.com/labsyspharm/mcmicro-ilastik](https://github.com/labsyspharm/mcmicro-ilastik)
 
 ### Arguments to S3Segmenter(`--s3seg-opts`):
 
-* `--probMapChan` - override the channel to use for nuclei segmentation. By default, this is extracted from the filename in the probabilty map 
-* `--crop` - select type of cropping to use. interactiveCrop - a window will appear for user input to crop a smaller region of the image. plate - this is for small fields of view such as from a multiwell plate. noCrop default option to use the entire image
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `--probMapChan <index>` | Extracted from filename | Override which channel is used for nuclei segmentation. |
+| `--crop <selection>` | `noCrop` | Type of cropping: `interactiveCrop` - a window will appear for user input to crop a smaller region of the image; `plate` - this is for small fields of view such as from a multiwell plate; `noCrop`, the default, is to use the entire image |
 
 **Nuclei parameters:**
-* `--nucleiFilter` - the method to filter false positive nuclei. IntPM - filter based on probability intensity. Int - filted based on raw image intensity
-* `--logSigma` - a range of nuclei diameters to search for. Default is 3 to 60 pixels.
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `--nucleiFilter <selection>` | `IntPM` | Method to filter false positive nuclei: `IntPM` - filter based on probability intensity; `Int` - filted based on raw image intensity |
+| `--logSigma <value> <value>` | `3 60` | A range of nuclei diameters to search for. |
 
 **Cytoplasm parameters:**
-* `--segmentCytoplasm` - select whether to : segmentCytoplasm - segment the cytoplasm or ignoreCytoplasm - do NOT segment cytoplasm
-* `--CytoMaskChan` - select one or more channels to use for segmenting cytoplasm. Default is the 2nd channel.
-* `--cytoMethod` - select the method to segment cytoplasm. distanceTransform - take the distance transform outwards from each nucleus and mask with the tissue mask. ring - take an annulus of a certain pixel size around the nucleus (see next argument). Default ring thickness is 5 pixels. hybrid - this uses a combination of greyscale intensity and distance transform to more accurately approximate the extent of the cytoplasm. Similar to Cellprofiler's implementation.
-* `--cytoDilation` - the number of pixels to expand from the nucleus to get the cytoplasm ring. Default is 5 pixels.
-* `--TissueMaskChan` - select one or more channels to use for identifying the general tissue area for masking purposes. Default is to use a combination of nuclei and cytoplasm channels.
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `--segmentCytoplasm <selection>` | `ignoreCytoplasm` | Select whether to `segmentCytoplasm` or `ignoreCytoplasm` |
+| `--CytoMaskChan <index>` | `1` | One or more channels to use for segmenting cytoplasm, specified as 0-based indices (e.g., `1` is the 2nd channel). |
+| `--cytoMethod <selection>` | `distanceTransform` | The method to segment cytoplasm: `distanceTransform` - take the distance transform outwards from each nucleus and mask with the tissue mask; `ring` - take an annulus of a certain pixel size around the nucleus (see `cytoDilation`); `hybrid` - uses a combination of greyscale intensity and distance transform to more accurately approximate the extent of the cytoplasm. Similar to Cellprofiler's implementation. |
+| `--cytoDilation <value>` | `5` | The number of pixels to expand from the nucleus to get the cytoplasm ring. |
+| `--TissueMaskChan <index>` | Union of `probMapChan` and `CytoMaskChan` | One or more channels to use for identifying the general tissue area for masking purposes. |
 
 ### Arguments to quantification(`--quant-opts`):
 
