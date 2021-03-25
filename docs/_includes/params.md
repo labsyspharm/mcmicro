@@ -14,16 +14,19 @@ tma: true
 
 ### Mandatory parameters:
 
-* `--in /local/path` - specifies location of the data
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `--in /local/path` | | Location of the data |
 
 ### Optional parameters:
 
-* `--sample-name <myname>` - the name of the experiment/specimen. By default, mcmicro extracts this from the path supplied to `--in`.
-* `--start-at <step>` - name of the first step to be executed by the pipeline. The value `<step>` must be one of `raw`, `illumination`, `registration`, `dearray` (TMA only), `probability-maps`, `segmentation`, `quantification`, `cell-states`. Default: `registration`.
-* `--stop-at <step>` - name of the final step to be executed by the pipeline. Spans the same vocabulary as `--start-at`. Default: `cell-states`.
-* `--tma` - if specified, mcmicro treats input data as a TMA. If omitted, the input is assumed to be a whole-slide image. Default: omitted.
-* `--raw-formats <formats>` - one or more file formats that mcmicro should look for. Default: `{.ome.tiff,.ome.tif,.rcpnl,.xdce,.nd,.scan,.htd,.btf,.nd2,.tif,.czi}`
-* `--ilastik-model` - A custom `.ilp` file to be used as the classifier model for ilastik
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `--sample-name <myname>` | Directory name supplied to `--in` | The name of the experiment/specimen |
+| `--start-at <step>` | `registration` | Name of the first step to be executed by the pipeline. Must be one of `illumination`, `registration`, `dearray` (TMA only), `probability-maps`, `segmentation`, `quantification`, `cell-states` |
+| `--stop-at <step>` | `quantification` | Name of the final step to be executed by the pipeline. Spans the same vocabulary as `--start-at`. |
+| `--tma` | Omitted | If specified, mcmicro treats input data as a TMA. If omitted, the input is assumed to be a whole-slide image. |
+| `--ilastik-model <model.ilp>` | None | A custom `.ilp` file to be used as the classifier model for ilastik. |
 
 **Module selection**
 * `--probability-maps <unmicst|ilastik|all>` - which module(s) to use for probability map computation. Default: `unmicst`
