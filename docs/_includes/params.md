@@ -83,12 +83,14 @@ Up-to-date list can be viewed at [https://github.com/labsyspharm/mcmicro-ilastik
 | `--crop <selection>` | `noCrop` | Type of cropping: `interactiveCrop` - a window will appear for user input to crop a smaller region of the image; `plate` - this is for small fields of view such as from a multiwell plate; `noCrop`, the default, is to use the entire image |
 
 **Nuclei parameters:**
+
 | Parameter | Default | Description |
 | --- | --- | --- |
 | `--nucleiFilter <selection>` | `IntPM` | Method to filter false positive nuclei: `IntPM` - filter based on probability intensity; `Int` - filted based on raw image intensity |
 | `--logSigma <value> <value>` | `3 60` | A range of nuclei diameters to search for. |
 
 **Cytoplasm parameters:**
+
 | Parameter | Default | Description |
 | --- | --- | --- |
 | `--segmentCytoplasm <selection>` | `ignoreCytoplasm` | Select whether to `segmentCytoplasm` or `ignoreCytoplasm` |
