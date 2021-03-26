@@ -1,5 +1,18 @@
 # mcmicro: Multiple-choice microscopy pipeline
 
+| Resource | URL |
+| --- | --- |
+| Code repository | **YOU ARE HERE** |
+| Instruction manual | [http://mcmicro.org/](http://mcmicro.org/) |
+| EMIT dataset | [https://www.synapse.org/EMIT](https://www.synapse.org/EMIT) |
+| Tonsil images | [https://www.synapse.org/MCMICRO_images](https://www.synapse.org/MCMICRO_images) |
+
+## Quick start
+
+1. [Install](http://mcmicro.org/installation.html) nextflow and Docker.
+2. [Download](http://mcmicro.org/installation.html#exemplar-data) exemplar data.
+3. [Run](http://mcmicro.org/running-mcmicro.html) mcmicro on the exemplars.
+
 **Funding:** This work is supported by the following:
 
 * *NIH grant 1U54CA225088: Systems Pharmacology of Therapeutic and Adverse Responses to Immune Checkpoint and Small Molecule Drugs* 
