@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Parameter reference
-nav_order: 4
+nav_order: 20
 ---
 
 {% include params.md %}
