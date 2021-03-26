@@ -2,6 +2,7 @@
 layout: default
 title: Vignettes
 nav_order: 10
+has_children: true
 ---
 
 # Vignettes
