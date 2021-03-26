@@ -27,25 +27,25 @@ exemplar-002
 
 The name of the parent directory (e.g., `exemplar-002`) is assumed by the pipeline to be the sample name.
 At the very minimum, the pipeline expects `markers.csv`, containing metadata about markers, in the parent directory and raw images in the `raw/` subdirectory.
-The file `markers.csv` must have at least three columns that define marker names for each channel in each cycle:
+The file `markers.csv` must be in a comma-delimited format and contain a column titled `marker_name` that defines marker names of every channel:
 
 ```
-channel_number,cycle_number,marker_name
-1,1,DNA_1
-2,1,AF488
-3,1,AF555
-4,1,AF647
-5,2,DNA_2
-6,2,A488_background
-7,2,A555_background
-8,2,A647_background
-9,3,DNA_3
-10,3,FDX1
-11,3,CD357
-12,3,CD1D
+cycle,marker_name
+1,DNA_1
+1,AF488
+1,AF555
+1,AF647
+2,DNA_2
+2,A488_background
+2,A555_background
+2,A647_background
+3,DNA_3
+3,FDX1
+3,CD357
+3,CD1D
 ```
 
-Other columns are optional but can be used to specify additional metadata (e.g., excitation and emissions wavelengths) to be used by individual modules.
+All other columns are optional but can be used to specify additional metadata (e.g., known mapping to cell types) to be used by individual modules.
 
 The exemplar `raw/` files are in the open standard OME-TIFF format, but in practice your input files will be in whatever format your microscope produces. The pipeline supports all [Bio-Formats-compatible](https://docs.openmicroscopy.org/bio-formats/6.0.1/supported-formats.html) image formats.
 
