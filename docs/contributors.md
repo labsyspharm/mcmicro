@@ -23,7 +23,7 @@ Early adopters
 * [Greg Baker](https://github.com/gjbaker)
 * Zoltan Maliga
 * Janae Davis
-* [Edward Novikov] (https://github.com/edn314)
+* [Edward Novikov](https://github.com/edn314)
 * Hanisha Udhani
 * Tuulia Vallius
 * Connor Jacobson
