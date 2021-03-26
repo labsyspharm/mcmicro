@@ -13,7 +13,9 @@
 2. [Download](http://mcmicro.org/installation.html#exemplar-data) exemplar data.
 3. [Run](http://mcmicro.org/running-mcmicro.html) mcmicro on the exemplars.
 
-**Funding:** This work is supported by the following:
+## Funding
+
+This work is supported by the following:
 
 * *NIH grant 1U54CA225088: Systems Pharmacology of Therapeutic and Adverse Responses to Immune Checkpoint and Small Molecule Drugs* 
 * Ludwig Center at Harvard Medical School and the Ludwig Cancer Research Foundation
