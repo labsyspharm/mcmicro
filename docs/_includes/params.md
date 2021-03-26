@@ -65,13 +65,13 @@ Up-to-date list can be viewed at [https://github.com/HMS-IDAC/UNetCoreograph](ht
 
 | Parameter | Default | Description |
 | --- | --- | --- |
-| `--nonzero_fraction <value>` | | Indicates fraction of pixels per crop above global threshold to ensure |
-| `--nuclei_index <index>` | | Index of nuclei channel to use for nonzero_fraction argument |
+| `--nonzero_fraction <value>` |`None` | Indicates fraction of pixels per crop above global threshold to ensure tissue and not only background is selected |
+| `--nuclei_index <index>` |`1` | Index of nuclei channel to use for nonzero_fraction argument |
 | `--crop` | Omitted | If specified, crop regions for ilastik training |
-| `--num_channels <value>` | | Number of channels to export per image (Ex: 40 corresponds to a 40 channel ome.tif image) |
-| `--channelIDs <indices>` | | Integer indices specifying which channels to export (Ex: 1 2 4) |
+| `--num_channels <value>` | `None`| Number of channels to export per image (Ex: 40 corresponds to a 40 channel ome.tif image) |
+| `--channelIDs <indices>` |`None` | Integer indices specifying which channels to export (Ex: 1 2 4) |
 | `--ring_mask`| Omitted | Specify if you have a ring mask in the same directory to use for reducing size of hdf5 image |
-| `--crop_amount <integer>`| | Number of crops you would like to extract |
+| `--crop_amount <integer>`| `None`| Number of crops you would like to extract |
 
 Up-to-date list can be viewed at [https://github.com/labsyspharm/mcmicro-ilastik](https://github.com/labsyspharm/mcmicro-ilastik)
 
