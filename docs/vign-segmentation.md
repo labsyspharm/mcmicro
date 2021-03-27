@@ -34,16 +34,16 @@ The s3segmenter parameters described in this manual should be provided to mcmicr
 **NOTE: There are at least 2 ways to segment cytoplasm: using a watershed approach or taking an annulus/ring around nuclei. Files generated using the annulus/ring method will have ‘Ring’ in the filename whereas files generated using watershed segmentation will not. It is important that these two groups of files are **NOT** combined and analyzed simultaneously as cell IDs will be different between them.**
 
 ## Scenarios
-###**1. I’m new to this whole segmentation thingy. And I have a deadline. Just get me started with finding nuclei!**<br>
+### **1. I’m new to this whole segmentation thingy. And I have a deadline. Just get me started with finding nuclei!**<br>
 In its simplest form, s3segmenter by default will identify primary objects only (usually nuclei) and assumes this is in channel 0 (the first channel). In this case, no settings need to be specified.
 
 S3seg-opts: <leave blank>
 
-###**2. It’s a disaster. It’s not finding all the nuclei**<br>
+### **2. It’s a disaster. It’s not finding all the nuclei**<br>
 Depending on the type of pre-processing that was done, you may need to use a different method of finding cells. Let’s add --nucleiRegion localThreshold to the options:
 S3seg-opts: **’--nucleiRegion localThreshold’**
 
-###**3. Looks good! I want to filter out some objects based on size**<br>
+### **3. Looks good! I want to filter out some objects based on size**<br>
 You can specify a range of nuclei diameters that you expect your nuclei to be. Using --logSigma <low end of range> <high end of range>
 Ie. --logSigma 10 50 will retain all nuclei that have diameters between 10 and 50 pixels. Default is 3 60
 
@@ -54,7 +54,7 @@ b) S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 30 60’**
 
 c) S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 3 60’** (default)
 
-###**4. a) Well that was easy. Now find the cytoplasm for me so my PI thinks I did everything myself!**<br>
+### **4. a) Well that was easy. Now find the cytoplasm for me so my PI thinks I did everything myself!**<br>
 Fiiiiine.To do this, you will need to:
 1. look at your image and identify a suitable cytoplasm channel such as the example below. 
 Nuclei and cytoplasm stained with Hoechst (purple) and NaK ATPase (green) respectively.
@@ -90,12 +90,12 @@ S3seg-opts: ‘--nucleiRegion localThreshold --CytoMaskChan 9 --segmentCytoplasm
 
 This is still a very experimental technique and may not yield better results!
 
-###**5. Surely instance segmentation models such as Mask R-CNN are way better than what you have here.**
+### **5. Surely instance segmentation models such as Mask R-CNN are way better than what you have here.**
 If that’s your opinion, S3segmenter can accept pre-made instance segmentation primary object masks and still run some of the later functions we talked about above. To bypass nuclei segmentation, specify --nucleiRegion bypass. Then, you can still use --logSigma to filter overly small/large objects.
 
 S3seg-opts: ’--logSigma 45 300 **--nucleiRegion bypass’ **
 
-###**6. Nuclei…. Cytoplasm… NOW GIVE ME INTRACELLULAR SPOTS**
+### **6. Nuclei…. Cytoplasm… NOW GIVE ME INTRACELLULAR SPOTS**
 
 This is a very complexed operation and requires several parameters.
 1. Detail which channels you want to run spot detection on.
