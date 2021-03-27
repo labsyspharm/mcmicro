@@ -78,13 +78,13 @@ That’s ok. Cytoplasm segmentation is hard because there isn’t a universal ma
 
 **Examples**
 i) <br>
-`S3seg-opts: ’--nucleiRegion localThreshold --segmentCytoplasm segmentCytoplasm **--cytoMethod ring --cytoDilation 12’**`<br>
+`S3seg-opts: ’--nucleiRegion localThreshold --CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm **--cytoMethod ring --cytoDilation 12’**`<br>
 ![](images/segmentation4bi.png)<br>
 Cytoplasm spilling beyond cytoplasm stain. Possibly too large --cytoDilation parameter.
 
 ii) <br>
-`S3seg-opts: ‘--nucleiRegion localThreshold --segmentCytoplasm segmentCytoplasm **--cytoMethod ring --cytoDilation 6’**`
-
+`S3seg-opts: ‘--nucleiRegion localThreshold --CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm **--cytoMethod ring --cytoDilation 6’**`
+![](images/segmentation4bii.png)<br>
 Much better. Cytoplasm outlines now just within the marker stain.
 
 **4. c) Nah….a ring doesn’t approximate the cytoplasm. What else you got?**<br>
@@ -92,7 +92,7 @@ There’s a hybrid approach that combines a cytoplasm channel and the ring aroun
 Try changing --cytoMethod to ‘hybrid’.<br>
 
 `S3seg-opts: ‘--nucleiRegion localThreshold --CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm **--cytoMethod hybrid’**`<br>
-![](images/segmentation4bii.png)<br>
+![](images/segmentation4c.png)<br>
 This is still a very experimental technique and may not yield better results!
 
 ### **5. Surely instance segmentation models such as Mask R-CNN are way better than what you have here.**
