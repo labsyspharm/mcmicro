@@ -48,11 +48,14 @@ You can specify a range of nuclei diameters that you expect your nuclei to be. U
 Ie. --logSigma 10 50 will retain all nuclei that have diameters between 10 and 50 pixels. Default is 3 60
 
 **Examples:**
-a) <br>      S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 3 10’**
+a) <br>
+     S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 3 10’**
 
-b) <br>      S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 30 60’**
+b) <br>
+     S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 30 60’**
 
-c) <br>      S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 3 60’** (default)
+c) <br>
+     S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 3 60’** (default)
 
 ### **4. a) Well that was easy. Now find the cytoplasm for me so my PI thinks I did everything myself!**<br>
 Fiiiiine.To do this, you will need to:
@@ -66,7 +69,7 @@ Specify --CytoMaskChan <channel number(s) of cytoplasm>. For example, to specify
 2. Also, specify this to activate cytoplasm segmentation:
 --segmentyCytoplasm segmentCytoplasm
 
-S3seg-opts: ‘--nucleiRegion localThreshold **--CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm’**
+     S3seg-opts: ‘--nucleiRegion localThreshold **--CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm’**
 
 **4. b) I don’t have a suitable cytoplasm channel…..**<br>
 That’s ok. Cytoplasm segmentation is hard because there isn’t a universal marker. It’s generally acceptable to sample some number of pixels around the nucleus to approximate the cytoplasm.
@@ -74,11 +77,13 @@ That’s ok. Cytoplasm segmentation is hard because there isn’t a universal ma
 2. Then, specify the width of this ring --cytoDilation <thickness of ring in pixels> ie. --cytoDilation 3 will surround the nuclei with a 3-pixel thick cytoplasmic ring. The default is 5 pixels.
 
 **Examples**
-i) S3seg-opts: ’--nucleiRegion localThreshold --segmentCytoplasm segmentCytoplasm **--cytoMethod ring --cytoDilation 12’**
+i) <br>
+     S3seg-opts: ’--nucleiRegion localThreshold --segmentCytoplasm segmentCytoplasm **--cytoMethod ring --cytoDilation 12’**
 
 Cytoplasm spilling beyond cytoplasm stain. Possibly too large --cytoDilation parameter.
 
-ii) S3seg-opts: ‘--nucleiRegion localThreshold --segmentCytoplasm segmentCytoplasm **--cytoMethod ring --cytoDilation 6’**
+ii) <br>
+     S3seg-opts: ‘--nucleiRegion localThreshold --segmentCytoplasm segmentCytoplasm **--cytoMethod ring --cytoDilation 6’**
 
 Much better. Cytoplasm outlines now just within the marker stain.
 
@@ -86,14 +91,14 @@ Much better. Cytoplasm outlines now just within the marker stain.
 There’s a hybrid approach that combines a cytoplasm channel and the ring around the nuclei to deal with tissues that have sporadic cytoplasm staining.
 Try changing --cytoMethod to ‘hybrid’.
 
-S3seg-opts: ‘--nucleiRegion localThreshold --CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm **--cytoMethod hybrid’**
+     S3seg-opts: ‘--nucleiRegion localThreshold --CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm **--cytoMethod hybrid’**
 
 This is still a very experimental technique and may not yield better results!
 
 ### **5. Surely instance segmentation models such as Mask R-CNN are way better than what you have here.**
 If that’s your opinion, S3segmenter can accept pre-made instance segmentation primary object masks and still run some of the later functions we talked about above. To bypass nuclei segmentation, specify --nucleiRegion bypass. Then, you can still use --logSigma to filter overly small/large objects.
 
-S3seg-opts: ’--logSigma 45 300 **--nucleiRegion bypass’ **
+     S3seg-opts: ’--logSigma 45 300 **--nucleiRegion bypass’ **
 
 ### **6. Nuclei…. Cytoplasm… NOW GIVE ME INTRACELLULAR SPOTS**
 
