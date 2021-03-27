@@ -60,7 +60,7 @@ c) default: <br>
 ### **4. a) Well that was easy. Now find the cytoplasm for me so my PI thinks I did everything myself!**<br>
 Fiiiiine.To do this, you will need to:
 1. look at your image and identify a suitable cytoplasm channel such as the example below. <br>
-![](images/segmentation4aa.png)<br>
+![](images/segmentation4aa.tif)<br>
 Nuclei and cytoplasm stained with Hoechst (purple) and NaK ATPase (green) respectively.
 Notice how the plasma membrane is distinctive and separates one cell from another. It also has good signal-to-background (contrast) and is in-focus.
 
