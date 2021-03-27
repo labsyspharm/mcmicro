@@ -29,7 +29,7 @@ The pipeline is described in a [bioRxiv preprint](https://www.biorxiv.org/conten
 2. [Download](installation.html#exemplar-data) exemplar data.
 3. [Run](running-mcmicro.html) mcmicro on the exemplars.
 
-On an average workstation, it takes approximately 5-10 minutes process exemplar-001 from start to finish. Exemplar-002 is substantially larger, and its processing takes 30-40 minutes on an average workstation.
+On an average workstation, it takes approximately 5-10 minutes to process exemplar-001 from start to finish. Exemplar-002 is substantially larger, and its processing takes 30-40 minutes on an average workstation.
 
 ## Contributors
 
