@@ -9,7 +9,7 @@ parent: Vignettes
 
 So... you want to do single-cell image segmentation?
 
-![](images/segbannerv2.png)
+![](images/segbannerv3.png)
 
 ## Prerequisite input files
 S3segmenter assumes that you have:
