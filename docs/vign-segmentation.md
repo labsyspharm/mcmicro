@@ -49,13 +49,13 @@ Ie. --logSigma 10 50 will retain all nuclei that have diameters between 10 and 5
 
 **Examples:**
 a) <br>
-           S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 3 10’**
+`S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 3 10’**`
 
 b) <br>
-     S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 30 60’**
+`S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 30 60’**`
 
 c) <br>
-     S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 3 60’** (default)
+`S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 3 60’** (default)`
 
 ### **4. a) Well that was easy. Now find the cytoplasm for me so my PI thinks I did everything myself!**<br>
 Fiiiiine.To do this, you will need to:
