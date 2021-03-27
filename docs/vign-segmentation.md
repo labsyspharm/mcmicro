@@ -48,7 +48,7 @@ You can specify a range of nuclei diameters that you expect your nuclei to be. U
 Ie. --logSigma 10 50 will retain all nuclei that have diameters between 10 and 50 pixels. Default is 3 60
 
 **Examples:**
-a) S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 3 10’**
+a)      S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 3 10’**
 
 b) S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 30 60’**
 
