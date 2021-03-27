@@ -2,7 +2,9 @@
 
 # mcmicro: Multiple-choice microscopy pipeline
 
-mcmicro is an end-to-end processing pipeline for multiplexed whole tissue imaging and tissue microarrays. It comprises stitching and registration, segmentation, and single-cell feature extraction. Each step of the pipeline is containerized to enable portable deployment across an array of compute environments.
+mcmicro is an end-to-end processing pipeline for multiplexed whole slide imaging and tissue microarrays. It comprises stitching and registration, segmentation, and single-cell feature extraction. Each step of the pipeline is containerized to enable portable deployment across an array of compute environments.
+
+The pipeline is described in a [bioRxiv preprint](https://www.biorxiv.org/content/10.1101/2021.03.15.435473v1) and accompanied by the following resources:
 
 | Resource | URL |
 | --- | --- |
@@ -13,9 +15,9 @@ mcmicro is an end-to-end processing pipeline for multiplexed whole tissue imagin
 
 ## Quick start
 
-1. [Install](http://mcmicro.org/installation.html) nextflow and Docker.
-2. [Download](http://mcmicro.org/installation.html#exemplar-data) exemplar data.
-3. [Run](http://mcmicro.org/running-mcmicro.html) mcmicro on the exemplars.
+1. [Install](http://mcmicro.org/installation.html) nextflow and Docker. Check with `nextflow run hello` and `docker images` to make sure both are functional.
+3. [Download](http://mcmicro.org/installation.html#exemplar-data) exemplar data. E.g., `nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-001 --path .` to download to current directory.
+4. [Run](http://mcmicro.org/running-mcmicro.html) mcmicro on the exemplars. E.g., `nextflow pull labsyspharm/mcmicro` followed by `nextflow run labsyspharm/mcmicro --in exemplar-001` to execute in current directory. 
 
 ## Funding
 

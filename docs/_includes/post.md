@@ -50,4 +50,4 @@ nextflow clean -f -but last
 
 ## Accessing post-run information with nextflow log
 
-TODO
+This section will be extended in the next version of mcmicro documentation
