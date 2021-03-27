@@ -2,7 +2,7 @@
 
 # mcmicro: Multiple-choice microscopy pipeline
 
-mcmicro is an end-to-end processing pipeline for multiplexed whole tissue imaging and tissue microarrays. It comprises stitching and registration, segmentation, and single-cell feature extraction. Each step of the pipeline is containerized to enable portable deployment across an array of compute environments.
+mcmicro is an end-to-end processing pipeline for multiplexed whole slide imaging and tissue microarrays. It comprises stitching and registration, segmentation, and single-cell feature extraction. Each step of the pipeline is containerized to enable portable deployment across an array of compute environments.
 
 The pipeline is described in a [bioRxiv preprint](https://www.biorxiv.org/content/10.1101/2021.03.15.435473v1) and accompanied by the following resources:
 
