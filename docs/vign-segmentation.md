@@ -40,8 +40,8 @@ In its simplest form, s3segmenter by default will identify primary objects only 
     S3seg-opts: <leave blank>
 
 ### **2. It’s a disaster. It’s not finding all the nuclei**<br>
-Depending on the type of pre-processing that was done, you may need to use a different method of finding cells. Let’s add --nucleiRegion localThreshold to the options:
-S3seg-opts: **’--nucleiRegion localThreshold’**
+Depending on the type of pre-processing that was done, you may need to use a different method of finding cells. Let’s add --nucleiRegion localThreshold to the options:<br>
+`S3seg-opts: **’--nucleiRegion localThreshold’**`
 
 ### **3. Looks good! I want to filter out some objects based on size**<br>
 You can specify a range of nuclei diameters that you expect your nuclei to be. Using --logSigma <low end of range> <high end of range>
