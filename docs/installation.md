@@ -8,7 +8,9 @@ nav_order: 3
 
 # Exemplar data
 
-![](images/mcmicro-exemplar-001.jpg) | ![](images/mcmicro-exemplar-002.jpg)
+| exemplar-001 | exemplar-002 |
+| :-: | :-: |
+| ![](images/mcmicro-exemplar-001.jpg) | ![](images/mcmicro-exemplar-002.jpg) |
 
 Two exemplars are currently available for demonstration purposes:
 
