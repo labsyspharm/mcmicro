@@ -49,7 +49,7 @@ Ie. --logSigma 10 50 will retain all nuclei that have diameters between 10 and 5
 
 **Examples:**
 a) <br>
-     S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 3 10’**
+           S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 3 10’**
 
 b) <br>
      S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 30 60’**
