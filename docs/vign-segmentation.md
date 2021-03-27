@@ -5,11 +5,11 @@ nav_order: 12
 parent: Vignettes
 ---
 
-# Automatic Segmentation Manual
+![](images/segbannerv5.png)
 
 So... you want to do single-cell image segmentation?
 
-![](images/segbannerv3.png)
+
 
 ## Prerequisite input files
 S3segmenter assumes that you have:
