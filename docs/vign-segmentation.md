@@ -37,7 +37,7 @@ The s3segmenter parameters described in this manual should be provided to mcmicr
 ### **1. I’m new to this whole segmentation thingy. And I have a deadline. Just get me started with finding nuclei!**<br>
 In its simplest form, s3segmenter by default will identify primary objects only (usually nuclei) and assumes this is in channel 0 (the first channel). In this case, no settings need to be specified.
 
- S3seg-opts: <leave blank>
+    S3seg-opts: <leave blank>
 
 ### **2. It’s a disaster. It’s not finding all the nuclei**<br>
 Depending on the type of pre-processing that was done, you may need to use a different method of finding cells. Let’s add --nucleiRegion localThreshold to the options:
