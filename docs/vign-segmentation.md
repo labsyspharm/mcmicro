@@ -89,16 +89,18 @@ Much better. Cytoplasm outlines now just within the marker stain.
 
 **4. c) Nah….a ring doesn’t approximate the cytoplasm. What else you got?**<br>
 There’s a hybrid approach that combines a cytoplasm channel and the ring around the nuclei to deal with tissues that have sporadic cytoplasm staining.
-Try changing --cytoMethod to ‘hybrid’.
+Try changing --cytoMethod to ‘hybrid’.<br>
 
-`S3seg-opts: ‘--nucleiRegion localThreshold --CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm **--cytoMethod hybrid’**`
-
+`S3seg-opts: ‘--nucleiRegion localThreshold --CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm **--cytoMethod hybrid’**`<br>
+![](images/segmentation4bii.png)<br>
 This is still a very experimental technique and may not yield better results!
 
 ### **5. Surely instance segmentation models such as Mask R-CNN are way better than what you have here.**
 If that’s your opinion, S3segmenter can accept pre-made instance segmentation primary object masks and still run some of the later functions we talked about above. To bypass nuclei segmentation, specify --nucleiRegion bypass. Then, you can still use --logSigma to filter overly small/large objects.
 
-`S3seg-opts: ’--logSigma 45 300 **--nucleiRegion bypass’ **`
+`S3seg-opts: ’--logSigma 45 300 **--nucleiRegion bypass’ **`<br>
+![](images/segmentation5ii.png)
+![](images/segmentation5i.png)
 
 ### **6. Nuclei…. Cytoplasm… NOW GIVE ME INTRACELLULAR SPOTS**
 
@@ -118,12 +120,12 @@ Lower numbers increase sensitivity at the expense of  more false positives. Not 
 
 Select custom values for each channels. 
 i) ie. --punctaSD 10 12 10 (more stringent)
-Note:  If you specify one value, it will use that for all channels
-
+Note:  If you specify one value, it will use that for all channels<br>
+![](images/segmentation5ci.png)<br>
 Hmmm….only 4 puncta are being detected shown by the green dots, but there are clearly other spots not being picked up.
 
-ii)  --punctaSD 3 3 3 (more sensitive)
-
+ii)  --punctaSD 3 3 3 (more sensitive)<br>
+![](images/segmentation5cii.png)<br>
 Perfect! All visible spots appear to be detected with the more sensitive option.
 
-
+`S3seg-opts: ’--logSigma 45 300 --detectPuncta 0 1 2 --punctaSigma 1.5 2 1.75 --punctaSD 3`
