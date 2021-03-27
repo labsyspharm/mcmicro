@@ -76,7 +76,7 @@ That’s ok. Cytoplasm segmentation is hard because there isn’t a universal ma
 1. Choose `--cytoMethod ring`
 2. Then, specify the width of this ring `--cytoDilation <thickness of ring in pixels>` ie. `--cytoDilation 3` will surround the nuclei with a 3-pixel thick cytoplasmic ring. The default is 5 pixels.
 
-**Examples**
+**Examples**<br>
 i) <br>
 `S3seg-opts: ’--nucleiRegion localThreshold --CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm **--cytoMethod ring --cytoDilation 15’**`<br>
 ![](images/segmentation4bi.png)<br>
