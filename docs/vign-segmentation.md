@@ -5,9 +5,12 @@ nav_order: 12
 parent: Vignettes
 ---
 
-![](images/segbannerv7.png)
+![](images/segbannerv7.png)<br>
+<p align="center">
+  "So... you want to do single-cell image segmentation?"
+</p>
 
-So... you want to do single-cell image segmentation?
+
 
 
 
