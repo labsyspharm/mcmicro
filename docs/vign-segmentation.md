@@ -37,11 +37,11 @@ The s3segmenter parameters described in this manual should be provided to mcmicr
 ### **1. I’m new to this whole segmentation thingy. And I have a deadline. Just get me started with finding nuclei!**<br>
 In its simplest form, s3segmenter by default will identify primary objects only (usually nuclei) and assumes this is in channel 0 (the first channel). In this case, no settings need to be specified.
 
-    S3seg-opts: <leave blank>
+    S3seg-opts: <leave blank><br>
 ![](images/segmentation1.png)
 ### **2. It’s a disaster. It’s not finding all the nuclei**<br>
 Depending on the type of pre-processing that was done, you may need to use a different method of finding cells. Let’s add --nucleiRegion localThreshold to the options:<br>
-`S3seg-opts: **’--nucleiRegion localThreshold’**`
+`S3seg-opts: **’--nucleiRegion localThreshold’**`<br>
 ![](images/segmentation2.png)
 ### **3. Looks good! I want to filter out some objects based on size**<br>
 You can specify a range of nuclei diameters that you expect your nuclei to be. Using --logSigma <low end of range> <high end of range>
@@ -49,13 +49,13 @@ Ie. --logSigma 10 50 will retain all nuclei that have diameters between 10 and 5
 
 **Examples:**
 a) <br>
-`S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 3 10’**`
+`S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 3 10’**`<br>
 ![](images/segmentation3a.png)
 b) <br>
-`S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 30 60’**`
+`S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 30 60’**`<br>
 ![](images/segmentation3b.png)
 c) default: <br>
-`S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 3 60’**`
+`S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 3 60’**` <br>
 ![](images/segmentation3c.png)
 ### **4. a) Well that was easy. Now find the cytoplasm for me so my PI thinks I did everything myself!**<br>
 Fiiiiine.To do this, you will need to:
@@ -69,7 +69,7 @@ Specify --CytoMaskChan <channel number(s) of cytoplasm>. For example, to specify
 2. Also, specify this to activate cytoplasm segmentation:
 --segmentyCytoplasm segmentCytoplasm
 
-`S3seg-opts: ‘--nucleiRegion localThreshold **--CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm’**`
+`S3seg-opts: ‘--nucleiRegion localThreshold **--CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm’**`<br>
 ![](images/segmentation4ab.png)
 **4. b) I don’t have a suitable cytoplasm channel…..**<br>
 That’s ok. Cytoplasm segmentation is hard because there isn’t a universal marker. It’s generally acceptable to sample some number of pixels around the nucleus to approximate the cytoplasm.
@@ -78,7 +78,7 @@ That’s ok. Cytoplasm segmentation is hard because there isn’t a universal ma
 
 **Examples**
 i) <br>
-`S3seg-opts: ’--nucleiRegion localThreshold --segmentCytoplasm segmentCytoplasm **--cytoMethod ring --cytoDilation 12’**`
+`S3seg-opts: ’--nucleiRegion localThreshold --segmentCytoplasm segmentCytoplasm **--cytoMethod ring --cytoDilation 12’**`<br>
 ![](images/segmentation4bi.png)
 Cytoplasm spilling beyond cytoplasm stain. Possibly too large --cytoDilation parameter.
 
