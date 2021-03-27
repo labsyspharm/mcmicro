@@ -20,13 +20,14 @@ aux_links_new_tab: false
 back_to_top: true
 back_to_top_text: "Back to top"
 
-footer_content: "&copy; 2020 Laboratory of Systems Pharmacology. Distributed by an <a href=\"\">MIT license.</a>"
-
 last_edit_timestamp: true
 last_edit_time_format: "%b %e %Y" # format: https://ruby-doc.org/stdlib-2.7.0/libdoc/time/rdoc/Time.html
 
+license_name: "MIT License"
+license_url: "https://github.com/labsyspharm/mcmicro/blob/master/LICENSE"
 
-# Google Analytics 
+
+# Google Analytics
 ga_tracking: G-EBP7DZSHEP
 ga_tracking_anonymize_ip: true # Use GDPR compliant Google Analytics settings
 
