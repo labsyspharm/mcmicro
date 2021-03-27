@@ -107,11 +107,13 @@ jobs:
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at registration --stop-at registration
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at probability-maps --stop-at probability-maps --probability-maps ilastik
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at segmentation --stop-at segmentation --probability-maps ilastik --s3seg-opts '--probMapChan 0'
+          docker rmi -f $(docker images -a -q)
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at probability-maps --stop-at probability-maps --probability-maps unmicst
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at segmentation --stop-at segmentation --probability-maps unmicst
-          ./nextflow main.nf --in ~/data/exemplar-001 --start-at probability-maps --stop-at probability-maps --probability-maps cypository
           docker rmi -f $(docker images -a -q)
+          ./nextflow main.nf --in ~/data/exemplar-001 --start-at probability-maps --stop-at probability-maps --probability-maps cypository
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at segmentation --stop-at segmentation --probability-maps cypository --s3seg-opts '--probMapChan 0 --nucleiRegion bypass --logSigma 45 300'
+          docker rmi -f $(docker images -a -q)
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at quantification --stop-at quantification
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at cell-states --stop-at cell-states
           ls ~/data/exemplar-001/*
@@ -149,5 +151,7 @@ jobs:
           key: mcmicro-exemplar-002-2cycle
       - name: Test exemplar-002
         run: |
-          ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at registration --probability-maps cypository --cypositoryOpts '--scalingFactor 0.25 --threshold 0.05' --s3seg-opts '--probMapChan 0 --nucleiRegion bypass --logSigma 45 300'
+          ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at registration --stop-at segmentation --probability-maps cypository --cypositoryOpts '--scalingFactor 0.25 --threshold 0.05' --s3seg-opts '--probMapChan 0 --nucleiRegion bypass --logSigma 45 300'
+          docker rmi -f $(docker images -a -q)
+          ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at quantification
           ls ~/data/exemplar-002/*
