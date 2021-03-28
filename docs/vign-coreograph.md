@@ -34,7 +34,7 @@ The Coreograph parameters described in this manual should be provided to mcmicro
 ### **1. Alright, let's get started!**
 When using MCMICRO, Coreograph does not require any additional input parameters to run. The DNA channel is assumed to be in the 1st channel.<br>
 `--core-opts: <leave blank>`<br>
-![map](images/coreograph1a.png)<br>
+![map](images/coreograph1av2.png)<br>
 As one can see, each core is labelled with a single number implying that each core was found uniquely. Furthermore, each core has a thick white line to indicate the accuracy of segmenting each core. (Future versions will have a colored outlines for better visibility).
 
 ### **2. Well, my DNA channel is not in the 1st channel.
