@@ -1,12 +1,13 @@
-![](images/coreographbannerv8.png)
+![](images/coreographbannerv9.png)
 <p align="center">
   Great....yet another TMA dearray program. What does this one do?
 </p>
+<br>
+<br>
 
+Coreograph uses UNet [(Ronneberger et al., 2015)](https://arxiv.org/abs/1505.04597), a deep learning model, to identify complete/incomplete tissue cores on a tissue microarray, and export them individually for faster downstream processing. It has been trained on 9 TMA slides of different sizes and tissue types.
 
-Coreograph uses UNet, a deep learning model, to identify complete/incomplete tissue cores on a tissue microarray, and export them individually for faster downstream processing. It has been trained on 9 TMA slides of different sizes and tissue types.
-
-Training sets were acquired at 0.2micron/pixel resolution and downsampled 1/32 times, **or 2^5 times**, to speed up performance. Once the center of each core has been identifed, active contours is used to generate a tissue mask of each core that can aid downstream single cell segmentation. A GPU is not required but will reduce computation time.
+Training sets were acquired at 0.65 microns/pixel resolution and downsampled 1/32 times, **or 2^5 times**, to speed up performance. Once the center of each core has been identifed, active contours is used to generate a tissue mask of each core that can aid downstream single cell segmentation. A GPU is not required but will reduce computation time.
 
 ## Prerequisitie input files:
 -a fluorescence image of a tissue microarray where at least one channel is of DNA, ie. labelled with Hoechst or DAPI. The image will likely be a stitched images that spans multiple tiles. <br>
@@ -16,7 +17,7 @@ The Coreograph parameters described in this manual should be provided to mcmicro
 1. `--downsampleFactor` : how many times to downsample the raw image file. **Default is 5 times to match the training data.** <br>
 2. `--channel` : which is the channel to feed into UNet and generate probabiltiy maps from. This is usually a DAPI channel. <br>
 3. `--buffer` : the extra space around a core before cropping it. A value of 2 means there is twice the width of the core added as buffer around it. 2 is default. <br>
-4. `--outputChan` : a range of channels to be exported. -1 is default and will export all channels (takes awhile). Select a single channel or a continuous range. --outputChan 0 10 will export channel 0 up to (and NOT including) channel 10. <br>
+4. `--outputChan` : a range of channels to be exported. -1 is default and will export all channels (takes awhile). Select a single channel or a continuous range. --outputChan 0 10 will export channel 0 up to and including channel 10. <br>
 
 ## Output files:
 1. individual cores as tiff stacks with user-selectable channel ranges
