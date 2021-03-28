@@ -6,9 +6,7 @@
 
 Coreograph uses UNet, a deep learning model, to identify complete/incomplete tissue cores on a tissue microarray, and export them individually for faster downstream processing. It has been trained on 9 TMA slides of different sizes and tissue types.
 
-<p align="center">
-<img src="images/coreograph-raw.jpg" width="425" height="315" /> <img src="images/coreograph-probmap.jpg" width="425" height="315" />
-</p>
+![map](images/coreographIntro.png)
 
 Training sets were acquired at 0.2micron/pixel resolution and downsampled 1/32 times, **or 2^5 times**, to speed up performance. Once the center of each core has been identifed, active contours is used to generate a tissue mask of each core that can aid downstream single cell segmentation. A GPU is not required but will reduce computation time.
 
@@ -34,7 +32,9 @@ The Coreograph parameters described in this manual should be provided to mcmicro
 ### **1. Alright, let's get started!**
 When using MCMICRO, Coreograph does not require any additional input parameters to run. The DNA channel is assumed to be in the 1st channel.<br>
 `--core-opts: <leave blank>`<br>
-![map](images/coreograph1av2.png)<br>
+<p align="center">
+<img src="images/coreograph-raw.jpg" width="425" height="315" /> <img src="images/coreograph-probmap.jpg" width="425" height="315" />
+</p>
 As one can see, each core is labelled with a single number implying that each core was found uniquely. Furthermore, each core has a thick white line to indicate the accuracy of segmenting each core. (Future versions will have a colored outlines for better visibility).
 
 ### **2. Well, my DNA channel is not in the 1st channel.
