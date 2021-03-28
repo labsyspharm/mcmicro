@@ -32,7 +32,7 @@ The Coreograph parameters described in this manual should be provided to mcmicro
 ## Scenarios
 ### **1. Alright, let's get started!**
 When using MCMICRO, Coreograph does not require any additional input parameters to run. The DNA channel is assumed to be in the 1st channel.
-`--core-opts: <leave blank>`
+`--core-opts: <leave blank>`<br>
 ![map](images/coreograph1.png)
 
 ### **2. Well, my DNA channel is not in the 1st channel.
@@ -43,9 +43,11 @@ No problem! Specify `--channel` with the channel that it's in. This is 0-indexin
 Coreograph is trained on various core sizes ranging from 500 microns to 2 mm acquired at a pixel size of 0.65 microns per pixel and then downsampled 5 times. If your core size or image resolution are significantly different, you will need to either upsample or downsample a different number of times using `--downSampleFactor`. See below for examples:
 
 #### 3a) If your pixel size is 1.3 microns per pixel, then your pixel size is half of the training data (0.65/1.3). Instead of downsampling by 5 times (default), you should downsample less. Try 4.
-`--core-opts: --downsampleFactor 4`
 ![map](images/coreograph3a.png)
+`--core-opts: --downsampleFactor 4`<br>
+
 #### 3b) If your pixel size is 0.325 microns per pixel, then your pixel size is double the training data by a factor of 2 (0.65/0.325). You should downsample more times. Use 6 instead of 5. 
-`--core-opts: --downsampleFactor 5`
+![map](images/coreograph3b.png)
+`--core-opts: --downsampleFactor 6`<br>
 
 
