@@ -34,7 +34,7 @@ The Coreograph parameters described in this manual should be provided to mcmicro
 When using MCMICRO, Coreograph does not require any additional input parameters to run. The DNA channel is assumed to be in the 1st channel.
 `--core-opts: <leave blank>`<br>
 <p align="center">
-  <img src="images/coreograph1.png /> <br>
+<img src="images/coreograph1.png" width="579" height="582" /> 
 </p>
 As one can see, each core is labelled with a single number implying that each core was found uniquely. Furthermore, each core has a thick white line to indicate the accuracy of segmenting each core. (Future versions will have a colored outlines for better visibility).
 
@@ -47,7 +47,7 @@ Coreograph is trained on various core sizes ranging from 500 microns to 2 mm acq
 
 #### 3a) If your pixel size is 0.325 microns per pixel, then your pixel size is double the training data by a factor of 2 (0.65/0.325). You should downsample more times. Use 6 instead of 5. 
 <p align="center">
-  <img src="images/coreograph3a.png /> <br>
+<img src="images/coreograph3a.png" width="1440" height="778" /> 
 </p>
 
 `--core-opts: --downsampleFactor 6`<br>
