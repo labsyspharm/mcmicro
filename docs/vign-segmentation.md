@@ -43,8 +43,8 @@ In its simplest form, s3segmenter by default will identify primary objects only 
     S3seg-opts: <leave blank>
 ![](images/segmentation1.png)
 ### **2. It’s a disaster. It’s not finding all the nuclei**<br>
-Depending on the type of pre-processing that was done, you may need to use a different method of finding cells. Let’s add `--nucleiRegion localThreshold` to the options:<br>
-`S3seg-opts: **’--nucleiRegion localThreshold’**`<br>
+Depending on the type of pre-processing that was done, you may need to use a different method of finding cells. Let’s add `--nucleiRegion localMax` to the options:<br>
+`S3seg-opts: ’--nucleiRegion localMax’`<br>
 ![](images/segmentation2.png)<br>
 ### **3. Looks good! I want to filter out some objects based on size**<br>
 You can specify a range of nuclei diameters that you expect your nuclei to be. Using `--logSigma <low end of range> <high end of range>`
@@ -52,13 +52,13 @@ Ie. `--logSigma 10 50` will retain all nuclei that have diameters between 10 and
 
 **Examples:**
 a) <br>
-`S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 3 10’**`<br>
+`S3seg-opts: ‘--nucleiRegion localMax --logSigma 3 10’`<br>
 ![](images/segmentation3.png)<br>
 b) <br>
-`S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 30 60’**`<br>
+`S3seg-opts: ‘--nucleiRegion localMax --logSigma 30 60’`<br>
 ![](images/segmentation3b.png)<br>
 c) default: <br>
-`S3seg-opts: ‘--nucleiRegion localThreshold **--logSigma 3 60’**` <br>
+`S3seg-opts: ‘--nucleiRegion localMax --logSigma 3 60’` <br>
 ![](images/segmentation3c.png)<br>
 ### **4. a) How do I segment the cytoplasm as well?**<br>
 To do this, you will need to:
@@ -72,7 +72,7 @@ Specify `--CytoMaskChan <channel number(s) of cytoplasm>`. For example, to speci
 2. Also, specify this to activate cytoplasm segmentation:
 `--segmentyCytoplasm segmentCytoplasm`
 
-`S3seg-opts: ‘--nucleiRegion localThreshold **--CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm’**`<br>
+`S3seg-opts: ‘--nucleiRegion localMax --CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm’`<br>
 ![](images/segmentation4ab.png)<br>
 **4. b) I don’t have a suitable cytoplasm channel…..**<br>
 That’s ok. Cytoplasm segmentation is hard because there isn’t a universal marker. It’s generally acceptable to sample some number of pixels around the nucleus to approximate the cytoplasm.
@@ -81,12 +81,12 @@ That’s ok. Cytoplasm segmentation is hard because there isn’t a universal ma
 
 **Examples**<br>
 i) <br>
-`S3seg-opts: ’--nucleiRegion localThreshold --CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm **--cytoMethod ring --cytoDilation 15’**`<br>
+`S3seg-opts: ’--nucleiRegion localMax --CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm --cytoMethod ring --cytoDilation 15’`<br>
 ![](images/segmentation4bi.png)<br>
 Cytoplasm spilling beyond cytoplasm stain. Possibly too large `--cytoDilation` parameter.
 
 ii) <br>
-`S3seg-opts: ‘--nucleiRegion localThreshold --CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm **--cytoMethod ring --cytoDilation 6’**`<br>
+`S3seg-opts: ‘--nucleiRegion localMax --CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm --cytoMethod ring --cytoDilation 6’`<br>
 ![](images/segmentation4bii.png)<br>
 Much better. Cytoplasm outlines now just within the marker stain.
 
@@ -94,14 +94,14 @@ Much better. Cytoplasm outlines now just within the marker stain.
 There’s a hybrid approach that combines a cytoplasm channel and the ring around the nuclei to deal with tissues that have sporadic cytoplasm staining.
 Try changing --cytoMethod to ‘hybrid’.<br>
 
-`S3seg-opts: ‘--nucleiRegion localThreshold --CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm **--cytoMethod hybrid’**`<br>
+`S3seg-opts: ‘--nucleiRegion localMax --CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm --cytoMethod hybrid’`<br>
 ![](images/segmentation4c.png)<br>
 This is still a very experimental technique and may not yield better results!
 
 ### **5. I have an instance segmentation model, which already produces a mask. How do I incorporate this in?.**
 S3segmenter can accept pre-made instance segmentation primary object masks and still run some of the later functions we talked about above. To bypass nuclei segmentation, specify `--nucleiRegion bypass`. Then, you can still use `--logSigma` to filter overly small/large objects.
 
-`S3seg-opts: ’--logSigma 45 300 **--nucleiRegion bypass’ **`<br>
+`S3seg-opts: ’--logSigma 45 300 --nucleiRegion bypass’`<br>
 ![](images/segmentation5ii.png)
 ![](images/segmentation5i.png)
 
