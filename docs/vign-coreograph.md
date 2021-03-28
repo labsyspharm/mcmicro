@@ -1,4 +1,4 @@
-![](images/coreographbannerv6.png)
+<img src="images/coreographbannerv6.png" width="1037" height="309" />
 <p align="center">
   Great....yet another TMA dearray program. What does this one do?
 </p>
@@ -33,7 +33,10 @@ The Coreograph parameters described in this manual should be provided to mcmicro
 ### **1. Alright, let's get started!**
 When using MCMICRO, Coreograph does not require any additional input parameters to run. The DNA channel is assumed to be in the 1st channel.
 `--core-opts: <leave blank>`<br>
-![map](images/coreograph1.png)
+<p align="center">
+  <img src="images/coreograph1.png /> <br>
+</p>
+As one can see, each core is labelled with a single number implying that each core was found uniquely. Furthermore, each core has a thick white line to indicate the accuracy of segmenting each core. (Future versions will have a colored outlines for better visibility).
 
 ### **2. Well, my DNA channel is not in the 1st channel.
 No problem! Specify `--channel` with the channel that it's in. This is 0-indexing. So 1st channel is 0. If it's in the 4th channel,
@@ -43,7 +46,10 @@ No problem! Specify `--channel` with the channel that it's in. This is 0-indexin
 Coreograph is trained on various core sizes ranging from 500 microns to 2 mm acquired at a pixel size of 0.65 microns per pixel and then downsampled 5 times. If your core size or image resolution are significantly different, you will need to either upsample or downsample a different number of times using `--downSampleFactor`. See below for examples:
 
 #### 3a) If your pixel size is 0.325 microns per pixel, then your pixel size is double the training data by a factor of 2 (0.65/0.325). You should downsample more times. Use 6 instead of 5. 
-![map](images/coreograph3a.png)
+<p align="center">
+  <img src="images/coreograph3a.png /> <br>
+</p>
+
 `--core-opts: --downsampleFactor 6`<br>
 
 
