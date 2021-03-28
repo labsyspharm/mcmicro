@@ -37,7 +37,7 @@ When using MCMICRO, Coreograph does not require any additional input parameters 
 </p>
 As one can see, each core is labelled with a single number implying that each core was found uniquely. Furthermore, each core has a thick white line to indicate the accuracy of segmenting each core. (Future versions will have a colored outlines for better visibility).
 
-### **2. Well, my DNA channel is not in the 1st channel.
+### **2. Well, my DNA channel is not in the 1st channel.**
 No problem! Specify `--channel` with the channel that it's in. This is 0-indexing. So 1st channel is 0. If it's in the 4th channel,<br>
 `--core-opts: --channel 3`
 
