@@ -1,12 +1,14 @@
-![](images/coreographbannerv5.png)
+![](images/coreographbannerv6.png)
 <p align="center">
   Great....yet another TMA dearray program. What does this one do?
 </p>
 
 
-Coreograph uses UNet, a deep learning model, to identify complete/incomplete tissue cores on a tissue microarray, and export them individually for faster downstream processing. It has been trained on 9 TMA slides of different sizes and tissue types. 
+Coreograph uses UNet, a deep learning model, to identify complete/incomplete tissue cores on a tissue microarray, and export them individually for faster downstream processing. It has been trained on 9 TMA slides of different sizes and tissue types.
 
+<p align="center">
 <img src="images/coreograph-raw.jpg" width="425" height="315" /> <img src="images/coreograph-probmap.jpg" width="425" height="315" />
+</p>
 
 Training sets were acquired at 0.2micron/pixel resolution and downsampled 1/32 times to speed up performance. Once the center of each core has been identifed, active contours is used to generate a tissue mask of each core that can aid downstream single cell segmentation. A GPU is not required but will reduce computation time.
 
