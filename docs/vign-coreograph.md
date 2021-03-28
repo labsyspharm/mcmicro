@@ -25,36 +25,32 @@ The Coreograph parameters described in this manual should be provided to mcmicro
 ## Output files:
 1. individual cores as tiff stacks with user-selectable channel ranges
 2. binary tissue masks (saved in the 'mask' subfolder)
-3. a TMA map showing the labels and outlines of each core for quality control purposes
+3. a TMA map showing the labels and outlines of each core for quality control purposes<br>
 
+![map](images/coreograph1.png)
 
 
 ## Scenarios
 ### **1. Alright, let's get started!**
-When using MCMICRO, Coreograph does not require any additional input parameters to run. The DNA channel is assumed to be in the 1st channel.
+When using MCMICRO, Coreograph does not require any additional input parameters to run. The DNA channel is assumed to be in the 1st channel.<br>
 `--core-opts: <leave blank>`<br>
-<p align="center">
-<img src="images/coreograph1.png" width="579" height="582" /> 
-</p>
+![map](images/coreograph1a.png)<br>
 As one can see, each core is labelled with a single number implying that each core was found uniquely. Furthermore, each core has a thick white line to indicate the accuracy of segmenting each core. (Future versions will have a colored outlines for better visibility).
 
 ### **2. Well, my DNA channel is not in the 1st channel.
-No problem! Specify `--channel` with the channel that it's in. This is 0-indexing. So 1st channel is 0. If it's in the 4th channel,
+No problem! Specify `--channel` with the channel that it's in. This is 0-indexing. So 1st channel is 0. If it's in the 4th channel,<br>
 `--core-opts: --channel 3`
 
 ### **3. The cores aren't being found properly.**
 Coreograph is trained on various core sizes ranging from 500 microns to 2 mm acquired at a pixel size of 0.65 microns per pixel and then downsampled 5 times. If your core size or image resolution are significantly different, you will need to either upsample or downsample a different number of times using `--downSampleFactor`. See below for examples:
 
-#### 3a) If your pixel size is 0.325 microns per pixel, then your pixel size is double the training data by a factor of 2 (0.65/0.325). You should downsample more times. Use 6 instead of 5. 
-<p align="center">
-<img src="images/coreograph3a.png" width="1440" height="778" /> 
-</p>
-
+#### 3a) If your pixel size is 0.325 microns per pixel, then your pixel size is double the training data by a factor of 2 (0.65/0.325). You should downsample more times. Use 6 instead of 5. <br>
+![map](images/coreograph3a.png)<br>
 `--core-opts: --downsampleFactor 6`<br>
 
 
 #### 3b) If your pixel size is 1.3 microns per pixel, then your pixel size is half of the training data (0.65/1.3). Instead of downsampling by 5 times (default), you should downsample less. Try 4.
-![map](images/coreograph3b.png)
+![map](images/coreograph3b.png)<br>
 `--core-opts: --downsampleFactor 4`<br>
 
 
