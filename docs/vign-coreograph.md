@@ -1,7 +1,6 @@
 ![](images/coreographbannerv5.png)
-<p align="center">
-  *Great*....yet **another** TMA dearray program. What does *this* one do?
-</p>
+*Great*....yet **another** TMA dearray program. What does *this* one do?
+
 
 
 Coreograph uses UNet, a deep learning model, to identify complete/incomplete tissue cores on a tissue microarray. It has been trained on 9 TMA slides of different sizes and tissue types. 
