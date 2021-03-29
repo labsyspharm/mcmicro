@@ -1,3 +1,10 @@
+---
+layout: default
+title: Coreograph
+nav_order: 13
+parent: Vignettes
+---
+
 ![](images/coreographbannerv10.png)
 <p align="center">
   Great....yet another TMA dearray program. What does this one do?
