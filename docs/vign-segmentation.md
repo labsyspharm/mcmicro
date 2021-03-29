@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Automatic Segmentation
+title: Segmentation
 nav_order: 12
 parent: Vignettes
 ---
