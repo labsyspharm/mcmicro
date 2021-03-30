@@ -8,7 +8,7 @@ nav_order: 20
 {: .no_toc }
 
 We assume that the reader is familiar with [Microscopy Basics](vign-basics.html).
-Upon the full successful completion of a pipeline run, the directory structure will Fig. 1A in the [mcmicro manuscript](https://www.biorxiv.org/content/10.1101/2021.03.15.435473v1):
+Upon the full successful completion of a pipeline run, the directory structure will follow Fig. 1A in the [mcmicro manuscript](https://www.biorxiv.org/content/10.1101/2021.03.15.435473v1):
 
 | Schematic | Directory&nbsp;Structure | Description |
 | :-: | :-- | :-- |
