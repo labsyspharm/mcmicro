@@ -1,7 +1,7 @@
 ---
 layout: default
 title: FAQ
-nav_order: 9
+nav_order: 40
 ---
 
 # Frequently Asked Questions

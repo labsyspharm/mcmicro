@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Segmentation
-nav_order: 12
+nav_order: 53
 parent: Vignettes
 ---
 
