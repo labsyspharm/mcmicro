@@ -31,7 +31,7 @@ nextflow run labsyspharm/mcmicro --in /path/to/exemplar-001 -w /path/to/work/
 
 ### Specifying module-specific parameters
 
-The pipeline provides a sensible set of [default parameters for individual modules](parameter-reference.html). To change these use &nbsp;&nbsp;&nbsp; `--ashlar-opts`, `--unmicst-opts`, `--s3seg-opts` and `--quant-opts`. For example,
+The pipeline provides a sensible set of [default parameters for individual modules](parameter-reference.html). To change these use <br> `--ashlar-opts`, `--unmicst-opts`, `--s3seg-opts` and `--quant-opts`. For example,
 ``` bash
 nextflow run labsyspharm/mcmicro --in /path/to/exemplar-001 --ashlar-opts '-m 35 --pyramid'
 ```
@@ -39,7 +39,7 @@ will provide `-m 35 --pyramid` as additional command line arguments to ASHLAR.
 
 ### Using YAML parameter files
 
-As the number of custom flags grows, providing them all on the command line can become unwieldy. Instead, parameter values can be stored in a YAML file, which is then provided to nextflow using &nbsp;&nbsp;&nbsp; `-params-file`. The general rules of thumb for composing YAML files:
+As the number of custom flags grows, providing them all on the command line can become unwieldy. Instead, parameter values can be stored in a YAML file, which is then provided to nextflow using <br> `-params-file`. The general rules of thumb for composing YAML files:
 1. Anything that would appear as `--param value` on the command line should be `param: value` in the YAML file.
 1. Anything that would appear as `--flag` on the command line should be `flag: true` in the YAML file.
 1. The above only applies to double-dashed arguments (which are passed to the pipeline). The single-dash arguments (like `-profile`) cannot be moved to YAML, because they are given to nextflow; the pipeline never sees them.
