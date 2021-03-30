@@ -31,7 +31,7 @@ supported by MCMICRO and other image processing software developed by the Labora
 
 The key properties of any imaging system are resolution, speed/sensitivity, wavelength and field of view. In the
 case of tissue imaging, it is usually desirable to work at a resolution sufficient for subcellular structures to be
-resolved; this corresponds to ~0.4 µm, which can be achieved using an objective lens having a numerical
+resolved; this corresponds to ~0.4 µm at a wavelength of 550nm, which can be achieved using an objective lens having a numerical
 aperture of ~0.8 (see [MicroscopyU](https://www.microscopyu.com/microscopy-basics/resolution) for details).
 Under these circumstances, even scientific grade megapixel
 cameras cannot collect all of the data from a large tissue specimen (which may measure up to 2cm x 2cm). Thus,

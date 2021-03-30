@@ -139,6 +139,8 @@ exemplar-001
     └── unmicst-exemplar-001.csv
 ```
 
+There is a direct correspondence between colunn name suffixes in the `.csv` files and the filenames of segmentation masks. For example, the column `CD357_cellMask` in `quantification/unmicst-exemplar-001.csv` quantifies the expression of `CD357` that was computed over `segmentation/unmicst-exemplar-001/cellMask.tif`. Similarly, `FDX1_nucleiMask` quantified the expression of `FDX1` computed over `segmentation/unmicst-exemplar-001/nucleiMask.tif`.
+
 ## Quality control
 
 Additional information during pipeline execution will be written to the `qc/` directory, by both individual modules and the pipeline itself.
