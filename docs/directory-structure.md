@@ -5,6 +5,7 @@ nav_order: 20
 ---
 
 # Directory structure
+{: .no_toc }
 
 We assume that the reader is familiar with [Microscopy Basics](vign-basics.html).
 The directory structure follows Fig. 1A of the [mcmicro manuscript](https://www.biorxiv.org/content/10.1101/2021.03.15.435473v1):
@@ -50,6 +51,7 @@ All other columns are optional but can be used to specify additional metadata (e
 
 The exemplar `raw/` files are in the open standard OME-TIFF format, but in practice your input files will be in whatever format your microscope produces. The pipeline supports all [Bio-Formats-compatible](https://docs.openmicroscopy.org/bio-formats/6.0.1/supported-formats.html) image formats.
 
+1. Quick links to individual steps
 {:toc}
 
 ## (Optional) Illumination correction
