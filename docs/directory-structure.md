@@ -50,6 +50,8 @@ All other columns are optional but can be used to specify additional metadata (e
 
 The exemplar `raw/` files are in the open standard OME-TIFF format, but in practice your input files will be in whatever format your microscope produces. The pipeline supports all [Bio-Formats-compatible](https://docs.openmicroscopy.org/bio-formats/6.0.1/supported-formats.html) image formats.
 
+{:toc}
+
 ## (Optional) Illumination correction
 
 ```
