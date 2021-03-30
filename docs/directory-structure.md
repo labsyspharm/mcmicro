@@ -8,11 +8,11 @@ nav_order: 20
 {: .no_toc }
 
 We assume that the reader is familiar with [Microscopy Basics](vign-basics.html).
-The directory structure follows Fig. 1A of the [mcmicro manuscript](https://www.biorxiv.org/content/10.1101/2021.03.15.435473v1):
+Upon the full successful completion of a pipeline run, the directory structure will Fig. 1A in the [mcmicro manuscript](https://www.biorxiv.org/content/10.1101/2021.03.15.435473v1):
 
-Upon the full successful completion of a pipeline run, the directory structure will be as follows:
-
-| ![](images/Fig1.png) | <code>exemplar-002<br>├── markers.csv<br>├── raw/<br>├── illumination/<br>├── registration/<br>├── dearray/<br>├── probability-maps/<br>├── segmentation/<br>├── quantification/<br>└── qc/<br></code> | Additional information <ul><li>[Raw Data](#raw-data)</li><li>[Illumination](#optional-illumination-correction)</li><li>[Registration](#stitching-and-registration)</li></ul> |
+| Schematic | Directory Structure | Description |
+| :-: | :-: |
+| ![](images/Fig1.png) | <code>exemplar-002<br>├── markers.csv<br>├── raw/<br>├── illumination/<br>├── registration/<br>├── dearray/<br>├── probability-maps/<br>├── segmentation/<br>├── quantification/<br>└── qc/<br></code> | [Raw Data](#raw-data)<br>[Illumination](#optional-illumination-correction)<br>[Registration](#stitching-and-registration)<br>[Dearray](#optional-tma-dearray)<br>[Segmentation](#segmentation)<br>[Quantification](#quantification)<br>[QC](#quality-control) |
 
 The name of the parent directory (e.g., `exemplar-002`) is assumed by the pipeline to be the sample name.
 
