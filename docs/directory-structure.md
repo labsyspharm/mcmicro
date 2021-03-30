@@ -6,7 +6,8 @@ nav_order: 4
 
 # Directory structure
 
-The directory structure follows Fig. 1A of our manuscript (link to be included here):
+We assume that the reader is familiar with [Microscopy Basics](vign-basics.html).
+The directory structure follows Fig. 1A of the [mcmicro manuscript](https://www.biorxiv.org/content/10.1101/2021.03.15.435473v1):
 
 ![](images/Fig1.png)
 
