@@ -14,7 +14,7 @@ The directory structure follows Fig. 1A of the [mcmicro manuscript](https://www.
 
 Upon the full successful completion of a pipeline run, the directory structure will be as follows:
 
-```
+| <code>
 exemplar-002
 ├── markers.csv
 ├── raw/
@@ -25,9 +25,14 @@ exemplar-002
 ├── segmentation/
 ├── quantification/
 └── qc/
-```
+</code> |
+1. TOC
+{:toc} |
 
 The name of the parent directory (e.g., `exemplar-002`) is assumed by the pipeline to be the sample name.
+
+
+## Raw data
 At the very minimum, the pipeline expects `markers.csv`, containing metadata about markers, in the parent directory and raw images in the `raw/` subdirectory.
 The file `markers.csv` must be in a comma-delimited format and contain a column titled `marker_name` that defines marker names of every channel:
 
@@ -50,9 +55,6 @@ cycle,marker_name
 All other columns are optional but can be used to specify additional metadata (e.g., known mapping to cell types) to be used by individual modules.
 
 The exemplar `raw/` files are in the open standard OME-TIFF format, but in practice your input files will be in whatever format your microscope produces. The pipeline supports all [Bio-Formats-compatible](https://docs.openmicroscopy.org/bio-formats/6.0.1/supported-formats.html) image formats.
-
-1. Quick links to individual steps
-{:toc}
 
 ## (Optional) Illumination correction
 
