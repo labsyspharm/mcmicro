@@ -14,7 +14,7 @@ The directory structure follows Fig. 1A of the [mcmicro manuscript](https://www.
 
 Upon the full successful completion of a pipeline run, the directory structure will be as follows:
 
-| <code>exemplar-002<br>├── markers.csv<br>├── raw/<br>├── illumination/<br>├── registration/<br>├── dearray/<br>├── probability-maps/<br>├── segmentation/<br>├── quantification/<br>└── qc/<br></code> | 1. TOC {:toc} |
+| <code>exemplar-002<br>├── markers.csv<br>├── raw/<br>├── illumination/<br>├── registration/<br>├── dearray/<br>├── probability-maps/<br>├── segmentation/<br>├── quantification/<br>└── qc/<br></code> | Additional information <ul><li>[Raw Data](#raw-data)<li>[Illumination](#optional-illumination-correction)</ul> |
 
 The name of the parent directory (e.g., `exemplar-002`) is assumed by the pipeline to be the sample name.
 
