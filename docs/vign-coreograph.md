@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Coreograph
-nav_order: 13
+nav_order: 52
 parent: Vignettes
 ---
 

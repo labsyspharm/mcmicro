@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Microscopy Basics
-nav_order: 11
+nav_order: 51
 parent: Vignettes
 ---
 
@@ -27,25 +27,26 @@ data standards, [Bio-Formats](https://www.openmicroscopy.org/bio-formats/) softw
 into a standardized, open format, most recently [OME-TIFF 6.0](https://docs.openmicroscopy.org/ome-model/6.0.1/ome-tiff/). This is a pyramid-encoded TIFF in which multiple
 resolutions of the same image are found in a single file to enable rapid pan and zoom, particularly using web
 tools (e.g. Google Maps). Many microscope vendors support Bio-Formats and this is therefore the standard
-supported by MCMICRO and other image processing software developed by the LSP.
+supported by MCMICRO and other image processing software developed by the Laboratory of Systems Pharmacology (LSP).
 
 The key properties of any imaging system are resolution, speed/sensitivity, wavelength and field of view. In the
 case of tissue imaging, it is usually desirable to work at a resolution sufficient for subcellular structures to be
-resolved; this corresponds to ~0.4 µm, which can be achieved using an objective lens having a numerical
+resolved; this corresponds to ~0.4 µm at a wavelength of 550nm, which can be achieved using an objective lens having a numerical
 aperture of ~0.8 (see [MicroscopyU](https://www.microscopyu.com/microscopy-basics/resolution) for details).
 Under these circumstances, even scientific grade megapixel
 cameras cannot collect all of the data from a large tissue specimen (which may measure up to 2cm x 2cm). Thus,
-data acquisition commonly involves dividing the image into tiles – up to 1,000 tiles, each a multi-dimensional
+data acquisition commonly involves dividing the image into tiles – usually on the order of 1,000 tiles, each a multi-dimensional
 TIFF, in the case of large specimens - which are then recorded sequentially by moving the microscope stage in X
-and Y (such a microscope is often called a “scanner”). A complete image is assembled by “stitching” together
-images tiles from each X,Y coordinate, while also “registering” images from each tile for all available
+and Y (such a microscope is often called a “slidescanner”). A complete image is assembled by “stitching” together
+image tiles from each X,Y coordinate, while also “registering” images from each tile for all available
 wavelengths. The stitching and registration process is not straightforward and we have developed the [ASHLAR](https://github.com/labsyspharm/ashlar) tool for this purpose.
 
 Microscope illumination is rarely stable over the time periods required to collect a large number of image tiles
-(and the illumination of each tile is also not perfectly uniform). Thus, after images are stitched and registered
+across multiple experiments -- which can sometimes span days or weeks -- and the illumination of each tile is also not perfectly uniform.
+Thus, after images are stitched and registered
 they are subjected to illumination correction and “flat fielding” to generate a homogenous complete image
 measuring up to 50,000 x 50,000 pixels and multiple wavelengths. For some image processing steps it is
-necessary to divide the image up into smaller pieces; this is done using the fully stitched and registered image so
+necessary to divide the image up into smaller pieces; this is done on the fully stitched and registered image so
 that the primary data maintain the best possible alignment in space and wavelength.
 
 The OME community is welcoming and it has many on-line resources that discuss the topics described above in

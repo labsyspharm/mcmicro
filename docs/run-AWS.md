@@ -1,3 +1,10 @@
+---
+layout: default
+title: AWS configuration
+nav_order: 32
+parent: Running mcmicro
+---
+
 # AWS configuration
 
 ## Install AWS CLI tool
@@ -48,3 +55,4 @@ Run mcmicro pipeline according to normal instructions, but with a few changes:
 - give the S3 out bucket with parameter --out
 - give the S3 in bucket with parameter --in (if input data was copied to S3)
 `nextflow run labsyspharm/mcmicro -profile AWSTMA -bucket-dir s3://mcmicro-work/imagename --in s3://mcmicro-in/imagename --out s3://mcmicro-out/imagename`
+

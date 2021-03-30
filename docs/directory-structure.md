@@ -1,31 +1,22 @@
 ---
 layout: default
 title: Directory Structure
-nav_order: 4
+nav_order: 20
 ---
 
 # Directory structure
+{: .no_toc }
 
-The directory structure follows Fig. 1A of our manuscript (link to be included here):
+We assume that the reader is familiar with [Microscopy Basics](vign-basics.html).
+Upon the full successful completion of a pipeline run, the directory structure will follow Fig. 1A in the [mcmicro manuscript](https://www.biorxiv.org/content/10.1101/2021.03.15.435473v1):
 
-![](images/Fig1.png)
-
-Upon the full successful completion of a pipeline run, the directory structure will be as follows:
-
-```
-exemplar-002
-├── markers.csv
-├── raw/
-├── illumination/
-├── registration/
-├── dearray/
-├── probability-maps/
-├── segmentation/
-├── quantification/
-└── qc/
-```
+| Schematic | Directory&nbsp;Structure | Description |
+| :-: | :-- | :-- |
+| [![](images/Fig1.png)](images/Fig1.png) | <code>exemplar-002<br>├── markers.csv<br>├── raw/<br>├── illumination/<br>├── registration/<br>├── dearray/<br>├── probability-maps/<br>├── segmentation/<br>├── quantification/<br>└── qc/<br></code> | [Raw Data](#raw-data)<br>[Illumination](#optional-illumination-correction)<br>[Registration](#stitching-and-registration)<br>[Dearray](#optional-tma-dearray)<br>[Segmentation](#segmentation)<br>[Quantification](#quantification)<br>[QC](#quality-control) |
 
 The name of the parent directory (e.g., `exemplar-002`) is assumed by the pipeline to be the sample name.
+
+## Raw data
 At the very minimum, the pipeline expects `markers.csv`, containing metadata about markers, in the parent directory and raw images in the `raw/` subdirectory.
 The file `markers.csv` must be in a comma-delimited format and contain a column titled `marker_name` that defines marker names of every channel:
 
@@ -137,6 +128,8 @@ exemplar-001
     ├── ilastik-exemplar-001.csv
     └── unmicst-exemplar-001.csv
 ```
+
+There is a direct correspondence between colunn name suffixes in the `.csv` files and the filenames of segmentation masks. For example, the column `CD357_cellMask` in `quantification/unmicst-exemplar-001.csv` quantifies the expression of `CD357` that was computed over `segmentation/unmicst-exemplar-001/cellMask.tif`. Similarly, `FDX1_nucleiMask` quantified the expression of `FDX1` computed over `segmentation/unmicst-exemplar-001/nucleiMask.tif`.
 
 ## Quality control
 

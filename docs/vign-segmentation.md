@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Segmentation
-nav_order: 12
+nav_order: 53
 parent: Vignettes
 ---
 
@@ -9,10 +9,6 @@ parent: Vignettes
 <p align="center">
   "So... you want to do single-cell image segmentation?"
 </p>
-
-
-
-
 
 ## Prerequisite input files
 S3segmenter assumes that you have:
@@ -34,7 +30,7 @@ The s3segmenter parameters described in this manual should be provided to mcmicr
   * cellOutlines.tif (whole cell)
   * If only nuclei segmentation was carried out, cellOutlines.tif is identical to nucleiOutilnes.tif
 
-**NOTE: There are at least 2 ways to segment cytoplasm: using a watershed approach or taking an annulus/ring around nuclei. Files generated using the annulus/ring method will have ‘Ring’ in the filename whereas files generated using watershed segmentation will not. It is important that these two groups of files are **NOT** combined and analyzed simultaneously as cell IDs will be different between them.**
+**NOTE: There are at least 2 ways to segment cytoplasm: using a watershed approach or taking an annulus/ring around nuclei. Files generated using the annulus/ring method will have ‘Ring’ in the filename whereas files generated using watershed segmentation will not. It is important that these two groups of files are NOT combined and analyzed simultaneously as cell IDs will be different between them.**
 
 ## Scenarios
 ### **1. I’m new to this whole segmentation thingy. And I have a deadline. Just get me started with finding nuclei!**<br>

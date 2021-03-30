@@ -1,7 +1,7 @@
 ---
 layout: default
 title: FAQ
-nav_order: 9
+nav_order: 40
 ---
 
 # Frequently Asked Questions
@@ -14,7 +14,7 @@ A: Registration and illumination correction modules in mcmicro are [Bio-Formats 
 
 ## Segmentation
 
-### Q: How do I run mcmicro with own ilastik model
+### Q: How do I run mcmicro with my own ilastik model?
 
 A: Use the `--ilastik-model` parameter. Note that the parameter must be specified *outside** `--ilastik-opts`. For example,
 
