@@ -1,4 +1,4 @@
-![Build Status](https://github.com/labsyspharm/mcmicro/actions/workflows/ci.yml/badge.svg)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ![Build Status](https://github.com/labsyspharm/mcmicro/actions/workflows/ci.yml/badge.svg)
 
 # mcmicro: Multiple-choice microscopy pipeline
 
