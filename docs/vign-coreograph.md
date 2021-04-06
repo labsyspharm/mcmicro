@@ -30,11 +30,14 @@ The Coreograph parameters described in this manual should be provided to mcmicro
 1. individual cores as tiff stacks with user-selectable channel ranges
 2. binary tissue masks (saved in the 'mask' subfolder)
 3. a TMA map showing the labels and outlines of each core for quality control purposes<br>
+4. a text file listing the centroids of each core in the format: Y, X
 
-![map](images/coreograph1.png)
+![map](images/coreograph1.png)<br.
+
 
 
 ## Scenarios
+**NOTE: When using Coreograph on O2, the O2tma profile should be used!!**<br>
 ### **1. Alright, let's get started!**
 When using MCMICRO, Coreograph does not require any additional input parameters to run. The DNA channel is assumed to be in the 1st channel.<br>
 `--core-opts: <leave blank>`<br>
