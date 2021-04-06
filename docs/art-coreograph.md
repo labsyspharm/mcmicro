@@ -2,7 +2,7 @@
 layout: default
 title: Coreograph
 nav_order: 52
-parent: Vignettes
+parent: Articles
 ---
 
 ![](images/coreographbannerv10.png)
@@ -32,9 +32,7 @@ The Coreograph parameters described in this manual should be provided to mcmicro
 3. a TMA map showing the labels and outlines of each core for quality control purposes<br>
 4. a text file listing the centroids of each core in the format: Y, X
 
-![map](images/coreograph1.png)<br.
-
-
+![map](images/coreograph1.png)<br>
 
 ## Scenarios
 **NOTE: When using Coreograph on O2, the O2tma profile should be used!!**<br>
