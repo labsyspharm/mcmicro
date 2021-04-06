@@ -4,7 +4,7 @@ process coreograph {
 
     // QC
     publishDir "${params.path_qc}/coreo", mode: 'copy', pattern: 'TMA_MAP.tif'
-    publishDir "${params.path_qc}/coreo", mode: 'copy', pattern: 'centroidsY_X.txt'
+    publishDir "${params.path_qc}/coreo", mode: 'copy', pattern: 'centroidsY-X.txt'
     
     // Provenance
     publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
@@ -18,7 +18,7 @@ process coreograph {
       path "**{,[A-Z],[A-Z][A-Z]}{[0-9],[0-9][0-9]}.tif", emit: cores
       path "**_mask.tif", emit: masks
       path "TMA_MAP.tif"
-      path "centroidsY_X.txt"
+      path "centroidsY-X.txt"
       tuple path('.command.sh'), path('.command.log')    
 
     when: params.idxStart <= 3 && params.idxStop >= 3 && params.tma
