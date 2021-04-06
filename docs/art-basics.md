@@ -2,7 +2,7 @@
 layout: default
 title: Microscopy Basics
 nav_order: 51
-parent: Vignettes
+parent: Articles
 ---
 
 # Microscopy Basics

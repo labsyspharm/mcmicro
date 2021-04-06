@@ -1,14 +1,14 @@
 ---
 layout: default
-title: Vignettes
+title: Articles
 nav_order: 50
 has_children: true
 has_toc: false
 ---
 
-# Vignettes
+# Articles
 
-Vignettes are in-depth articles highlighting one or more aspects of image processing
+Articles are in-depth highlights of one or more aspects of image processing
 
 * [Microscopy Basics](vign-basics.html) provides an overview of basic concepts involved in highly-multiplexed image aquisition
 * [Coreograph](vign-coreograph.html) describes the process of splitting a tissue microarray (TMA) into individual cores for downstream processing

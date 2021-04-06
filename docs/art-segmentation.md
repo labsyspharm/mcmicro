@@ -2,7 +2,7 @@
 layout: default
 title: Segmentation
 nav_order: 53
-parent: Vignettes
+parent: Articles
 ---
 
 ![](images/segbannerv8.png)<br>
