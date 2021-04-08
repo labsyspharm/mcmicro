@@ -1,3 +1,10 @@
+---
+layout: default
+title: UnMICST
+nav_order: 54
+parent: Articles
+---
+
 # UnMICST - Universal Models for Identifying Cells and Segmenting Tissue <br>
 ![](images/unmicstbannerv2.png) <br>
 <p align="center"> 
