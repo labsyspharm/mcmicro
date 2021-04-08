@@ -12,7 +12,10 @@ parent: Articles
 </p>
 
 ## Introduction
-Nuclei segmentation, especially for tissues, is a challenging and unsolved problem. Convolutional neural networks are particularly well-suited for this task: separating the foreground class (nuclei pixels) from the background class. UnMICST generates probability maps where the intensity at each pixel defines how confident the pixel has been correctly classified to the aforementioned classes. These maps can make downstream image binarization more accurate using tools such as s3segmenter. https://github.com/HMS-IDAC/S3segmenter. UnMICST currently uses the UNet architecture (Ronneberger et al., 2015) but Mask R-CNN and Pyramid Scene Parsing (PSP)Net are coming very soon! **The concept, models, and training data are featured here: https://www.biorxiv.org/content/10.1101/2021.04.02.438285v1 **
+Nuclei segmentation, especially for tissues, is a challenging and unsolved problem. Convolutional neural networks are particularly well-suited for this task: separating the foreground class (nuclei pixels) from the background class. UnMICST generates probability maps where the intensity at each pixel defines how confident the pixel has been correctly classified to the aforementioned classes. These maps can make downstream image binarization more accurate using tools such as s3segmenter. https://github.com/HMS-IDAC/S3segmenter. UnMICST currently uses the UNet architecture (Ronneberger et al., 2015) but Mask R-CNN and Pyramid Scene Parsing (PSP)Net are coming very soon!
+
+**For more information about accessing the training data visit:** https://github.com/HMS-IDAC/UnMicst <br>
+**or read the article here.** https://www.biorxiv.org/content/10.1101/2021.04.02.438285v1 
 
 ![](images/unmicst2.png)
 This model has been trained on 6 issue types that appeared to encapsulate the different morphologies of the entire tissue microarray: 1) lung adenocarcinoma, 2) non-neoplastic prostate, 3) non-neoplastic small intestine, 4) tonsil, 5) glioblastoma, and 6) colon adenocarcinoma. Also, single and dual channels are possible through a DNA channel and nuclear envelope staining (lamin B and nucleoporin 98) for improved accuracy. Intentionally defocused planes and saturated pixels were also added for better dealing with real-world artefacts.
