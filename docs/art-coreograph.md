@@ -24,7 +24,7 @@ The Coreograph parameters described in this manual should be provided to mcmicro
 1. `--downsampleFactor` : how many times to downsample the raw image file. **Default is 5 times to match the training data.** <br>
 2. `--channel` : which is the channel to feed into UNet and generate probabiltiy maps from. This is usually a DAPI channel. <br>
 3. `--buffer` : the extra space around a core before cropping it. A value of 2 means there is twice the width of the core added as buffer around it. 2 is default. <br>
-4. `--outputChan` : a range of channels to be exported. -1 is default and will export all channels (takes awhile). Select a single channel or a continuous range. --outputChan 0 10 will export channel 0 up to and including channel 10. <br>
+4. `--outputChan` : a range of channels to be exported. -1 is default and will export all channels (takes awhile). Select a single channel or a continuous range. --outputChan 1 11 will export channel 1 up to and including channel 11. <br>
 
 ## Output files:
 1. individual cores as tiff stacks with user-selectable channel ranges
@@ -45,8 +45,8 @@ When using MCMICRO, Coreograph does not require any additional input parameters 
 As one can see, each core is labelled with a single number implying that each core was found uniquely. Furthermore, each core has a thick white line to indicate the accuracy of segmenting each core. (Future versions will have a colored outlines for better visibility).
 
 ### **2. Well, my DNA channel is not in the 1st channel.**
-No problem! Specify `--channel` with the channel that it's in. This is 0-indexing. So 1st channel is 0. If it's in the 4th channel,<br>
-`--core-opts: --channel 3`
+No problem! Specify `--channel` with the channel that it's in. This is 1-indexing. So 1st channel is 1. If it's in the 4th channel,<br>
+`--core-opts: --channel 4`
 
 ### **3. The cores aren't being found properly.**
 Coreograph is trained on various core sizes ranging from 500 microns to 2 mm acquired at a pixel size of 0.65 microns per pixel and then downsampled 5 times. If your core size or image resolution are significantly different, you will need to either upsample or downsample a different number of times using `--downSampleFactor`. See below for examples:
