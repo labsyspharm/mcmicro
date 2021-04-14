@@ -14,7 +14,7 @@ nextflow.enable.dsl=2
 // Default parameters for the pipeline as a whole
 params.sampleName = file(params.in).name
 params.startAt     = 'registration'
-params.stopAt      = 'quantification'
+params.stopAt      = params.startAt == 'cell-states' ? 'cell-states' : 'quantification'
 params.tma         = false    // whether to run Coreograph
 
 // Some image formats store multiple fields of view in a single file. Other
