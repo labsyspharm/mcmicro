@@ -239,6 +239,7 @@ workflow.onComplete {
     
     // Store parameters used
     file("${path_qc}/params.yml").withWriter{ out ->
+	out.println "githubTag: $workflow.revision";
 	params.each{ key, val ->
 	    if( key.indexOf('-') == -1 )
 	    out.println "$key: $val"
