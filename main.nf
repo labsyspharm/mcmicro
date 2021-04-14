@@ -14,7 +14,7 @@ nextflow.enable.dsl=2
 // Default parameters for the pipeline as a whole
 params.sampleName = file(params.in).name
 params.startAt     = 'registration'
-params.stopAt      = 'quantification'
+params.stopAt      = params.startAt == 'cell-states' ? 'cell-states' : 'quantification'
 params.tma         = false    // whether to run Coreograph
 
 // Some image formats store multiple fields of view in a single file. Other
@@ -34,7 +34,6 @@ params.probabilityMaps = 'unmicst'
 params.ashlarOpts   = '-m 30'
 params.coreOpts     = ''
 params.unmicstOpts  = ''
-params.unmicst2Opts = '--channel 0'
 params.cypositoryOpts = '--model zeisscyto'
 params.ilastikOpts  = '--num_channels 1'
 params.s3segOpts    = ''
@@ -239,6 +238,8 @@ workflow.onComplete {
     
     // Store parameters used
     file("${path_qc}/params.yml").withWriter{ out ->
+	out.println "githubTag: $workflow.revision";
+	out.println "githubCommit: $workflow.commitId";
 	params.each{ key, val ->
 	    if( key.indexOf('-') == -1 )
 	    out.println "$key: $val"

@@ -83,7 +83,10 @@ process ilastik {
     when: params.idxStart <= 4 && params.idxStop >= 4 &&
 	(params.probabilityMaps == 'ilastik' ||
 	 params.probabilityMaps == 'all')
-    
+
+    // We are copying input.ilp to model.ilp, because ilastik locks the model file.
+    // Without this copying, the lock prevents parallel execution of multiple processes
+    //   if they all use the same model file.
     script:
         def model = params.ilastikModel != "built-in" ? 'input.ilp' :
 	"/app/classifiers/exemplar_001_nuclei.ilp"
