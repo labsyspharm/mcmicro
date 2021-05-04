@@ -1,6 +1,6 @@
 #!/usr/bin/env nextflow
 
-if( !(nextflow.version >= '20.07+') ) {
+if( !(nextflow.version >= '20.07') ) {
     println "mcmicro requires Nextflow version 20.07 or greater"
     println "Run the following command to update: nextflow self-update"
     exit 1
