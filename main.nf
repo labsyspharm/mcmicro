@@ -12,7 +12,7 @@ nextflow.enable.dsl=2
 // .in - location of the data
 
 // Default parameters for the pipeline as a whole
-params.sampleName = file(params.in).name
+params.sampleName  = file(params.in).name
 params.startAt     = 'registration'
 params.stopAt      = params.startAt == 'cell-states' ? 'cell-states' : 'quantification'
 params.tma         = false    // whether to run Coreograph
@@ -88,6 +88,12 @@ Channel.fromPath( "${params.in}/illumination_profiles/*" )
 
 // Identify marker information
 chMrk = Channel.fromPath( "${params.in}/markers.csv", checkIfExists: true )
+
+// If specified, identify the marker -> cell type (mct) mapping
+nstatesOpts = params.nstatesOpts.tokenize()
+iMct = nstatesOpts.indexOf("--mct")
+chMct = iMct == -1 ? Channel.fromPath("NO_MCT") :
+    Channel.fromPath( nstatesOpts[iMct+1], checkIfExists: true )
 
 // Helper functions for finding raw images and precomputed intermediates
 findFiles0 = { p, path -> p ?
@@ -227,7 +233,8 @@ workflow {
 	quantification
 
     // Cell type callers
-    quantification.out.tables.mix(pre_qty) |
+    quantification.out.tables.mix(pre_qty)
+	.combine(chMct) |
 	naivestates
 }
 
