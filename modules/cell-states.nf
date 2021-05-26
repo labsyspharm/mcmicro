@@ -13,7 +13,8 @@ process naivestates {
     publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
       saveAs: {fn -> "${task.name}.log"}
     
-    input:  path(counts)
+    input:
+	tuple path(counts), file(mct)
     output:
 	path('**')
         tuple path('.command.sh'), path('.command.log')
