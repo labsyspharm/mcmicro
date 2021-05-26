@@ -90,8 +90,6 @@ Channel.fromPath( "${params.in}/illumination_profiles/*" )
 chMrk = Channel.fromPath( "${params.in}/markers.csv", checkIfExists: true )
 
 // If specified, identify the marker -> cell type (mct) mapping
-// Adjust the parameters to refer to the local filename, which will be a
-//   symbolic link in the corresponding work directory
 nstatesOpts = params.nstatesOpts.tokenize()
 iMct = nstatesOpts.indexOf("--mct")
 chMct = iMct == -1 ? Channel.fromPath("NO_MCT") :
@@ -235,10 +233,9 @@ workflow {
 	quantification
 
     // Cell type callers
-    naivestates(
-	quantification.out.tables.mix(pre_qty)
-	    .combine(chMct)
-    )
+    quantification.out.tables.mix(pre_qty)
+	.combine(chMct) |
+	naivestates
 }
 
 // Write out parameters used
