@@ -133,7 +133,9 @@ jobs:
           key: mcmicro-exemplar-002-2cycle
       - name: Test exemplar-002
         run: |
-          ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at registration
+          ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at registration --stop-at segmentation
+          docker rmi -f $(docker images -a -q)
+          ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at quantification
           ls ~/data/exemplar-002/*
 
   # One-shot test of exemplar-002 with Cypository
