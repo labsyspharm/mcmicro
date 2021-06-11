@@ -1,8 +1,8 @@
 ---
 layout: default
 title: UnMICST
-nav_order: 54
-parent: Articles
+parent: Segmentation
+grand_parent: Image Processing Steps
 ---
 
 # UnMICST - Universal Models for Identifying Cells and Segmenting Tissue <br>

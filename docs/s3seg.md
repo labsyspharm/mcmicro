@@ -1,8 +1,8 @@
 ---
 layout: default
-title: Segmentation
-nav_order: 53
-parent: Articles
+title: S3Segmenter
+parent: Segmentation
+grand_parent: Image Processing Steps
 ---
 
 ![](images/segbannerv8.png)<br>
