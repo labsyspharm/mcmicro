@@ -14,38 +14,6 @@ Upon the full successful completion of a pipeline run, the directory structure w
 
 The name of the parent directory (e.g., `exemplar-002`) is assumed by the pipeline to be the sample name.
 
-## (Optional) Illumination correction
-
-```
-exemplar-001
-├── markers.csv
-├── raw/
-└── illumination/
-    ├── exemplar-001-cycle-01-dfp.tif
-    ├── exemplar-001-cycle-01-ffp.tif
-    ├── exemplar-001-cycle-02-dfp.tif
-    ├── exemplar-001-cycle-02-ffp.tif
-    ├── exemplar-001-cycle-03-dfp.tif
-    └── exemplar-001-cycle-03-ffp.tif
-```
-
-Precomputed flat-field and dark-field illumination profiles must be places in the `illumination/ directory`. If no precomputed profiles are available, mcmicro can compute these using [BaSiC](https://www.nature.com/articles/ncomms14836). This step is not executed by default, because proper illumination correction requires careful curation and visual inspection of the profiles produced by computational tools. After familiarizing yourself with the general concepts [ [1](https://emsis.eu/olh/HTML/topics_glossary_tem_shading_correction.html), [2](https://en.wikipedia.org/wiki/Flat-field_correction) ], the profiles can be computed by specifying `--start-at illumination` during [pipeline execution](running-mcmicro.html).
-
-## Stitching and registration
-
-The first step of the pipeline will aggregate individual image tiles in `raw/` along with the corresponding illumination profiles to produce a stitched and registered image, which will be published to the `registration/` subdirectory:
-
-```
-exemplar-001
-├── markers.csv
-├── raw/
-├── illumination/
-└── registration/
-    └── exemplar-001.ome.tif
-```
-
-The output filename will be generated based on the name of the project directory.
-
 ## (Optional) TMA dearray
 
 When working with Tissue Microarrays (TMA), the `registration/` folder will contain an image of the entire TMA. Use the `--tma` flag during [pipeline execution](running-mcmicro.html) to have mcmicro identify and isolate individual core. Each core will be written out into a standalone file in the `dearray/` subdirectory along with its mask specifying where in the original image the core appeared:
