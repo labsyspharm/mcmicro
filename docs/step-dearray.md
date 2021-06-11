@@ -4,9 +4,8 @@ title: TMA dearray
 nav_order: 33
 parent: Image Processing Steps
 has_children: true
+has_toc: false
 ---
-
-{: .no_toc }
 
 # (Optional) TMA dearray
 

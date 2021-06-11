@@ -1,6 +1,7 @@
 ---
 layout: default
 title: UnMICST
+nav_order: 35
 parent: Segmentation
 grand_parent: Image Processing Steps
 ---

@@ -1,6 +1,7 @@
 ---
 layout: default
 title: S3Segmenter
+nav_order: 36
 parent: Segmentation
 grand_parent: Image Processing Steps
 ---
