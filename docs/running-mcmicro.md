@@ -1,9 +1,7 @@
 ---
 layout: default
 title: Running mcmicro
-nav_order: 30
-has_children: true
+nav_order: 20
 ---
 
 {% include exec.md %}
-{% include post.md %}

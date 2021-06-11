@@ -1,18 +1,16 @@
 ---
 layout: default
-title: Directory Structure
-nav_order: 20
+title: Image Processing Steps
+nav_order: 30
+has_children: true
 ---
 
 # Directory structure
-{: .no_toc }
-
-We assume that the reader is familiar with [Microscopy Basics](vign-basics.html).
 Upon the full successful completion of a pipeline run, the directory structure will follow Fig. 1A in the [mcmicro manuscript](https://www.biorxiv.org/content/10.1101/2021.03.15.435473v1):
 
-| Schematic | Directory&nbsp;Structure | Description |
-| :-: | :-- | :-- |
-| [![](images/Fig1.png)](images/Fig1.png) | <code>exemplar-002<br>├── markers.csv<br>├── raw/<br>├── illumination/<br>├── registration/<br>├── dearray/<br>├── probability-maps/<br>├── segmentation/<br>├── quantification/<br>└── qc/<br></code> | [Raw Data](#raw-data)<br>[Illumination](#optional-illumination-correction)<br>[Registration](#stitching-and-registration)<br>[Dearray](#optional-tma-dearray)<br>[Segmentation](#segmentation)<br>[Quantification](#quantification)<br>[QC](#quality-control) |
+| Schematic | Directory&nbsp;Structure |
+| :-: | :-- |
+| [![](images/Fig1.png)](images/Fig1.png) | <code>exemplar-002<br>├── markers.csv<br>├── raw/<br>├── illumination/<br>├── registration/<br>├── dearray/<br>├── probability-maps/<br>├── segmentation/<br>├── quantification/<br>└── qc/<br></code> |
 
 The name of the parent directory (e.g., `exemplar-002`) is assumed by the pipeline to be the sample name.
 
