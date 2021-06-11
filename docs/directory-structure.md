@@ -10,7 +10,7 @@ Upon the full successful completion of a pipeline run, the directory structure w
 
 | Schematic | Directory&nbsp;Structure |
 | :-: | :-- |
-| [![](images/Fig1.png)](images/Fig1.png) | <code>exemplar-002<br>├── markers.csv<br>├── raw/<br>├── illumination/<br>├── registration/<br>├── dearray/<br>├── probability-maps/<br>├── segmentation/<br>├── quantification/<br>└── qc/<br></code> |
+| <img src="images/Fig1.png" alt="MCMICRO" width="200"/> | <code>exemplar-002<br>├── markers.csv<br>├── raw/<br>├── illumination/<br>├── registration/<br>├── dearray/<br>├── probability-maps/<br>├── segmentation/<br>├── quantification/<br>└── qc/<br></code> |
 
 The name of the parent directory (e.g., `exemplar-002`) is assumed by the pipeline to be the sample name.
 
