@@ -14,29 +14,6 @@ Upon the full successful completion of a pipeline run, the directory structure w
 
 The name of the parent directory (e.g., `exemplar-002`) is assumed by the pipeline to be the sample name.
 
-## (Optional) TMA dearray
-
-When working with Tissue Microarrays (TMA), the `registration/` folder will contain an image of the entire TMA. Use the `--tma` flag during [pipeline execution](running-mcmicro.html) to have mcmicro identify and isolate individual core. Each core will be written out into a standalone file in the `dearray/` subdirectory along with its mask specifying where in the original image the core appeared:
-
-```
-exemplar-002
-├── ...
-├── registration/
-│   └── exemplar-002.ome.tiff
-└── dearray/
-    ├── 1.tif
-    ├── 2.tif
-    ├── 3.tif
-    ├── 4.tif
-    └── masks/
-        ├── 1_mask.tif
-        ├── 2_mask.tif
-        ├── 3_mask.tif
-        └── 4_mask.tif
-```
-
-All cores will then be processed in parallel by all subsequent steps.
-
 ## Segmentation
 
 Cell segmentation is carried out in two steps. First, the pipeline generates probability maps that annotate each pixel with the probability that it belongs to a given subcellular component (nucleus, cytoplasm, cell boundary). The second step applies standard watershed segmentation to produce the final cell/nucleus/cytoplasm/etc. masks. The two steps will appear in `probability-maps/` and `segmentation` directories, respectively. When there are multiple modules for a given pipeline step, their results will be subdivided into additional subdirectories:
