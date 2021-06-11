@@ -1,8 +1,8 @@
 ---
 layout: default
 title: O2 compute cluster
-nav_order: 31
-parent: Running mcmicro
+nav_order: 71
+parent: Platform-specific Steps
 ---
 
 # Running mcmicro on the O2 compute cluster

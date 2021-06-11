@@ -12,8 +12,7 @@ last_modified_date: 2021-03-28
 Multiple-choice microscopy pipeline
 {: .fs-6 .fw-300 }
 
-MCMICRO is an end-to-end processing pipeline for multiplexed whole slide imaging and tissue microarrays developed at the [HMS Laboratory of Systems Pharmacology](https://hits.harvard.edu/the-program/laboratory-of-systems-pharmacology/about/). It comprises illumination correction, stitching and registration, segmentation, and single-cell feature extraction. Each step of the pipeline is containerized to enable portable deployment across an array of compute environments, including local machines, job-scheduling clusters and cloud environments like AWS and GCP. The pipeline execution is implemented in [Nextflow](https://www.nextflow.io/), a workflow language that facilitates caching of partial results, dynamic restarts, extensive logging and resource usage reports.
-
+MCMICRO is an end-to-end processing pipeline for multiplexed whole slide imaging and tissue microarrays developed at the [HMS Laboratory of Systems Pharmacology](https://hits.harvard.edu/the-program/laboratory-of-systems-pharmacology/about/).
 The pipeline is described in a [bioRxiv preprint](https://www.biorxiv.org/content/10.1101/2021.03.15.435473v1) and accompanied by the following resources:
 
 | Resource | URL |

@@ -1,8 +1,8 @@
 ---
 layout: default
 title: Coreograph
-nav_order: 52
-parent: Articles
+parent: TMA dearray
+grand_parent: Image Processing Steps
 ---
 
 ![](images/coreographbannerv10.png)

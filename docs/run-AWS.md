@@ -1,8 +1,8 @@
 ---
 layout: default
 title: AWS configuration
-nav_order: 32
-parent: Running mcmicro
+nav_order: 72
+parent: Platform-specific Steps
 ---
 
 # AWS configuration
