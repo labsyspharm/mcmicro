@@ -6,7 +6,7 @@ parent: Image Processing Steps
 has_children: true
 ---
 
-## (Optional) TMA dearray
+# (Optional) TMA dearray
 
 When working with Tissue Microarrays (TMA), the `registration/` folder will contain an image of the entire TMA. Use the `--tma` flag during [pipeline execution](running-mcmicro.html) to have mcmicro identify and isolate individual core. Each core will be written out into a standalone file in the `dearray/` subdirectory along with its mask specifying where in the original image the core appeared:
 
