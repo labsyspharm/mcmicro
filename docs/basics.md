@@ -1,8 +1,7 @@
 ---
 layout: default
 title: Microscopy Basics
-nav_order: 51
-parent: Articles
+nav_order: 2
 ---
 
 # Microscopy Basics
