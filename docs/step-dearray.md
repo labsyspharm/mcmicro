@@ -28,4 +28,4 @@ exemplar-002
 ```
 
 All cores will then be processed in parallel by all subsequent steps.
-In MCMICRO, TMA dearraying is performed by Coreograph.
+In MCMICRO, TMA dearraying is performed by [Coreograph](coreograph.html).
