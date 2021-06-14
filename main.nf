@@ -120,11 +120,6 @@ raw = rawFiles
     .map{ tuple(formatType == "single" ? it : it.parent, it) }
     .map{ toStage, relPath -> tuple(toStage, toStage.parent.relativize(relPath)) }
 
-// Helper function to extract image ID from filename
-def getID (f, delim) {
-    tuple( f.getBaseName().toString().split(delim).head(), f )
-}
-
 // Find precomputed intermediates
 pre_dfp = findFiles0(idxStart == 2, "${paths[1]}/*-dfp.tif")
 pre_ffp = findFiles0(idxStart == 2, "${paths[1]}/*-ffp.tif")
@@ -158,6 +153,7 @@ pre_qty    = findFiles(idxStart == 7,
 		       "${paths[6]}/*.csv",
 		       {error "No quantification tables in ${paths[6]}"})
 
+/*
 // Compute sample IDs for each found intermediate
 id_img     = pre_img.map{ f -> getID(f,'\\.') }
 id_cores   = pre_cores.map{ f -> getID(f,'\\.tif') }
@@ -178,9 +174,9 @@ id_pmap = id_cm2.join( id_unmicst ).mix( id_cm2.join( id_ilastik ) ).mix( id_cm2
 id_seg  = id_img.mix( id_cores ).combine( id_segMsk, by:0 )
 
 // Finalize the tuple format to match process outputs
-pre_tma  = id_cm.map{ id, c, m -> tuple(c,m) }
 pre_pmap = id_pmap.map{ id, c, m, p, mtd -> tuple(mtd,c,m,p) }
 pre_seg  = id_seg.map{ id, i, mtd, msk -> tuple(mtd,i,msk) }
+*/
 
 // The following parameters are shared by all modules
 params.idxStart  = idxStart
@@ -215,6 +211,14 @@ workflow {
     // Apply dearray to TMAs only
     dearray(img.tma)
 
+    // Merge against precomputed intermediates
+    tmacores = dearray.out.cores.mix(pre_cores)
+    tmamasks = dearray.out.masks.mix(pre_masks)
+
+    // Reconcile WSI and TMA processing for downstream steps
+    img.wsi.mix(tmacores).view()
+    
+    /*
     // Whole slide images have no TMA mask
     img.wsi.map{ x -> tuple(x, 'NO_MASK') }
 	.mix(dearray.out)
@@ -236,6 +240,7 @@ workflow {
     quantification.out.tables.mix(pre_qty)
 	.combine(chMct) |
 	naivestates
+     */
 }
 
 // Write out parameters used
