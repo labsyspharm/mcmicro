@@ -1,6 +1,6 @@
 process unmicst {
     // Output probability map
-    publishDir "${params.pubDir}/unmicst", mode: 'copy', pattern: '*Probabilities*.tif'
+    publishDir "${params.pubDir}/unmicst", mode: 'copy', pattern: '*_Probabilities*.tif'
 
     // QC
     publishDir "${params.path_qc}/unmicst", mode: 'copy', pattern: '*Preview*.tif'
@@ -11,12 +11,10 @@ process unmicst {
     publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
       saveAs: {fn -> "${task.name}.log"}
 
-    input:
-	tuple path(core), val(mask)
+    input: path core
     
     output:
-      tuple val('unmicst'), path(core), val(mask),
-        path('*Probabilities*.tif'), emit: pm
+      tuple val('unmicst'), path('*_Probabilities*.tif'), emit: pm
       path('*Preview*.tif')
       tuple path('.command.sh'), path('.command.log')
 
@@ -32,7 +30,7 @@ process unmicst {
 
 process cypository {
     // Output probability map
-    publishDir "${params.pubDir}/cypository", mode: 'copy', pattern: '*Probabilities*.tif'
+    publishDir "${params.pubDir}/cypository", mode: 'copy', pattern: '*_Probabilities*.tif'
 
     // QC
     publishDir "${params.path_qc}/cypository", mode: 'copy', pattern: '*Preview*.tif'
@@ -43,12 +41,10 @@ process cypository {
     publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
       saveAs: {fn -> "${task.name}.log"}
 
-    input:
-	tuple path(core), val(mask)
+    input: path core
 
     output:
-      tuple val('cypository'), path(core), val(mask),
-        path('*Probabilities*.tif'), emit: pm
+      tuple val('cypository'), path('*_Probabilities*.tif'), emit: pm
       path('*Preview*.tif')
       tuple path('.command.sh'), path('.command.log')
 
@@ -63,7 +59,7 @@ process cypository {
 
 process ilastik {
     // Output probability map
-    publishDir "${params.pubDir}/ilastik", mode: 'copy', pattern: '*Probabilities*.tif'
+    publishDir "${params.pubDir}/ilastik", mode: 'copy', pattern: '*_Probabilities*.tif'
 
     // Provenance
     publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
@@ -72,12 +68,11 @@ process ilastik {
       saveAs: {fn -> "${task.name}.log"}
 
     input:
-	tuple path(core), val(mask)
+	path core
         file(mdl) name 'input.ilp'
     
     output:
-      tuple val('ilastik'), path(core), val(mask),
-        path('*Probabilities*.tif'), emit: pm
+      tuple val('ilastik'), path('*_Probabilities*.tif'), emit: pm
       tuple path('.command.sh'), path('.command.log')
 
     when: params.idxStart <= 4 && params.idxStop >= 4 &&
@@ -108,7 +103,7 @@ workflow probmaps {
 	  file(params.ilastikModel) : 'built-in'
 
     unmicst(input)
-	cypository(input)
+    cypository(input)
     ilastik(input, ilastik_mdl)
 
     emit:

@@ -137,21 +137,26 @@ pre_unmicst = findFiles(idxStart == 5 &&
 			 params.probabilityMaps == 'all'),
 			"${paths[4]}/unmicst/*Probabilities*.tif",
 			{error "No probability maps found in ${paths[4]}/unmicst"})
+    .map{ f -> tuple('unmicst', f) }
 pre_cypository = findFiles(idxStart == 5 &&
 			params.probabilityMaps == 'cypository',
 			"${paths[4]}/cypository/*Probabilities*.tif",
-			{error "No probability maps found in ${paths[4]}/cypository"})
+			   {error "No probability maps found in ${paths[4]}/cypository"})
+    .map{ f -> tuple('cypository', f) }
 pre_ilastik = findFiles(idxStart == 5 &&
 			(params.probabilityMaps == 'ilastik' ||
 			 params.probabilityMaps == 'all'),
 			"${paths[4]}/ilastik/*Probabilities*.tif",
 			{error "No probability maps found in ${paths[4]}/ilastik"})
+    .map{ f -> tuple('ilastik', f) }
 pre_segMsk = findFiles(idxStart == 6,
 		       "${paths[5]}/**Mask.tif",
 		       {error "No segmentation masks in ${paths[5]}"})
 pre_qty    = findFiles(idxStart == 7,
 		       "${paths[6]}/*.csv",
 		       {error "No quantification tables in ${paths[6]}"})
+
+pre_pmap = pre_unmicst.mix( pre_cypository ).mix( pre_ilastik )
 
 /*
 // Compute sample IDs for each found intermediate
@@ -168,13 +173,9 @@ id_segMsk  = pre_segMsk.map{ f -> tuple(f.getParent().getBaseName(), f) }
     .groupTuple().map{ id, msk -> x = id.split('-',2); tuple(x[1], x[0], msk) }
 
 // Match up precomputed intermediates into tuples for each step
-id_cm   = id_cores.join( id_masks )
-id_cm2  = id_img.map{ id, x -> tuple(id, x, 'NO_MASK') }.mix(id_cm)
-id_pmap = id_cm2.join( id_unmicst ).mix( id_cm2.join( id_ilastik ) ).mix( id_cm2.join( id_cypository ) )
 id_seg  = id_img.mix( id_cores ).combine( id_segMsk, by:0 )
 
 // Finalize the tuple format to match process outputs
-pre_pmap = id_pmap.map{ id, c, m, p, mtd -> tuple(mtd,c,m,p) }
 pre_seg  = id_seg.map{ id, i, mtd, msk -> tuple(mtd,i,msk) }
 */
 
@@ -216,15 +217,16 @@ workflow {
     tmamasks = dearray.out.masks.mix(pre_masks)
 
     // Reconcile WSI and TMA processing for downstream steps
-    img.wsi.mix(tmacores).view()
+    allimg = img.wsi.mix(tmacores)
+    probmaps(allimg)
+
+//    test = allimg.map{ f -> getFileID(f,'\\.') }.view()
+    
+    // Merge against precomputed intermediates
+    pmaps = probmaps.out.mix(pre_pmap)
+    segmentation( allimg, tmamasks, pmaps ).view()
     
     /*
-    // Whole slide images have no TMA mask
-    img.wsi.map{ x -> tuple(x, 'NO_MASK') }
-	.mix(dearray.out)
-	.mix(pre_tma) |
-	probmaps
-
     // Combine probability map output with precomputed one
     // Forward the result to segmentation
     probmaps.out.mix(pre_pmap) |

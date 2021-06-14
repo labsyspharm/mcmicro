@@ -38,17 +38,27 @@ process s3seg {
     """
 }
 
+include {getFileID} from './lib/util'
+
 workflow segmentation {
     take:
-	input
+	
+    imgs
+    masks
+    pmaps
 
     main:
-        include {getFileID} from './lib/util'
+
+    // Identify the ID of every file
+    s3seg = imgs.map{ f -> getFileID(f,'\\.') }
+//    s3seg = imgs
     
-        input.map{ s, c, m, p ->
-	  tuple("${s}-${c.getBaseName().split('\\.').head()}", s, c, m, p) } |
-	s3seg
+//        input.map{ s, c, m, p ->
+//	  tuple("${s}-${c.getBaseName().split('\\.').head()}", s, c, m, p) } |
+//	s3seg
 
     emit:
-	s3seg.out.segmasks
+	
+    s3seg
+//	s3seg.out.segmasks
 }
