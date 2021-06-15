@@ -20,8 +20,7 @@ process unmicst {
 
     when:
 	params.idxStart <= 4 && params.idxStop >= 4 &&
-	(params.probabilityMaps == 'unmicst' ||
-	 params.probabilityMaps == 'all')
+	params.probabilityMaps.contains('unmicst')
 
     """
     python /app/unmicstWrapper.py $core ${params.unmicstOpts} --stackOutput --outputPath .
@@ -50,7 +49,7 @@ process cypository {
 
     when:
 	params.idxStart <= 4 && params.idxStop >= 4 &&
-	params.probabilityMaps == 'cypository'
+	params.probabilityMaps.contains('cypository')
 
     """
     python /app/deployMaskRCNN.py $core ${params.cypositoryOpts} --stackOutput --outputPath .
@@ -75,9 +74,9 @@ process ilastik {
       tuple val('ilastik'), path('*_Probabilities*.tif'), emit: pm
       tuple path('.command.sh'), path('.command.log')
 
-    when: params.idxStart <= 4 && params.idxStop >= 4 &&
-	(params.probabilityMaps == 'ilastik' ||
-	 params.probabilityMaps == 'all')
+    when:
+	params.idxStart <= 4 && params.idxStop >= 4 &&
+	params.probabilityMaps.contains('ilastik')
 
     // We are copying input.ilp to model.ilp, because ilastik locks the model file.
     // Without this copying, the lock prevents parallel execution of multiple processes

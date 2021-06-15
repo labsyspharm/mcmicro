@@ -58,6 +58,8 @@ if( params.maskSpatial != '' )
     error "--maskSpatial is deprecated; please use --quant-opts '--masks ...'"
 if( params.maskAdd != '' )
     error "--maskAdd is deprecated; please use --quant-opts '--masks ...'"
+if( params.probabilityMaps == 'all' )
+    error "--probability-maps all is deprecated; please be explicit, e.g., --probability-maps unmicst,ilastik"
 
 // Steps in the mcmicro pipeline
 mcmsteps = ["raw",		// Step 0
@@ -133,19 +135,17 @@ pre_masks = findFiles(idxStart > 3 && params.tma,
 		      "${paths[3]}/masks/*.tif",
 		      {error "No TMA masks in ${paths[3]}/masks"})
 pre_unmicst = findFiles(idxStart == 5 &&
-			(params.probabilityMaps == 'unmicst' ||
-			 params.probabilityMaps == 'all'),
+			params.probabilityMaps.contains('unmicst'),
 			"${paths[4]}/unmicst/*Probabilities*.tif",
 			{error "No probability maps found in ${paths[4]}/unmicst"})
     .map{ f -> tuple('unmicst', f) }
 pre_cypository = findFiles(idxStart == 5 &&
-			params.probabilityMaps == 'cypository',
-			"${paths[4]}/cypository/*Probabilities*.tif",
+			   params.probabilityMaps.contains('cypository'),
+			   "${paths[4]}/cypository/*Probabilities*.tif",
 			   {error "No probability maps found in ${paths[4]}/cypository"})
     .map{ f -> tuple('cypository', f) }
 pre_ilastik = findFiles(idxStart == 5 &&
-			(params.probabilityMaps == 'ilastik' ||
-			 params.probabilityMaps == 'all'),
+			params.probabilityMaps.contains('ilastik'),
 			"${paths[4]}/ilastik/*Probabilities*.tif",
 			{error "No probability maps found in ${paths[4]}/ilastik"})
     .map{ f -> tuple('ilastik', f) }
