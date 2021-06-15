@@ -220,8 +220,6 @@ workflow {
     allimg = img.wsi.mix(tmacores)
     probmaps(allimg)
 
-//    test = allimg.map{ f -> getFileID(f,'\\.') }.view()
-    
     // Merge against precomputed intermediates
     pmaps = probmaps.out.mix(pre_pmap)
     segmentation( allimg, tmamasks, pmaps ).view()

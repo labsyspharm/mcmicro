@@ -13,7 +13,6 @@ process s3seg {
     publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
       saveAs: {fn -> "${task.name}.log"}
     
-
     input:
 	tuple val(tag), val(method), path(core), file('mask.tif'), path(probs)
 
@@ -44,21 +43,32 @@ workflow segmentation {
     take:
 	
     imgs
-    masks
+    tmamasks
     pmaps
 
     main:
 
-    // Identify the ID of every file
-    s3seg = imgs.map{ f -> getFileID(f,'\\.') }
-//    s3seg = imgs
-    
-//        input.map{ s, c, m, p ->
-//	  tuple("${s}-${c.getBaseName().split('\\.').head()}", s, c, m, p) } |
-//	s3seg
+    // Determine IDs of images
+    id_imgs  = imgs.map{ f -> tuple(getFileID(f,'\\.'), f) }
 
+    // Determine IDs of TMA masks
+    // Whole-slide images have no TMA masks
+    id_wsi = imgs.map{ f -> tuple(getFileID(f,'\\.'), 'NO_MASK') }
+	.filter{ !params.tma }
+    id_masks = tmamasks.map{ f -> tuple(getFileID(f,'_mask'), f) }
+	.mix(id_wsi)
+
+    // Determine IDs of probability maps
+    id_pmaps = pmaps.map{ mtd, f ->
+	tuple(getFileID(f, '_Probabilities'), f, mtd) }
+
+    // Combine everything based on IDs
+    res = id_imgs.join(id_masks).combine( id_pmaps, by:0 )
+	.map{ id, img, msk, pm, mtd ->
+	tuple("${mtd}-${img.getBaseName().split('\\.').head()}", mtd, img, msk, pm) }
+    
     emit:
-	
-    s3seg
+
+    res
 //	s3seg.out.segmasks
 }
