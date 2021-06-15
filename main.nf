@@ -205,12 +205,11 @@ workflow {
     segmentation( allimg, tmamasks, pmaps )
 
     // Merge segmentation masks against precomputed ones and append markers.csv
-    segmentation.out.mix(pre_segMsk)
-	.combine(chMrk) |
-	quantification
-    
+    segMsk = segmentation.out.mix(pre_segMsk)
+    quantification( allimg, segMsk, chMrk )
+
     // Cell type callers
-    quantification.out.tables.mix(pre_qty)
+    quantification.out.mix(pre_qty)
 	.combine(chMct) |
 	naivestates
 }
