@@ -152,32 +152,12 @@ pre_ilastik = findFiles(idxStart == 5 &&
 pre_segMsk = findFiles(idxStart == 6,
 		       "${paths[5]}/**Mask.tif",
 		       {error "No segmentation masks in ${paths[5]}"})
+    .map{ f -> tuple(f.getParent().getBaseName(), f) }.groupTuple()
 pre_qty    = findFiles(idxStart == 7,
 		       "${paths[6]}/*.csv",
 		       {error "No quantification tables in ${paths[6]}"})
 
 pre_pmap = pre_unmicst.mix( pre_cypository ).mix( pre_ilastik )
-
-/*
-// Compute sample IDs for each found intermediate
-id_img     = pre_img.map{ f -> getID(f,'\\.') }
-id_cores   = pre_cores.map{ f -> getID(f,'\\.tif') }
-id_masks   = pre_masks.map{ f -> getID(f,'_mask') }
-id_unmicst = pre_unmicst.map{ f -> getID(f,'_Probabilities') }
-    .map{ id, f -> tuple(id, f, 'unmicst') }
-id_cypository = pre_cypository.map{ f -> getID(f,'_Probabilities') }
-    .map{ id, f -> tuple(id, f, 'cypository') }
-id_ilastik = pre_ilastik.map{ f -> getID(f,'_Probabilities') }
-    .map{ id, f -> tuple(id, f, 'ilastik') }
-id_segMsk  = pre_segMsk.map{ f -> tuple(f.getParent().getBaseName(), f) }
-    .groupTuple().map{ id, msk -> x = id.split('-',2); tuple(x[1], x[0], msk) }
-
-// Match up precomputed intermediates into tuples for each step
-id_seg  = id_img.mix( id_cores ).combine( id_segMsk, by:0 )
-
-// Finalize the tuple format to match process outputs
-pre_seg  = id_seg.map{ id, i, mtd, msk -> tuple(mtd,i,msk) }
-*/
 
 // The following parameters are shared by all modules
 params.idxStart  = idxStart
@@ -220,27 +200,19 @@ workflow {
     allimg = img.wsi.mix(tmacores)
     probmaps(allimg)
 
-    // Merge against precomputed intermediates
+    // Merge against precomputed intermediates and feed to s3seg
     pmaps = probmaps.out.mix(pre_pmap)
-    segmentation( allimg, tmamasks, pmaps ).view()
-    
-    /*
-    // Combine probability map output with precomputed one
-    // Forward the result to segmentation
-    probmaps.out.mix(pre_pmap) |
-	segmentation
+    segmentation( allimg, tmamasks, pmaps )
 
-    // Append markers.csv to every tuple
-    segmentation.out.mix(pre_seg)
-	.map{ mtd, c, msk -> tuple("${mtd}-${c.getName()}", c, msk) }
-    	.combine(chMrk) |
+    // Merge segmentation masks against precomputed ones and append markers.csv
+    segmentation.out.mix(pre_segMsk)
+	.combine(chMrk) |
 	quantification
-
+    
     // Cell type callers
     quantification.out.tables.mix(pre_qty)
 	.combine(chMct) |
 	naivestates
-     */
 }
 
 // Write out parameters used

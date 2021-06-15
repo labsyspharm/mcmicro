@@ -18,7 +18,7 @@ process s3seg {
 
     output:
 	// output for quantification
-        tuple val(method), path(core), path("**Mask.tif"), emit: segmasks
+        tuple val(tag), path("**Mask.tif"), emit: segmasks
 
         // qc and provenance
         path('**')
@@ -63,12 +63,12 @@ workflow segmentation {
 	tuple(getFileID(f, '_Probabilities'), f, mtd) }
 
     // Combine everything based on IDs
-    res = id_imgs.join(id_masks).combine( id_pmaps, by:0 )
+    id_imgs.join(id_masks).combine( id_pmaps, by:0 )
 	.map{ id, img, msk, pm, mtd ->
-	tuple("${mtd}-${img.getBaseName().split('\\.').head()}", mtd, img, msk, pm) }
+	tuple("${mtd}-${img.getBaseName().split('\\.').head()}", mtd, img, msk, pm) } |
+	s3seg
     
     emit:
 
-    res
-//	s3seg.out.segmasks
+    s3seg.out.segmasks
 }
