@@ -134,21 +134,11 @@ pre_cores = findFiles(idxStart > 3 && params.tma,
 pre_masks = findFiles(idxStart > 3 && params.tma,
 		      "${paths[3]}/masks/*.tif",
 		      {error "No TMA masks in ${paths[3]}/masks"})
-pre_unmicst = findFiles(idxStart == 5 &&
-			params.probabilityMaps.contains('unmicst'),
-			"${paths[4]}/unmicst/*Probabilities*.tif",
-			{error "No probability maps found in ${paths[4]}/unmicst"})
-    .map{ f -> tuple('unmicst', f) }
-pre_cypository = findFiles(idxStart == 5 &&
-			   params.probabilityMaps.contains('cypository'),
-			   "${paths[4]}/cypository/*Probabilities*.tif",
-			   {error "No probability maps found in ${paths[4]}/cypository"})
-    .map{ f -> tuple('cypository', f) }
-pre_ilastik = findFiles(idxStart == 5 &&
-			params.probabilityMaps.contains('ilastik'),
-			"${paths[4]}/ilastik/*Probabilities*.tif",
-			{error "No probability maps found in ${paths[4]}/ilastik"})
-    .map{ f -> tuple('ilastik', f) }
+pre_pmap = findFiles(idxStart == 5,
+		     "${paths[4]}/*/*Probabilities*.tif",
+		     {error "No probability maps found in ${paths[4]}/unmicst"})
+    .map{ f -> tuple(f.getParent().getBaseName(), f) }
+    .filter{ params.probabilityMaps.contains(it[0]) }
 pre_segMsk = findFiles(idxStart == 6,
 		       "${paths[5]}/**Mask.tif",
 		       {error "No segmentation masks in ${paths[5]}"})
@@ -156,8 +146,6 @@ pre_segMsk = findFiles(idxStart == 6,
 pre_qty    = findFiles(idxStart == 7,
 		       "${paths[6]}/*.csv",
 		       {error "No quantification tables in ${paths[6]}"})
-
-pre_pmap = pre_unmicst.mix( pre_cypository ).mix( pre_ilastik )
 
 // The following parameters are shared by all modules
 params.idxStart  = idxStart
