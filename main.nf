@@ -37,18 +37,15 @@ params.s3segOpts    = ''
 params.quantOpts    = '--masks cellMask.tif'
 params.nstatesOpts  = '-p png'
 
-// Path-specific parameters that cannot be captured by the above *opts
-params.maskSpatial  = ''
-params.maskAdd      = ''
-params.ilastikModel = 'built-in'
-
 // Legacy parameters (to be deprecated in future versions)
-params.illum         = false    // whether to run ImageJ+BaSiC
+params.illum              = false
 params.quantificationMask = ''
+params.maskSpatial        = ''
+params.maskAdd            = ''
 
 // Deprecation messages
 if( params.quantificationMask != '' )
-    error "--quantification-mask is deprecated; please use --mask-spatial and --mask-add instead"
+    error "--quantification-mask is deprecated; please use --quant-opts '--masks ...'"
 if( params.illum )
     error "--illum is deprecated; please use --start-at illumination"
 if( params.maskSpatial != '' )

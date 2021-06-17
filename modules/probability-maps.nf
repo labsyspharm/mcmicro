@@ -68,7 +68,7 @@ process ilastik {
 
     input:
 	path core
-        file(mdl) name 'input.ilp'
+        file(model)
     
     output:
       tuple val('ilastik'), path('*_Probabilities*.tif'), emit: pm
@@ -78,18 +78,24 @@ process ilastik {
 	params.idxStart <= 4 && params.idxStop >= 4 &&
 	params.probabilityMaps.contains('ilastik')
 
-    // We are copying input.ilp to model.ilp, because ilastik locks the model file.
+    // We are creating a copy of the model file to deal with some tools locking files
     // Without this copying, the lock prevents parallel execution of multiple processes
     //   if they all use the same model file.
     script:
-        def model = params.ilastikModel != "built-in" ? 'input.ilp' :
-	"/app/classifiers/exemplar_001_nuclei.ilp"
-    """
-    cp $model ./model.ilp
-    python /app/CommandIlastikPrepOME.py \
-      ${params.ilastikOpts} --input $core --output .
-    /ilastik-release/run_ilastik.sh --headless --project=model.ilp *.hdf5
-    """
+
+    def cmd = "python /app/mc-ilastik.py --input $core --output . ${params.ilastikOpts}"
+    
+    if( params.containsKey('ilastikModel') ) {
+	def mdlcp = "cp-${model.name}"
+	"""
+        cp $model $mdlcp
+        $cmd --model $mdlcp
+        """
+    } else {
+	"""
+        $cmd
+        """
+    }
 }
 
 workflow probmaps {
@@ -97,9 +103,10 @@ workflow probmaps {
 	input
 
     main:
-	// Identify the ilastik model
-        ilastik_mdl = params.ilastikModel != 'built-in' ?
-	  file(params.ilastikModel) : 'built-in'
+	
+    // Identify the ilastik model
+    ilastik_mdl = params.containsKey('ilastikModel') ?
+	file(params.ilastikModel) : 'built-in'
 
     unmicst(input)
     cypository(input)
