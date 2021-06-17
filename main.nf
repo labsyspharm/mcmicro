@@ -141,6 +141,10 @@ pre_qty    = findFiles(idxStart == 7,
 		       "${paths[6]}/*.csv",
 		       {error "No quantification tables in ${paths[6]}"})
 
+// Load module specs
+modPM = Channel.of( params.modulesPM ).flatten()
+    .filter{ params.probabilityMaps.contains(it.name) }
+
 // The following parameters are shared by all modules
 params.idxStart  = idxStart
 params.idxStop   = idxStop
@@ -180,8 +184,9 @@ workflow {
 
     // Reconcile WSI and TMA processing for downstream steps
     allimg = img.wsi.mix(tmacores)
-    probmaps(allimg)
+    probmaps(allimg, modPM).view()
 
+    /*
     // Merge against precomputed intermediates and feed to s3seg
     pmaps = probmaps.out.mix(pre_pmap)
     segmentation( allimg, tmamasks, pmaps )
@@ -194,6 +199,7 @@ workflow {
     quantification.out.mix(pre_qty)
 	.combine(chMct) |
 	naivestates
+     */
 }
 
 // Write out parameters used

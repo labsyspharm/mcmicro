@@ -1,61 +1,3 @@
-process unmicst {
-    // Output probability map
-    publishDir "${params.pubDir}/unmicst", mode: 'copy', pattern: '*_Probabilities*.tif'
-
-    // QC
-    publishDir "${params.path_qc}/unmicst", mode: 'copy', pattern: '*Preview*.tif'
-
-    // Provenance
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
-      saveAs: {fn -> "${task.name}.sh"}
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
-      saveAs: {fn -> "${task.name}.log"}
-
-    input: path core
-    
-    output:
-      tuple val('unmicst'), path('*_Probabilities*.tif'), emit: pm
-      path('*Preview*.tif')
-      tuple path('.command.sh'), path('.command.log')
-
-    when:
-	params.idxStart <= 4 && params.idxStop >= 4 &&
-	params.probabilityMaps.contains('unmicst')
-
-    """
-    python /app/unmicstWrapper.py $core ${params.unmicstOpts} --stackOutput --outputPath .
-    """
-}
-
-process cypository {
-    // Output probability map
-    publishDir "${params.pubDir}/cypository", mode: 'copy', pattern: '*_Probabilities*.tif'
-
-    // QC
-    publishDir "${params.path_qc}/cypository", mode: 'copy', pattern: '*Preview*.tif'
-
-    // Provenance
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
-      saveAs: {fn -> "${task.name}.sh"}
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
-      saveAs: {fn -> "${task.name}.log"}
-
-    input: path core
-
-    output:
-      tuple val('cypository'), path('*_Probabilities*.tif'), emit: pm
-      path('*Preview*.tif')
-      tuple path('.command.sh'), path('.command.log')
-
-    when:
-	params.idxStart <= 4 && params.idxStop >= 4 &&
-	params.probabilityMaps.contains('cypository')
-
-    """
-    python /app/deployMaskRCNN.py $core ${params.cypositoryOpts} --stackOutput --outputPath .
-    """
-}
-
 process ilastik {
     // Output probability map
     publishDir "${params.pubDir}/ilastik", mode: 'copy', pattern: '*_Probabilities*.tif'
@@ -98,12 +40,56 @@ process ilastik {
     }
 }
 
+process pmproc {
+    container "${module.container}:${module.version}"
+    
+    // Output probability map
+    publishDir "${params.pubDir}/${module.name}", mode: 'copy', pattern: '*_Probabilities*.tif'
+
+    // QC
+    publishDir "${params.path_qc}/${module.name}", mode: 'copy', pattern: '*Preview*.tif'
+    
+    // Provenance
+    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
+      saveAs: {fn -> "${task.name}.sh"}
+    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
+      saveAs: {fn -> "${task.name}.log"}
+
+    input: tuple val(module), file(model), path(core)
+
+    output:
+
+    tuple val("${params.module.name}"), path('*_Probabilities*.tif'), emit: pm
+    path('*Preview*.tif') optional true
+    tuple path('.command.sh'), path('.command.log')
+
+    when:
+	params.idxStart <= 4 && params.idxStop >= 4
+    
+    script:
+
+    // Find module specific parameters
+    def mparam = params."${module.name}Opts"
+    """
+    ${module.cmd} ${module.input} $core $mparam    
+    """
+}
+
 workflow probmaps {
     take:
-	input
+	
+    input
+    modules
 
     main:
-	
+
+    // Determine if there are any custom models specified
+    res = modules.map{ it ->
+	tuple(it, params.containsKey("${it.name}Model") ?
+	      file(params."${it.name}Model") : 'built-in') }
+	.combine( input )
+    
+    /*
     // Identify the ilastik model
     ilastik_mdl = params.containsKey('ilastikModel') ?
 	file(params.ilastikModel) : 'built-in'
@@ -111,9 +97,10 @@ workflow probmaps {
     unmicst(input)
     cypository(input)
     ilastik(input, ilastik_mdl)
+     */
 
     emit:
-	unmicst.out.pm
-        .mix( cypository.out.pm )
-        .mix( ilastik.out.pm )
+
+    res
+//    pmproc.out.pm
 }
