@@ -2,10 +2,9 @@
 layout: default
 title: Coreograph
 parent: TMA dearray
-grand_parent: Image Processing Steps
 ---
 
-![](images/coreographbannerv10.png)
+![]({{ site.baseurl }}/images/coreographbannerv10.png)
 <p align="center">
   Great....yet another TMA dearray program. What does this one do?
 </p>
@@ -32,7 +31,7 @@ The Coreograph parameters described in this manual should be provided to mcmicro
 3. a TMA map showing the labels and outlines of each core for quality control purposes<br>
 4. a text file listing the centroids of each core in the format: Y, X
 
-![map](images/coreograph1.png)<br>
+![map]({{ site.baseurl }}/images/coreograph1.png)<br>
 
 ## Scenarios
 **NOTE: When using Coreograph on O2, the O2tma profile should be used!!**<br>
@@ -40,7 +39,7 @@ The Coreograph parameters described in this manual should be provided to mcmicro
 When using MCMICRO, Coreograph does not require any additional input parameters to run. The DNA channel is assumed to be in the 1st channel.<br>
 `--core-opts: <leave blank>`<br>
 <p align="center">
-<img src="images/coreograph-raw.jpg" width="425" height="315" /> <img src="images/coreograph-probmap.jpg" width="425" height="315" />
+<img src="{{ site.baseurl }}/images/coreograph-raw.jpg" width="425" height="315" /> <img src="{{ site.baseurl }}/images/coreograph-probmap.jpg" width="425" height="315" />
 </p>
 As one can see, each core is labelled with a single number implying that each core was found uniquely. Furthermore, each core has a thick white line to indicate the accuracy of segmenting each core. (Future versions will have a colored outlines for better visibility).
 
@@ -52,12 +51,12 @@ No problem! Specify `--channel` with the channel that it's in. This is 0-indexin
 Coreograph is trained on various core sizes ranging from 500 microns to 2 mm acquired at a pixel size of 0.65 microns per pixel and then downsampled 5 times. If your core size or image resolution are significantly different, you will need to either upsample or downsample a different number of times using `--downSampleFactor`. See below for examples:
 
 #### 3a) If your pixel size is 0.325 microns per pixel, then your pixel size is double the training data by a factor of 2 (0.65/0.325). You should downsample more times. Use 6 instead of 5. <br>
-![map](images/coreograph3a.png)<br>
+![map]({{ site.baseurl }}/images/coreograph3a.png)<br>
 `--core-opts: --downsampleFactor 6`<br>
 
 
 #### 3b) If your pixel size is 1.3 microns per pixel, then your pixel size is half of the training data (0.65/1.3). Instead of downsampling by 5 times (default), you should downsample less. Try 4.
-![map](images/coreograph3b.png)<br>
+![map]({{ site.baseurl }}/images/coreograph3b.png)<br>
 `--core-opts: --downsampleFactor 4`<br>
 
 

@@ -2,7 +2,7 @@
 layout: default
 title: Quantification
 nav_order: 38
-parent: Image Processing Steps
+parent: Modules
 ---
 
 # Quantification

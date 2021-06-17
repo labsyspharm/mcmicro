@@ -2,7 +2,7 @@
 layout: default
 title: TMA dearray
 nav_order: 33
-parent: Image Processing Steps
+parent: Modules
 has_children: true
 has_toc: false
 ---

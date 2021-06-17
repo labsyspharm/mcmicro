@@ -2,7 +2,7 @@
 layout: default
 title: Input
 nav_order: 31
-parent: Image Processing Steps
+parent: Modules
 ---
 
 # Raw data

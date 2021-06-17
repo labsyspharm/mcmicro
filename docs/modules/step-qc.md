@@ -2,7 +2,7 @@
 layout: default
 title: QC
 nav_order: 39
-parent: Image Processing Steps
+parent: Modules
 ---
 
 # Quality control

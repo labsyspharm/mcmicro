@@ -1,7 +1,7 @@
 ---
 layout: default
 title: FAQ
-nav_order: 80
+nav_order: 4
 ---
 
 # Frequently Asked Questions
@@ -89,7 +89,7 @@ A: After a successful mcmicro run, two-channel tif files containing DAPI and nuc
 
 ### Q: How do I handle images acquired without pixel binning?
 
-![](images/FAQ-binning.png)
+![]({{ site.baseurl }}/images/FAQ-binning.png)
 
 A: There are two adjustments to make:
 

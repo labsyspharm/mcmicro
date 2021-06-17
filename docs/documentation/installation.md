@@ -2,6 +2,7 @@
 layout: default
 title: Installation
 nav_order: 10
+parent: Documentation
 ---
 
 {% include install.md %}
@@ -10,7 +11,7 @@ nav_order: 10
 
 | exemplar-001 | exemplar-002 |
 | :-: | :-: |
-| ![](images/mcmicro-exemplar-001.jpg) | ![](images/mcmicro-exemplar-002.jpg) |
+| ![]({{ site.baseurl }}/images/mcmicro-exemplar-001.jpg) | ![]({{ site.baseurl }}/images/mcmicro-exemplar-002.jpg) |
 
 Two exemplars are currently available for demonstration purposes:
 

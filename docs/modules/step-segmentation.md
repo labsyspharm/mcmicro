@@ -2,7 +2,7 @@
 layout: default
 title: Segmentation
 nav_order: 34
-parent: Image Processing Steps
+parent: Modules
 has_children: true
 ---
 
