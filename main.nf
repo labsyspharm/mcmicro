@@ -33,9 +33,6 @@ params.probabilityMaps = 'unmicst'
 // Default parameters for individual modules
 params.ashlarOpts   = '-m 30'
 params.coreOpts     = ''
-params.unmicstOpts  = ''
-params.cypositoryOpts = '--model zeisscyto'
-params.ilastikOpts  = '--num_channels 1'
 params.s3segOpts    = ''
 params.quantOpts    = '--masks cellMask.tif'
 params.nstatesOpts  = '-p png'
@@ -136,7 +133,7 @@ pre_masks = findFiles(idxStart > 3 && params.tma,
 		      {error "No TMA masks in ${paths[3]}/masks"})
 pre_pmap = findFiles(idxStart == 5,
 		     "${paths[4]}/*/*Probabilities*.tif",
-		     {error "No probability maps found in ${paths[4]}/unmicst"})
+		     {error "No probability maps found in ${paths[4]}"})
     .map{ f -> tuple(f.getParent().getBaseName(), f) }
     .filter{ params.probabilityMaps.contains(it[0]) }
 pre_segMsk = findFiles(idxStart == 6,

@@ -85,9 +85,9 @@ process ilastik {
         def model = params.ilastikModel != "built-in" ? 'input.ilp' :
 	"/app/classifiers/exemplar_001_nuclei.ilp"
     """
+    cp $model ./model.ilp
     python /app/CommandIlastikPrepOME.py \
       ${params.ilastikOpts} --input $core --output .
-    cp $model ./model.ilp
     /ilastik-release/run_ilastik.sh --headless --project=model.ilp *.hdf5
     """
 }
