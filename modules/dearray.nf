@@ -35,11 +35,8 @@ workflow dearray {
 
     main:
 	coreograph(tma)
-        id_cores = coreograph.out.cores.flatten().map{ f ->
-	    tuple( f.getBaseName().toString().split('\\.tif').head(), f ) }
-        id_masks = coreograph.out.masks.flatten().map{ f ->
-	    tuple( f.getBaseName().toString().split('_mask').head(), f ) }
 
     emit:
-	s3out = id_cores.join( id_masks ).map{ id, c, m -> tuple(c, m) }
+        cores = coreograph.out.cores.flatten()
+        masks = coreograph.out.masks.flatten()
 }

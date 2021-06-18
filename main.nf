@@ -33,31 +33,27 @@ params.probabilityMaps = 'unmicst'
 // Default parameters for individual modules
 params.ashlarOpts   = '-m 30'
 params.coreOpts     = ''
-params.unmicstOpts  = ''
-params.cypositoryOpts = '--model zeisscyto'
-params.ilastikOpts  = '--num_channels 1'
 params.s3segOpts    = ''
 params.quantOpts    = '--masks cellMask.tif'
 params.nstatesOpts  = '-p png'
 
-// Path-specific parameters that cannot be captured by the above *opts
-params.maskSpatial  = ''
-params.maskAdd      = ''
-params.ilastikModel = 'built-in'
-
 // Legacy parameters (to be deprecated in future versions)
-params.illum         = false    // whether to run ImageJ+BaSiC
+params.illum              = false
 params.quantificationMask = ''
+params.maskSpatial        = ''
+params.maskAdd            = ''
 
 // Deprecation messages
 if( params.quantificationMask != '' )
-    error "--quantification-mask is deprecated; please use --mask-spatial and --mask-add instead"
+    error "--quantification-mask is deprecated; please use --quant-opts '--masks ...'"
 if( params.illum )
     error "--illum is deprecated; please use --start-at illumination"
 if( params.maskSpatial != '' )
     error "--maskSpatial is deprecated; please use --quant-opts '--masks ...'"
 if( params.maskAdd != '' )
     error "--maskAdd is deprecated; please use --quant-opts '--masks ...'"
+if( params.probabilityMaps == 'all' )
+    error "--probability-maps all is deprecated; please be explicit, e.g., --probability-maps unmicst,ilastik"
 
 // Steps in the mcmicro pipeline
 mcmsteps = ["raw",		// Step 0
@@ -120,11 +116,6 @@ raw = rawFiles
     .map{ tuple(formatType == "single" ? it : it.parent, it) }
     .map{ toStage, relPath -> tuple(toStage, toStage.parent.relativize(relPath)) }
 
-// Helper function to extract image ID from filename
-def getID (f, delim) {
-    tuple( f.getBaseName().toString().split(delim).head(), f )
-}
-
 // Find precomputed intermediates
 pre_dfp = findFiles0(idxStart == 2, "${paths[1]}/*-dfp.tif")
 pre_ffp = findFiles0(idxStart == 2, "${paths[1]}/*-ffp.tif")
@@ -137,50 +128,22 @@ pre_cores = findFiles(idxStart > 3 && params.tma,
 pre_masks = findFiles(idxStart > 3 && params.tma,
 		      "${paths[3]}/masks/*.tif",
 		      {error "No TMA masks in ${paths[3]}/masks"})
-pre_unmicst = findFiles(idxStart == 5 &&
-			(params.probabilityMaps == 'unmicst' ||
-			 params.probabilityMaps == 'all'),
-			"${paths[4]}/unmicst/*Probabilities*.tif",
-			{error "No probability maps found in ${paths[4]}/unmicst"})
-pre_cypository = findFiles(idxStart == 5 &&
-			params.probabilityMaps == 'cypository',
-			"${paths[4]}/cypository/*Probabilities*.tif",
-			{error "No probability maps found in ${paths[4]}/cypository"})
-pre_ilastik = findFiles(idxStart == 5 &&
-			(params.probabilityMaps == 'ilastik' ||
-			 params.probabilityMaps == 'all'),
-			"${paths[4]}/ilastik/*Probabilities*.tif",
-			{error "No probability maps found in ${paths[4]}/ilastik"})
+pre_pmap = findFiles(idxStart == 5,
+		     "${paths[4]}/*/*Probabilities*.tif",
+		     {error "No probability maps found in ${paths[4]}"})
+    .map{ f -> tuple(f.getParent().getBaseName(), f) }
+    .filter{ params.probabilityMaps.contains(it[0]) }
 pre_segMsk = findFiles(idxStart == 6,
 		       "${paths[5]}/**Mask.tif",
 		       {error "No segmentation masks in ${paths[5]}"})
+    .map{ f -> tuple(f.getParent().getBaseName(), f) }.groupTuple()
 pre_qty    = findFiles(idxStart == 7,
 		       "${paths[6]}/*.csv",
 		       {error "No quantification tables in ${paths[6]}"})
 
-// Compute sample IDs for each found intermediate
-id_img     = pre_img.map{ f -> getID(f,'\\.') }
-id_cores   = pre_cores.map{ f -> getID(f,'\\.tif') }
-id_masks   = pre_masks.map{ f -> getID(f,'_mask') }
-id_unmicst = pre_unmicst.map{ f -> getID(f,'_Probabilities') }
-    .map{ id, f -> tuple(id, f, 'unmicst') }
-id_cypository = pre_cypository.map{ f -> getID(f,'_Probabilities') }
-    .map{ id, f -> tuple(id, f, 'cypository') }
-id_ilastik = pre_ilastik.map{ f -> getID(f,'_Probabilities') }
-    .map{ id, f -> tuple(id, f, 'ilastik') }
-id_segMsk  = pre_segMsk.map{ f -> tuple(f.getParent().getBaseName(), f) }
-    .groupTuple().map{ id, msk -> x = id.split('-',2); tuple(x[1], x[0], msk) }
-
-// Match up precomputed intermediates into tuples for each step
-id_cm   = id_cores.join( id_masks )
-id_cm2  = id_img.map{ id, x -> tuple(id, x, 'NO_MASK') }.mix(id_cm)
-id_pmap = id_cm2.join( id_unmicst ).mix( id_cm2.join( id_ilastik ) ).mix( id_cm2.join( id_cypository ) )
-id_seg  = id_img.mix( id_cores ).combine( id_segMsk, by:0 )
-
-// Finalize the tuple format to match process outputs
-pre_tma  = id_cm.map{ id, c, m -> tuple(c,m) }
-pre_pmap = id_pmap.map{ id, c, m, p, mtd -> tuple(mtd,c,m,p) }
-pre_seg  = id_seg.map{ id, i, mtd, msk -> tuple(mtd,i,msk) }
+// Load module specs
+modPM = Channel.of( params.modulesPM ).flatten()
+    .filter{ params.probabilityMaps.contains(it.name) }
 
 // The following parameters are shared by all modules
 params.idxStart  = idxStart
@@ -215,25 +178,24 @@ workflow {
     // Apply dearray to TMAs only
     dearray(img.tma)
 
-    // Whole slide images have no TMA mask
-    img.wsi.map{ x -> tuple(x, 'NO_MASK') }
-	.mix(dearray.out)
-	.mix(pre_tma) |
-	probmaps
+    // Merge against precomputed intermediates
+    tmacores = dearray.out.cores.mix(pre_cores)
+    tmamasks = dearray.out.masks.mix(pre_masks)
 
-    // Combine probability map output with precomputed one
-    // Forward the result to segmentation
-    probmaps.out.mix(pre_pmap) |
-	segmentation
+    // Reconcile WSI and TMA processing for downstream steps
+    allimg = img.wsi.mix(tmacores)
+    probmaps(allimg, modPM)
 
-    // Append markers.csv to every tuple
-    segmentation.out.mix(pre_seg)
-	.map{ mtd, c, msk -> tuple("${mtd}-${c.getName()}", c, msk) }
-    	.combine(chMrk) |
-	quantification
+    // Merge against precomputed intermediates and feed to s3seg
+    pmaps = probmaps.out.mix(pre_pmap)
+    segmentation( allimg, tmamasks, pmaps )
+
+    // Merge segmentation masks against precomputed ones and append markers.csv
+    segMsk = segmentation.out.mix(pre_segMsk)
+    quantification( allimg, segMsk, chMrk )
 
     // Cell type callers
-    quantification.out.tables.mix(pre_qty)
+    quantification.out.mix(pre_qty)
 	.combine(chMct) |
 	naivestates
 }

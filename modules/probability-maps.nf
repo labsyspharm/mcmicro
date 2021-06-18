@@ -1,118 +1,68 @@
-process unmicst {
+process pmproc {
+    container "${params.contPfx}${module.container}:${module.version}"
+    
     // Output probability map
-    publishDir "${params.pubDir}/unmicst", mode: 'copy', pattern: '*Probabilities*.tif'
+    publishDir "${params.pubDir}/${module.name}", mode: 'copy', pattern: '*_Probabilities*.tif'
 
     // QC
-    publishDir "${params.path_qc}/unmicst", mode: 'copy', pattern: '*Preview*.tif'
-
+    publishDir "${params.path_qc}/${module.name}", mode: 'copy', pattern: '*Preview*.tif'
+    
     // Provenance
     publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
       saveAs: {fn -> "${task.name}.sh"}
     publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
       saveAs: {fn -> "${task.name}.log"}
 
-    input:
-	tuple path(core), val(mask)
-    
+    input: tuple val(module), file(model), path(core)
+
     output:
-      tuple val('unmicst'), path(core), val(mask),
-        path('*Probabilities*.tif'), emit: pm
-      path('*Preview*.tif')
-      tuple path('.command.sh'), path('.command.log')
+
+    tuple val("${module.name}"), path('*_Probabilities*.tif'), emit: pm
+    path('*Preview*.tif') optional true
+    tuple path('.command.sh'), path('.command.log')
 
     when:
-	params.idxStart <= 4 && params.idxStop >= 4 &&
-	(params.probabilityMaps == 'unmicst' ||
-	 params.probabilityMaps == 'all')
-
-    """
-    python /app/unmicstWrapper.py $core ${params.unmicstOpts} --stackOutput --outputPath .
-    """
-}
-
-process cypository {
-    // Output probability map
-    publishDir "${params.pubDir}/cypository", mode: 'copy', pattern: '*Probabilities*.tif'
-
-    // QC
-    publishDir "${params.path_qc}/cypository", mode: 'copy', pattern: '*Preview*.tif'
-
-    // Provenance
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
-      saveAs: {fn -> "${task.name}.sh"}
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
-      saveAs: {fn -> "${task.name}.log"}
-
-    input:
-	tuple path(core), val(mask)
-
-    output:
-      tuple val('cypository'), path(core), val(mask),
-        path('*Probabilities*.tif'), emit: pm
-      path('*Preview*.tif')
-      tuple path('.command.sh'), path('.command.log')
-
-    when:
-	params.idxStart <= 4 && params.idxStop >= 4 &&
-	params.probabilityMaps == 'cypository'
-
-    """
-    python /app/deployMaskRCNN.py $core ${params.cypositoryOpts} --stackOutput --outputPath .
-    """
-}
-
-process ilastik {
-    // Output probability map
-    publishDir "${params.pubDir}/ilastik", mode: 'copy', pattern: '*Probabilities*.tif'
-
-    // Provenance
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
-      saveAs: {fn -> "${task.name}.sh"}
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
-      saveAs: {fn -> "${task.name}.log"}
-
-    input:
-	tuple path(core), val(mask)
-        file(mdl) name 'input.ilp'
+	params.idxStart <= 4 && params.idxStop >= 4
     
-    output:
-      tuple val('ilastik'), path(core), val(mask),
-        path('*Probabilities*.tif'), emit: pm
-      tuple path('.command.sh'), path('.command.log')
-
-    when: params.idxStart <= 4 && params.idxStop >= 4 &&
-	(params.probabilityMaps == 'ilastik' ||
-	 params.probabilityMaps == 'all')
-
-    // We are copying input.ilp to model.ilp, because ilastik locks the model file.
+    // We are creating a copy of the model file to deal with some tools locking files
     // Without this copying, the lock prevents parallel execution of multiple processes
     //   if they all use the same model file.
     script:
-        def model = params.ilastikModel != "built-in" ? 'input.ilp' :
-	"/app/classifiers/exemplar_001_nuclei.ilp"
-    """
-    python /app/CommandIlastikPrepOME.py \
-      ${params.ilastikOpts} --input $core --output .
-    cp $model ./model.ilp
-    /ilastik-release/run_ilastik.sh --headless --project=model.ilp *.hdf5
-    """
+
+    // Find module specific parameters and compose a command
+    def mparam = params."${module.name}Opts"
+    def cmd = "${module.cmd} ${module.input} $core $mparam"
+    String m = "${module.name}Model"
+
+    if( params.containsKey(m) ) {
+	def mdlcp = "cp-${model.name}"
+	"""
+        cp $model $mdlcp
+        $cmd ${module.model} $mdlcp    
+        """
+    } else {
+	"""
+        $cmd
+        """
+    }
 }
 
 workflow probmaps {
     take:
-	input
+	
+    input
+    modules
 
     main:
-	// Identify the ilastik model
-        ilastik_mdl = params.ilastikModel != 'built-in' ?
-	  file(params.ilastikModel) : 'built-in'
 
-    unmicst(input)
-	cypository(input)
-    ilastik(input, ilastik_mdl)
-
+    // Determine if there are any custom models specified
+    modules.map{ it -> String m = "${it.name}Model";
+		tuple(it, params.containsKey(m) ?
+		      file(params."$m") : 'built-in') }
+	.combine(input) |
+	pmproc
+    
     emit:
-	unmicst.out.pm
-        .mix( cypository.out.pm )
-        .mix( ilastik.out.pm )
+
+    pmproc.out.pm
 }
