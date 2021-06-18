@@ -184,9 +184,8 @@ workflow {
 
     // Reconcile WSI and TMA processing for downstream steps
     allimg = img.wsi.mix(tmacores)
-    probmaps(allimg, modPM).view()
+    probmaps(allimg, modPM)
 
-    /*
     // Merge against precomputed intermediates and feed to s3seg
     pmaps = probmaps.out.mix(pre_pmap)
     segmentation( allimg, tmamasks, pmaps )
@@ -199,7 +198,6 @@ workflow {
     quantification.out.mix(pre_qty)
 	.combine(chMct) |
 	naivestates
-     */
 }
 
 // Write out parameters used
