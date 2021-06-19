@@ -14,7 +14,7 @@ last_modified_date: 2021-03-28
     <div class="uk-width-2-5@m">
         <div>
             <h1>MCMICRO</h1>
-            <p>An end-to-end processing pipeline to transform large, multi-channel whole slide images into single-cell data. This site is a consolidated source of information on MCMICRO <a href="https://github.com/labsyspharm/mcmicro>code</a>, documentation, roadmap, community and test data.</p>
+            <p>An end-to-end processing pipeline to transform large, multi-channel whole slide images into single-cell data. This site is a consolidated source of information on MCMICRO <a href="https://github.com/labsyspharm/mcmicro">code</a>, documentation, roadmap, community and test data.</p>
         </div>
     </div>
     <div class="uk-width-expand@m">
