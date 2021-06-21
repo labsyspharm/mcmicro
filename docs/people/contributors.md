@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Contributors
-nav_order: 6
+nav_order: 90
 ---
 
 Contributors

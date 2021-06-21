@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Microscopy Basics
-nav_order: 5
+nav_order: 2
 ---
 
 # Microscopy Basics
