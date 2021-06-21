@@ -2,7 +2,7 @@
 layout: default
 title: Segmentation
 nav_order: 34
-parent: Modules
+parent: Step by Step
 has_children: true
 ---
 
