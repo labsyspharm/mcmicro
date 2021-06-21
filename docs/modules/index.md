@@ -5,12 +5,25 @@ nav_order: 3
 has_children: true
 ---
 
-# Directory structure
-Upon the full successful completion of a pipeline run, the directory structure will follow Fig. 1A in the [mcmicro manuscript](https://www.biorxiv.org/content/10.1101/2021.03.15.435473v1):
+# Current Modules
 
-| Schematic | Directory&nbsp;Structure |
-| :-: | :-- |
-| <img src="{{ site.baseurl }}/images/Fig1.png" alt="MCMICRO" width="400"/> | <code>exemplar-002<br>├── markers.csv<br>├── raw/<br>├── illumination/<br>├── registration/<br>├── dearray/<br>├── probability-maps/<br>├── segmentation/<br>├── quantification/<br>└── qc/<br></code> |
+* BaSiC illumination correction - [Code](https://github.com/labsyspharm/basic-illumination) - [Method](https://doi.org/10.1038/ncomms14836)
+* ASHLAR for stitching and registration - [Code](https://github.com/labsyspharm/ashlar) - [Method](https://doi.org/10.1101/2021.04.20.440625)
+* Coreograph for TMA dearraying - [Code](https://github.com/HMS-IDAC/Coreograph) - [Method](https://www.biorxiv.org/content/10.1101/2021.03.15.435473)
+* Probability map generators:
+  * UnMICST - [Code](https://github.com/HMS-IDAC/UnMicst) - [Method](https://doi.org/10.1101/2021.04.02.438285)
+  * Ilastik - [Code](https://github.com/labsyspharm/mcmicro-ilastik) - [Method](https://doi.org/10.1038/s41592-019-0582-9)
+  * Cypository (cytoplasm only) - [Code](https://github.com/HMS-IDAC/Cypository)
+* Watershed segmentation - [Code](https://github.com/HMS-IDAC/S3segmenter)
+* Quantification - [Code](https://github.com/labsyspharm/quantification)
+* Downstream analyses:
+  * Cell type calling with Naive Bayes - [Code](https://github.com/labsyspharm/naivestates)
 
-The name of the parent directory (e.g., `exemplar-002`) is assumed by the pipeline to be the sample name.
+# Coming soon
 
+* Mesmer - [Method](https://doi.org/10.1101/2021.03.01.431313)
+* Phenograph - [Method](https://doi.org/10.1016/j.cell.2015.05.047)
+
+# Suggest a module
+
+Module suggestions can be made by posting to [https://forum.image.sc/](https://forum.image.sc/), using the `mcmicro` tag.
