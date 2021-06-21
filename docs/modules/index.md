@@ -26,4 +26,4 @@ has_children: true
 
 # Suggest a module
 
-Module suggestions can be made by posting to [https://forum.image.sc/](https://forum.image.sc/), using the `mcmicro` tag.
+Module suggestions can be made by posting to [https://forum.image.sc/](https://forum.image.sc/) and tagging your post with the `mcmicro` tag.
