@@ -9,8 +9,15 @@ last_modified_date: 2021-03-28
 <!-- UIkit CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.22/dist/css/uikit.min.css" />
 
-<h1>MCMICRO</h1>
-<p>An end-to-end processing pipeline to transform large, multi-channel whole slide images into single-cell data. This site is a consolidated source of information on MCMICRO <a href="https://github.com/labsyspharm/mcmicro">code</a>, documentation, roadmap, community and test data.</p>
+# MCMICRO
+
+Multiple-choice microscopy pipeline
+{: .fs-6 .fw-300 }
+
+An end-to-end processing pipeline to transform large, multi-channel whole slide images into single-cell data. This site is a consolidated source of information on [MCMICRO](https://github.com/labsyspharm/mcmicro), documentation, roadmap, community and test data.
+
+[{{ "quick start" | upcase }}](documentation/){: .btn  .mr-4 .btn-blue }
+[{{ "tryout on google cloud" | upcase }}](tutorials/gcp.html){: .btn }
 
 <div class="uk-cover-container uk-margin-medium-bottom">
     <canvas width="1920" height="1080"></canvas>

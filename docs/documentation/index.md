@@ -7,7 +7,7 @@ description: ""
 last_modified_date: 2021-03-28
 ---
 
-# mcmicro
+# MCMICRO Docs
 
 Multiple-choice microscopy pipeline
 {: .fs-6 .fw-300 }
