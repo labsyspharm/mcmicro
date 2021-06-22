@@ -15,7 +15,7 @@ nextflow.enable.dsl=2
 params.sampleName  = file(params.in).name
 params.startAt     = 'registration'
 params.stopAt      = params.startAt == 'cell-states' ? 'cell-states' : 'quantification'
-params.tma         = false    // whether to run Coreograph
+params.tma         = false    // whether working with a TMA (true) or whole-slide image (false)
 
 // Some image formats store multiple fields of view in a single file. Other
 // formats store each field separately, typically in .tif files, with a separate
@@ -29,19 +29,14 @@ params.singleFormats = '{.ome.tiff,.ome.tif,.rcpnl,.btf,.nd2,.tif,.czi}'
 
 // Default selection of methods for each step
 params.probabilityMaps = 'unmicst'
-
-// Default parameters for individual modules
-params.ashlarOpts   = '-m 30'
-params.coreOpts     = ''
-params.s3segOpts    = ''
-params.quantOpts    = '--masks cellMask.tif'
-params.nstatesOpts  = '-p png'
+params.cellStates      = 'naivestates'
 
 // Legacy parameters (to be deprecated in future versions)
 params.illum              = false
 params.quantificationMask = ''
 params.maskSpatial        = ''
 params.maskAdd            = ''
+params.nstatesOpts        = ''
 
 // Deprecation messages
 if( params.quantificationMask != '' )
@@ -54,6 +49,8 @@ if( params.maskAdd != '' )
     error "--maskAdd is deprecated; please use --quant-opts '--masks ...'"
 if( params.probabilityMaps == 'all' )
     error "--probability-maps all is deprecated; please be explicit, e.g., --probability-maps unmicst,ilastik"
+if( params.nstatesOpts != '' )
+    error "--nstatesOpts is deprecated; please use --naivestatesOpts"
 
 // Steps in the mcmicro pipeline
 mcmsteps = ["raw",		// Step 0
@@ -84,12 +81,6 @@ Channel.fromPath( "${params.in}/illumination_profiles/*" )
 
 // Identify marker information
 chMrk = Channel.fromPath( "${params.in}/markers.csv", checkIfExists: true )
-
-// If specified, identify the marker -> cell type (mct) mapping
-nstatesOpts = params.nstatesOpts.tokenize()
-iMct = nstatesOpts.indexOf("--mct")
-chMct = iMct == -1 ? Channel.fromPath("NO_MCT") :
-    Channel.fromPath( nstatesOpts[iMct+1], checkIfExists: true )
 
 // Helper functions for finding raw images and precomputed intermediates
 findFiles0 = { p, path -> p ?
@@ -144,6 +135,8 @@ pre_qty    = findFiles(idxStart == 7,
 // Load module specs
 modPM = Channel.of( params.modulesPM ).flatten()
     .filter{ params.probabilityMaps.contains(it.name) }
+modCS = Channel.of( params.modulesCS ).flatten()
+    .filter{ params.cellStates.contains(it.name) }
 
 // The following parameters are shared by all modules
 params.idxStart  = idxStart
@@ -158,7 +151,7 @@ include {dearray}        from './modules/dearray'          addParams(pubDir: pat
 include {probmaps}       from './modules/probability-maps' addParams(pubDir: paths[4])
 include {segmentation}   from './modules/segmentation'     addParams(pubDir: paths[5])
 include {quantification} from './modules/quantification'   addParams(pubDir: paths[6])
-include {naivestates}    from './modules/cell-states'      addParams(pubDir: paths[7])
+include {cellstates}     from './modules/cell-states'      addParams(pubDir: paths[7])
 
 // Define the primary mcmicro workflow
 workflow {
@@ -194,10 +187,9 @@ workflow {
     segMsk = segmentation.out.mix(pre_segMsk)
     quantification( allimg, segMsk, chMrk )
 
-    // Cell type callers
-    quantification.out.mix(pre_qty)
-	.combine(chMct) |
-	naivestates
+    // Spatial feature tables -> cell state calling
+    sft = quantification.out.mix(pre_qty)
+    cellstates( sft, modCS )
 }
 
 // Write out parameters used
