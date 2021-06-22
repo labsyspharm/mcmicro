@@ -14,8 +14,8 @@ has_children: true
   * UnMICST - [Code](https://github.com/HMS-IDAC/UnMicst) - [Method](https://doi.org/10.1101/2021.04.02.438285)
   * Ilastik - [Code](https://github.com/labsyspharm/mcmicro-ilastik) - [Method](https://doi.org/10.1038/s41592-019-0582-9)
   * Cypository (cytoplasm only) - [Code](https://github.com/HMS-IDAC/Cypository)
-* Watershed segmentation - [Code](https://github.com/HMS-IDAC/S3segmenter)
-* Quantification - [Code](https://github.com/labsyspharm/quantification)
+* S3segmenter for watershed segmentation - [Code](https://github.com/HMS-IDAC/S3segmenter)
+* mcquant for single cell quantification - [Code](https://github.com/labsyspharm/quantification)
 * Downstream analyses:
   * Cell type calling with Naive Bayes - [Code](https://github.com/labsyspharm/naivestates)
 
