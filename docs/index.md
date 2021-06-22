@@ -9,21 +9,14 @@ last_modified_date: 2021-03-28
 <!-- UIkit CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.22/dist/css/uikit.min.css" />
 
+<h1>MCMICRO</h1>
+<p>An end-to-end processing pipeline to transform large, multi-channel whole slide images into single-cell data. This site is a consolidated source of information on MCMICRO <a href="https://github.com/labsyspharm/mcmicro">code</a>, documentation, roadmap, community and test data.</p>
 
-<div class="uk-grid-collapse uk-flex uk-flex-middle uk-margin-medium-bottom" uk-grid>
-    <div class="uk-width-2-5@m">
-        <div>
-            <h1>MCMICRO</h1>
-            <p>An end-to-end processing pipeline to transform large, multi-channel whole slide images into single-cell data. This site is a consolidated source of information on MCMICRO <a href="https://github.com/labsyspharm/mcmicro">code</a>, documentation, roadmap, community and test data.</p>
-        </div>
-    </div>
-    <div class="uk-width-expand@m">
-        <div>
-            <img src="{{ site.baseurl }}/assets/images/bg-2.png" alt="">
-        </div>
-    </div>
+<div class="uk-cover-container uk-margin-medium-bottom">
+    <canvas width="1920" height="1080"></canvas>
+    <iframe src="
+    https://www.youtube.com/embed/DY_F-eG9nm4?fs=0&amp;iv_load_polocy=3&amp;modestbranding=1&amp;playsinline=1&amp;autoplay=1&amp;controls=0&amp;rel=0&amp;playlist=DY_F-eG9nm4&amp;loop=1" width="1920" height="1080" frameborder="0" uk-cover></iframe>
 </div>
-
 
 <div class="uk-section" style="background-color: #f5f6fa">
     <div class="uk-container">
@@ -56,7 +49,7 @@ modules for critical processing steps</p>
 
 <h2 class="uk-heading-line uk-text-center uk-margin-medium-bottom uk-margin-large-top"><span>Features</span></h2>
 
-<div class="uk-child-width-1-2@m uk-grid-small uk-grid-match" uk-grid>
+<div class="uk-child-width-1-2@m uk-grid-small uk-grid-match uk-flex-center" uk-grid>
     <div>
         <div class="uk-card uk-card-default uk-card-body">
             <h2 class="uk-card-title">Flexible Implementation 🔛</h2>
@@ -81,17 +74,14 @@ the community.</p>
     <div>
         <div class="uk-card uk-card-default uk-card-body">
             <h2 class="uk-card-title">Technology Agnostic 🪄</h2>
-            <p>MCMICRO works with any image that meets the <a href="https://www.openmicroscopy.org/bio-formats/">BioFormats standard</a>, most commonly
-OME-TIFF. These images can be acquired using a wide range of technologies-
-CODEX, CyCIF, mIHC, mxIF, IMC or MIBI.</p>
+            <p>MCMICRO works with any image that meets the <a href="https://www.openmicroscopy.org/bio-formats/">BioFormats standard</a>, most commonly OME-TIFF. These images can be acquired using a wide range of technologies- CODEX, CyCIF, mIHC, mxIF, IMC or MIBI.</p>
         </div>
     </div>
-</div>
-
-<div class="uk-section" style="background-color: #f5f6fa">
-    <div class="uk-container">
-        <h2>🤝 Best Practices 🤝</h2>
-        <p>Although it is nice to have many modules to try out, often you just want something that works. The MCMICRO team is collaborating with the NCI to run hackathons and challenges to identify the best modules and pipelines for specific types of data.</p>
+    <div>
+        <div class="uk-card uk-card-default uk-card-body">
+            <h2>Best Practices 🤓</h2>
+            <p>Although it is nice to have many modules to try out, often you just want something that works. The MCMICRO team is collaborating with the NCI to run hackathons and challenges to identify the best modules and pipelines for specific types of data.</p>
+        </div>
     </div>
 </div>
                
