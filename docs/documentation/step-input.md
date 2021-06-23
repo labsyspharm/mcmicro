@@ -2,7 +2,7 @@
 layout: default
 title: Input
 nav_order: 31
-parent: Step by Step
+parent: Modules
 ---
 
 # Raw data

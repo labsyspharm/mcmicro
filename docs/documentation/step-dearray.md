@@ -2,7 +2,7 @@
 layout: default
 title: TMA dearray
 nav_order: 33
-parent: Step by Step
+parent: Modules
 has_children: true
 has_toc: false
 ---

@@ -1,8 +1,8 @@
 ---
 layout: default
-title: Running mcmicro
+title: Running MCMICRO
 nav_order: 20
-parent: Documentation
+parent: Nextflow workflow
 ---
 
 # Running mcmicro

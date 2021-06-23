@@ -2,7 +2,7 @@
 layout: default
 title: QC
 nav_order: 39
-parent: Step by Step
+parent: Modules
 ---
 
 # Quality control

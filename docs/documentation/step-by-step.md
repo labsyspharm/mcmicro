@@ -1,9 +1,9 @@
 ---
 layout: default
-title: Step by Step
+title: Modules
 nav_order: 30
 has_children: true
-parent: Documentation
+parent: Nextflow Workflow
 ---
 
 # Directory structure

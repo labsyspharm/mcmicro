@@ -2,7 +2,7 @@
 layout: default
 title: Pre-processing
 nav_order: 32
-parent: Step by Step
+parent: Modules
 ---
 
 # (Optional) Illumination correction

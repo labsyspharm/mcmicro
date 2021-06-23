@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Documentation
+title: Nextflow workflow
 nav_order: 20
 description: ""
 # permalink: /

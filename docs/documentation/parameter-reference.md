@@ -2,7 +2,7 @@
 layout: default
 title: Parameter reference
 nav_order: 90
-parent: Documentation
+parent: Nextflow workflow
 ---
 
 {% include params.md %}

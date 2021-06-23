@@ -2,7 +2,7 @@
 layout: default
 title: Quantification
 nav_order: 38
-parent: Step by Step
+parent: Modules
 ---
 
 # Quantification
