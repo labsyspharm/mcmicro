@@ -7,6 +7,17 @@ parent: Modules
 
 # Adding a module
 
+{: .no_toc }
+
+<details open markdown="block">
+  <summary>
+    Table of contents
+  </summary>
+  {: .text-delta }
+1. TOC
+{:toc}
+</details>
+
 MCMICRO allows segmentation and cell state caller modules to be specified dynamically. Adding new modules requires nothing more than editing a simple configuration file. No changes to the Nextflow codebase necessary!
 
 ## Quick start
@@ -89,7 +100,7 @@ The `cmd` field must contain a command that, when executed inside the container,
 The `input` field determines how the pipeline will supply inputs to the module. Some examples in the context of [exemplar-001](../documentation/installation.html#exemplar-data) may look as follows:
 
 | Configuration | What MCMICRO will execute |
-| :-: | :-: |
+| :-- | :-- |
 | <code>cmd   : 'python /app/tool.py -o .'<br>input : '-i' </code> | `python /app/tool.py -o . -i exemplar-001.ome.tif` |
 | <code>cmd   : 'python /app/tool.py -o .'<br>input : '--input' </code> | `python /app/tool.py -o . --input exemplar-001.ome.tif` |
 | <code>cmd   : 'python /app/tool.py -o .'<br>input : '' </code> | `python /app/tool.py -o . exemplar-001.ome.tif` |
@@ -114,4 +125,29 @@ As exemplar-001 makes its way through the pipeline, it will eventually encounter
 ```
 python /app/mc-ilastik.py --output . --input exemplar-001.ome.tif --model myawesomemodel.ilp --num_channels 1
 ```
+
+# (Advanced) Automated tests
+
+MCMICRO uses [GitHub Actions](https://docs.github.com/en/actions) to execute a set of automated tests on the [two exemplar images](../documentation/installation.html#exemplar-data). The tests ensure that modifications to the pipeline don't break existing module functionality. When contributing a new module to MCMICRO, consider composing a new test that ensures your module runs on the exemplar data without any issues.
+
+Automated tests are specified in [`ci.yml`](https://github.com/labsyspharm/mcmicro/blob/master/.github/workflows/ci.yml). The exemplar data is cached and can be easily restored via `actions/cache@v2`. For example, consider the following minimal test that contrasts unmicst and ilastik on exemplar-001:
+
+```
+test-ex001:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Nextflow
+        run: curl -fsSL get.nextflow.io | bash
+      - name: Restore exemplar-001 cache
+        uses: actions/cache@v2
+        with:
+          path: ~/data/exemplar-001
+          key: mcmicro-exemplar-001
+      - name: Test exemplar-001
+        run: ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps unmicst,ilastik --s3seg-opts '--probMapChan 0'
+```
+
+The test, named `test-ex001`, consists of three steps: 1) Installing nextflow, 2) Restoring exemplar-001 data from cache, and 3) Running the pipeline on the exemplar-001. The `needs:` field specifies that the test should be executed after `setup` (which verifies the existence of cached data and performs caching if it's missing).
 
