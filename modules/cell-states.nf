@@ -20,7 +20,7 @@ process csproc {
 
     output:
 
-    path('*.csv'), emit: cst
+    path '*.csv', emit: cst
     path('plots/**') optional true
     path('qc/**') optional true
     tuple path('.command.sh'), path('.command.log')
