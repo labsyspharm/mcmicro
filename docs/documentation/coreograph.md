@@ -1,7 +1,8 @@
 ---
 layout: default
 title: Coreograph
-parent: TMA dearray
+nav_order: 1
+parent: Modules
 ---
 
 ![]({{ site.baseurl }}/images/coreographbannerv10.png)
