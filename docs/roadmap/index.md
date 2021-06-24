@@ -7,18 +7,18 @@ has_children: true
 
 # Current Modules
 
-| Name | Purpose | URLs |
-| :-- | :-- | :-- |
-| BaSiC | Illumination correction | [Code](https://github.com/labsyspharm/basic-illumination) - [Reference](https://doi.org/10.1038/ncomms14836) |
-| ASHLAR | Stitching and registration | [Code](https://github.com/labsyspharm/ashlar) - [Reference](https://doi.org/10.1101/2021.04.20.440625) |
-| Coreograph | TMA dearraying | [User Guide](../documentation/coreograph.html) - [Code](https://github.com/HMS-IDAC/Coreograph) - [Reference](https://www.biorxiv.org/content/10.1101/2021.03.15.435473) |
-| UnMICST | Probability map generator | [User Guide](../documentation/unmicst.html) - [Code](https://github.com/HMS-IDAC/UnMicst) - [Reference](https://doi.org/10.1101/2021.04.02.438285) |
-| Ilastik | Probability map generator | [Code](https://github.com/labsyspharm/mcmicro-ilastik) - [Reference](https://doi.org/10.1038/s41592-019-0582-9) |
-| Cypository | Probability map generator (cytoplasm only) | [Code](https://github.com/HMS-IDAC/Cypository) |
-| S3segmenter | Watershed segmentation | [User Guide](../documentation/s3seg.html) - [Code](https://github.com/HMS-IDAC/S3segmenter) |
-| mcquant | Single cell quantification | [Code](https://github.com/labsyspharm/quantification) |
-| naivestates | Cell type calling | [Code](https://github.com/labsyspharm/naivestates) |
-| SCIMAP | Cell type calling | [User Guide](https://scimap.xyz/) - [Code](https://github.com/ajitjohnson/scimap/) |
+| Name | Purpose | Parameters | URLs |
+| :-- | :-- | :-- | :-- |
+| BaSiC | Illumination correction | [Reference](https://github.com/labsyspharm/basic-illumination#running-as-a-docker-container) | [Code](https://github.com/labsyspharm/basic-illumination) - [DOI](https://doi.org/10.1038/ncomms14836) |
+| ASHLAR | Stitching and registration | [Reference](https://github.com/labsyspharm/ashlar#usage) | [Code](https://github.com/labsyspharm/ashlar) - [DOI](https://doi.org/10.1101/2021.04.20.440625) |
+| Coreograph | TMA dearraying | [Reference](https://github.com/HMS-IDAC/UNetCoreograph/blob/master/README.md) - [Guide](../documentation/coreograph.html) | [Code](https://github.com/HMS-IDAC/Coreograph) - [DOI](https://www.biorxiv.org/content/10.1101/2021.03.15.435473) |
+| UnMICST | Probability map generator | [Reference](../documentation/parameter-reference.html#arguments-to-unmicst--unmicst-opts) [Guide](../documentation/unmicst.html) | [Code](https://github.com/HMS-IDAC/UnMicst) - [DOI](https://doi.org/10.1101/2021.04.02.438285) |
+| Ilastik | Probability map generator | [Reference](../documentation/parameter-reference.html#arguments-to-ilastik--ilastik-opts) | [Code](https://github.com/labsyspharm/mcmicro-ilastik) - [DOI](https://doi.org/10.1038/s41592-019-0582-9) |
+| Cypository | Probability map generator (cytoplasm only) | | [Code](https://github.com/HMS-IDAC/Cypository) |
+| S3segmenter | Watershed segmentation | [Reference](../documentation/parameter-reference.html#arguments-to-s3segmenter--s3seg-opts) [Guide](../documentation/s3seg.html) | [Code](https://github.com/HMS-IDAC/S3segmenter) |
+| mcquant | Single cell quantification | [Reference](https://github.com/labsyspharm/quantification#single-cell-quantification) | [Code](https://github.com/labsyspharm/quantification) |
+| naivestates | Cell type calling | [Reference](https://github.com/labsyspharm/naivestates#basic-usage) | [Code](https://github.com/labsyspharm/naivestates) |
+| SCIMAP | Cell type calling | [Reference](https://scimap.xyz) - [Guide](https://scimap.xyz/tutorials/scimap-tutorial-cell-phenotyping.html) | [Code](https://github.com/ajitjohnson/scimap/) |
 
 # Coming soon
 
