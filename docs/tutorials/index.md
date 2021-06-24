@@ -5,4 +5,6 @@ nav_order: 2
 has_children: true
 ---
 
-Denis will add tutorial videos here.
+Tutorial videos will be added here shortly.
+
+For questions and discussion, please visit https://forum.image.sc/tag/mcmicro
