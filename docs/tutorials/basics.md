@@ -1,10 +1,11 @@
 ---
 layout: default
-title: Microscopy Basics
-nav_order: 2
+title: Tissue Imaging Basics
+nav_order: 1
+parent: Tutorials
 ---
 
-# Microscopy Basics
+# Tissue Imaging Basics
 
 Biomedical microscopy comprises an increasing diversity of imaging methods that differ in how a sample is
 illuminated and data collected. Classical methods such as transmission light microscopy and epifluorescence

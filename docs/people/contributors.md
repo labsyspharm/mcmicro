@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Contributors
+title: Community
 nav_order: 90
 ---
 
