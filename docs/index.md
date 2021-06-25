@@ -17,7 +17,7 @@ Multiple-choice microscopy pipeline
 An end-to-end processing pipeline to transform large, multi-channel whole slide images into single-cell data. This site is a consolidated source of information on [MCMICRO](https://github.com/labsyspharm/mcmicro), documentation, roadmap, community and test data.
 
 [{{ "quick start" | upcase }}](documentation/){: .btn  .mr-4 .btn-blue }
-[{{ "tryout on google cloud" | upcase }}](tutorials/gcp.html){: .btn }
+[{{ "tryout on google cloud" | upcase }}](tutorials/index.html){: .btn }
 
 <div class="uk-cover-container uk-margin-medium-bottom">
     <canvas width="1920" height="1080"></canvas>
