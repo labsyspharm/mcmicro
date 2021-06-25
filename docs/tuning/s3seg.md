@@ -2,7 +2,7 @@
 layout: default
 title: S3Segmenter
 nav_order: 3
-parent: Modules
+parent: Parameter Tuning
 ---
 
 ![]({{ site.baseurl }}/images/segbannerv8.png)<br>
