@@ -32,7 +32,7 @@
             "Waypoints": [
                 {
                     "Name": "Raw Image Tiles (Level 1)",
-                    "Description": "When performing highly-multiplexed whole slide imaging (WSI), data acquisition routinely produces thousands of multichannel image tiles. Although the stage positioning is rather robust in modern microscopes, further aligments of image tiles acquired within one cycle as well as across multiple cycles are still needed.\n\nWhen the tiles are positioned using stage recorded positions, with the red-green checkerboard partten showing neighboring tiles, the stage movement errors are visible in the yellow overlapping regions <a class=\"btn btn-primary btn-sm\" href=\"#s=1#w=0#g=0#m=-1#a=-100_-100#v=2.1534_0.1881_0.7653#o=-100_-100_1_1#p=Q\" role=\"button\">🔍</a>\n\nThe errors are even more pronounce when three DNA channels from subsequent cycles are overlaied using their stage positions <a class=\"btn btn-primary btn-sm\" href=\"#s=1#w=0#g=1#m=-1#a=-100_-100#v=2.1534_0.1881_0.7653#o=-100_-100_1_1#p=Q\" role=\"button\">🔍</a>\n\nThe first step in MCMICRO is to align the provided **raw image tiles (Level 1)** and correct uneven illuminations in each of the tiles. MCMICRO currently accepts [Bio-formats](https://www.openmicroscopy.org/bio-formats/) compatible image formats, along with [a .csv file containing channel names](https://mcmicro.org/step-input.html) as inputs and outputs a stitched-and-registered image <a class=\"btn btn-primary btn-sm\" href=\"#s=1#w=0#g=2#m=-1#a=-100_-100#v=2.1534_0.1881_0.7653#o=-100_-100_1_1#p=Q\" role=\"button\">🔍</a>",
+                    "Description": "When performing highly-multiplexed whole slide imaging (WSI), data acquisition routinely produces thousands of multichannel image tiles. Although the stage positioning is rather robust in modern microscopes, further aligments of image tiles acquired within one cycle as well as across multiple cycles are still needed.\n\nWhen the tiles are stitched by relying on the microscope stage coordinates alone, with the red-green checkerboard pattern showing neighboring tiles, the stage movement errors are highly obvious in the yellow overlapping regions <a class=\"btn btn-primary btn-sm\" href=\"#s=1#w=0#g=0#m=-1#a=-100_-100#v=2.1534_0.1881_0.7653#o=-100_-100_1_1#p=Q\" role=\"button\">🔍</a>\n\nThe errors are even more pronounced when three DNA channels from subsequent cycles are overlayed using their stage positions <a class=\"btn btn-primary btn-sm\" href=\"#s=1#w=0#g=1#m=-1#a=-100_-100#v=2.1534_0.1881_0.7653#o=-100_-100_1_1#p=Q\" role=\"button\">🔍</a>\n\nThe first step in MCMICRO is to align the provided **raw image tiles (Level 1)** and correct uneven illuminations in each of the tiles. MCMICRO currently accepts [Bio-formats](https://www.openmicroscopy.org/bio-formats/) compatible image formats, along with [a .csv file containing channel names](https://mcmicro.org/step-input.html) as inputs and outputs a stitched-and-registered image <a class=\"btn btn-primary btn-sm\" href=\"#s=1#w=0#g=2#m=-1#a=-100_-100#v=2.1534_0.1881_0.7653#o=-100_-100_1_1#p=Q\" role=\"button\">🔍</a>",
                     "Arrows": [],
                     "Overlays": [],
                     "Group": "Before Stitching",
@@ -46,7 +46,7 @@
                 },
                 {
                     "Name": "Whole-Slide Image (Level 2)",
-                    "Description": "To produce the **whole-slide image (Level 2)** in OME-TIFF format, Individual image tiles are [corrected for illumination](https://www.nature.com/articles/ncomms14836), followed by simultaneous [tile stitching and registration across cycles](https://www.biorxiv.org/content/10.1101/2021.04.20.440625v1). After these pre-processing steps, channels from different cycles can be \"merged\" and visualized",
+                    "Description": "To produce the **whole-slide image (Level 2)** in OME-TIFF format, Individual image tiles are [corrected for illumination](https://www.nature.com/articles/ncomms14836), followed by simultaneous [tile stitching and registration across cycles](https://www.biorxiv.org/content/10.1101/2021.04.20.440625v1). After these pre-processing steps, channels from different cycles can be \"merged\" and visualized.",
                     "Arrows": [],
                     "Overlays": [],
                     "Group": "Staining",
@@ -74,11 +74,11 @@
                 },
                 {
                     "Name": "Segmentation Probability Maps",
-                    "Description": "Basic cell segmentation in MCMICRO consists of two steps. In the first step, [machine learning models](https://mcmicro.org/unmicst.html) are used to generate probability maps that annotate each pixel with probabilities that it belongs to background or different parts of the cell such as the nucleus, cytoplasm, cell membrane or the intercellular region. MCMICRO executes multiple machine learning algorithms in parallel, allowing for a direct comparison of their outputs.",
+                    "Description": "Basic cell segmentation in MCMICRO consists of two steps. In the first step, [machine learning models](https://mcmicro.org/unmicst.html) are used to generate probability maps that annotate each pixel with probabilities that it belongs to background or different parts of the cell such as the nucleus, cytoplasm, cell membrane or the intercellular region. MCMICRO can executes multiple machine learning algorithms in parallel, allowing for a direct comparison of their outputs.",
                     "Arrows": [],
                     "Overlays": [],
-                    "Group": "Staining",
-                    "Masks": ["Segmentation", "Probability Maps"],
+                    "Group": "DNA",
+                    "Masks": ["Cell Mask Outlines", "Probability Maps"],
                     "ActiveMasks": ["Probability Maps"],
                     "Zoom": 1,
                     "Pan": [
@@ -88,12 +88,12 @@
                 },
                 {
                     "Name": "Segmentation Masks (Level 3)",
-                    "Description": "The second step in cell segmentation applies [watershed-like algorithms](https://mcmicro.org/s3seg.html) to probability maps produced by the first step. The resulting segmentation labelled masks annotate each pixel with an index of the cell or nuclei it belongs to.",
+                    "Description": "The second step in cell segmentation applies [watershed-like algorithms](https://mcmicro.org/s3seg.html) to probability maps produced by the first step. The resulting segmentation labelled masks assign each cell with a unique index number, where each pixel value adopts its cell's corresponding index number (background is assigned 0). MCMICRO generates labelled masks for nuclei, cytoplasm, and whole cell regions with matching indexed numbers to facilitate single cell analysis.",
                     "Arrows": [],
                     "Overlays": [],
-                    "Group": "Staining",
-                    "Masks": ["Segmentation", "Probability Maps"],
-                    "ActiveMasks": ["Segmentation"],
+                    "Group": "DNA",
+                    "Masks": ["Cell Mask Outlines", "Probability Maps"],
+                    "ActiveMasks": ["Cell Mask Outlines"],
                     "Zoom": 1,
                     "Pan": [
                         0.5,
@@ -106,7 +106,7 @@
                     "Arrows": [],
                     "Overlays": [],
                     "Group": "Staining",
-                    "Masks": ["CD3d Expression", "Segmentation", "Probability Maps"],
+                    "Masks": ["CD3d Expression", "Cell Mask Outlines", "Probability Maps"],
                     "ActiveMasks": ["CD3d Expression"],
                     "Zoom": 1.292,
                     "Pan": [
@@ -119,13 +119,13 @@
     ],
     "Masks": [
         {
-            "Name": "Segmentation",
+            "Name": "Cell Mask Outlines",
             "Path": "mask/cellRingMask-outlines",
             "Colors": [
                 "ff00ff"
             ],
             "Channels": [
-                "Mask Outlines"
+                "Cell Mask Outlines"
             ]
         },
         {
@@ -226,6 +226,16 @@
                 "CD31",
                 "VDAC1",
                 "Pan-CK"
+            ]
+        },
+        {
+            "Name": "DNA",
+            "Path": "Stitching_0__DNA--4__DNA-2--8__DNA-3",
+            "Colors": [
+                "ffffff"
+            ],
+            "Channels": [
+                "DNA"
             ]
         }
     ]
