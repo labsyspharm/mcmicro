@@ -21,7 +21,7 @@ Some workflows require a collection or list of datasets as input. To create a co
 <img src="{{ site.baseurl }}/images/galaxy-build-collection.png" />
 
 Order the datasets, name, and create the collection.
-<img src="{{ site.baseurl }}/images/galaxy-order-collection.png" width="250"/>
+<img src="{{ site.baseurl }}/images/galaxy-order-collection.png"/>
 
 Now the image datasets will appear in the history as a single collection list.
 <img src="{{ site.baseurl }}/images/galaxy-collection-history.png" />
