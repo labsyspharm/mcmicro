@@ -29,7 +29,7 @@ Each of the MCMICRO modules can be installed as a [galaxy tool](https://galaxypr
 - [quantification](https://toolshed.g2.bx.psu.edu/view/perssond/quantification/928db0f952e3)
 - [naivestates](https://toolshed.g2.bx.psu.edu/view/perssond/naivestates/a62b0c62270e)
 
-## Upload the MCMICRO Galaxy workflow.
+## Upload the MCMICRO Galaxy workflow
 Two workflows are currently available for running MCMICRO in Galaxy.
 - [MCMICRO Tissue Microarray Workflow](https://github.com/ohsu-comp-bio/cycIF-galaxy/blob/master/workflows/Galaxy-Workflow-MCMICRO_TMA_v1.0.0.ga)
 - [MCMICRO Whole Slide Tissue Workflow](https://github.com/ohsu-comp-bio/cycIF-galaxy/blob/master/workflows/Galaxy-Workflow-MCMICRO_Tissue_v1.0.0.ga)
