@@ -3,7 +3,7 @@ process csproc {
     tag "${module.name}"
     
     // Output
-    publishDir "${params.pubDir}/${module.name}", mode: 'copy', pattern: '*.csv'
+    publishDir "${params.pubDir}/${module.name}", mode: 'copy', pattern: '*.{csv,h5ad}'
     publishDir "${params.pubDir}/${module.name}", mode: 'copy', pattern: 'plots/**'
 
     // QC 
@@ -21,7 +21,7 @@ process csproc {
 
     output:
 
-    path '*.csv', emit: cst
+    path '*.{csv,h5ad}', emit: cst
     path('plots/**') optional true
     path('qc/**') optional true
     tuple path('.command.sh'), path('.command.log')
