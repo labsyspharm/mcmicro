@@ -1,5 +1,6 @@
 process csproc {
     container "${params.contPfx}${module.container}:${module.version}"
+    tag "${module.name}"
     
     // Output
     publishDir "${params.pubDir}/${module.name}", mode: 'copy', pattern: '*.csv'
