@@ -18,12 +18,14 @@ has_children: true
 | S3segmenter | Watershed segmentation | [Reference](../documentation/parameter-reference.html#arguments-to-s3segmenter--s3seg-opts) - [Guide](../tuning/s3seg.html) | [Code](https://github.com/HMS-IDAC/S3segmenter) - [DOI](https://www.biorxiv.org/content/10.1101/2021.03.15.435473) |
 | mcquant | Single cell quantification | [Reference](https://github.com/labsyspharm/quantification#single-cell-quantification) | [Code](https://github.com/labsyspharm/quantification) - [DOI](https://www.biorxiv.org/content/10.1101/2021.03.15.435473) |
 | naivestates | Cell type calling | [Reference](https://github.com/labsyspharm/naivestates#basic-usage) | [Code](https://github.com/labsyspharm/naivestates) |
+| FastPG | Cell type calling | [Reference](https://github.com/labsyspharm/celluster#parameter-reference) | [Code](https://github.com/labsyspharm/celluster) - [DOI](https://www.biorxiv.org/content/10.1101/2020.06.19.159749v2) |
 | SCIMAP | Cell type calling | [Reference](https://scimap.xyz) - [Guide](https://scimap.xyz/tutorials/1-scimap-tutorial-getting-started.html) | [Code](https://github.com/ajitjohnson/scimap/) |
 
 # Coming soon
 
 * Mesmer - [Reference](https://doi.org/10.1101/2021.03.01.431313)
-* Phenograph - [Reference](https://doi.org/10.1016/j.cell.2015.05.047)
+* Cellpose - [Reference](https://www.nature.com/articles/s41592-020-01018-x)
+* GPU-enabled Phenograph - [Reference](https://doi.org/10.1016/j.cell.2015.05.047)
 
 Additional module development and evaluation will be enabled through future hackathons hosted by the Cancer Systems Biology Consortium (CSBC).
 

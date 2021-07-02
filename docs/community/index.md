@@ -15,24 +15,27 @@ MCMICRO is a multi-institutional effort, led by the following developers:
 **Heidelberg University**
 * [Denis Schapiro](https://twitter.com/denisschapiro)
 
-**Dana-Farber Cancer Institute**
-* [Ajit Johnson](https://github.com/ajitjohnson)
-
 **Oregon Health and Sciences University**
 * [Allison Creason](https://www.ohsu.edu/people/allison-creason-phd)
 * [Jeremy Goecks](https://www.ohsu.edu/people/jeremy-goecks-phd)
+
+**Dana-Farber Cancer Institute**
+* [Ajit Johnson](https://ajitjohnson.com/)
 
 **Vanderbilt University**
 * [Darren Tyson](https://medschool.vanderbilt.edu/cancer-biology/person/darren-tyson-ph-d/)
 
 **Brigham and Women's Hospital**
-* [Giorgio Gaglia](https://github.com/santagatalab/)
+* [Giorgio Gaglia](https://connects.catalyst.harvard.edu/Profiles/display/Person/25408)
 
 **The Jackson Laboratory**
 * [Brian White](https://www.jax.org/people/brian-white)
 
 **Broad Institute**
-* [Huan Wang](https://github.com/huanlity)
+* [Huan Wang](https://www.linkedin.com/in/huan-wang-4b940473/)
+
+**Brigham Young University**
+* [Matthew Hodgman](https://www.linkedin.com/in/matthodgman/)
 
 **Indica Labs**
 * [Erik Burlingame](https://www.linkedin.com/in/erik-burlingame/)
