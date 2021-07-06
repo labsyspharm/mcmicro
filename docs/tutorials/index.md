@@ -7,7 +7,9 @@ has_children: true
 
 # Tutorials
 
-<a href="https://www.youtube.com/watch?v=fnxBvgJQmtY"><img style="margin-right:10px" align="left" align="right" width="240" height="180" src="https://img.youtube.com/vi/fnxBvgJQmtY/0.jpg"></a> A general introduction [video](https://www.youtube.com/watch?v=fnxBvgJQmtY) that provides a high-level overview of the pipeline.
+<div>
+<a href="https://www.youtube.com/watch?v=fnxBvgJQmtY"><img style="margin-right:10px" align="left" width="240" height="180" src="https://img.youtube.com/vi/fnxBvgJQmtY/0.jpg"></a> A general introduction [video](https://www.youtube.com/watch?v=fnxBvgJQmtY) that provides a high-level overview of the pipeline.
+</div>
 
 ---
 
@@ -16,7 +18,7 @@ This detailed [visual guide](pipeline-visual-guide.html) takes you through the s
 
 ---
 
-<a href="https://youtu.be/tLWMe_uJY9A"><img align="left" width="100" height="100" src="https://img.youtube.com/vi/tLWMe_uJY9A/0.jpg"></a>
+<a href="https://youtu.be/tLWMe_uJY9A"><img style="margin-right:10px" align="left" width="100" height="100" src="https://img.youtube.com/vi/tLWMe_uJY9A/0.jpg"></a>
 This [tutorial video](https://youtu.be/tLWMe_uJY9A) walks you through installing Nextflow and MCMICRO, downloading exemplar images, and executing the pipeline on the Google Cloud Platform.
 
 ---
