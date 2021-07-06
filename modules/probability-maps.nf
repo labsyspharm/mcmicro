@@ -1,5 +1,6 @@
 process pmproc {
     container "${params.contPfx}${module.container}:${module.version}"
+    tag "${module.name}"
     
     // Output probability map
     publishDir "${params.pubDir}/${module.name}", mode: 'copy', pattern: '*_Probabilities*.tif'

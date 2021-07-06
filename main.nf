@@ -14,7 +14,7 @@ nextflow.enable.dsl=2
 // Default parameters for the pipeline as a whole
 params.sampleName  = file(params.in).name
 params.startAt     = 'registration'
-params.stopAt      = params.startAt == 'cell-states' ? 'cell-states' : 'quantification'
+params.stopAt      = 'cell-states'
 params.tma         = false    // whether working with a TMA (true) or whole-slide image (false)
 
 // Some image formats store multiple fields of view in a single file. Other
@@ -29,7 +29,7 @@ params.singleFormats = '{.ome.tiff,.ome.tif,.rcpnl,.btf,.nd2,.tif,.czi}'
 
 // Default selection of methods for each step
 params.probabilityMaps = 'unmicst'
-params.cellStates      = 'naivestates'
+params.cellStates      = 'scimap'
 
 // Legacy parameters (to be deprecated in future versions)
 params.illum              = false
