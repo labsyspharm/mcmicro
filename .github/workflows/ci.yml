@@ -156,5 +156,5 @@ jobs:
         run: |
           ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at registration --stop-at segmentation --probability-maps cypository --cypositoryOpts '--scalingFactor 0.25 --threshold 0.05' --s3seg-opts '--probMapChan 0 --nucleiRegion bypass --logSigma 45 300'
           docker rmi -f $(docker images -a -q)
-          ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at quantification
+          ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at quantification --stop-at quantification
           ls ~/data/exemplar-002/*
