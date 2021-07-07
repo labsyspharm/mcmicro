@@ -20,7 +20,30 @@ nextflow run labsyspharm/mcmicro --in path/to/exemplar-001
 nextflow run labsyspharm/mcmicro --in path/to/exemplar-002 --tma
 ```
 
-By default, the pipeline starts from the registration step and stops after executing the quantification step. Use `--start-at` and `--stop-at` flags to execute any contiguous section of the pipeline instead. Any subdirectory name listed in [Directory Structure](steps.html) is a valid starting and stopping point. **Note that starting at any step beyond registration requires pre-computed output of the previous steps placed at the correct location in the project directory.**
+After a successful run, the following text will be displayed:
+
+![screenshot after successful run]({{ site.baseurl }}/images/screenshot-after-run.jpg)
+
+The pipeline will also generate the following directory, depending on the modules used:
+
+``` bash
+exemplar-001
+├── markers.csv
+├── raw/
+├── illumination/
+├── registration/
+├── dearray/            # When working with TMA array(using --tma flag during execution)
+├── probability-maps/
+├── segmentation/
+├── quantification/
+└── qc/
+```
+
+Visual inspection of quality control (`qc/`) files is recommended after completing the run. Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may contain `.tif` images for inspection. More details on output files and quality control can be found in [Directory Structure](dir.html).
+
+### Specifying start and stop modules
+
+By default, the pipeline starts from the registration step and stops after executing the quantification step. Use `--start-at` and `--stop-at` flags to execute any contiguous section of the pipeline instead. Any subdirectory name listed in [Directory Structure](dir.html) is a valid starting and stopping point. **Note that starting at any step beyond registration requires pre-computed output of the previous steps placed at the correct location in the project directory.**
 
 ``` bash
 # If you already have a pre-stitched TMA image, start at the dearray step
@@ -29,6 +52,8 @@ nextflow run labsyspharm/mcmicro --in path/to/exemplar-002 --tma --start-at dear
 # If you want to run the illumination profile computation and registration only
 nextflow run labsyspharm/mcmicro --in path/to/exemplar-001 --start-at illumination --stop-at registration
 ```
+
+### Specifying path for intermediate files
 
 By default Nextflow writes intermediate files to a `work/` directory inside whatever location you initiate a pipeline run from. Use `-w` flag to provide a different location. (See below for more information about these files.)
 
