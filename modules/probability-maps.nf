@@ -3,10 +3,12 @@ process pmproc {
     tag "${module.name}"
     
     // Output probability map
-    publishDir "${params.pubDir}/${module.name}", mode: 'copy', pattern: '*_Probabilities*.tif'
+    publishDir "${params.pubDir}/${module.name}", mode: 'copy', pattern: '*.tif'
+    publishDir "${params.pubDir}/${module.name}", mode: 'copy', pattern: 'plots/**'
 
     // QC
-    publishDir "${params.path_qc}/${module.name}", mode: 'copy', pattern: '*Preview*.tif'
+    publishDir "${params.path_qc}/${module.name}", mode: 'copy',
+      pattern: 'qc/**', saveAs: { fn -> fn.replaceFirst("qc/","") }
     
     // Provenance
     publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
@@ -18,8 +20,9 @@ process pmproc {
 
     output:
 
-    tuple val("${module.name}"), path('*_Probabilities*.tif'), emit: pm
-    path('*Preview*.tif') optional true
+    tuple val("${module.name}"), path('*.tif'), emit: pm
+    path('plots/**') optional true
+    path('qc/**') optional true
     tuple path('.command.sh'), path('.command.log')
 
     when:
