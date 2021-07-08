@@ -97,7 +97,7 @@ The `cmd` field must contain a command that, when executed inside the container,
 
 ## Input
 
-The `input` field determines how the pipeline will supply inputs to the module. Some examples in the context of [exemplar-001](../documentation/installation.html#exemplar-data) may look as follows:
+The `input` field determines how the pipeline will supply inputs to the module. Some examples in the context of [exemplar-001]({{ site.baseurl }}/datasets.html) may look as follows:
 
 | Configuration | What MCMICRO will execute |
 | :-- | :-- |
@@ -128,7 +128,7 @@ python /app/mc-ilastik.py --output . --input exemplar-001.ome.tif --model myawes
 
 # (Advanced) Automated tests
 
-MCMICRO uses [GitHub Actions](https://docs.github.com/en/actions) to execute a set of automated tests on the [two exemplar images](../documentation/installation.html#exemplar-data). The tests ensure that modifications to the pipeline don't break existing module functionality. When contributing a new module to MCMICRO, consider composing a new test that ensures your module runs on the exemplar data without any issues.
+MCMICRO uses [GitHub Actions](https://docs.github.com/en/actions) to execute a set of automated tests on the [two exemplar images]({{ site.baseurl }}/datasets.html). The tests ensure that modifications to the pipeline don't break existing module functionality. When contributing a new module to MCMICRO, consider composing a new test that ensures your module runs on the exemplar data without any issues.
 
 Automated tests are specified in [`ci.yml`](https://github.com/labsyspharm/mcmicro/blob/master/.github/workflows/ci.yml). The exemplar data is cached and can be easily restored via `actions/cache@v2`. For example, consider the following minimal test that contrasts unmicst and ilastik on exemplar-001:
 

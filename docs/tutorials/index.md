@@ -19,7 +19,7 @@ A general introduction [video](https://www.youtube.com/watch?v=fnxBvgJQmtY) that
 [![]({{ site.baseurl }}/images/tutorials/vizguide.png)](pipeline-visual-guide.html)
 {: .p-3 .m-0}
 
-This detailed [visual guide](pipeline-visual-guide.html) takes you through the steps performed by the MCMICRO pipeline as it processes [exemplar-002]({{ site.baseurl }}/documentation/installation.html#exemplar-data). The guide was developed using the open source [Minerva software](https://www.cycif.org/software/minerva), developed by the Laboratory of Systems Pharmacology.
+This detailed [visual guide](pipeline-visual-guide.html) takes you through the steps performed by the MCMICRO pipeline as it processes [exemplar-002]({{ site.baseurl }}/datasets.html). The guide was developed using the open source [Minerva software](https://www.cycif.org/software/minerva), developed by the Laboratory of Systems Pharmacology.
 
 </div>
 

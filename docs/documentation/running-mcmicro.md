@@ -76,6 +76,8 @@ As the number of custom flags grows, providing them all on the command line can 
 1. Anything that would appear as `--flag` on the command line should be `flag: true` in the YAML file.
 1. The above only applies to double-dashed arguments (which are passed to the pipeline). The single-dash arguments (like `-profile`) cannot be moved to YAML, because they are given to nextflow; the pipeline never sees them.
 
+[More information about the YAML syntax.](https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html)
+
 For example, consider the following command:
 ``` bash
 nextflow run labsyspharm/mcmicro --in /data/exemplar-002 --tma --start-at dearray --ashlar-opts '-m 35 --pyramid'
