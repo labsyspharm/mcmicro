@@ -181,15 +181,15 @@ workflow {
 
     // Merge against precomputed intermediates and feed to s3seg
     pmaps = probmaps.out.mix(pre_pmap)
-    segmentation( allimg, tmamasks, pmaps )
+    segmentation(allimg, tmamasks, pmaps)
 
     // Merge segmentation masks against precomputed ones and append markers.csv
     segMsk = segmentation.out.mix(pre_segMsk)
-    quantification( allimg, segMsk, chMrk )
+    quantification(allimg, segMsk, chMrk)
 
     // Spatial feature tables -> cell state calling
     sft = quantification.out.mix(pre_qty)
-    cellstates( sft, modCS )
+    cellstates(sft, modCS)
 }
 
 // Write out parameters used
