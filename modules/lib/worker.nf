@@ -23,7 +23,7 @@
 //   .${module.name}Opts - custom module parameters specified via --${module.name}-opts
 process worker {
     container "${params.contPfx}${module.container}:${module.version}"
-    tag "${module.name}"
+    tag "${module.name}-${task.index}"
     
     // Output probability map
     publishDir "${params.pubDir}/${module.name}", mode: 'copy', pattern: "$outfmt"
