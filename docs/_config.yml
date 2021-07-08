@@ -1,7 +1,9 @@
 title: mcmicro
 description: Multiple-choice microscopy pipeline
+logo: "/assets/images/mcmicro-logo.svg"
 
-remote_theme: pmarsceill/just-the-docs
+# remote_theme: pmarsceill/just-the-docs
+remote_theme: pdmosses/just-the-docs@rec-nav-2
 color_scheme: lsp
 search_enabled: true
 heading_anchors: true
@@ -22,6 +24,14 @@ back_to_top_text: "Back to top"
 
 last_edit_timestamp: true
 last_edit_time_format: "%b %e %Y" # format: https://ruby-doc.org/stdlib-2.7.0/libdoc/time/rdoc/Time.html
+
+# Footer "Edit this page on GitHub" link text
+gh_edit_link: true # show or hide edit this page link
+gh_edit_link_text: "Edit this page on GitHub."
+gh_edit_repository: "https://github.com/yu-anchen/mcmicro" # the github URL for your repo
+gh_edit_branch: "website-restructure" # the branch that your docs is served from
+gh_edit_source: docs # the source that your files originate from
+gh_edit_view_mode: "tree" # "tree" or "edit" if you want the user to jump into the editor immediately
 
 license_name: "MIT License"
 license_url: "https://github.com/labsyspharm/mcmicro/blob/master/LICENSE"

@@ -1,12 +1,11 @@
 ---
 layout: default
 title: S3Segmenter
-nav_order: 36
-parent: Segmentation
-grand_parent: Image Processing Steps
+nav_order: 3
+parent: Parameter Tuning
 ---
 
-![](images/segbannerv8.png)<br>
+![]({{ site.baseurl }}/images/segbannerv8.png)<br>
 <p align="center">
   "So... you want to do single-cell image segmentation?"
 </p>
@@ -38,11 +37,11 @@ The s3segmenter parameters described in this manual should be provided to mcmicr
 In its simplest form, s3segmenter by default will identify primary objects only (usually nuclei) and assumes this is in channel 0 (the first channel). In this case, no settings need to be specified.<br>
 
 `S3seg-opts: <leave blank>`<br>
-![](images/segmentation1.png)<br>
+![]({{ site.baseurl }}/images/segmentation1.png)<br>
 ### **2. It’s a disaster. It’s not finding all the nuclei**<br>
 Depending on the type of pre-processing that was done, you may need to use a different method of finding cells. Let’s add `--nucleiRegion localMax` to the options:<br>
 `S3seg-opts: ’--nucleiRegion localMax’`<br>
-![](images/segmentation2.png)<br>
+![]({{ site.baseurl }}/images/segmentation2.png)<br>
 ### **3. Looks good! I want to filter out some objects based on size**<br>
 You can specify a range of nuclei diameters that you expect your nuclei to be. Using `--logSigma <low end of range> <high end of range>`
 Ie. `--logSigma 10 50` will retain all nuclei that have diameters between 10 and 50 pixels. Default is 3 60
@@ -50,17 +49,17 @@ Ie. `--logSigma 10 50` will retain all nuclei that have diameters between 10 and
 **Examples:**
 a) <br>
 `S3seg-opts: ‘--nucleiRegion localMax --logSigma 3 10’`<br>
-![](images/segmentation3.png)<br>
+![]({{ site.baseurl }}/images/segmentation3.png)<br>
 b) <br>
 `S3seg-opts: ‘--nucleiRegion localMax --logSigma 30 60’`<br>
-![](images/segmentation3b.png)<br>
+![]({{ site.baseurl }}/images/segmentation3b.png)<br>
 c) default: <br>
 `S3seg-opts: ‘--nucleiRegion localMax --logSigma 3 60’` <br>
-![](images/segmentation3c.png)<br>
+![]({{ site.baseurl }}/images/segmentation3c.png)<br>
 ### **4. a) How do I segment the cytoplasm as well?**<br>
 To do this, you will need to:
 1. look at your image and identify a suitable cytoplasm channel such as the example below. <br>
-![](images/segmentation4aa.png)<br>
+![]({{ site.baseurl }}/images/segmentation4aa.png)<br>
 Nuclei and cytoplasm stained with Hoechst (purple) and NaK ATPase (green) respectively.
 Notice how the plasma membrane is distinctive and separates one cell from another. It also has good signal-to-background (contrast) and is in-focus.
 
@@ -70,7 +69,7 @@ Specify `--CytoMaskChan <channel number(s) of cytoplasm>`. For example, to speci
 `--segmentyCytoplasm segmentCytoplasm`
 
 `S3seg-opts: ‘--nucleiRegion localMax --CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm’`<br>
-![](images/segmentation4ab.png)<br>
+![]({{ site.baseurl }}/images/segmentation4ab.png)<br>
 **4. b) I don’t have a suitable cytoplasm channel…..**<br>
 That’s ok. Cytoplasm segmentation is hard because there isn’t a universal marker. It’s generally acceptable to sample some number of pixels around the nucleus to approximate the cytoplasm.
 1. Choose `--cytoMethod ring`
@@ -79,12 +78,12 @@ That’s ok. Cytoplasm segmentation is hard because there isn’t a universal ma
 **Examples**<br>
 i) <br>
 `S3seg-opts: ’--nucleiRegion localMax --CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm --cytoMethod ring --cytoDilation 15’`<br>
-![](images/segmentation4bi.png)<br>
+![]({{ site.baseurl }}/images/segmentation4bi.png)<br>
 Cytoplasm spilling beyond cytoplasm stain. Possibly too large `--cytoDilation` parameter.
 
 ii) <br>
 `S3seg-opts: ‘--nucleiRegion localMax --CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm --cytoMethod ring --cytoDilation 6’`<br>
-![](images/segmentation4bii.png)<br>
+![]({{ site.baseurl }}/images/segmentation4bii.png)<br>
 Much better. Cytoplasm outlines now just within the marker stain.
 
 **4. c) Are there other ways to detect the cytopolasm?**<br>
@@ -92,15 +91,15 @@ There’s a hybrid approach that combines a cytoplasm channel and the ring aroun
 Try changing --cytoMethod to ‘hybrid’.<br>
 
 `S3seg-opts: ‘--nucleiRegion localMax --CytoMaskChan 9 --segmentCytoplasm segmentCytoplasm --cytoMethod hybrid’`<br>
-![](images/segmentation4c.png)<br>
+![]({{ site.baseurl }}/images/segmentation4c.png)<br>
 This is still a very experimental technique and may not yield better results!
 
 ### **5. I have an instance segmentation model, which already produces a mask. How do I incorporate this in?.**
 S3segmenter can accept pre-made instance segmentation primary object masks and still run some of the later functions we talked about above. To bypass nuclei segmentation, specify `--nucleiRegion bypass`. Then, you can still use `--logSigma` to filter overly small/large objects.
 
 `S3seg-opts: ’--logSigma 45 300 --nucleiRegion bypass’`<br>
-![](images/segmentation5ii.png)
-![](images/segmentation5i.png)
+![]({{ site.baseurl }}/images/segmentation5ii.png)
+![]({{ site.baseurl }}/images/segmentation5i.png)
 
 ### **6. Nuclei…. Cytoplasm… NOW GIVE ME INTRACELLULAR SPOTS**
 This is a very complexed operation and requires several parameters.
@@ -120,11 +119,11 @@ Lower numbers increase sensitivity at the expense of  more false positives. Not 
 Select custom values for each channels. 
 i) ie. `--punctaSD 10 12 10` (more stringent)
 Note:  If you specify one value, it will use that for all channels<br>
-![](images/segmentation5ci.png)<br>
+![]({{ site.baseurl }}/images/segmentation5ci.png)<br>
 Hmmm….only 4 puncta are being detected shown by the green dots, but there are clearly other spots not being picked up.
 
 ii)  `--punctaSD 3 3 3` (more sensitive)<br>
-![](images/segmentation5cii.png)<br>
+![]({{ site.baseurl }}/images/segmentation5cii.png)<br>
 Perfect! All visible spots appear to be detected with the more sensitive option.
 
 `S3seg-opts: ’--logSigma 45 300 --detectPuncta 0 1 2 --punctaSigma 1.5 2 1.75 --punctaSD 3'`

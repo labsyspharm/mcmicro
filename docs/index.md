@@ -1,44 +1,87 @@
 ---
 layout: default
-title: Overview
+title: Home
 nav_order: 1
 description: ""
-permalink: /
-last_modified_date: 2021-03-28
+# last_modified_date: 2021-03-28
 ---
 
-# mcmicro
+<!-- UIkit CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.22/dist/css/uikit.min.css" />
+
+# MCMICRO
 
 Multiple-choice microscopy pipeline
 {: .fs-6 .fw-300 }
 
-MCMICRO is an end-to-end processing pipeline for multiplexed whole slide imaging and tissue microarrays developed at the [HMS Laboratory of Systems Pharmacology](https://hits.harvard.edu/the-program/laboratory-of-systems-pharmacology/about/).
-The pipeline is described in a [bioRxiv preprint](https://www.biorxiv.org/content/10.1101/2021.03.15.435473v1) and accompanied by the following resources:
+An end-to-end processing pipeline to transform large, multi-channel whole slide images into single-cell data. This site is a consolidated source of information on [MCMICRO](https://github.com/labsyspharm/mcmicro), documentation, roadmap, community and test data.
 
-| Resource | URL |
-| --- | --- |
-| Code repository | [https://github.com/labsyspharm/mcmicro](https://github.com/labsyspharm/mcmicro) |
-| Instruction manual | **YOU ARE HERE** |
-| EMIT dataset | [https://www.synapse.org/EMIT](https://www.synapse.org/EMIT) |
-| Tonsil images | [https://www.synapse.org/MCMICRO_images](https://www.synapse.org/MCMICRO_images) |
+[{{ "quick start" | upcase }}](documentation/){: .btn  .mr-4 .btn-blue }
+[{{ "tutorials" | upcase }}](tutorials/index.html){: .btn }
 
-## Quick start
+<div class="uk-cover-container uk-margin-medium-bottom">
+    <canvas width="1920" height="1080"></canvas>
+    <iframe src="
+    https://www.youtube.com/embed/DY_F-eG9nm4?fs=0&amp;iv_load_polocy=3&amp;modestbranding=1&amp;playsinline=1&amp;autoplay=1&amp;controls=0&amp;rel=0&amp;playlist=DY_F-eG9nm4&amp;loop=1" width="1920" height="1080" frameborder="0" uk-cover></iframe>
+</div>
 
-1. [Install](http://mcmicro.org/installation.html) nextflow and Docker. Check with `nextflow run hello` and `docker images` to make sure both are functional.
-3. [Download](http://mcmicro.org/installation.html#exemplar-data) exemplar data. E.g., `nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-001 --path .` to download to current directory.
-4. [Run](http://mcmicro.org/running-mcmicro.html) mcmicro on the exemplars. E.g., `nextflow pull labsyspharm/mcmicro` followed by `nextflow run labsyspharm/mcmicro --in exemplar-001` to execute in current directory. 
+<h2 class="uk-heading-line uk-text-center uk-margin-medium-bottom uk-margin-large-top"><span>Features</span></h2>
 
-On an average workstation, it takes approximately 5-10 minutes to process exemplar-001 from start to finish. Exemplar-002 is substantially larger, and its processing takes 30-40 minutes on an average workstation.
+<div class="uk-child-width-1-2@m uk-grid-small uk-grid-match uk-flex-center" uk-grid>
+    <div>
+        <div class="uk-card uk-card-default uk-card-body">
+            <h2 class="uk-card-title">Images to Insights 💡</h2>
+            <p>Highly multiplexed tissue imaging provides deep insight into the composition, organization and states of normal and diseased tissues. When converted into single cell data, tissue images are a natural complement to scRNA-Seq and similar profiling methods with the added advantage of spatial context. MCMICRO converts raw images into single cell data using state of the art algorithms for illumination correction, stitching, quality control, segmentation, and cell type calling.</p>
+        </div>
+    </div>
+    <div>
+        <div class="uk-card uk-card-default uk-card-body">
+            <h2 class="uk-card-title">MCMICRO Pipeline 🎛️</h2>
+            <p>MCMICRO is open source, community supported software that uses Docker and workflow software to create pipelines for analyzing microscopy-based images of tissues, with an emphasis on highly multiplexed methods and single-cell data. Data is processed sequentially using algorithms (modules) developed in different research groups.</p>
+        </div>
+    </div>
+    <div>
+        <div class="uk-card uk-card-default uk-card-body">
+            <h2 class="uk-card-title">Flexible tools for a new field 🤝</h2>
+            <p>High-plex tissue imaging is a new field involving a wide range of imaging technologies and the best image analysis approach is not always clear. MCMICRO therefore implements a “multiple choice” approach in which users can select among different modules for critical processing steps</p>
+        </div>
+    </div>
+    <div>
+        <div class="uk-card uk-card-default uk-card-body">
+            <h2 class="uk-card-title">Flexible Implementation 🔛</h2>
+            <p>MCMICRO is implemented in the workflow languages <a href="https://www.nextflow.io/">Nextflow</a> and <a href="https://galaxyproject.org/">Galaxy</a>. Both implementations can be run locally, on a compute cluster, or on the cloud</p>
+        </div>
+    </div>
+    <div>
+        <div class="uk-card uk-card-default uk-card-body">
+            <h2 class="uk-card-title">Adding Modules ⚙️</h2>
+            <p>Modules are being added to MCMICRO incrementally by a diverse developer
+                community seeded by the NCI <a href="https://humantumoratlas.org/">Human Tissue Atlas Network</a>. See what modules we are
+                currently <a href="roadmap/">using</a>, check out <a href="roadmap/adding.html">instructions</a> to add your own modules, or <a href="help.html">get help</a> from
+the community.</p>
+        </div>
+    </div>
+    <div>
+        <div class="uk-card uk-card-default uk-card-body">
+            <h2 class="uk-card-title">Test Data 📥</h2>
+            <p>MCMICRO comes with a growing library of imaging data (<a href="datasets.html#exemplar-microscopy-images-of-tissues-emit">EMIT data</a>) for testing your test run or for developing new algorithms. There is a lot of unexplored biology in the test data as well!</p>
+        </div>
+    </div>
+    <div>
+        <div class="uk-card uk-card-default uk-card-body">
+            <h2 class="uk-card-title">Technology Agnostic 🎩</h2>
+            <p>MCMICRO works with any image that meets the <a href="https://www.openmicroscopy.org/bio-formats/">BioFormats standard</a>, most commonly OME-TIFF. These images can be acquired using a wide range of technologies- CODEX, CyCIF, mIHC, mxIF, IMC or MIBI.</p>
+        </div>
+    </div>
+    <div>
+        <div class="uk-card uk-card-default uk-card-body">
+            <h2>Best Practices 🤓</h2>
+            <p>Although it is nice to have many modules to try out, often you just want something that works. The MCMICRO team is collaborating with the NCI to run hackathons and challenges to identify the best modules and pipelines for specific types of data.</p>
+        </div>
+    </div>
+</div>
+               
 
-## Contributors
-
-Development of MCMICRO is led by [Artem Sokolov](https://github.com/ArtemSokolov) and [Denis Schapiro](https://github.com/DenisSch) at [Laboratory of Systems Pharmacology](https://hits.harvard.edu/the-program/laboratory-of-systems-pharmacology/about/), Harvard Medical School. Full list of [Contributors](contributors.html) and [Code of Conduct](code_of_conduct.html) are also available in this documentation.
-
-## Funding
-
-This work is supported by:
-
-* NCI grants U54-CA22508U2C-CA233262 and U2C-CA233280
-* NIH grant 1U54CA225088: Systems Pharmacology of Therapeutic and Adverse Responses to Immune Checkpoint and Small Molecule Drugs
-* Ludwig Center at Harvard Medical School and the Ludwig Cancer Research Foundation
-* Denis Schapiro was supported by the University of Zurich BioEntrepreneur-Fellowship (BIOEF-17-001) and a Swiss National Science Foundation Early Postdoc Mobility fellowship (P2ZHP3_181475). He is currently a [Damon Runyon Quantitative Biology Fellow](https://www.damonrunyon.org/news/entries/5551/Damon%20Runyon%20Cancer%20Research%20Foundation%20awards%20new%20Quantitative%20Biology%20Fellowships)
+<!-- UIkit JS -->
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.6.22/dist/js/uikit.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/uikit@3.6.22/dist/js/uikit-icons.min.js"></script>

@@ -7,11 +7,13 @@ parent: Platform-specific Steps
 
 # Running mcmicro on the O2 compute cluster
 
+**O2 is a [high-performance cluster](https://harvardmed.atlassian.net/wiki/spaces/O2/overview) at Harvard Medical School (HMS). Non-HMS users can safely ignore this page.**
+
 To run mcmicro on O2, your account must be in the `lsp` group to have proper permissions to run the module containers. There are several other important caveats.
 
 1. [Installation](installation.html) only requires Nextflow. Docker is not needed, because O2 uses Singularity to execute module containers.
 
-1. When working with [exemplars](installation.html#exemplar-data), please download your own copy to `/n/scratch3/users/.../$USER/` (where `$USER` is your eCommons ID and `...` is its first letter). A fully processed version is available in `/n/groups/lsp/cycif/exemplars`, but this version is meant to serve as a reference only. The directory permissions are set to read-only, preventing your pipeline run from writing its output there.
+1. When working with [exemplars]({{ site.baseurl }}/datasets.html), please download your own copy to `/n/scratch3/users/.../$USER/` (where `$USER` is your eCommons ID and `...` is its first letter). A fully processed version is available in `/n/groups/lsp/cycif/exemplars`, but this version is meant to serve as a reference only. The directory permissions are set to read-only, preventing your pipeline run from writing its output there.
 
 ## O2 execution
 
