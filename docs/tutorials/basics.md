@@ -16,7 +16,7 @@ The purpose of this briefing is to introduce some key concepts relevant to highl
 
 ## Technical features of tissue imaging technologies. 
 
-No systematic comparison of tissue imaging methods has yet been published, but several large consortia, including the Human Tumor Atlas Network (HTAN) (of which our laboratory is a part), are working to perform such comparisons. From a first-principles perspective, it is possible to identify four relevant performance metric: (i) the multiplicity or plex of the assay, (ii) spatial resolution, (iii) spatial scale and statistical power, and (iv) sensitivity or signal to noise ratio (SNR). In practice these parameters are not independent of each other: objective lenses with higher resolving power (higher numerical aperture) gather light more efficiently and are therefore more sensitive, but they have smaller fields of view.
+No systematic comparison of tissue imaging methods has yet been published, but several large consortia, including the Human Tumor Atlas Network ([HTAN](https://humantumoratlas.org/)), are working to perform such comparisons. From a first-principles perspective, it is possible to identify four relevant performance metric: (i) the multiplicity or plex of the assay, (ii) spatial resolution, (iii) spatial scale and statistical power, and (iv) sensitivity or signal to noise ratio (SNR). In practice these parameters are not independent of each other: objective lenses with higher resolving power (higher numerical aperture) gather light more efficiently and are therefore more sensitive, but they have smaller fields of view.
 
 Most discussion of the tissue imaging focuses on the multiplicity – the number channels – with a maximum number of 60 to 100 channels being typical; however, the great majority of published high-plex tissue imaging methods involve 20-40 marker proteins. Increase in multiplicity are important, but most extant methods are limited by the specificity of antibody-antigen detection.
 
@@ -64,7 +64,7 @@ Metadata standards for high-plex image data are rapidly developing: a wide varie
 
 ## The Open Microscopy Environment (OME) 
 
-MCMICRO is designed to solve the problem of processing high volumes of tissue image data and yield reliable image mosaics and single cell data. It is not solve all of the problems associated in the analysis and publication of images however, and we strongly recommend that laboratories also adopt the database and visualization tools provided by the OME community. The OME community is welcoming and it has many on-line resources that discuss the topics described above; OME also sponsors multiple workshops and conferences of interest to new and experienced microscopists. In our laboratories, we use MCMICRO, OME/OMERO and MINERVA in parallel<sup>24</sup>.
+MCMICRO is designed to solve the problem of processing high volumes of tissue image data and yield reliable image mosaics and single cell data. It is not solve all of the problems associated in the analysis and publication of images however, and we strongly recommend that laboratories also adopt the database and visualization tools provided by the OME community. The [OME community](https://www.openmicroscopy.org/events/ome-community-meeting-2021/) is welcoming and it has many on-line resources that discuss the topics described above; OME also sponsors multiple workshops and conferences of interest to new and experienced microscopists. In our laboratories, we use MCMICRO, OME/OMERO and [MINERVA](https://github.com/labsyspharm/minerva-story/wiki) in parallel<sup>24</sup>.
 
 ---
 
