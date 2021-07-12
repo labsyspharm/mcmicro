@@ -1,61 +1,95 @@
 ---
 layout: default
-title: Tissue Imaging Basics
+title: Tissue Imaging Intro
 nav_order: 2
 parent: Tutorials
 ---
 
-# Tissue Imaging Basics
+# Introduction to highly multiplexed tissue imaging 
 
-Biomedical microscopy comprises an increasing diversity of imaging methods that differ in how a sample is
-illuminated and data collected. Classical methods such as transmission light microscopy and epifluorescence
-microscopy have been joined more recently by structured illumination<sup>1</sup> and light-sheet microscopy<sup>2</sup>, as well as by
-non-optical methods that generate images using mass spectrometers<sup>3</sup>. What is common to all of these methods
-is that they generate data that can be represented as a series of intensity values on a two-dimensional raster –
-i.e. an image. Three-dimensional data is commonly represented as a stack of images along the Z axis (which is
-parallel to the objective lens in most cases) and multi-spectral data is represented as a series of images of the
-same plane at different excitation and emission wavelengths. Time is yet another data dimension that is
-commonly represented as a series of images (a movie).
+**Harvard LSP Tissue Imaging Program**
 
-The TIFF (Tagged Image File Format) is ideal for storing microscopy data at native resolution because it can
-combine multiple images in a single file (with each image occupying a separate layer in the file). Thus, a 3D
-multi-wavelength movie potentially containing hundreds of image planes can be stored in one TIFF file. TIFF files
-also contain metadata in the header that describes the organization and key properties of the images. For
-biomedical data, the [Open Microscopy Environment](https://www.openmicroscopy.org/ome-files/) (OME) TIFF format has become the most widely used
-standard for XML-based metadata and raster images. Because different vendors also have their own internal
-data standards, [Bio-Formats](https://www.openmicroscopy.org/bio-formats/) software was developed by the OME community to convert proprietary formats
-into a standardized, open format, most recently [OME-TIFF 6.0](https://docs.openmicroscopy.org/ome-model/6.0.1/ome-tiff/). This is a pyramid-encoded TIFF in which multiple
-resolutions of the same image are found in a single file to enable rapid pan and zoom, particularly using web
-tools (e.g. Google Maps). Many microscope vendors support Bio-Formats and this is therefore the standard
-supported by MCMICRO and other image processing software developed by the Laboratory of Systems Pharmacology (LSP).
+Updated July, 2021
 
-The key properties of any imaging system are resolution, speed/sensitivity, wavelength and field of view. In the
-case of tissue imaging, it is usually desirable to work at a resolution sufficient for subcellular structures to be
-resolved; this corresponds to ~0.4 µm at a wavelength of 550nm, which can be achieved using an objective lens having a numerical
-aperture of ~0.8 (see [MicroscopyU](https://www.microscopyu.com/microscopy-basics/resolution) for details).
-Under these circumstances, even scientific grade megapixel
-cameras cannot collect all of the data from a large tissue specimen (which may measure up to 2cm x 2cm). Thus,
-data acquisition commonly involves dividing the image into tiles – usually on the order of 1,000 tiles, each a multi-dimensional
-TIFF, in the case of large specimens - which are then recorded sequentially by moving the microscope stage in X
-and Y (such a microscope is often called a “slidescanner”). A complete image is assembled by “stitching” together
-image tiles from each X,Y coordinate, while also “registering” images from each tile for all available
-wavelengths. The stitching and registration process is not straightforward and we have developed the [ASHLAR](https://github.com/labsyspharm/ashlar) tool for this purpose.
+## Purpose 
 
-Microscope illumination is rarely stable over the time periods required to collect a large number of image tiles
-across multiple experiments -- which can sometimes span days or weeks -- and the illumination of each tile is also not perfectly uniform.
-Thus, after images are stitched and registered
-they are subjected to illumination correction and “flat fielding” to generate a homogenous complete image
-measuring up to 50,000 x 50,000 pixels and multiple wavelengths. For some image processing steps it is
-necessary to divide the image up into smaller pieces; this is done on the fully stitched and registered image so
-that the primary data maintain the best possible alignment in space and wavelength.
+The purpose of this briefing is to introduce some key concepts relevant to highly multiplexed tissue imaging and to provide an overview of the essential functionality in MCMICRO. This discussion is not geared to any specific image acquisition technology, but we cover in greatest depth those methods that use fluorescently-labelled antibodies, fluorescent dyes and epifluorescence imaging. These methods include cyclic immunofluorescence (CyCIF)<sup>1</sup>, Multiplexed Immunofluorescence (MxIF)<sup>2</sup>, CO-Detection by indEXing (CODEX)<sup>3</sup>, and Signal Amplification By Exchange Reaction (immuno-SABER)<sup>4</sup>. Mass spectrometry-based methods, such as Imaging Mass Cytometry (IMC)<sup>5</sup> and Multiplexed Ion Beam Imaging (MIBI)<sup>6</sup>, are also antibody-based but use metal tags, not fluorophores as labels. The common feature of all of these methods, as well as conventional transmission light microscopy used for immunohistochemistry, is that they generate data that can be represented as a series of intensity values on a two-dimensional raster. MIBI and IMC do this in one round of detection, whereas virtually all fluorescent-based methods are cyclic and generate high dimensional images via repeated collection of lower-dimensional images. MCMICRO can process 2D data from all of the methods described above, and extension to 3D is an area of active development.
 
-The OME community is welcoming and it has many on-line resources that discuss the topics described above in
-much greater detail. OME also sponsors multiple workshops and conferences of interest to new and
-experienced microscopists.
+## Technical features of tissue imaging technologies. 
+
+No systematic comparison of tissue imaging methods has yet been published, but several large consortia, including the Human Tumor Atlas Network ([HTAN](https://humantumoratlas.org/)), are working to perform such comparisons. From a first-principles perspective, it is possible to identify four relevant performance metric: (i) the multiplicity or plex of the assay, (ii) spatial resolution, (iii) spatial scale and statistical power, and (iv) sensitivity or signal to noise ratio (SNR). In practice these parameters are not independent of each other: objective lenses with higher resolving power (higher numerical aperture) gather light more efficiently and are therefore more sensitive, but they have smaller fields of view.
+
+Most discussion of the tissue imaging focuses on the multiplicity – the number channels – with a maximum number of 60 to 100 channels being typical; however, the great majority of published high-plex tissue imaging methods involve 20-40 marker proteins. Increase in multiplicity are important, but most extant methods are limited by the specificity of antibody-antigen detection.
+
+Increasing spatial resolution has been the focus of most microscopy advances in the past two decades (e.g. super resolution imaging by structure illumination<sup>7</sup> or stochastic reconstruction<sup>8</sup>), but resolution has been little discussed in tissue imaging studies. Higher resolution improves SNR, makes segmentation more robust and is, of course, essential for discerning small structures. Most slide-scanning microscopes use objectives the range of 0.4 to 1.0 NA, giving them nominal lateral resolutions of ~600 to 250 nm at an illumination wavelength of 550nm (see [MicroscopyU](https://www.microscopyu.com/microscopy-basics/resolution) for details). Rapid improvements in the resolution of tissue images are possible, simply by adopting state-of-the-art imaging methods.
+
+Spatial scale has also been neglected as a critical issue in tissue imaging: robust conclusions can be drawn from images only with sufficient spatial sampling. Because images exhibit spatial correlation on length scales up to 500 micron, specimens at least one square centimeter are essential for many purposes<sup>9</sup>; it is increasingly clear that tissue microarrays (TMAs) are generally inadequate, even though their use is widespread because they increase the sample number. In current practice, TMAs are not used for diagnosis, and the FDA requires that digital histology be based on whole-slide imaging (WSI)<sup>10</sup>. MCMICRO was developed with the demands of high-plex, whole-slide imaging in mind. 
+
+The sensitivity of an imaging method is typically dependent on a wide range of factors including the selectivity of the reagents, the quality of the instrumentation, resolution, etc. and must be evaluated with respect to specific objective criteria (typically yielding a receiver operator curve). As mentioned above, the field awaits the data needed for rigorous comparison of tissue imaging platforms (and even of the same imaging platforms across multiple laboratories).
+
+## Whole slide imaging and the role of stitching and registration 
+
+<img src="{{ site.baseurl }}/images/Fig1.png" align="left" style="margin-right:10px" alt="MCMICRO" width="400"/>
+
+All tissue imaging methods generate data comprising a series of intensity values on a raster. Multi-spectral data simply adds a dimension to the raster. Because resolution and field of view exhibit a reciprocal relationship – in both optical physics and the mapping of an image field onto the fixed raster of an electronic camera – whole slide images are almost always acquired by dividing a large specimen into tiles – usually on the order of 100 to 1,000 tiles, each a multi-dimensional TIFF - which are recorded sequentially by moving the microscope stage in X and Y (such a microscope is often called a “slide scanner”). These fields are then combined at sub-pixel accuracy into a mosaic image in a process known as *stitching*. Mosaics can be as large as 50,000 x 50,000 pixels x 100 channels, which corresponds to ~500 GByte of data – hence the need for specialized software. When high-plex images are assembled from multiple rounds of lower-plex imaging, it is also necessary to *register* channels to each other across imaging cycles. Multiple tools for image registration and stitching exist but these perform poorly with very large tissue images. We have therefore developed the [ASHLAR](https://github.com/labsyspharm/ashlar) <sup>11</sup> software package to combine registration and stitching for whole-slide imaging, guided by permutation tests. 
+
+Microscope illumination is rarely stable over the time periods required to collect a large number of image tiles across multiple experiments – which can sometimes span several days– and the illumination of individual tiles is also not perfectly uniform. We correct for these issues (a process known as *flat fielding*) using the BaSiC<sup>12</sup> package. However, we are currently working to more tightly link ASHLAR and BaSiC to improve illumination evenness.  
+
+While high-plex 3D tissue imaging remains rare, most published 3D studies use stacks of images spaced along the Z axis (which is parallel to the objective lens in most cases) in live-cells studies; time is also captured by a series of images to create a movie. MCMICRO can manage 3D image stacks, although specialized viewers are required to look at the data. In preclinical settings, more effective ways to sample 3D data have been in development for many decades. The most common of these, optical deconvolution microscopy<sup>13</sup>, confocal microscopy and fluorescent light sheet microscopy (LSFM)<sup>14</sup> acquire data directly in 3D data without the need for physical sectioning; LSFM is particularly valuable for tissue imaging because samples can be up to several hundred micron thick. It is odd that these essential breakthroughs in optical microscopy are not already widespread in high-plex tissue imaging, and we therefore expect their rapid introduction over the next few years. We are therefore working to add true 3D capability to MCMICRO.
+
+## Hematoxylin and Eosin (H&E) and colorimetric stains 
+
+Microscopy using Hematoxylin and Eosin (H&E), Romanowsky–Giemsa stains, and other colorimetric dyes, complemented by immunohistochemistry<sup>15</sup> has long played the primary role in the study of tissue architecture in humans and other organisms <sup>16,17</sup>. In a clinical setting, histopathology remains the primary means by which diseases such as cancer are staged and managed clinically<sup>18</sup>. High-plex tissue imaging aims to address the concern that H&E images, and classical histology in general, provide insufficient molecular information to precisely identify cell subtypes, study mechanisms of development, and characterize disease genes. The information acquired from over a century of anatomic histology is nonetheless essential for understanding tissue biology in a normal and diseased setting. We always acquired H&E in parallel with high-plex images, typically using serial sections. We and others are also working on ways to combine the two imaging modalities on the same section to facilitate single-cell analysis.
+
+## Extracting single cell data via image segmentation  
+
+Image processing is necessary to extract quantitative data from images. Although machine learning directly on images shows promise, most high-plex tissue imaging studies seek single-cell data, and this requires image segmentation. At the current state of the art, segmentation is one of the most challenging steps in single-cell analysis of tissue images, and MCMICRO therefore provides a wide variety of methods and models. Over time, we expect these to improve and to become consolidated via hackathons and similar activities that identify optimal methods and best practices.  
+
+Segmentation is a computer vision technique that assigns class labels to an image in a pixel-wise manner to optimally subdivide it; in most, cases this is followed by marker quantification to extract marker intensities on a per-cell or per organelle basis. Extensive work has gone into segmenting methods for metazoan cells grown in culture, but segmentation of tissue images is substantially more complex: cell sizes and shapes are more diverse in tissues, and cells are often closely packed. Deep learning methods have become standard in image segmentation, object detection, and synthetic image generation<sup>19</sup>, based on architectures such as ResNet, UNet and Mask R-CNN <sup>20,21</sup>. UNet, in particular, has become popular due to its ease of deployment on Graphical Processing Units (GPUs) and its superior performance. MCMICRO provides access to all of these architectures as a standard features. It is always necessary to examine an overlay of primary image data and segmentation mask to make sure that images are not over or under segmented. 
+
+One limitation of machine learning for tissue imaging is a lack of sufficient freely-available data with ground truth labelling. The [EMIT dataset]({{ site.baseurl }}/datasets.html#exemplar-microscopy-images-of-tissues-emit) is intended to address this requirement, but experience with natural scene images<sup>20</sup> has proven that the acquisition of sufficient data with accurate labels remains time consuming and rate limiting<sup>22</sup>. We therefore expect the EMIT dataset to grow steadily; users of MCMICRO should stay abreast of updates in segmentation methods and models.
+
+## Image Quality Control 
+
+In practice, all tissue images contain technical artifacts (pre-analytical variables) including sectioning artifacts (areas where the knife compresses or tears the specimen), embedded foreign objects (dust, hair) and regions of fat or necrotic tissue that cannot easily be analyzed. To this, cyclic image acquisition adds cell loss with increasing cycle number and fluorescence imaging (but not mass spectrometry) must overcome problems with autofluorescence. Humans are remarkably good at looking past these artifacts to identify biologically meaningful patterns in biological data. However, artifacts substantially complicate single-cell data analysis using computational methods: foreign objects are often the brightest things in an image, and stand out when high-dimensional data are clustered. We and others are working on human-in-the loop and automated methods to identify and suppress these artifacts, but until then, MCMICRO users must iteratively examine the underlying image data, segmentation mask, and quantified features (per-cell marker intensities) to minimize the impact of noise.
+
+## Cell Feature Tables  
+
+The conversion of images into single cell data generates a *Cell Feature Table*, which is analogous to a count table in RNA sequencing, and typically records the positions of individual cells along with derived features such as marker intensity, morphology, and quality control attributes. The Cell Feature Table is used for all subsequent analysis, for example by dimensional reduction tools such as tSNE and UMAP, and for cell type calling. MCMICRO also includes a variety of specialized tools for analyzing spatial data using methods derived from physics, geographic information systems and ecology, but Cell Feature Tables can also be visualized using many tools developed for visualization of single cell sequencing data, cellxgene<sup>23</sup> for example. It is important to note, however, that whereas the frequency of a single mRNA corresponds to a single feature in scRNA-Seq, a single maker in an image can be processed to generate a large number of distinct features beyond intensity (e.g. shape, granularity, nuclear or membrane localization etc.).
+
+## Data and Metadata Formats 
+
+The TIFF (Tagged Image File Format) is ideal for storing microscopy data at native resolution because it can combine multiple images in a single file (with each image occupying a separate layer in the file). Thus, a 3D multi-wavelength movie potentially containing hundreds of image planes can be stored in one TIFF file. TIFF files also contain metadata in the header that describes the organization and key properties of the images. For biomedical data, the [Open Microscopy Environment](https://www.openmicroscopy.org/ome-files/) (OME) TIFF format has become the most widely used standard for XML-based metadata and raster images. Because different vendors also have their own internal data standards, [Bio-Formats](https://www.openmicroscopy.org/bio-formats/) software was developed by the OME community to convert proprietary formats into a standardized, open format, most recently [OME-TIFF 6.0](https://docs.openmicroscopy.org/ome-model/6.0.1/ome-tiff/). This is a pyramid-encoded TIFF in which multiple resolutions of the same image are found in a single file to enable rapid pan and zoom, particularly using web tools (e.g. Google Maps). Many microscope vendors support Bio-Formats and this is therefore the standard supported by MCMICRO and other image processing software developed by the Laboratory of Systems Pharmacology (LSP). 
+
+Metadata standards for high-plex image data are rapidly developing: a wide variety of laboratories have come together to create the Minimum Information about Tissue Imaging Standard (MITI), and we will update this briefing to include that information as soon as possible.
+
+## The Open Microscopy Environment (OME) 
+
+MCMICRO is designed to solve the problem of processing high volumes of tissue image data and yield reliable image mosaics and single cell data. It is not solve all of the problems associated in the analysis and publication of images however, and we strongly recommend that laboratories also adopt the database and visualization tools provided by the OME community. The [OME community](https://www.openmicroscopy.org/events/ome-community-meeting-2021/) is welcoming and it has many on-line resources that discuss the topics described above; OME also sponsors multiple workshops and conferences of interest to new and experienced microscopists. In our laboratories, we use MCMICRO, OME/OMERO and [MINERVA](https://github.com/labsyspharm/minerva-story/wiki) in parallel<sup>24</sup>.
 
 ---
 
-1. Wu, Yicong, and Hari Shroff. "Faster, sharper, and deeper: structured illumination microscopy for biological imaging." Nature methods 15.12 (2018): 1011-1019.
-1. Power, Rory M., and Jan Huisken. "A guide to light-sheet fluorescence microscopy for multiscale imaging." Nature methods 14.4 (2017): 360-373.
-1. Angelo, Michael, et al. "Multiplexed ion beam imaging of human breast tumors." Nature medicine 20.4 (2014): 436-442.
-
+1. Lin, J.-R. et al. Highly multiplexed immunofluorescence imaging of human tissues and tumors using t-CyCIF and conventional optical microscopes. eLife 7, (2018). 
+2. Gerdes, M. J. et al. Highly multiplexed single-cell analysis of formalin-fixed, paraffin-embedded cancer tissue. PNAS 110, 11982–11987 (2013). 
+3. Goltsev, Y. et al. Deep Profiling of Mouse Splenic Architecture with CODEX Multiplexed Imaging. Cell 174, 968-981.e15 (2018). 
+4. Saka, S. K. et al. Immuno-SABER enables highly multiplexed and amplified protein imaging in tissues. Nat Biotechnol 37, 1080–1090 (2019). 
+5. Giesen, C. et al. Highly multiplexed imaging of tumor tissues with subcellular resolution by mass cytometry. Nature Methods 11, 417–422 (2014). 
+6. Angelo, M. et al. Multiplexed ion beam imaging (MIBI) of human breast tumors. Nat Med 20, 436–442 (2014). 
+7. Wu, Y. & Shroff, H. Faster, sharper, and deeper: structured illumination microscopy for biological imaging. Nat Methods 15, 1011–1019 (2018). 
+8. Rust, M. J., Bates, M. & Zhuang, X. Sub-diffraction-limit imaging by stochastic optical reconstruction microscopy (STORM). Nat. Methods 3, 793–795 (2006). 
+9. Lin, J.-R. et al. Multiplexed 3D atlas of state transitions and immune interactions in colorectal cancer. bioRxiv 2021.03.31.437984 (2021) doi:10.1101/2021.03.31.437984. 
+10. Health, C. for D. and R. Technical Performance Assessment of Digital Pathology Whole Slide Imaging Devices. U.S. Food and Drug Administration http://www.fda.gov/regulatory-information/search-fda-guidance-documents/technical-performance-assessment-digital-pathology-whole-slide-imaging-devices (2019). 
+11. Muhlich, J., Chen, Y.-A., Russell, D. & Sorger, P. K. Stitching and registering highly multiplexed whole slide images of tissues and tumors using ASHLAR software. (2021) doi:10.1101/2021.04.20.440625. 
+12. Peng, T. et al. A BaSiC tool for background and shading correction of optical microscopy images. Nat Commun 8, (2017). 
+13. Sibarita, J.-B. Deconvolution microscopy. Adv Biochem Eng Biotechnol 95, 201–243 (2005). 
+14. Power, R. M. & Huisken, J. A guide to light-sheet fluorescence microscopy for multiscale imaging. Nature Methods 14, 360–373 (2017). 
+15. Immunologists, A. A. of. The Demonstration of Pneumococcal Antigen in Tissues by the Use of Fluorescent Antibody. The Journal of Immunology 45, 159–170 (1942). 
+16. Albertson, D. G. Gene amplification in cancer. Trends in Genetics 22, 447–455 (2006). 
+17. Shlien, A. & Malkin, D. Copy number variations and cancer. Genome Medicine 1, 62 (2009). 
+18. Amin, M. B. et al. The Eighth Edition AJCC Cancer Staging Manual: Continuing to build a bridge from a population-based to a more ‘personalized’ approach to cancer staging. CA Cancer J Clin 67, 93–99 (2017). 
+19. LeCun, Y., Bengio, Y. & Hinton, G. Deep learning. Nature 521, 436–444 (2015). 
+20. Ronneberger, O., Fischer, P. & Brox, T. U-Net: Convolutional Networks for Biomedical Image Segmentation. arXiv:1505.04597 [cs] (2015). 
+21. He, K., Gkioxari, G., Dollár, P. & Girshick, R. Mask R-CNN. arXiv:1703.06870 [cs] (2018). 
+22. Gurari, D. et al. How to Collect Segmentations for Biomedical Images? A Benchmark Evaluating the Performance of Experts, Crowdsourced Non-experts, and Algorithms. 2015 IEEE Winter Conference on Applications of Computer Vision (2015) doi:10.1109/WACV.2015.160. 
+23. Megill, C. et al. cellxgene: a performant, scalable exploration platform for high dimensional sparse matrices. bioRxiv 2021.04.05.438318 (2021) doi:10.1101/2021.04.05.438318. 
+24. Rashid, R. et al. Interpretative guides for interacting with tissue atlas and digital pathology data using the Minerva browser. Nat Biomed Eng. 2020.03.27.001834 (2020) doi:10.1101/2020.03.27.001834. 

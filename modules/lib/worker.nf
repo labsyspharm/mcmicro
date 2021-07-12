@@ -25,7 +25,7 @@ process worker {
     container "${params.contPfx}${module.container}:${module.version}"
     tag "${module.name}-${task.index}"
     
-    // Output probability map
+    // Output files in the pre-configured output format (outfmt) and optional plots
     publishDir "${params.pubDir}/${module.name}", mode: 'copy', pattern: "$outfmt"
     publishDir "${params.pubDir}/${module.name}", mode: 'copy', pattern: 'plots/**'
 
@@ -63,12 +63,12 @@ process worker {
 
     if( params.containsKey(m) ) {
 	def mdlcp = "cp-${model.name}"
-	"""
+        """
         cp $model $mdlcp
         $cmd ${module.model} $mdlcp    
         """
     } else {
-	"""
+        """
         $cmd
         """
     }
