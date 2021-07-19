@@ -66,7 +66,7 @@ jobs:
           key: mcmicro-exemplar-001
       - name: Test exemplar-001
         run: |
-          ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps unmicst,ilastik --s3seg-opts '--probMapChan 0' --cell-states scimap,naivestates
+          ./nextflow main.nf --in ~/data/exemplar-001
           ls ~/data/exemplar-001/*
 
 
@@ -117,6 +117,8 @@ jobs:
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at quantification --stop-at quantification
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at cell-states --stop-at cell-states --cell-states scimap
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at cell-states --stop-at cell-states --cell-states naivestates
+          ./nextflow main.nf --in ~/data/exemplar-001 --start-at cell-states --stop-at cell-states --cell-states fastpg
+          ./nextflow main.nf --in ~/data/exemplar-001 --start-at cell-states --stop-at cell-states --cell-states scanpy
           ls ~/data/exemplar-001/*
 
   # One-shot test of exemplar-002
