@@ -4,14 +4,7 @@
 
 MCMICRO is an end-to-end processing pipeline for multiplexed whole slide imaging and tissue microarrays developed at the [HMS Laboratory of Systems Pharmacology](https://hits.harvard.edu/the-program/laboratory-of-systems-pharmacology/about/). It comprises stitching and registration, segmentation, and single-cell feature extraction. Each step of the pipeline is containerized to enable portable deployment across an array of compute environments.
 
-The pipeline is described in a [bioRxiv preprint](https://www.biorxiv.org/content/10.1101/2021.03.15.435473v1) and accompanied by the following resources:
-
-| Resource | URL |
-| --- | --- |
-| Code repository | **YOU ARE HERE** |
-| Instruction manual | [http://mcmicro.org/](http://mcmicro.org/) |
-| EMIT dataset | [https://www.synapse.org/EMIT](https://www.synapse.org/EMIT) |
-| Tonsil images | [https://www.synapse.org/MCMICRO_images](https://www.synapse.org/MCMICRO_images) |
+The pipeline is described in a [bioRxiv preprint](https://www.biorxiv.org/content/10.1101/2021.03.15.435473v1). Please see [mcmicro.org](https://mcmicro.org/) for documentation, tutorials, benchmark datasets and more.
 
 ## Quick start
 
