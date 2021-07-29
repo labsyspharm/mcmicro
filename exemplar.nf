@@ -29,7 +29,7 @@ seq = Channel.of( 1..params.nc )
 nm = params.nc * 4 + 1			// Four markers per channel, plus header
 
 process getImages {
-    publishDir "${params.path}/${params.name}", mode: 'copy'
+    publishDir "${params.path}/${params.name}", mode: 'move'
 
     input:
 	val i from seq
@@ -54,7 +54,7 @@ process getImages {
 }
 
 process getMarkers {
-    publishDir "${params.path}/${params.name}", mode: 'copy'
+    publishDir "${params.path}/${params.name}", mode: 'move'
 
     output:
 	file '**'
