@@ -125,7 +125,7 @@ pre_pmap = findFiles(idxStart == 5,
     .map{ f -> tuple(f.getParent().getBaseName(), f) }
     .filter{ params.probabilityMaps.contains(it[0]) }
 pre_segMsk = findFiles(idxStart == 6,
-		       "${paths[5]}/**Mask.tif",
+		       "${paths[5]}/**.ome.tif",
 		       {error "No segmentation masks in ${paths[5]}"})
     .map{ f -> tuple(f.getParent().getBaseName(), f) }.groupTuple()
 pre_qty    = findFiles(idxStart == 7,

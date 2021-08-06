@@ -66,6 +66,7 @@ jobs:
           key: mcmicro-exemplar-001
       - name: Test exemplar-001
         run: |
+          docker rmi -f $(docker images -a -q)
           ./nextflow main.nf --in ~/data/exemplar-001
           ls ~/data/exemplar-001/*
 
@@ -85,7 +86,8 @@ jobs:
           key: mcmicro-exemplar-001
       - name: Test exemplar-001
         run: |
-          ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps cypository --s3seg-opts '--probMapChan 0 --nucleiRegion bypass --logSigma 45 300'
+          docker rmi -f $(docker images -a -q)
+          ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps cypository --s3seg-opts '--probMapChan 1 --nucleiRegion bypass --logSigma 45 300'
           ls ~/data/exemplar-001/*
 
 
@@ -104,6 +106,7 @@ jobs:
           key: mcmicro-exemplar-001
       - name: Test exemplar-001 step-by-step
         run: |
+          docker rmi -f $(docker images -a -q)
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at registration --stop-at registration
           docker rmi -f $(docker images -a -q)
           ./nextflow clean -f last
@@ -112,9 +115,9 @@ jobs:
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at probability-maps --stop-at probability-maps --probability-maps cypository
           docker rmi -f $(docker images -a -q)
           ./nextflow clean -f last
-          ./nextflow main.nf --in ~/data/exemplar-001 --start-at segmentation --stop-at segmentation --probability-maps ilastik --s3seg-opts '--probMapChan 0'
+          ./nextflow main.nf --in ~/data/exemplar-001 --start-at segmentation --stop-at segmentation --probability-maps ilastik --s3seg-opts '--probMapChan 1'
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at segmentation --stop-at segmentation --probability-maps unmicst
-          ./nextflow main.nf --in ~/data/exemplar-001 --start-at segmentation --stop-at segmentation --probability-maps cypository --s3seg-opts '--probMapChan 0 --nucleiRegion bypass --logSigma 45 300'
+          ./nextflow main.nf --in ~/data/exemplar-001 --start-at segmentation --stop-at segmentation --probability-maps cypository --s3seg-opts '--probMapChan 1 --nucleiRegion bypass --logSigma 45 300'
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at quantification --stop-at quantification
           docker rmi -f $(docker images -a -q)
           ./nextflow clean -f last
@@ -140,6 +143,7 @@ jobs:
           key: mcmicro-exemplar-002-2cycle
       - name: Test exemplar-002
         run: |
+          docker rmi -f $(docker images -a -q)
           ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at registration --stop-at segmentation
           docker rmi -f $(docker images -a -q)
           ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at quantification
@@ -160,7 +164,8 @@ jobs:
           key: mcmicro-exemplar-002-2cycle
       - name: Test exemplar-002
         run: |
-          ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at registration --stop-at segmentation --probability-maps cypository --cypositoryOpts '--scalingFactor 0.25 --threshold 0.05' --s3seg-opts '--probMapChan 0 --nucleiRegion bypass --logSigma 45 300'
+          docker rmi -f $(docker images -a -q)
+          ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at registration --stop-at segmentation --probability-maps cypository --cypositoryOpts '--scalingFactor 0.25 --threshold 0.05' --s3seg-opts '--probMapChan 1 --nucleiRegion bypass --logSigma 45 300'
           docker rmi -f $(docker images -a -q)
           ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at quantification --stop-at quantification
           ls ~/data/exemplar-002/*

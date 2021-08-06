@@ -1,11 +1,11 @@
 process s3seg {
     // Output
     publishDir "${params.pubDir}/$tag",
-      mode: 'copy', pattern: '*/*Mask.tif', saveAs: {f -> file(f).name}
+      mode: 'copy', pattern: '*/*.ome.tif', saveAs: {f -> file(f).name}
 
     // QC
     publishDir "${params.path_qc}/s3seg/$tag",
-      mode: 'copy', pattern: '*/*Outlines.tif', saveAs: {f -> file(f).name}
+      mode: 'copy', pattern: '*/qc/**', saveAs: {f -> file(f).name}
 
     // Provenance
     publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
@@ -18,10 +18,10 @@ process s3seg {
 
     output:
 	// output for quantification
-        tuple val(tag), path("**Mask.tif"), emit: segmasks
+        tuple val(tag), path("*/*.ome.tif"), emit: segmasks
 
         // qc and provenance
-        path('**')
+        path('*/qc/**')
         tuple path('.command.sh'), path('.command.log')
 
     when: params.idxStart <= 5 && params.idxStop >= 5
