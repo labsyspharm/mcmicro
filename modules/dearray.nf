@@ -1,4 +1,6 @@
 process coreograph {
+    container "${params.contPfx}${module.container}:${module.version}"
+    
     // Output
     publishDir params.pubDir, mode: 'copy', pattern: '**{[0-9],mask}.tif'
 
@@ -12,7 +14,9 @@ process coreograph {
     publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
       saveAs: {fn -> "${task.name}.log"}
     
-    input: path s
+    input:
+      val module
+      path s
     
     output:
       path "**{,[A-Z],[A-Z][A-Z]}{[0-9],[0-9][0-9]}.tif", emit: cores
@@ -31,10 +35,11 @@ process coreograph {
 
 workflow dearray {
     take:
+	module
 	tma
 
     main:
-	coreograph(tma)
+	coreograph(module, tma)
 
     emit:
         cores = coreograph.out.cores.flatten()

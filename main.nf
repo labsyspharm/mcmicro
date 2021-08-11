@@ -155,8 +155,8 @@ include {cellstates}     from './modules/cell-states'      addParams(pubDir: pat
 
 // Define the primary mcmicro workflow
 workflow {
-    illumination(raw)
-    registration(raw,
+    illumination(params.moduleIllum, raw)
+    registration(params.moduleRegistr, raw,
 		 illumination.out.ffp.mix( pre_ffp ),
 		 illumination.out.dfp.mix( pre_dfp ))
 
@@ -169,7 +169,7 @@ workflow {
         }
 
     // Apply dearray to TMAs only
-    dearray(img.tma)
+    dearray(params.moduleDearray, img.tma)
 
     // Merge against precomputed intermediates
     tmacores = dearray.out.cores.mix(pre_cores)

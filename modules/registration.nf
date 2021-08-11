@@ -1,6 +1,7 @@
 import mcmicro.Util
 
 process ashlar {
+    container "${params.contPfx}${module.container}:${module.version}"
     publishDir params.pubDir, mode: 'copy', pattern: '*.tif'
     
     // Provenance
@@ -10,7 +11,8 @@ process ashlar {
       saveAs: {fn -> "${task.name}.log"}
     
     input:
-      path lraw // Only for staging
+      val module
+      path lraw    // Only for staging
       val lrelPath // Use this for paths
       path lffp
       path ldfp
@@ -30,6 +32,7 @@ process ashlar {
 
 workflow registration {
     take:
+      module
       raw
       ffp
       dfp
@@ -37,6 +40,7 @@ workflow registration {
     main:
       rawst = raw.toSortedList{a, b -> a[0] <=> b[0]}.transpose()
       ashlar(
+	module,
         rawst.first(),
         rawst.last(),
         ffp.toSortedList{a, b -> a.getName() <=> b.getName()},
