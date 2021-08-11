@@ -140,7 +140,7 @@ exemplar-001
     └── unmicst-exemplar-001_cell.csv
 ```
 
-There is a direct correspondence between the `.csv` filenames and the filenames of segmentation masks. For example, `quantification/unmicst-exemplar-001_cell.csv` quantifies the `segmentation/unmicst-exemplar-001/cell.ome.tif`.
+There is a direct correspondence between the `.csv` filenames and the filenames of segmentation masks. For example, `quantification/unmicst-exemplar-001_cell.csv` quantifies `segmentation/unmicst-exemplar-001/cell.ome.tif`.
 
 # Quality control
 
