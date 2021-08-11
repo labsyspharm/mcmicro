@@ -120,11 +120,11 @@ exemplar-001
 │       └── exemplar-001_Probabilities_0.tif
 └── segmentation/
     ├── ilastik-exemplar-001/
-    │   ├── cellMask.tif
-    │   └── nucleiMask.tif
+    │   ├── cell.ome.tif
+    │   └── nuclei.ome.tif
     └── unmicst-exemplar-001/
-        ├── cellMask.tif
-        └── nucleiMask.tif
+        ├── cell.ome.tif
+        └── nuclei.ome.tif
 ```
 
 # Quantification
@@ -136,11 +136,11 @@ exemplar-001
 ├── ...
 ├── segmentation/
 └── quantification/
-    ├── ilastik-exemplar-001.csv
-    └── unmicst-exemplar-001.csv
+    ├── ilastik-exemplar-001_cell.csv
+    └── unmicst-exemplar-001_cell.csv
 ```
 
-There is a direct correspondence between colunn name suffixes in the `.csv` files and the filenames of segmentation masks. For example, the column `CD357_cellMask` in `quantification/unmicst-exemplar-001.csv` quantifies the expression of `CD357` that was computed over `segmentation/unmicst-exemplar-001/cellMask.tif`. Similarly, `FDX1_nucleiMask` quantified the expression of `FDX1` computed over `segmentation/unmicst-exemplar-001/nucleiMask.tif`.
+There is a direct correspondence between the `.csv` filenames and the filenames of segmentation masks. For example, `quantification/unmicst-exemplar-001_cell.csv` quantifies the `segmentation/unmicst-exemplar-001/cell.ome.tif`.
 
 # Quality control
 

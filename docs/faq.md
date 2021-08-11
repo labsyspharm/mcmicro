@@ -71,7 +71,7 @@ nextflow clean -f -but last
 
 ### Q: How does mcmicro handle multi-file formats such as `.xdce`?
 
-A: Registration and illumination correction modules in mcmicro are [Bio-Formats compatible](https://docs.openmicroscopy.org/bio-formats/6.0.1/supported-formats.html). Place all files into the `raw/` subdirectory, as described in [Directory Structure](directory-structure.html), and mcmicro modules will correctly identify and use the relevant ones.
+A: Registration and illumination correction modules in mcmicro are [Bio-Formats compatible](https://docs.openmicroscopy.org/bio-formats/6.0.1/supported-formats.html). Place all files into the `raw/` subdirectory, as described in [Directory Structure]({{ site.baseurl }}/documentation/dir.html), and mcmicro modules will correctly identify and use the relevant ones.
 
 ## Segmentation
 
@@ -102,3 +102,22 @@ Use `--unmicst-opts` and `--s3seg-opts` to pass the new values to UnMicst and S3
 nextflow run labsyspharm/mcmicro --in /path/to/unbinned/data --unmicst-opts '--scalingFactor 0.5' --s3seg-opts '--cytoDilation 6'
 ```
 
+## Quantification
+
+### Q: How do I quantify multiple masks?
+
+A: Use `--quant-opts` to specify the `--masks` parameter for quantification. Any file found in the corresponding `segmentation/` folder can be provided here. For example,
+
+```
+nextflow run labsyspharm/mcmicro --in /path/to/exemplar-001 --quant-opts '--masks cell.ome.tif nuclei.ome.tif'
+```
+
+will quantify cell and nuclei masks. The corresponding spatial feature tables can then be found in `quantification/unmicst-exemplar-001_cell.csv` and `quantification/unmicst-exemplar-001_nuclei.csv`, respectively.
+
+### Q: How do I compute the median expression of each channel?
+
+A: Use `--quant-opts` to specify the corresponding `--intensity_props` parameter for quantification:
+
+```
+nextflow run labsyspharm/mcmicro --in /path/to/exemplar-001 --quant-opts '--intensity_props median_intensity'
+```
