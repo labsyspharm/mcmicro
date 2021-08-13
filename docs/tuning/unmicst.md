@@ -56,7 +56,7 @@ Again, consider using *unmicst-duo* with a nuclear envelope stain.<br>
 ![]({{ site.baseurl }}/images/unmicst6.png) <br>
 
 **4. You said the training data is sampled at 0.65microns/pixel and acquired with a 20x/0.75NA objective lens. What do I do if my data was acquired with a 40x lens?**<br>
-First of all, check what is your pixel size since that is more relevant. If your pixel size is about half of the training data (ie. 0.325 microns/pixel), use a `--samplingFactor` of 0.5. If your pixel size is double (ie. 1.3 microns/pixel), then set your `--scalingFactor` to 2.
+First of all, check what is your pixel size since that is more relevant. If your pixel size is about half of the training data (ie. 0.325 microns/pixel), use a `--scalingFactor` of 0.5. If your pixel size is double (ie. 1.3 microns/pixel), then set your `--scalingFactor` to 2.
 
 **5. I heard unmicst-legacy is spectacular.**<br>
 You mean spectacularly **bad**. unmicst-legacy is deprecated. Use unmicst-solo or unmicst-duo if you have a nuclear envelope staining.
