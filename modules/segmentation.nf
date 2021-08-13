@@ -1,4 +1,6 @@
 process s3seg {
+    container "${params.contPfx}${module.container}:${module.version}"
+
     // Output
     publishDir "${params.pubDir}/$tag",
       mode: 'copy', pattern: '*/*.ome.tif', saveAs: {f -> file(f).name}
@@ -14,6 +16,7 @@ process s3seg {
       saveAs: {fn -> "${task.name}.log"}
     
     input:
+	val module
 	tuple val(tag), val(method), path(core), file('mask.tif'), path(probs)
 
     output:
@@ -41,10 +44,10 @@ include {getFileID} from './lib/util'
 
 workflow segmentation {
     take:
-	
-    imgs
-    tmamasks
-    pmaps
+      module	
+      imgs
+      tmamasks
+      pmaps
 
     main:
 
@@ -63,10 +66,11 @@ workflow segmentation {
 	tuple(getFileID(f, '_Probabilities'), f, mtd) }
 
     // Combine everything based on IDs
-    id_imgs.join(id_masks).combine( id_pmaps, by:0 )
+    inputs = id_imgs.join(id_masks).combine( id_pmaps, by:0 )
 	.map{ id, img, msk, pm, mtd ->
-	tuple("${mtd}-${img.getBaseName().split('\\.').head()}", mtd, img, msk, pm) } |
-	s3seg
+	tuple("${mtd}-${img.getBaseName().split('\\.').head()}", mtd, img, msk, pm) }
+
+    s3seg(module, inputs)
     
     emit:
 
