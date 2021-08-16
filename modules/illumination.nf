@@ -8,6 +8,8 @@ def escapeForImagej(s) {
 }
 
 process illumination {
+    container "${params.contPfx}${module.container}:${module.version}"
+
     // Output profiles
     publishDir params.pubDir, mode: 'copy', pattern: '*.tif'
 
@@ -18,6 +20,7 @@ process illumination {
       saveAs: {fn -> "${task.name}.log"}
     
     input:
+      val module
       tuple path(raw), val(relPath) // raw is only for staging, use relPath for paths
     output:
       path '*-dfp.tif', emit: dfp

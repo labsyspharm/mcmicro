@@ -155,8 +155,8 @@ include {cellstates}     from './modules/cell-states'      addParams(pubDir: pat
 
 // Define the primary mcmicro workflow
 workflow {
-    illumination(raw)
-    registration(raw,
+    illumination(params.moduleIllum, raw)
+    registration(params.moduleRegistr, raw,
 		 illumination.out.ffp.mix( pre_ffp ),
 		 illumination.out.dfp.mix( pre_dfp ))
 
@@ -169,7 +169,7 @@ workflow {
         }
 
     // Apply dearray to TMAs only
-    dearray(img.tma)
+    dearray(params.moduleDearray, img.tma)
 
     // Merge against precomputed intermediates
     tmacores = dearray.out.cores.mix(pre_cores)
@@ -181,11 +181,11 @@ workflow {
 
     // Merge against precomputed intermediates and feed to s3seg
     pmaps = probmaps.out.mix(pre_pmap)
-    segmentation(allimg, tmamasks, pmaps)
+    segmentation(params.moduleSeg, allimg, tmamasks, pmaps)
 
     // Merge segmentation masks against precomputed ones and append markers.csv
     segMsk = segmentation.out.mix(pre_segMsk)
-    quantification(allimg, segMsk, chMrk)
+    quantification(params.moduleQuant, allimg, segMsk, chMrk)
 
     // Spatial feature tables -> cell state calling
     sft = quantification.out.mix(pre_qty)

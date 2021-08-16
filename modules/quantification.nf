@@ -1,4 +1,6 @@
 process mcquant {
+    container "${params.contPfx}${module.container}:${module.version}"
+
     // Output
     publishDir params.pubDir, mode: 'copy', pattern: '*.csv'
 
@@ -9,6 +11,7 @@ process mcquant {
       saveAs: {fn -> "${task.name}.log"}
     
     input:
+	val module
 	tuple val(tag), path("$tag"), path(masks), path(ch)
     output:
 	path '*.csv', emit: tables
@@ -26,10 +29,10 @@ include {getFileID} from './lib/util'
 
 workflow quantification {
     take:
-
-    imgs
-    segmasks
-    markers
+      module
+      imgs
+      segmasks
+      markers
 
     main:
 
@@ -40,10 +43,10 @@ workflow quantification {
     id_msks = segmasks.map{ id, msk -> x = id.split('-',2); tuple(x[1], x[0], msk) }
 
     // Combine everything based on IDs
-    id_msks.combine(id_imgs, by:0)
+    inputs = id_msks.combine(id_imgs, by:0)
 	.map{ id, mtd, msk, img -> tuple("${mtd}-${img.getName()}", img, msk) }
-	.combine( markers ) |
-	mcquant
+	.combine( markers )
+    mcquant(module, inputs)
     
     emit:
 
