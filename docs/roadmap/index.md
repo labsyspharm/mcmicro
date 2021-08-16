@@ -2,7 +2,6 @@
 layout: default
 title: Roadmap
 nav_order: 30
-has_children: true
 ---
 
 # Current Modules
