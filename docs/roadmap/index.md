@@ -2,7 +2,6 @@
 layout: default
 title: Roadmap
 nav_order: 30
-has_children: true
 ---
 
 # Current Modules
@@ -35,4 +34,4 @@ Module suggestions can be made by posting to [https://forum.image.sc/](https://f
 
 # Add a module
 
-MCMICRO allows for certain module types to be specified dynamically through a configuration file. If you already have a containerized method with a command-line interface, follow [our instructions](adding.html) to incorporate your module into the pipeline.
+MCMICRO allows for certain module types to be specified dynamically through a configuration file. If you already have a containerized method with a command-line interface, follow [our instructions]({{ site.baseurl }}/tutorials/adding.html) to incorporate your module into the pipeline.
