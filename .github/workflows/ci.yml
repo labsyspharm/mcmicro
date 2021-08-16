@@ -169,3 +169,24 @@ jobs:
           docker rmi -f $(docker images -a -q)
           ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at quantification --stop-at quantification
           ls ~/data/exemplar-002/*
+
+  # Running containers with singularity
+  test-ex001-singularity:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: eWaterCycle/setup-singularity@v6
+        with:
+          singularity-version: 3.6.4
+      - name: Install Nextflow
+        run: curl -fsSL get.nextflow.io | bash
+      - name: Restore exemplar-001 cache
+        uses: actions/cache@v2
+        with:
+          path: ~/data/exemplar-001
+          key: mcmicro-exemplar-001
+      - name: Test exemplar-001
+        run: |
+          ./nextflow main.nf --in ~/data/exemplar-001 -profile singularity
+          ls ~/data/exemplar-001/*
