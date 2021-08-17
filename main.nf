@@ -199,6 +199,8 @@ workflow {
     // Spatial feature tables -> cell state calling
     sft = quantification.out.mix(pre_qty)
     cellstates(sft, modCS)
+
+    cleanup()
 }
 
 // Write out parameters used
