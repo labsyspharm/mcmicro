@@ -17,6 +17,9 @@ params.startAt     = 'registration'
 params.stopAt      = 'cell-states'
 params.tma         = false    // whether working with a TMA (true) or whole-slide image (false)
 
+// Default parameters for environment-specific setup and cleanup
+params.O2ext = false
+
 // Some image formats store multiple fields of view in a single file. Other
 // formats store each field separately, typically in .tif files, with a separate
 // index file to tie them together. We will look for the index files from
@@ -153,8 +156,14 @@ include {segmentation}   from './modules/segmentation'     addParams(pubDir: pat
 include {quantification} from './modules/quantification'   addParams(pubDir: paths[6])
 include {cellstates}     from './modules/cell-states'      addParams(pubDir: paths[7])
 
+// Additional steps for environment-specific setup and cleanup
+include {setup}   from './modules/setup'
+include {cleanup} from './modules/cleanup'
+
 // Define the primary mcmicro workflow
 workflow {
+    setup()
+    
     illumination(params.moduleIllum, raw)
     registration(params.moduleRegistr, raw,
 		 illumination.out.ffp.mix( pre_ffp ),
