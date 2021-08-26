@@ -39,7 +39,10 @@ process worker {
     publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
       saveAs: {fn -> "${task.name}.log"}
 
-    input: tuple val(module), file(model), path(inp), val(outfmt), val(idxStep)
+    input:
+        tuple val(module), file(model), path(inp)
+        val(outfmt)
+        val(idxStep)
 
     output:
 

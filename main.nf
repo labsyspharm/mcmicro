@@ -120,7 +120,7 @@ pre_masks = findFiles(idxStart > 3 && params.tma,
 		      "${paths[3]}/masks/*.tif",
 		      {error "No TMA masks in ${paths[3]}/masks"})
 pre_pmap = findFiles(idxStart == 5,
-		     "${paths[4]}/*/*.tif",
+		     "${paths[4]}/*/*-pmap.tif",
 		     {error "No probability maps found in ${paths[4]}"})
     .map{ f -> tuple(f.getParent().getBaseName(), f) }
     .filter{ params.probabilityMaps.contains(it[0]) }

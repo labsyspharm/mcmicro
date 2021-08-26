@@ -9,13 +9,11 @@ workflow cellstates {
     main:
 
     // Determine if there are any custom models specified
-    modules.map{ it -> String m = "${it.name}Model";
-		tuple(it, params.containsKey(m) ?
-		      file(params."$m") : 'built-in') }
+    inp = modules.map{ it -> String m = "${it.name}Model";
+		      tuple(it, params.containsKey(m) ?
+		            file(params."$m") : 'built-in') }
 	.combine(input)
-	.combine(Channel.of('*.{csv,h5ad}'))
-	.combine(Channel.of(7)) |
-	worker
+    worker( inp, '*.{csv,h5ad}', 7 )
 
     emit:
 

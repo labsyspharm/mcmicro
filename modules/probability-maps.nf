@@ -9,13 +9,11 @@ workflow probmaps {
     main:
 
     // Determine if there are any custom models specified
-    modules.map{ it -> String m = "${it.name}Model";
-		tuple(it, params.containsKey(m) ?
-		      file(params."$m") : 'built-in') }
+    inp = modules.map{ it -> String m = "${it.name}Model";
+		      tuple(it, params.containsKey(m) ?
+		            file(params."$m") : 'built-in') }
 	.combine(input)
-	.combine(Channel.of('*.tif'))
-	.combine(Channel.of(4)) |
-	worker
+    worker( inp, '*.tif', 4 )
     
     emit:
 
