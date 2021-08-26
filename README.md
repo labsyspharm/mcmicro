@@ -8,9 +8,9 @@ The pipeline is described in a [bioRxiv preprint](https://www.biorxiv.org/conten
 
 ## Quick start
 
-1. [Install](http://mcmicro.org/installation.html) nextflow and Docker. Check with `nextflow run hello` and `docker images` to make sure both are functional.
+1. [Install](http://mcmicro.org/documentation/installation.html) nextflow and Docker. Check with `nextflow run hello` and `docker images` to make sure both are functional.
 3. [Download](http://mcmicro.org/datasets.html) exemplar data. E.g., `nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-001 --path .` to download to current directory.
-4. [Run](http://mcmicro.org/running-mcmicro.html) mcmicro on the exemplars. E.g., `nextflow pull labsyspharm/mcmicro` followed by `nextflow run labsyspharm/mcmicro --in exemplar-001` to execute in current directory. 
+4. [Run](http://mcmicro.org/documentation/running-mcmicro.html) mcmicro on the exemplars. E.g., `nextflow pull labsyspharm/mcmicro` followed by `nextflow run labsyspharm/mcmicro --in exemplar-001` to execute in current directory. 
 
 ## Funding
 
