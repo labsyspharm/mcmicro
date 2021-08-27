@@ -13,7 +13,8 @@ workflow cellstates {
 		      tuple(it, params.containsKey(m) ?
 		            file(params."$m") : 'built-in') }
 	.combine(input)
-    worker( inp, '*.{csv,h5ad}', 7 )
+        .combine(Channel.of(''))
+    worker( inp, '*.{csv,h5ad}', 7, "${params.pubDir}" )
 
     emit:
 

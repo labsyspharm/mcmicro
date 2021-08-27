@@ -10,8 +10,10 @@
 //     .model     - (optional) how a custom model will be provided to the module
 //   model   - a custom model file that a user specifies through --${module.name}-model
 //   inp     - input file to process (e.g., .ome.tif for probability-map generation)
+//   fnOut   - (optional) if not '', outputs will be renamed to this upon publication
 //   outfmt  - a regular expression defining the outputs to capture
 //   idxStep - index of the processing step associated with the module
+//   pubDir  - directory to publish outputs to
 //
 // Outputs:
 //   The process captures files matching outfmt and publishes them to pubDir
@@ -26,8 +28,9 @@ process worker {
     tag "${module.name}-${task.index}"
     
     // Output files in the pre-configured output format (outfmt) and optional plots
-    publishDir "${params.pubDir}/${module.name}", mode: 'copy', pattern: "$outfmt"
-    publishDir "${params.pubDir}/${module.name}", mode: 'copy', pattern: 'plots/**'
+    publishDir "${pubDir}/${module.name}", mode: 'copy',
+      pattern: "$outfmt", saveAs: {fn -> fnOut != '' ? fnOut : fn}
+    publishDir "${pubDir}/${module.name}", mode: 'copy', pattern: 'plots/**'
 
     // QC
     publishDir "${params.path_qc}/${module.name}", mode: 'copy',
@@ -40,15 +43,24 @@ process worker {
       saveAs: {fn -> "${task.name}.log"}
 
     input:
-        tuple val(module), file(model), path(inp)
+        tuple val(module), file(model), path(inp), val(fnOut)
         val(outfmt)
         val(idxStep)
+        val(pubDir)
 
     output:
 
-    tuple val("${module.name}"), path("$outfmt"), emit: res
+    // Every worker emits a tuple (input file ID, module used, result)
+    // The input file ID can be used to match against files in other pipeline steps
+    tuple val("${inp.getBaseName().split('\\.').head()}"),
+      val("${module.name}"), path("$outfmt"), emit: res
+
+    // Modules have the option of producing additional files in plots/ and qc/
+    //   subdirectories. These are captured and published to the project directory.
     path('plots/**') optional true
     path('qc/**') optional true
+
+    // Provenance
     tuple path('.command.sh'), path('.command.log')
 
     when:
