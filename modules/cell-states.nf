@@ -13,8 +13,9 @@ workflow cellstates {
 		      tuple(it, params.containsKey(m) ?
 		            file(params."$m") : 'built-in') }
 	.combine(input)
-        .combine(Channel.of(''))
-    worker( inp, '*.{csv,h5ad}', 7, "${params.pubDir}" )
+        .map{ mod, _2, _3 ->
+        tuple(mod, _2, _3, "${params.pubDir}/${mod.name}", '') }
+    worker( inp, '*.{csv,h5ad}', 7 )
 
     emit:
 

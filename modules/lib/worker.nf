@@ -28,9 +28,9 @@ process worker {
     tag "${module.name}-${task.index}"
     
     // Output files in the pre-configured output format (outfmt) and optional plots
-    publishDir "${pubDir}/${module.name}", mode: 'copy',
+    publishDir "${pubDir}", mode: 'copy',
       pattern: "$outfmt", saveAs: {fn -> fnOut != '' ? fnOut : fn}
-    publishDir "${pubDir}/${module.name}", mode: 'copy', pattern: 'plots/**'
+    publishDir "${pubDir}", mode: 'copy', pattern: 'plots/**'
 
     // QC
     publishDir "${params.path_qc}/${module.name}", mode: 'copy',
@@ -43,10 +43,9 @@ process worker {
       saveAs: {fn -> "${task.name}.log"}
 
     input:
-        tuple val(module), file(model), path(inp), val(fnOut)
+        tuple val(module), file(model), path(inp), val(pubDir), val(fnOut)
         val(outfmt)
         val(idxStep)
-        val(pubDir)
 
     output:
 

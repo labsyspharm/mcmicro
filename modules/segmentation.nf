@@ -56,21 +56,40 @@ workflow segmentation {
 
     main:
 
-    // Determine if there are any custom models for probability map modules
-    // Overwrite output filenames with <image>-pmap.tif
+    // Define relevant paths
+    pathPM  = "${params.in}/probability-maps"
+    pathSeg = "${params.in}/segmentation"
+
+    // Compose a mapping for which modules need watershed
+    needWS  = modulePM.map{ it -> tuple(it.watershed, it.name) }
+    
+    // Determine if there are any custom models for each module
+    // Overwrite output filenames with <image>-pmap.tif for pmap generators
+    // Publish instance segmentation outputs directly to segmentation/
     inpPM = modulePM.map{ it -> String m = "${it.name}Model";
 		         tuple(it, params.containsKey(m) ?
 		               file(params."$m") : 'built-in') }
 	.combine(imgs)
-        .map{ _1, _2, f -> tuple(_1, _2, f, getFileID(f,'\\.') + '-pmap.tif') }
+        .map{ mod, _2, f -> fid = getFileID(f,'\\.');
+             mod.watershed == 'no' ?
+             tuple(mod, _2, f, "${pathSeg}/${mod.name}-${fid}", '') :
+             tuple(mod, _2, f, "${pathPM}/${mod.name}", fid + '-pmap.tif') }
 
     // Run probability map generators and instance segmenters
-    worker( inpPM, '*.tif', 4, "${params.in}/probability-maps" )
+    // All outputs will be published to probability-maps/
+    worker( inpPM, '*.tif', 4 )
+
+    // Filter out any workers who published their files to segmentation/
+    //   i.e., all the instance segmenters
+    w1 = worker.out.res
+        .combine( needWS, by:1 )
+    w2 = w1.filter{ _1, _2, _3, ws -> ws != 'no' }
+        .map{ mtd, img, _3, _4 -> tuple(img,mtd,_3) }
 
     // Merge against precomputed probability maps
     id_pmaps = prepmaps.map{ mtd, f ->
         tuple(getFileID(f, '-pmap'), mtd, f) }
-        .mix(worker.out.res)
+        .mix(w2)
 
     // Determine IDs of images
     id_imgs  = imgs.map{ f -> tuple(getFileID(f,'\\.'), f) }
@@ -87,9 +106,14 @@ workflow segmentation {
 	.map{ id, img, msk, mtd, pm ->
 	tuple("${mtd}-${img.getBaseName().split('\\.').head()}", img, msk, pm) }
 
-    s3seg(moduleWS, inputs, "${params.in}/segmentation")
+    // Apply s3seg to probability-maps only
+    s3seg(moduleWS, inputs, pathSeg)
+
+    // Merge against instance segmentation outputs
+    w3 = w1.filter{ _1, _2, _3, ws -> ws == 'no' }
+        .map{ mtd, img, _3, _4 -> tuple("${mtd}-${img}", _3) }.groupTuple()
     
     emit:
 
-    s3seg.out.segmasks
+    s3seg.out.segmasks.mix(w3)
 }
