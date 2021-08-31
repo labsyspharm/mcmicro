@@ -50,7 +50,7 @@ MCMICRO assumes that CLI conforms to the following input-output specifications.
 
 **Output:**
 
-* One or more image files in `.tif` format, written to `.` (i.e., the "current working directory"). Each file can be either a probability map or a segmentation mask. The image channels in probability maps annotate each pixel with probabilities that it belongs to the background or different parts of the cell such as the nucleus, cytoplasm, cell membrane or the intercellular region. Similarly, segmentation masks annotate each pixel with an integer index of the cell it belongs to, or 0 if none.
+* An image file in `.tif` format, written to `.` (i.e., the "current working directory"). The file can be either a probability map or a segmentation mask. The image channels in probability maps annotate each pixel with probabilities that it belongs to the background or different parts of the cell such as the nucleus, cytoplasm, cell membrane or the intercellular region. Similarly, segmentation masks annotate each pixel with an integer index of the cell it belongs to, or 0 if none.
 * (Optional) One or more files written to `./qc/` (i.e., `qc/` subdirectory within the "current working directory"). These will be copied by the pipeline to the corresponding location in the [project's `qc/` directory]({{ site.baseurl }}/documentation/dir.html#quality-control).
 
 ## Cell state calling modules
@@ -77,7 +77,8 @@ Adding a new MCMICRO module involves specifying simple key-value pairs in `confi
   version   : '1.4.3',
   cmd       : 'python /app/mc-ilastik.py --output .',
   input     : '--input',
-  model     : '--model'
+  model     : '--model',
+  watershed : 'yes'
 ]
 ```
 
@@ -108,6 +109,10 @@ The `input` field determines how the pipeline will supply inputs to the module. 
 ## (Optional) Model
 
 The `model` field functions similarly to `input` and specifies how the pipeline will supply a custom model to the tool.
+
+## Watershed
+
+The `watershed` field specifies whether the module requires a subsequent watershed step. Set it to `'yes'` for modules that produce probability maps and `'no'` for instance segmenters. Alternatively, you can specify `'bypass'` to have the output still go through S3Segmenter with the `--nucleiRegion bypass` flag. This will skip watershed but still allow you to filter nuclei by size with `--logSigma`.
 
 ## Putting it all together
 
