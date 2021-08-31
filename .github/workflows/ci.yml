@@ -52,7 +52,7 @@ jobs:
           fi
 
   # One-shot test of exemplar-001
-  test-ex001:
+  ex001:
     needs: setup
     runs-on: ubuntu-latest
     steps:
@@ -72,7 +72,7 @@ jobs:
 
 
   # One-shot test of exemplar-001 using Cypository
-  test-ex001-cypo:
+  ex001-cypository:
     needs: setup
     runs-on: ubuntu-latest
     steps:
@@ -84,15 +84,52 @@ jobs:
         with:
           path: ~/data/exemplar-001
           key: mcmicro-exemplar-001
-      - name: Test exemplar-001
+      - name: Test exemplar-001 with Cypository
         run: |
           docker rmi -f $(docker images -a -q)
-          ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps cypository --s3seg-opts '--probMapChan 1 --nucleiRegion bypass --logSigma 45 300'
+          ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps cypository --s3seg-opts '--logSigma 45 300'
           ls ~/data/exemplar-001/*
 
+  # One-shot test of exemplar-001 using Ilastik
+  ex001-ilastik:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Nextflow
+        run: curl -fsSL get.nextflow.io | bash
+      - name: Restore exemplar-001 cache
+        uses: actions/cache@v2
+        with:
+          path: ~/data/exemplar-001
+          key: mcmicro-exemplar-001
+      - name: Test exemplar-001 with Ilastik
+        run: |
+          docker rmi -f $(docker images -a -q)
+          ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps ilastik
+          ls ~/data/exemplar-001/*
+
+  # One-shot test of exemplar-001 using Mesmer
+  ex001-mesmer:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install Nextflow
+        run: curl -fsSL get.nextflow.io | bash
+      - name: Restore exemplar-001 cache
+        uses: actions/cache@v2
+        with:
+          path: ~/data/exemplar-001
+          key: mcmicro-exemplar-001
+      - name: Test exemplar-001 with Mesmer
+        run: |
+          docker rmi -f $(docker images -a -q)
+          ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps mesmer
+          ls ~/data/exemplar-001/*
 
   # Step-by-step test of exemplar-001
-  test-ex001-by-step:
+  ex001-by-step:
     needs: setup
     runs-on: ubuntu-latest
     steps:
@@ -108,16 +145,8 @@ jobs:
         run: |
           docker rmi -f $(docker images -a -q)
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at registration --stop-at registration
-          docker rmi -f $(docker images -a -q)
-          ./nextflow clean -f last
-          ./nextflow main.nf --in ~/data/exemplar-001 --start-at probability-maps --stop-at probability-maps --probability-maps ilastik
-          ./nextflow main.nf --in ~/data/exemplar-001 --start-at probability-maps --stop-at probability-maps --probability-maps unmicst
-          ./nextflow main.nf --in ~/data/exemplar-001 --start-at probability-maps --stop-at probability-maps --probability-maps cypository
-          docker rmi -f $(docker images -a -q)
-          ./nextflow clean -f last
-          ./nextflow main.nf --in ~/data/exemplar-001 --start-at segmentation --stop-at segmentation --probability-maps ilastik --s3seg-opts '--probMapChan 1'
-          ./nextflow main.nf --in ~/data/exemplar-001 --start-at segmentation --stop-at segmentation --probability-maps unmicst
-          ./nextflow main.nf --in ~/data/exemplar-001 --start-at segmentation --stop-at segmentation --probability-maps cypository --s3seg-opts '--probMapChan 1 --nucleiRegion bypass --logSigma 45 300'
+          ./nextflow main.nf --in ~/data/exemplar-001 --start-at probability-maps --stop-at probability-maps
+          ./nextflow main.nf --in ~/data/exemplar-001 --start-at segmentation --stop-at segmentation
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at quantification --stop-at quantification
           docker rmi -f $(docker images -a -q)
           ./nextflow clean -f last
@@ -129,7 +158,7 @@ jobs:
           ls ~/data/exemplar-001/*
 
   # One-shot test of exemplar-002
-  test-ex002:
+  ex002:
     needs: setup
     runs-on: ubuntu-latest
     steps:
@@ -149,29 +178,8 @@ jobs:
           ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at quantification
           ls ~/data/exemplar-002/*
 
-  # One-shot test of exemplar-002 with Cypository
-  test-ex002-cypo:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install Nextflow
-        run: curl -fsSL get.nextflow.io | bash
-      - name: Restore exemplar-002 cache
-        uses: actions/cache@v2
-        with:
-          path: ~/data/exemplar-002
-          key: mcmicro-exemplar-002-2cycle
-      - name: Test exemplar-002
-        run: |
-          docker rmi -f $(docker images -a -q)
-          ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at registration --stop-at segmentation --probability-maps cypository --cypositoryOpts '--scalingFactor 0.25 --threshold 0.05' --s3seg-opts '--probMapChan 1 --nucleiRegion bypass --logSigma 45 300'
-          docker rmi -f $(docker images -a -q)
-          ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at quantification --stop-at quantification
-          ls ~/data/exemplar-002/*
-
   # Running containers with singularity
-  test-ex001-singularity:
+  ex001-singularity:
     needs: setup
     runs-on: ubuntu-latest
     steps:

@@ -120,12 +120,12 @@ pre_masks = findFiles(idxStart > 3 && params.tma,
 		      "${paths[3]}/masks/*.tif",
 		      {error "No TMA masks in ${paths[3]}/masks"})
 pre_pmap = findFiles(idxStart == 5,
-		     "${paths[4]}/*/*Probabilities*.tif",
+		     "${paths[4]}/*/*-pmap.tif",
 		     {error "No probability maps found in ${paths[4]}"})
     .map{ f -> tuple(f.getParent().getBaseName(), f) }
     .filter{ params.probabilityMaps.contains(it[0]) }
 pre_segMsk = findFiles(idxStart == 6,
-		       "${paths[5]}/**.ome.tif",
+		       "${paths[5]}/**.tif",
 		       {error "No segmentation masks in ${paths[5]}"})
     .map{ f -> tuple(f.getParent().getBaseName(), f) }.groupTuple()
 pre_qty    = findFiles(idxStart == 7,
@@ -148,8 +148,7 @@ params.path_prov = "${path_qc}/provenance"
 include {illumination}   from './modules/illumination'     addParams(pubDir: paths[1])
 include {registration}   from './modules/registration'     addParams(pubDir: paths[2])
 include {dearray}        from './modules/dearray'          addParams(pubDir: paths[3])
-include {probmaps}       from './modules/probability-maps' addParams(pubDir: paths[4])
-include {segmentation}   from './modules/segmentation'     addParams(pubDir: paths[5])
+include {segmentation}   from './modules/segmentation'
 include {quantification} from './modules/quantification'   addParams(pubDir: paths[6])
 include {cellstates}     from './modules/cell-states'      addParams(pubDir: paths[7])
 
@@ -175,13 +174,10 @@ workflow {
     tmacores = dearray.out.cores.mix(pre_cores)
     tmamasks = dearray.out.masks.mix(pre_masks)
 
-    // Reconcile WSI and TMA processing for downstream steps
+    // Reconcile WSI and TMA processing for downstream segmentation
     allimg = img.wsi.mix(tmacores)
-    probmaps(allimg, modPM)
-
-    // Merge against precomputed intermediates and feed to s3seg
-    pmaps = probmaps.out.mix(pre_pmap)
-    segmentation(params.moduleSeg, allimg, tmamasks, pmaps)
+    segmentation(modPM, params.moduleSeg,
+                 allimg, tmamasks, pre_pmap)
 
     // Merge segmentation masks against precomputed ones and append markers.csv
     segMsk = segmentation.out.mix(pre_segMsk)

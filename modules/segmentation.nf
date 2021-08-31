@@ -2,7 +2,7 @@ process s3seg {
     container "${params.contPfx}${module.container}:${module.version}"
 
     // Output
-    publishDir "${params.pubDir}/$tag",
+    publishDir "${pubDir}/$tag",
       mode: 'copy', pattern: '*/*.ome.tif', saveAs: {f -> file(f).name}
 
     // QC
@@ -16,8 +16,10 @@ process s3seg {
       saveAs: {fn -> "${task.name}.log"}
     
     input:
-	val module
-	tuple val(tag), val(method), path(core), file('mask.tif'), path(probs)
+
+    val module
+    tuple val(tag), path(core), file('mask.tif'), path(probs), val(bypass)
+    val pubDir
 
     output:
 	// output for quantification
@@ -36,24 +38,65 @@ process s3seg {
     """
     python /app/S3segmenter.py $crop \
        --imagePath $core --stackProbPath $probs \
-       ${params.s3segOpts} --outputPath .
+       $bypass ${params.s3segOpts} --outputPath .
     """
 }
 
+include {worker} from './lib/worker'
 include {getFileID} from './lib/util'
 
 workflow segmentation {
     take:
-      module	
-      imgs
-      tmamasks
-      pmaps
+
+    modulePM		// Probability map and instance segmentation modules
+    moduleWS		// Watershed module (e.g., S3Segmenter)
+    imgs		// Input images
+    tmamasks		// TMA masks (if any)
+    prepmaps		// Pre-computed probability maps
 
     main:
 
+    // Define relevant paths
+    pathPM  = "${params.in}/probability-maps"
+    pathSeg = "${params.in}/segmentation"
+
+    // Compose a mapping for which modules need watershed
+    needWS  = modulePM.map{ it -> tuple(it.watershed, it.name) }
+    
+    // Determine if there are any custom models for each module
+    // Overwrite output filenames with <image>-pmap.tif for pmap generators
+    // Publish instance segmentation outputs directly to segmentation/
+    inpPM = modulePM.map{ it -> String m = "${it.name}Model";
+		         tuple(it, params.containsKey(m) ?
+		               file(params."$m") : 'built-in') }
+	.combine(imgs)
+        .map{ mod, _2, f -> fid = getFileID(f,'\\.');
+             mod.watershed == 'no' ?
+             tuple(mod, _2, f, "${pathSeg}/${mod.name}-${fid}", '') :
+             tuple(mod, _2, f, "${pathPM}/${mod.name}", fid + '-pmap.tif') }
+
+    // Run probability map generators and instance segmenters
+    // All outputs will be published to probability-maps/
+    worker( inpPM, '*.tif', 4 )
+
+    // Merge against precomputed probability maps
+    //  and information about whether the module needs watershed
+    allpmaps = prepmaps.map{ mtd, f ->
+        tuple(getFileID(f, '-pmap'), mtd, f) }
+        .mix(worker.out.res)
+        .combine( needWS, by:1 )
+    
+    // Filter out any workers who published their files to segmentation/
+    //   i.e., all the instance segmenters
+    // Add nuclear segmentation bypass to those that require it
+    id_pmaps = allpmaps.filter{ _1, _2, _3, ws -> ws != 'no' }
+        .map{ mtd, img, _3, ws -> ws == 'bypass' ?
+             tuple(img, mtd, _3, '--nucleiRegion bypass') :
+             tuple(img, mtd, _3, '') }
+
     // Determine IDs of images
     id_imgs  = imgs.map{ f -> tuple(getFileID(f,'\\.'), f) }
-
+    
     // Determine IDs of TMA masks
     // Whole-slide images have no TMA masks
     id_wsi = imgs.map{ f -> tuple(getFileID(f,'\\.'), 'NO_MASK') }
@@ -61,18 +104,19 @@ workflow segmentation {
     id_masks = tmamasks.map{ f -> tuple(getFileID(f,'_mask'), f) }
 	.mix(id_wsi)
 
-    // Determine IDs of probability maps
-    id_pmaps = pmaps.map{ mtd, f ->
-	tuple(getFileID(f, '_Probabilities'), f, mtd) }
-
     // Combine everything based on IDs
     inputs = id_imgs.join(id_masks).combine( id_pmaps, by:0 )
-	.map{ id, img, msk, pm, mtd ->
-	tuple("${mtd}-${img.getBaseName().split('\\.').head()}", mtd, img, msk, pm) }
+	.map{ id, img, msk, mtd, pm, bypass ->
+	tuple("${mtd}-${img.getBaseName().split('\\.').head()}", img, msk, pm, bypass) }
 
-    s3seg(module, inputs)
+    // Apply s3seg to probability-maps only
+    s3seg(moduleWS, inputs, pathSeg)
+
+    // Merge against instance segmentation outputs
+    instSeg = allpmaps.filter{ _1, _2, _3, ws -> ws == 'no' }
+        .map{ mtd, img, _3, _4 -> tuple("${mtd}-${img}", _3) }.groupTuple()
     
     emit:
 
-    s3seg.out.segmasks
+    s3seg.out.segmasks.mix(instSeg)
 }
