@@ -18,7 +18,7 @@ process s3seg {
     input:
 
     val module
-    tuple val(tag), path(core), file('mask.tif'), path(probs)
+    tuple val(tag), path(core), file('mask.tif'), path(probs), val(bypass)
     val pubDir
 
     output:
@@ -38,7 +38,7 @@ process s3seg {
     """
     python /app/S3segmenter.py $crop \
        --imagePath $core --stackProbPath $probs \
-       ${params.s3segOpts} --outputPath .
+       $bypass ${params.s3segOpts} --outputPath .
     """
 }
 
@@ -79,17 +79,20 @@ workflow segmentation {
     // All outputs will be published to probability-maps/
     worker( inpPM, '*.tif', 4 )
 
+    // Merge against precomputed probability maps
+    //  and information about whether the module needs watershed
+    allpmaps = prepmaps.map{ mtd, f ->
+        tuple(getFileID(f, '-pmap'), mtd, f) }
+        .mix(worker.out.res)
+        .combine( needWS, by:1 )
+    
     // Filter out any workers who published their files to segmentation/
     //   i.e., all the instance segmenters
-    w1 = worker.out.res
-        .combine( needWS, by:1 )
-    w2 = w1.filter{ _1, _2, _3, ws -> ws != 'no' }
-        .map{ mtd, img, _3, _4 -> tuple(img,mtd,_3) }
-
-    // Merge against precomputed probability maps
-    id_pmaps = prepmaps.map{ mtd, f ->
-        tuple(getFileID(f, '-pmap'), mtd, f) }
-        .mix(w2)
+    // Add nuclear segmentation bypass to those that require it
+    id_pmaps = allpmaps.filter{ _1, _2, _3, ws -> ws != 'no' }
+        .map{ mtd, img, _3, ws -> ws == 'bypass' ?
+             tuple(img, mtd, _3, '--nucleiRegion bypass') :
+             tuple(img, mtd, _3, '') }
 
     // Determine IDs of images
     id_imgs  = imgs.map{ f -> tuple(getFileID(f,'\\.'), f) }
@@ -103,17 +106,17 @@ workflow segmentation {
 
     // Combine everything based on IDs
     inputs = id_imgs.join(id_masks).combine( id_pmaps, by:0 )
-	.map{ id, img, msk, mtd, pm ->
-	tuple("${mtd}-${img.getBaseName().split('\\.').head()}", img, msk, pm) }
+	.map{ id, img, msk, mtd, pm, bypass ->
+	tuple("${mtd}-${img.getBaseName().split('\\.').head()}", img, msk, pm, bypass) }
 
     // Apply s3seg to probability-maps only
     s3seg(moduleWS, inputs, pathSeg)
 
     // Merge against instance segmentation outputs
-    w3 = w1.filter{ _1, _2, _3, ws -> ws == 'no' }
+    instSeg = allpmaps.filter{ _1, _2, _3, ws -> ws == 'no' }
         .map{ mtd, img, _3, _4 -> tuple("${mtd}-${img}", _3) }.groupTuple()
     
     emit:
 
-    s3seg.out.segmasks.mix(w3)
+    s3seg.out.segmasks.mix(instSeg)
 }
