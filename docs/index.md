@@ -21,10 +21,15 @@ hero_ctas:
 
 ## Features
 
+{% capture feature1 %}
+### Images to Insights 💡
+Highly multiplexed tissue imaging provides deep insight into the composition, organization and states of normal and diseased tissues. When converted into single cell data, tissue images are a natural complement to scRNA-Seq and similar profiling methods with the added advantage of spatial context. MCMICRO converts raw images into single cell data using state of the art algorithms for illumination correction, stitching, quality control, segmentation, and cell type calling.
+
+{% endcapture %}
+
 <div class="row">
     <div class="col-xs-12 col-sm-6">
-        ### Images to Insights 💡
-        Highly multiplexed tissue imaging provides deep insight into the composition, organization and states of normal and diseased tissues. When converted into single cell data, tissue images are a natural complement to scRNA-Seq and similar profiling methods with the added advantage of spatial context. MCMICRO converts raw images into single cell data using state of the art algorithms for illumination correction, stitching, quality control, segmentation, and cell type calling.
+        {{ feature1|markdownify }}
     </div>
     <div class="col-xs-12 col-sm-6">
         <div class="uk-card uk-card-default uk-card-body">
