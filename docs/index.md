@@ -19,7 +19,7 @@ hero_ctas:
 
 <h2 class="uk-heading-line uk-text-center uk-margin-medium-bottom uk-margin-large-top"><span>Features</span></h2>
 
-<div class="uk-child-width-1-2@m uk-grid-small uk-grid-match uk-flex-center" uk-grid>
+<div class="uk-child-width-1-2@m uk-grid-small uk-grid-match uk-flex-center uk-margin-medium-bottom" uk-grid>
     <div>
         <div class="uk-card uk-card-default uk-card-body">
             <h2 class="uk-card-title">Images to Insights 💡</h2>
