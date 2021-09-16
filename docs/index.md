@@ -17,7 +17,7 @@ hero_ctas:
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.22/dist/css/uikit.min.css" />
 
 
-<h2 class="uk-heading-line uk-text-center uk-margin-medium-bottom uk-margin-large-top"><span>Features</span></h2>
+<h2 class="uk-heading-line uk-text-center uk-margin-large-bottom uk-margin-large-top"><span>Features</span></h2>
 
 <div class="uk-child-width-1-2@m uk-grid-small uk-grid-match uk-flex-center uk-margin-medium-bottom" uk-grid>
     <div>
