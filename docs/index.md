@@ -3,27 +3,19 @@ layout: default
 title: Home
 nav_order: 1
 description: ""
+hero_heading: "Multiple-choice microscopy pipeline"
+hero_body: "An end-to-end processing pipeline to transform large, multi-channel whole slide images into single-cell data. This site is a consolidated source of information on [MCMICRO](https://github.com/labsyspharm/mcmicro), documentation, roadmap, community and test data."
+hero_ctas:
+  - label: "QUICK START"
+    link: "documentation/"
+  - label: "TUTORIALS"
+    link: "tutorials/index.html"
 # last_modified_date: 2021-03-28
 ---
 
 <!-- UIkit CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.22/dist/css/uikit.min.css" />
 
-# MCMICRO
-
-Multiple-choice microscopy pipeline
-{: .fs-6 .fw-300 }
-
-An end-to-end processing pipeline to transform large, multi-channel whole slide images into single-cell data. This site is a consolidated source of information on [MCMICRO](https://github.com/labsyspharm/mcmicro), documentation, roadmap, community and test data.
-
-[{{ "quick start" | upcase }}](documentation/){: .btn  .mr-4 .btn-blue }
-[{{ "tutorials" | upcase }}](tutorials/index.html){: .btn }
-
-<div class="uk-cover-container uk-margin-medium-bottom">
-    <canvas width="1920" height="1080"></canvas>
-    <iframe src="
-    https://www.youtube.com/embed/DY_F-eG9nm4?fs=0&amp;iv_load_polocy=3&amp;modestbranding=1&amp;playsinline=1&amp;autoplay=1&amp;controls=0&amp;rel=0&amp;playlist=DY_F-eG9nm4&amp;loop=1" width="1920" height="1080" frameborder="0" uk-cover></iframe>
-</div>
 
 <h2 class="uk-heading-line uk-text-center uk-margin-medium-bottom uk-margin-large-top"><span>Features</span></h2>
 
@@ -79,6 +71,12 @@ the community.</p>
             <p>Although it is nice to have many modules to try out, often you just want something that works. The MCMICRO team is collaborating with the NCI to run hackathons and challenges to identify the best modules and pipelines for specific types of data.</p>
         </div>
     </div>
+</div>
+
+<div class="uk-cover-container uk-margin-medium-bottom">
+    <canvas width="1920" height="1080"></canvas>
+    <iframe src="
+    https://www.youtube.com/embed/DY_F-eG9nm4?fs=0&amp;iv_load_polocy=3&amp;modestbranding=1&amp;playsinline=1&amp;autoplay=1&amp;controls=0&amp;rel=0&amp;playlist=DY_F-eG9nm4&amp;loop=1" width="1920" height="1080" frameborder="0" uk-cover></iframe>
 </div>
                
 
