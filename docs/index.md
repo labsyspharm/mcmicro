@@ -13,12 +13,6 @@ hero_ctas:
 # last_modified_date: 2021-03-28
 ---
 
-<!-- UIkit CSS -->
-<!-- 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.6.22/dist/css/uikit.min.css" />
--->
-
-
 # Features
 
 {% assign cardList = "" | split: "" %}
@@ -77,10 +71,3 @@ Although it is nice to have many modules to try out, often you just want somethi
 
 
 {% include youtube.html id="DY_F-eG9nm4" autoplay=true mute=true controls=false loop=true related=false %}
-               
-
-<!-- UIkit JS -->
-<!-- 
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.6.22/dist/js/uikit.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/uikit@3.6.22/dist/js/uikit-icons.min.js"></script>
--->
