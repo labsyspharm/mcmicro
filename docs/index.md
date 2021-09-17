@@ -76,11 +76,7 @@ Although it is nice to have many modules to try out, often you just want somethi
 {% include basic-cards.html cards=cardList %}
 
 
-<div class="uk-cover-container uk-margin-medium-bottom">
-    <canvas width="1920" height="1080"></canvas>
-    <iframe src="
-    https://www.youtube.com/embed/DY_F-eG9nm4?fs=0&amp;iv_load_polocy=3&amp;modestbranding=1&amp;playsinline=1&amp;autoplay=1&amp;controls=0&amp;rel=0&amp;playlist=DY_F-eG9nm4&amp;loop=1" width="1920" height="1080" frameborder="0" uk-cover></iframe>
-</div>
+{% include youtube.html id="DY_F-eG9nm4" autoplay=true mute=true controls=false loop=true related=false %}
                
 
 <!-- UIkit JS -->
