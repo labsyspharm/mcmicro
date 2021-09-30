@@ -61,6 +61,28 @@ Data was collected from a tonsil specimen (4 year-old female, caucasian). The sp
 * [Additional information](https://labsyspharm.github.io/mcmicro-images/)
 * Preview:
 
-| H&E | CyCIF |	mIHC | CODEX |
-| :-: | :-: | :-: | :-: |
-<a href="https://labsyspharm.github.io/mcmicro-images/stories/WD-75684-01.html"><img src="https://labsyspharm.github.io/mcmicro-images/images/thumbnail-WD-75684-01.jpg"></a> | <a href="https://labsyspharm.github.io/mcmicro-images/stories/WD-75684-02.html"><img src="https://labsyspharm.github.io/mcmicro-images/images/thumbnail-WD-75684-02.jpg"></a> | <a href="https://labsyspharm.github.io/mcmicro-images/stories/WD-75684-12.html"><img src="https://labsyspharm.github.io/mcmicro-images/images/thumbnail-WD-75684-12.jpg"></a> | <a href="https://labsyspharm.github.io/mcmicro-images/stories/WD-75684-05.html"><img src="https://labsyspharm.github.io/mcmicro-images/images/thumbnail-WD-75684-05.jpg"></a> |
+<div class="basic-grid four-column">
+
+{% include image-card.html 
+    image="https://labsyspharm.github.io/mcmicro-images/images/thumbnail-WD-75684-01.jpg"
+    link="https://labsyspharm.github.io/mcmicro-images/stories/WD-75684-01.html"
+    label="H&E"
+%}
+{% include image-card.html 
+    image="https://labsyspharm.github.io/mcmicro-images/images/thumbnail-WD-75684-02.jpg"
+    link="https://labsyspharm.github.io/mcmicro-images/stories/WD-75684-02.html"
+    label="CyCIF"
+%}
+{% include image-card.html 
+    image="https://labsyspharm.github.io/mcmicro-images/images/thumbnail-WD-75684-12.jpg"
+    link="https://labsyspharm.github.io/mcmicro-images/stories/WD-75684-12.html"
+    label="mIHC"
+%}
+{% include image-card.html 
+    image="https://labsyspharm.github.io/mcmicro-images/stories/WD-75684-05.html"
+    link="https://labsyspharm.github.io/mcmicro-images/images/thumbnail-WD-75684-05.jpg"
+    label="CODEX"
+%}
+
+</div><!-- end grid -->
+
