@@ -6,17 +6,17 @@ nav_order: 40
 
 # Exemplar data
 
-<div class="basic-grid">
+<div class="basic-grid mt-6">
 
+{% assign imageUrl = site.baseurl | append: "/images/mcmicro-exemplar-001.jpg" %}
 {% include image-card.html 
-    image="{{ site.baseurl }}/images/mcmicro-exemplar-001.jpg"
-    link=""
+    image=imageUrl
     label="exemplar-001"
 %}
 
+{% assign imageUrl = site.baseurl | append: "/images/mcmicro-exemplar-002.jpg" %}
 {% include image-card.html 
-    image="{{ site.baseurl }}/images/mcmicro-exemplar-002.jpg"
-    link=""
+    image=imageUrl
     label="exemplar-002"
 %}
 
