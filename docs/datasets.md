@@ -79,8 +79,8 @@ Data was collected from a tonsil specimen (4 year-old female, caucasian). The sp
     label="mIHC"
 %}
 {% include image-card.html 
-    image="https://labsyspharm.github.io/mcmicro-images/stories/WD-75684-05.html"
-    link="https://labsyspharm.github.io/mcmicro-images/images/thumbnail-WD-75684-05.jpg"
+    image="https://labsyspharm.github.io/mcmicro-images/images/thumbnail-WD-75684-05.jpg"
+    link="https://labsyspharm.github.io/mcmicro-images/stories/WD-75684-05.html"
     label="CODEX"
 %}
 
