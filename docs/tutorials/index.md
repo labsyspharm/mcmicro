@@ -23,7 +23,7 @@ A general introduction [video](https://www.youtube.com/watch?v=fnxBvgJQmtY) that
 This detailed [visual guide](pipeline-visual-guide.html) takes you through the steps performed by the MCMICRO pipeline as it processes [exemplar-002]({{ site.baseurl }}/datasets.html). The guide was developed using the open source [Minerva software](https://www.cycif.org/software/minerva), developed by the Laboratory of Systems Pharmacology.
 
 [![]({{ site.baseurl }}/images/tutorials/vizguide.png)](pipeline-visual-guide.html)
-{: .mr-10}
+{: .mt-6 .mr-10}
 </div>
 
 <div markdown="1">
@@ -31,7 +31,7 @@ This detailed [visual guide](pipeline-visual-guide.html) takes you through the s
 This [tutorial video](https://youtu.be/tLWMe_uJY9A) walks you through installing Nextflow and MCMICRO, downloading exemplar images, and executing the pipeline on the Google Cloud Platform.
 
 [![](https://img.youtube.com/vi/tLWMe_uJY9A/0.jpg)](https://youtu.be/tLWMe_uJY9A)
-{: .mr-10}
+{: .mt-6 .mr-10}
 </div>
 
 </div><!-- end grid -->

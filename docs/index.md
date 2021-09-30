@@ -51,6 +51,6 @@ Although it is nice to have many modules to try out, often you just want somethi
 </div>
 
 </div><!-- end grid -->
-{: mb-6 }
+{: .mb-6 }
 
 {% include youtube.html id="DY_F-eG9nm4" autoplay=true mute=true controls=false loop=true related=false %}
