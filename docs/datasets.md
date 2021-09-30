@@ -6,9 +6,22 @@ nav_order: 40
 
 # Exemplar data
 
-| exemplar-001 | exemplar-002 |
-| :-: | :-: |
-| ![]({{ site.baseurl }}/images/mcmicro-exemplar-001.jpg) | ![]({{ site.baseurl }}/images/mcmicro-exemplar-002.jpg) |
+<div class="basic-grid">
+
+{% include image-card.html 
+    image="{{ site.baseurl }}/images/mcmicro-exemplar-001.jpg"
+    link=""
+    label="exemplar-001"
+%}
+
+{% include image-card.html 
+    image="{{ site.baseurl }}/images/mcmicro-exemplar-002.jpg"
+    link=""
+    label="exemplar-002"
+%}
+
+</div><!-- end grid -->
+
 
 Two exemplars are currently available for demonstration purposes:
 

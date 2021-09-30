@@ -15,7 +15,7 @@ hero_ctas:
 
 # Features
 
-<div class="basic-grid with-dividers">
+<div class="basic-grid with-dividers mb-6">
 
 <div markdown="1">
 ## Images to Insights
@@ -51,6 +51,5 @@ Although it is nice to have many modules to try out, often you just want somethi
 </div>
 
 </div><!-- end grid -->
-{: .mb-6 }
 
 {% include youtube.html id="DY_F-eG9nm4" autoplay=true mute=true controls=false loop=true related=false %}
