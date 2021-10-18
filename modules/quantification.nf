@@ -50,5 +50,5 @@ workflow quantification {
     
     emit:
 
-    mcquant.out.tables
+    mcquant.out.tables.flatten()
 }
