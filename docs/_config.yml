@@ -1,13 +1,18 @@
-title: mcmicro
+title: MCMICRO
 description: Multiple-choice microscopy pipeline
 logo: "/assets/images/mcmicro-logo.svg"
+hero_background: "/assets/images/hero_background.jpg"
 
 # remote_theme: pmarsceill/just-the-docs
-remote_theme: pdmosses/just-the-docs@rec-nav-2
-color_scheme: lsp
+remote_theme: jegra/just-the-docs@hms
+color_scheme: mcmicro
 search_enabled: true
 heading_anchors: true
 
+# Banner links to include
+banner_links:
+  lsp: true
+  hits: true
 
 # Aux links for the upper right navigation
 aux_links:
@@ -18,11 +23,27 @@ aux_links_new_tab: false
 
 # Footer content
 # appears at the bottom of every page's main content
+footer_content:
 
-back_to_top: true
-back_to_top_text: "Back to top"
+# Back to top link
+back_to_top: false
+back_to_top_text: "Back to Top"
 
-last_edit_timestamp: true
+# Provide license information for the project
+license_name: "MIT License"
+license_url: "https://github.com/labsyspharm/mcmicro/blob/master/LICENSE"
+
+# Linked logos
+footer_logos:
+  - name: "Laboratory of Systems Pharmacology"
+    image: "/assets/images/logo_lsp_white.svg"
+    url: "https://hits.harvard.edu/the-program/laboratory-of-systems-pharmacology/about/"
+  - name: "Harvard Medical School"
+    image: "/assets/images/logo_hms.svg"
+    url: "https://hms.harvard.edu/"
+
+# Footer last edited timestamp
+last_edit_timestamp: true # show or hide edit time - page must have `last_modified_date` defined in the frontmatter
 last_edit_time_format: "%b %e %Y" # format: https://ruby-doc.org/stdlib-2.7.0/libdoc/time/rdoc/Time.html
 
 # Footer "Edit this page on GitHub" link text
@@ -33,22 +54,15 @@ gh_edit_branch: "website-restructure" # the branch that your docs is served from
 gh_edit_source: docs # the source that your files originate from
 gh_edit_view_mode: "tree" # "tree" or "edit" if you want the user to jump into the editor immediately
 
-license_name: "MIT License"
-license_url: "https://github.com/labsyspharm/mcmicro/blob/master/LICENSE"
-
-
 # Google Analytics
 ga_tracking: G-EBP7DZSHEP
 ga_tracking_anonymize_ip: true # Use GDPR compliant Google Analytics settings
-
 
 plugins:
   - jekyll-seo-tag
   - jekyll-remote-theme
 
-
 repository: labsyspharm/mcmicro
-
 
 exclude: ["node_modules/", "*.gemspec", "*.gem", "Gemfile", "Gemfile.lock", "package.json", "package-lock.json",  "script/", "LICENSE.txt", "lib/", "bin/", "README.md", "Rakefile"]
 compress_html:
