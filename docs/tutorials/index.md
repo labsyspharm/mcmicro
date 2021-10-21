@@ -9,8 +9,7 @@ has_children: true
 
 ## Overview Video
 
-[![](https://img.youtube.com/vi/fnxBvgJQmtY/maxresdefault.jpg)](https://www.youtube.com/watch?v=fnxBvgJQmtY)
-{: .mt-6 .mr-10}
+{% include youtube.html id="fnxBvgJQmtY" autoplay=false mute=false controls=true loop=false related=false %}
 
 A general introduction [video](https://www.youtube.com/watch?v=fnxBvgJQmtY) that provides a high-level overview of the pipeline.
 
