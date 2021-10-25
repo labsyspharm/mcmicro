@@ -3,8 +3,7 @@ description: Multiple-choice microscopy pipeline
 logo: "/assets/images/mcmicro-logo.svg"
 hero_background: "/assets/images/hero_background.jpg"
 
-# remote_theme: pmarsceill/just-the-docs
-remote_theme: jegra/just-the-docs@hms
+remote_theme: labsyspharm/just-the-docs-lsp
 color_scheme: mcmicro
 search_enabled: true
 heading_anchors: true
