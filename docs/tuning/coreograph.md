@@ -20,7 +20,7 @@ Training sets were acquired at 0.65 microns/pixel resolution and downsampled 1/3
 -a fluorescence image of a tissue microarray where at least one channel is of DNA, ie. labelled with Hoechst or DAPI. The image will likely be a stitched images that spans multiple tiles. <br>
 
 ## Parameter list:
-The Coreograph parameters described in this manual should be provided to mcmicro via the `--core-opts` flag, as shown in [Parameter Reference examples](parameter-reference.html#parameters-for-individual-modules). <br>
+The Coreograph parameters described in this manual should be provided to mcmicro via the `--core-opts` flag, as shown in [Parameter Reference examples]({{ site.baseurl }}/documentation/parameter-reference.html). <br>
 1. `--downsampleFactor` : how many times to downsample the raw image file. **Default is 5 times to match the training data.** <br>
 2. `--channel` : which is the channel to feed into UNet and generate probabiltiy maps from. This is usually a DAPI channel. <br>
 3. `--buffer` : the extra space around a core before cropping it. A value of 2 means there is twice the width of the core added as buffer around it. 2 is default. <br>
