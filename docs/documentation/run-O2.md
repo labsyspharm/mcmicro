@@ -9,9 +9,9 @@ parent: Platform-specific Steps
 
 **O2 is a [high-performance cluster](https://harvardmed.atlassian.net/wiki/spaces/O2/overview) at Harvard Medical School (HMS). Non-HMS users can safely ignore this page.**
 
-To run mcmicro on O2, your account must be in the `lsp` group to have proper permissions to run the module containers. There are several other important caveats.
+There are several important caveats to run mcmicro on O2.
 
-1. [Installation](installation.html) only requires Nextflow. Docker is not needed, because O2 uses Singularity to execute module containers.
+1. [Installation](installation.html) only requires Nextflow. Docker is not needed, because O2 uses Singularity to execute module containers, and Singularity is already available on O2.
 
 1. If your account is not in the `lsp` group (type `groups` to check), then please run the following command to prepare your environment: `nextflow run labsyspharm/mcmicro/setup/O2ext.nf`
 
@@ -19,12 +19,11 @@ To run mcmicro on O2, your account must be in the `lsp` group to have proper per
 
 ## O2 execution
 
-To run the pipeline on O2, four additional steps are required:
-1. You must load the necessary O2 modules.
-1. All pipeline calls need to have the flag `-profile O2`. Use `-profile O2WSI` and `-profile O2TMA` for very large whole-slide images and tissue microarrays, respectively. The profiles differ in the amount of resources requested for each module.
-1. If your account is not in the `lsp` group, please use `-profile O2ext`.
-1. To avoid running over on your disk quota, it is also recommended to use `/n/scratch3` for holding the `work/` directory. Furthermore, `n/scratch3` is faster than `/home` or `/n/groups`, so jobs will complete faster. 
-1. Instruct Nextflow to generate an execution report in a central location by adding `-with-report "/n/groups/lsp/mcmicro/reports/$USER-$(date -Is).html"` to your Nextflow command. This will help the staff evaluate resource usage and success/failure rates  .
+To run the pipeline on O2, the following additional steps are required:
+1. Please ensure that Java is available by running `module load java`.
+1. If your account is in the `lsp` group, please add the flag `-profile O2`. Use `-profile O2,WSI` and `-profile O2,TMA` for very large whole-slide images (WSIs) and tissue microarrays (TMAs), respectively. The profiles differ in the amount of resources requested for each module.
+1. If your account is not in the `lsp` group, please use `-profile O2ext`. Similarly, use `-profile O2ext,WSI` and `-profile O2ext,TMA` for WSIs and TMAs.
+1. To avoid running over on your disk quota, it is also recommended to use `/n/scratch3` for holding the `work/` directory. Furthermore, `/n/scratch3` is faster than `/home` or `/n/groups`, so jobs will complete faster. 
 
 Compose an `sbatch` script that encapsulates resource requests, module loading and the `nextflow` command into a single entity. Create a `submit_mcmicro.sh` file based on the following template:
 
@@ -49,7 +48,7 @@ The pipeline run can then be kicked off with `sbatch submit_mcmicro.sh`.
 
 ### Requesting O2 resources
 
-The default profiles `O2`, `O2WSI` and `O2TMA` establish reasonable defaults for O2 resource requests. These will work for most scenarios, but individual projects may also have custom time and memory requirements. To overwrite the defaults, compose a new config file (e.g., `myproject.config`) specifying the desired custom requirements using [process selectors](https://www.nextflow.io/docs/latest/config.html#process-selectors). For example, to request 128GB of memory and 96 hours in the `medium` queue for ASHLAR, one would specify
+The default profiles `WSI` and `TMA` establish reasonable defaults for O2 resource requests. These will work for most scenarios, but individual projects may also have custom time and memory requirements. To overwrite the defaults, compose a new config file (e.g., `myproject.config`) specifying the desired custom requirements using [process selectors](https://www.nextflow.io/docs/latest/config.html#process-selectors). For example, to request 128GB of memory and 96 hours in the `medium` queue for ASHLAR, one would specify
 ```
 process{
   withName:ashlar {
@@ -59,7 +58,7 @@ process{
   }
 }
 ```
-Use [existing profiles](https://github.com/labsyspharm/mcmicro/blob/master/config/large.config) as examples. Once `myproject.config` is composed, it can be provided to a `nextflow run` command using the `-c` flag:
+Use [existing profiles](https://github.com/labsyspharm/mcmicro/blob/master/config/tma.config) as examples. Once `myproject.config` is composed, it can be provided to a `nextflow run` command using the `-c` flag:
 
 ```
 nextflow run labsyspharm/mcmicro --in /path/to/exemplar-001 -profile O2 -c myproject.config
