@@ -42,7 +42,7 @@ with `/local/path/` pointing to a local directory where the exemplars should be 
 
 MCMICRO is accompanied by EMIT (Exemplar Microscopy Images of Tissues), which is a reference dataset containing images of different types for development and benchmarking of computational methods for image processing. The data are also expected to be useful for biological studies. However, the data are complex and annotation for the purposes of biological interpretation is an ongoing activity. Users of these data should expect to see updates and additions; these will be versioned and made backwards compatible whenever possible.
 
-Presently, EMIT comprises one tissue microarray (TMA) dataset and one whole-slide image (WSI) dataset. Users of these resources should cite [Schapiro et al 2021](https://www.biorxiv.org/content/10.1101/2021.03.15.435473v1).
+Presently, EMIT comprises one tissue microarray (TMA) dataset and one whole-slide image (WSI) dataset. Users of these resources should cite [Schapiro et al 2021](https://www.nature.com/articles/s41592-021-01308-y).
 
 
 ## Tissue microarrays (TMAs)
