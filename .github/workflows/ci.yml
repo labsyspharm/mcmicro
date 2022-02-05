@@ -69,7 +69,13 @@ jobs:
           docker rmi -f $(docker images -a -q)
           ./nextflow main.nf --in ~/data/exemplar-001
           ls ~/data/exemplar-001/*
-
+      - name: Upload processed result
+        uses: actions/upload-artifact@v2
+        with:
+          name: exemplar-001
+          path: |
+            ~/data/exemplar-001
+            !~/data/exemplar-001/raw
 
   # One-shot test of exemplar-001 using Cypository
   ex001-cypository:
