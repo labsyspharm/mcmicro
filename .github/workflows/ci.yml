@@ -71,6 +71,7 @@ jobs:
           ls ~/data/exemplar-001/*
       - name: Upload processed result
         uses: actions/upload-artifact@v2
+        if: ${{ github.event_name == 'push' }}
         with:
           name: exemplar-001
           path: |
