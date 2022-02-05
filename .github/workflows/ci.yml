@@ -77,6 +77,7 @@ jobs:
           path: |
             ~/data/exemplar-001
             !~/data/exemplar-001/raw
+            !~/data/exemplar-001/illumination
             !~/data/exemplar-001/qc/provenance
 
   # One-shot test of exemplar-001 using Cypository
