@@ -14,7 +14,7 @@ nextflow.enable.dsl=2
 // Default parameters for the pipeline as a whole
 params.sampleName  = file(params.in).name
 params.startAt     = 'registration'
-params.stopAt      = 'cell-states'
+params.stopAt      = 'quantification'
 params.tma         = false    // whether working with a TMA (true) or whole-slide image (false)
 
 // Some image formats store multiple fields of view in a single file. Other
