@@ -1,3 +1,8 @@
+### 2022-02-21
+
+* [UnMicst] Updated the Tensorflow base to `2.7.1-gpu`
+* [UnMicst] The code for automatic GPU selection is now more robust. It no longer relies on parsing `nvidia-smi` output with a regular expression and uses `pynvml` instead.
+
 ### 2022-02-11
 
 * Added a CHANGES file
