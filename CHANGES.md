@@ -1,3 +1,7 @@
+### 2022-02-22
+
+* [s3seg] Fixed an bug that caused the module to crash when generating pyramids for images of smaller size.
+
 ### 2022-02-21
 
 * [UnMicst] Updated the Tensorflow base to `2.7.1-gpu`
