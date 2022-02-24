@@ -36,12 +36,12 @@ switch( params.name ) {
     case "exemplar-001":
 	url = 'https://mcmicro.s3.amazonaws.com/exemplars/001/exemplar-001'
 	params.fromCycle  = 6
-    params.toCycle    = 8
+	params.toCycle    = 8
 	break
     case "exemplar-002":
 	url = 'https://mcmicro.s3.amazonaws.com/exemplars/002/exemplar-002'
 	params.fromCycle  = 1
-    params.toCycle    = 10
+        params.toCycle    = 10
 	break
     default:
 	error "Unknown exemplar name"
