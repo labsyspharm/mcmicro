@@ -27,25 +27,35 @@ if( params.containsKey('help') ) {
     exit 0
 }
 
-dir_raw = "raw"
-dir_ilp = "illumination"
+params.nc = 0
+dir_raw   = "raw"
+dir_ilp   = "illumination"
 
 // Map the exemplar name to remote URL
 switch( params.name ) {
     case "exemplar-001":
 	url = 'https://mcmicro.s3.amazonaws.com/exemplars/001/exemplar-001'
-	params.nc  = 3
+	params.fromCycle  = 6
+    params.toCycle    = 8
 	break
     case "exemplar-002":
 	url = 'https://mcmicro.s3.amazonaws.com/exemplars/002/exemplar-002'
-	params.nc  = 10
+	params.fromCycle  = 1
+    params.toCycle    = 10
 	break
     default:
 	error "Unknown exemplar name"
 }
 
 // Sequence of individual cycles to download
-seq = Channel.of( 1..params.nc )
+if(params.nc > 0 ) {
+    seq = Channel.of( 1..params.nc )
+}
+else {
+    seq = Channel.of( params.fromCycle..params.toCycle )
+}
+seq.view()
+exit 0
 nm = params.nc * 4 + 1			// Four markers per channel, plus header
 
 process getImages {
