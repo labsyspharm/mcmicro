@@ -56,7 +56,7 @@ if(params.nc > 0 ) {
 else {
     seq = Channel.of( params.fromCycle..params.toCycle )
     mFrom = (params.fromCycle-1) * 4 + 2
-    mTo   = (params.toCycle-1) * 4 + 1
+    mTo   = (params.toCycle) * 4 + 1
 }
 
 process getImages {

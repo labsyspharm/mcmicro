@@ -1,3 +1,13 @@
+### 2022-02-24
+
+* Added more flexibility to `exemplar.nf`, allowing to download any contiguous set of cycles. See
+
+```
+nextflow labsyspharm/mcmicro/exemplar.nf --help
+```
+
+for more information
+
 ### 2022-02-22
 
 * [s3seg] Fixed an bug that caused the module to crash when generating pyramids for images of smaller size.
