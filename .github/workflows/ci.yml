@@ -96,7 +96,7 @@ jobs:
       - name: Test exemplar-001 with Cypository
         run: |
           docker rmi -f $(docker images -a -q)
-          ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps cypository --s3seg-opts '--logSigma 45 300'
+          ./nextflow main.nf --in ~/data/exemplar-001  --probability-maps cypository --s3seg-opts '--logSigma 45 300'
           ls ~/data/exemplar-001/*
 
   # One-shot test of exemplar-001 using Ilastik
