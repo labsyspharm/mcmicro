@@ -49,14 +49,15 @@ switch( params.name ) {
 
 // Sequence of individual cycles to download
 if(params.nc > 0 ) {
-    seq = Channel.of( 1..params.nc )
+    seq   = Channel.of( 1..params.nc )
+    mFrom = 2
+    mTo   = params.nc * 4 + 1    // Four markers per channel, plus header
 }
 else {
     seq = Channel.of( params.fromCycle..params.toCycle )
+    mFrom = (params.fromCycle-1) * 4 + 2
+    mTo   = (params.toCycle-1) * 4 + 1
 }
-seq.view()
-exit 0
-nm = params.nc * 4 + 1			// Four markers per channel, plus header
 
 process getImages {
     publishDir "${params.path}/${params.name}", mode: 'move'
@@ -90,6 +91,6 @@ process getMarkers {
 	file '**'
 
     """
-    curl -f "${url}/markers.csv" | head -n ${nm} > markers.csv
+    curl -f "${url}/markers.csv" | sed -n "1p;${mFrom},${mTo}p" > markers.csv
     """
 }
