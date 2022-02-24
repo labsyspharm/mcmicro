@@ -1,0 +1,3 @@
+tasks:
+  - init: |
+      curl -s https://get.nextflow.io | bash
