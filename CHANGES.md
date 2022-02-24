@@ -1,12 +1,10 @@
 ### 2022-02-24
 
-* Added more flexibility to `exemplar.nf`, allowing to download any contiguous set of cycles. See
+* Added more flexibility to `exemplar.nf`, which allows for downloading any contiguous set of cycles. For more information, see
 
 ```
 nextflow labsyspharm/mcmicro/exemplar.nf --help
 ```
-
-for more information
 
 ### 2022-02-22
 
