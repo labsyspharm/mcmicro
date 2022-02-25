@@ -26,12 +26,12 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/data/exemplar-001
-          key: mcmicro-exemplar-001
+          key: ex001-2022-02-24
       - name: Exemplar-002 cache
         uses: actions/cache@v2
         with:
           path: ~/data/exemplar-002
-          key: mcmicro-exemplar-002-2cycle
+          key: ex002-2022-02-24
 
       # Download data only if no cache is available
       - name: Exemplar-001 download
@@ -48,7 +48,7 @@ jobs:
             echo "Using exemplar-002 cache"
             ls ~/data/exemplar-002/*
           else
-            ./nextflow exemplar.nf --name exemplar-002 --path ~/data --nc 2
+            ./nextflow exemplar.nf --name exemplar-002 --path ~/data --from-cycle 6 --to-cycle 7
           fi
 
   # One-shot test of exemplar-001
@@ -63,7 +63,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/data/exemplar-001
-          key: mcmicro-exemplar-001
+          key: ex001-2022-02-24
       - name: Test exemplar-001
         run: |
           docker rmi -f $(docker images -a -q)
@@ -92,11 +92,11 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/data/exemplar-001
-          key: mcmicro-exemplar-001
+          key: ex001-2022-02-24
       - name: Test exemplar-001 with Cypository
         run: |
           docker rmi -f $(docker images -a -q)
-          ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps cypository --s3seg-opts '--logSigma 45 300'
+          ./nextflow main.nf --in ~/data/exemplar-001  --probability-maps cypository --cypository-opts '--channel 10 --scalingFactor 2' --s3seg-opts '--logSigma 45 300'
           ls ~/data/exemplar-001/*
 
   # One-shot test of exemplar-001 using Ilastik
@@ -111,7 +111,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/data/exemplar-001
-          key: mcmicro-exemplar-001
+          key: ex001-2022-02-24
       - name: Test exemplar-001 with Ilastik
         run: |
           docker rmi -f $(docker images -a -q)
@@ -130,7 +130,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/data/exemplar-001
-          key: mcmicro-exemplar-001
+          key: ex001-2022-02-24
       - name: Test exemplar-001 with Mesmer
         run: |
           docker rmi -f $(docker images -a -q)
@@ -149,7 +149,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/data/exemplar-001
-          key: mcmicro-exemplar-001
+          key: ex001-2022-02-24
       - name: Test exemplar-001 step-by-step
         run: |
           docker rmi -f $(docker images -a -q)
@@ -179,7 +179,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/data/exemplar-002
-          key: mcmicro-exemplar-002-2cycle
+          key: ex002-2022-02-24
       - name: Test exemplar-002
         run: |
           docker rmi -f $(docker images -a -q)
@@ -203,7 +203,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/data/exemplar-001
-          key: mcmicro-exemplar-001
+          key: ex001-2022-02-24
       - name: Test exemplar-001
         run: |
           ./nextflow main.nf --in ~/data/exemplar-001 -profile singularity
