@@ -42,16 +42,9 @@ process s3seg {
     """
 }
 
-include {worker} from './lib/worker'
+include {worker}    from './lib/worker'
+include {getFileID} from './lib/util'
 
-// Pasting the function here as a temporary fix to
-//   an issue with method importing via `include`
-// Revert to include when the issue has been resolved
-// include {getFileID} from './lib/util'
-def getFileID(f, delim) {
-    f.getBaseName().toString().split(delim).head()
-}
-    
 workflow segmentation {
     take:
 
