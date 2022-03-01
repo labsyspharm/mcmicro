@@ -1,3 +1,4 @@
 tasks:
   - init: |
       cd /workspace; curl -s https://get.nextflow.io | bash
+      ./nextflow mcmicro/exemplar.nf --name exemplar-001 --path .
