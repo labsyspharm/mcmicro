@@ -25,13 +25,7 @@ process mcquant {
     """
 }
 
-// Pasting the function here as a temporary fix to
-//   an issue with method importing via `include`
-// Revert to include when the issue has been resolved
-// include {getFileID} from './lib/util'
-def getFileID(f, delim) {
-    f.getBaseName().toString().split(delim).head()
-}
+include {getImageID} from './lib/util'
     
 workflow quantification {
     take:
@@ -43,7 +37,7 @@ workflow quantification {
     main:
 
     // Determine IDs of images
-    id_imgs = imgs.map{ f -> tuple(getFileID(f,'\\.'), f) }
+    id_imgs = imgs.map{ f -> tuple(getImageID(f), f) }
 
     // Determine IDs of segmentation masks
     id_msks = segmasks.map{ id, msk -> x = id.split('-',2); tuple(x[1], x[0], msk) }

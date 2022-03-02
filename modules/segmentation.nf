@@ -42,8 +42,8 @@ process s3seg {
     """
 }
 
-include {worker}    from './lib/worker'
-include {getFileID} from './lib/util'
+include { worker }                 from './lib/worker'
+include { getFileID; getImageID }  from './lib/util'
 
 workflow segmentation {
     take:
@@ -69,8 +69,8 @@ workflow segmentation {
     inpPM = modulePM.map{ it -> String m = "${it.name}Model";
 		         tuple(it, params.containsKey(m) ?
 		               file(params."$m") : 'built-in') }
-	.combine(imgs)
-        .map{ mod, _2, f -> fid = getFileID(f,'\\.');
+        .combine(imgs)
+        .map{ mod, _2, f -> fid = getImageID(f);
              mod.watershed == 'no' ?
              tuple(mod, _2, f, "${pathSeg}/${mod.name}-${fid}", '') :
              tuple(mod, _2, f, "${pathPM}/${mod.name}", fid + '-pmap.tif') }
@@ -95,14 +95,14 @@ workflow segmentation {
              tuple(img, mtd, _3, '') }
 
     // Determine IDs of images
-    id_imgs  = imgs.map{ f -> tuple(getFileID(f,'\\.'), f) }
+    id_imgs  = imgs.map{ f -> tuple(getImageID(f), f) }
     
     // Determine IDs of TMA masks
     // Whole-slide images have no TMA masks
-    id_wsi = imgs.map{ f -> tuple(getFileID(f,'\\.'), 'NO_MASK') }
-	.filter{ !params.tma }
+    id_wsi = imgs.map{ f -> tuple(getImageID(f), 'NO_MASK') }
+        .filter{ !params.tma }
     id_masks = tmamasks.map{ f -> tuple(getFileID(f,'_mask'), f) }
-	.mix(id_wsi)
+        .mix(id_wsi)
 
     // Combine everything based on IDs
     inputs = id_imgs.join(id_masks).combine( id_pmaps, by:0 )
