@@ -2,3 +2,9 @@
 def getFileID(f, delim) {
     f.getBaseName().toString().split(delim).head()
 }
+
+// Extracts an image ID from a filename by dropping extension
+def getImageID(f) {
+    tokens = f.getBaseName().toString().replaceFirst(/\.ome$/, "")
+}
+
