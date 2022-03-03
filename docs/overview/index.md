@@ -22,21 +22,18 @@ Here we introduce some key background information relevant to highly multiplexed
 {% assign imageUrl = site.baseurl | append: "/images/main-menu-1.png" %} {% include image-card.html 
 	image=imageUrl
 	link="./#1-staining-proteins-or-molecules-in-biological-samples"
-	label="Learn more"
 %} 
 </div>
 <div class="col-xs-4 col-sm-4">
 {% assign imageUrl = site.baseurl | append: "/images/main-menu-2.png" %} {% include image-card.html
 	image=imageUrl 
 	link="./#2-immunofluorescence-imaging-for-biological-samples"
-	label="Learn more"
 %} 
 </div>
 <div class="col-xs-4 col-sm-4">
 {% assign imageUrl = site.baseurl | append: "/images/main-menu-3.png" %} {% include image-card.html
 	image=imageUrl 
 	link="./#3-processing-and-analyzing-images-with-the-mcmicro"
-	label="Learn more"
 %} 
 </div>
 </div><!-- end grid -->
