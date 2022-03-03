@@ -21,13 +21,6 @@ has_children: true
 | FastPG | Cell type calling | [Reference](https://github.com/labsyspharm/celluster#parameter-reference) | [Code](https://github.com/labsyspharm/celluster) - [DOI](https://www.biorxiv.org/content/10.1101/2020.06.19.159749v2) |
 | SCIMAP | Cell type calling | [Reference](https://scimap.xyz) - [Guide](https://scimap.xyz/tutorials/1-scimap-tutorial-getting-started.html) | [Code](https://github.com/ajitjohnson/scimap/) |
 
-# Coming soon
-
-* Mesmer - [Reference](https://doi.org/10.1101/2021.03.01.431313)
-* Cellpose - [Reference](https://www.nature.com/articles/s41592-020-01018-x)
-* GPU-enabled Phenograph - [Reference](https://doi.org/10.1016/j.cell.2015.05.047)
-
-Additional module development and evaluation will be enabled through future hackathons hosted by the Cancer Systems Biology Consortium (CSBC).
 
 # Suggest a module
 
@@ -35,4 +28,4 @@ Module suggestions can be made by posting to [https://forum.image.sc/](https://f
 
 # Add a module
 
-MCMICRO allows for certain module types to be specified dynamically through a configuration file. If you already have a containerized method with a command-line interface, follow [our instructions]({{ site.baseurl }}/tutorials/adding.html) to incorporate your module into the pipeline.
+MCMICRO allows for certain module types to be specified dynamically through a configuration file. If you already have a containerized method with a command-line interface, follow [our instructions]({{ site.baseurl }}/instructions/advanced-topics/adding.html) to incorporate your module into the pipeline.

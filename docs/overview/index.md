@@ -38,3 +38,5 @@ This [tutorial video](https://youtu.be/tLWMe_uJY9A) walks you through installing
 ---
 
 This [written guide](basics.html) provides an overview of basic concepts in tissue imaging, including how the data is collected and represented, image format standards, and the mandatory set of initial steps in image processing.
+
+![Visual overview of the MC MICRO pipeline components: Basic for illumination correction, Ashlar for alignment and stitching, Coreograph for TMA Core detection, UnMicst or S3 segmenter for segmentation, MC Quant for image quantification.]({{ site.baseurl }}/images/mcmicro-pipeline-two-rows-v2.png)
