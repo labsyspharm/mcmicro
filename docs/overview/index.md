@@ -20,7 +20,7 @@ Here we introduce some key background information relevant to highly multiplexed
 
 <div markdown="1">
 {% include image-card.html
-	image="/images/main-menu-1.png"
+	image="{{ site.baseurl }}/images/main-menu-1.png"
 	link="./#1-staining-proteins-or-molecules-in-biological-samples"
 	label="Go to section 1"
 %}
@@ -29,7 +29,7 @@ Here we introduce some key background information relevant to highly multiplexed
 
 <div markdown="1">
 {% include image-card.html
-	image="/images/main-menu-2.png"
+	image="{{ site.baseurl }}/images/main-menu-2.png"
 	link="./#2-immunofluorescence-imaging-for-biological-samples"
 	label="Go to section 2"
 %}
@@ -37,7 +37,7 @@ Here we introduce some key background information relevant to highly multiplexed
 
 <div markdown="1">
 {% include image-card.html
-	image="/images/main-menu-3.png"
+	image="{{ site.baseurl }}/images/main-menu-3.png"
 	link="./#3-processing-and-analyzing-images-with-the-mcmicro"
 	label="Go to section 3"
 %}
@@ -71,7 +71,7 @@ Classical immunofluorescence allows for precise visualization of 4-6 proteins or
 ![Schematic depicting the stages of CyCIF imaging. 
 1: Pre-staining to reduce auto-fluorescence. 2: Antibody incubation. 3: Nuclear staining. 4: 4-channel imaging. 5. Bleaching (flourophore oxidation). 6. Repeat for 8-20 cycles.
 Note: H&E is done in parallel on seperate, serial sections. 
-Image from Lin et al., 2018.](/images/cycifoverview1.png)
+Image from Lin et al., 2018.]({{ site.baseurl }}/images/cycifoverview1.png)
 *CyCIF schematic from [(Lin et al., 2018, eLife)](https://doi.org/10.7554/eLife.31657).<sup>1</sup>*
 
 All these imaging methods generate data that can be represented as a series of intensity values on a two-dimensional raster, or grid. Imaging multiple fluorophores simply adds a dimension to the raster that is referred to as a separate channel. MCMICRO can process the 2D data from all methods mentioned above – extension to 3D is an area of active development, described [here]().
