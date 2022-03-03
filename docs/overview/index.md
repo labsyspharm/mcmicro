@@ -19,8 +19,9 @@ Here we introduce some key background information relevant to highly multiplexed
 <div class="basic-grid three-column row top-xs row center-xs">
 
 <div markdown="1">
-{% include image-card.html
-	image="{{ site.baseurl }}/images/main-menu-1.png"
+{% assign imageUrl = site.baseurl | append: "/images/main-menu-1.png" %}
+	{% include image-card.html 
+	image=imageUrl
 	link="./#1-staining-proteins-or-molecules-in-biological-samples"
 	label="Go to section 1"
 %}
