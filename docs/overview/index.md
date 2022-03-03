@@ -14,36 +14,31 @@ A general introduction [video](https://www.youtube.com/watch?v=fnxBvgJQmtY) that
 ---
 # Overview of multiplexed tissue imaging collection, processing, and analysis
 
-Here we introduce some key background information relevant to highly multiplexed tissue imaging that provide context on tissue imaging and highlight the need for MCMICRO. 
+Here we introduce some key background information relevant to highly multiplexed tissue imaging that provide context on tissue imaging and highlight the need for MCMICRO.
 
-<div class="basic-grid three-column row top-xs row center-xs">
+<div class="basic-grid three-column row center-xs">
 
 <div markdown="1">
-{% assign imageUrl = site.baseurl | append: "/images/main-menu-1.png" %}
-	{% include image-card.html 
+{% assign imageUrl = site.baseurl | append: "/images/main-menu-1.png" %} {% include image-card.html 
 	image=imageUrl
 	link="./#1-staining-proteins-or-molecules-in-biological-samples"
 	label="Go to section 1"
-%}
-	
+%} 
 </div>
-
 <div markdown="1">
-{% include image-card.html
-	image="{{ site.baseurl }}/images/main-menu-2.png"
+{% assign imageUrl = site.baseurl | append: "/images/main-menu-2.png" %} {% include image-card.html
+	image=imageUrl 
 	link="./#2-immunofluorescence-imaging-for-biological-samples"
 	label="Go to section 2"
-%}
+%} 
 </div>
-
 <div markdown="1">
-{% include image-card.html
-	image="{{ site.baseurl }}/images/main-menu-3.png"
+{% assign imageUrl = site.baseurl | append: "/images/main-menu-3.png" %} {% include image-card.html
+	image=imageUrl 
 	link="./#3-processing-and-analyzing-images-with-the-mcmicro"
 	label="Go to section 3"
-%}
+%} 
 </div>
-
 </div><!-- end grid -->
 
 ## 1. Staining proteins or molecules in biological samples
