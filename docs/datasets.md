@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Datasets
-nav_order: 40
+nav_order: 5
 ---
 
 # Exemplar data
@@ -85,4 +85,3 @@ Data was collected from a tonsil specimen (4 year-old female, caucasian). The sp
 %}
 
 </div><!-- end grid -->
-

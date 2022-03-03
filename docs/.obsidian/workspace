@@ -1,0 +1,102 @@
+{
+  "main": {
+    "id": "acb968c1e518c77a",
+    "type": "split",
+    "children": [
+      {
+        "id": "6575928c632be5dc",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "instructions/nextflow/installation.md",
+            "mode": "source"
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "316383396573b73a",
+    "type": "split",
+    "children": [
+      {
+        "id": "d04ba3236ea12dc4",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "20f33bcad6899c5b",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "3391698870ded635",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "cb04243babe32968",
+    "type": "split",
+    "children": [
+      {
+        "id": "894b349329bd5128",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "0170683cde230827",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "instructions/nextflow/installation.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "active": "6575928c632be5dc",
+  "lastOpenFiles": [
+    "instructions/nextflow/installation.md",
+    "_includes/params.md",
+    "instructions/advanced-topics/adding.md",
+    "_includes/dev.md",
+    "instructions/nextflow/nextflow-running.md",
+    "_includes/install.md",
+    "modules/parameter-reference.md",
+    "instructions/galaxy/installation.md",
+    "instructions/nextflow/index.md",
+    "community/code_of_conduct.md"
+  ]
+}

@@ -1,8 +1,9 @@
 ---
 layout: default
 title: Galaxy workflow
-nav_order: 21
+nav_order: 26
 has_children: true
+parent: Instructions
 ---
 
 # MCMICRO Galaxy Workflow

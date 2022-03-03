@@ -1,8 +1,8 @@
 ---
 layout: default
 title: AWS configuration
-nav_order: 72
-parent: Platform-specific Steps
+nav_order: 12
+parent: Advanced Topics
 ---
 
 # AWS configuration

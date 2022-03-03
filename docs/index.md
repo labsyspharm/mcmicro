@@ -2,6 +2,7 @@
 layout: default
 title: Home
 nav_order: 1
+has_children: true
 description: ""
 hero_heading: "Multiple-choice microscopy pipeline"
 hero_body: "An end-to-end processing pipeline to transform large, multi-channel whole slide images into single-cell data. This site is a consolidated source of information on [MCMICRO](https://github.com/labsyspharm/mcmicro), documentation, roadmap, community and test data."

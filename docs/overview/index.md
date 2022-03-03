@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Tutorials
+title: Overview
 nav_order: 2
 has_children: true
 ---
@@ -21,7 +21,7 @@ A general introduction [video](https://www.youtube.com/watch?v=fnxBvgJQmtY) that
 ## Visual Guide
 This detailed [visual guide](pipeline-visual-guide.html) takes you through the steps performed by the MCMICRO pipeline as it processes [exemplar-002]({{ site.baseurl }}/datasets.html). The guide was developed using the open source [Minerva software](https://www.cycif.org/software/minerva), developed by the Laboratory of Systems Pharmacology.
 
-[![]({{ site.baseurl }}/images/tutorials/vizguide.png)](pipeline-visual-guide.html)
+[![](overview/pipeline-visual-guide.html site.baseurl }}/images/tutorials/vizguide.png)](pipeline-visual-guide.html)
 {: .mt-6 .mr-10}
 </div>
 

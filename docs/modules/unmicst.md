@@ -2,7 +2,7 @@
 layout: default
 title: UnMICST
 nav_order: 2
-parent: Parameter Tuning
+parent: Modules
 ---
 
 # UnMICST - Universal Models for Identifying Cells and Segmenting Tissue <br>

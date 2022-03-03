@@ -3,6 +3,7 @@ layout: default
 title: Parameter Tuning
 nav_order: 25
 has_children: true
+nav_exclude: true
 ---
 
 Some modules of the pipeline are non-parameteric (e.g., quantification). Other modules have a very small number of parameters, with default values being appropriate for the vast majority of possible inputs.

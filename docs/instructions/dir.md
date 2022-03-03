@@ -1,9 +1,9 @@
 ---
 layout: default
 title: Directory Structure
-nav_order: 30
+nav_order: 28
 has_children: true
-parent: Nextflow workflow
+parent: Instructions
 ---
 
 # Directory structure

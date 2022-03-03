@@ -2,7 +2,7 @@
 layout: default
 title: Tissue Imaging Intro
 nav_order: 2
-parent: Tutorials
+parent: Overview
 ---
 
 # Introduction to highly multiplexed tissue imaging 

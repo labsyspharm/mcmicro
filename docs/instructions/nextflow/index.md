@@ -2,6 +2,7 @@
 layout: default
 title: Nextflow workflow
 nav_order: 20
+parent: Instructions
 description: ""
 # permalink: /
 last_modified_date: 2021-03-28

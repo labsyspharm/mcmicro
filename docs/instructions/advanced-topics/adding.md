@@ -1,8 +1,8 @@
 ---
 layout: default
 title: Adding a module
-nav_order: 3
-parent: Tutorials
+nav_order: 10
+parent: Advanced Topics
 ---
 
 # Adding a module
