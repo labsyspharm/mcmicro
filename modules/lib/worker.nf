@@ -1,6 +1,8 @@
 // General worker process
 //
 // Inputs:
+//   tag     - used to match against other files at the pipeline level
+//             the tag is assigned to the outputs without being modified by the worker
 //   module  - a list of module parameters (usually comes from config/modules.config)
 //     .name      - named of the module
 //     .container - associated Docker container image
@@ -43,16 +45,15 @@ process worker {
       saveAs: {fn -> "${task.name}.log"}
 
     input:
-        tuple val(module), file(model), path(inp), val(pubDir), val(fnOut)
+        tuple val(tag), val(module), file(model), path(inp), val(pubDir), val(fnOut)
         val(outfmt)
         val(idxStep)
 
     output:
 
-    // Every worker emits a tuple (input file ID, module used, result)
-    // The input file ID can be used to match against files in other pipeline steps
-    tuple val("${inp.getBaseName().split('\\.').head()}"),
-      val("${module.name}"), path("$outfmt"), emit: res
+    // Every worker emits a tuple (tag, module used, result)
+    // The tag is used to match against files in other pipeline steps
+    tuple val(tag), val("${module.name}"), path("$outfmt"), emit: res
 
     // Modules have the option of producing additional files in plots/ and qc/
     //   subdirectories. These are captured and published to the project directory.

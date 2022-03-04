@@ -63,17 +63,20 @@ workflow segmentation {
     // Compose a mapping for which modules need watershed
     needWS  = modulePM.map{ it -> tuple(it.watershed, it.name) }
     
+    // Determine IDs of images
+    id_imgs  = imgs.map{ f -> tuple(getImageID(f), f) }
+    
     // Determine if there are any custom models for each module
     // Overwrite output filenames with <image>-pmap.tif for pmap generators
     // Publish instance segmentation outputs directly to segmentation/
     inpPM = modulePM.map{ it -> String m = "${it.name}Model";
 		         tuple(it, params.containsKey(m) ?
 		               file(params."$m") : 'built-in') }
-        .combine(imgs)
-        .map{ mod, _2, f -> fid = getImageID(f);
+        .combine(id_imgs)
+        .map{ mod, _2, tag, f -> 
              mod.watershed == 'no' ?
-             tuple(mod, _2, f, "${pathSeg}/${mod.name}-${fid}", '') :
-             tuple(mod, _2, f, "${pathPM}/${mod.name}", fid + '-pmap.tif') }
+             tuple(tag, mod, _2, f, "${pathSeg}/${mod.name}-${tag}", '') :
+             tuple(tag, mod, _2, f, "${pathPM}/${mod.name}", tag + '-pmap.tif') }
 
     // Run probability map generators and instance segmenters
     // All outputs will be published to probability-maps/
@@ -84,19 +87,16 @@ workflow segmentation {
     allpmaps = prepmaps.map{ mtd, f ->
         tuple(getFileID(f, '-pmap'), mtd, f) }
         .mix(worker.out.res)
-        .combine( needWS, by:1 )
+        .combine( needWS, by:1 )   // changes order to (mtd, tag, f, ws)
     
     // Filter out any workers who published their files to segmentation/
     //   i.e., all the instance segmenters
     // Add nuclear segmentation bypass to those that require it
     id_pmaps = allpmaps.filter{ _1, _2, _3, ws -> ws != 'no' }
-        .map{ mtd, img, _3, ws -> ws == 'bypass' ?
-             tuple(img, mtd, _3, '--nucleiRegion bypass') :
-             tuple(img, mtd, _3, '') }
+        .map{ mtd, tag, _3, ws -> ws == 'bypass' ?
+             tuple(tag, mtd, _3, '--nucleiRegion bypass') :
+             tuple(tag, mtd, _3, '') }
 
-    // Determine IDs of images
-    id_imgs  = imgs.map{ f -> tuple(getImageID(f), f) }
-    
     // Determine IDs of TMA masks
     // Whole-slide images have no TMA masks
     id_wsi = imgs.map{ f -> tuple(getImageID(f), 'NO_MASK') }
@@ -106,15 +106,15 @@ workflow segmentation {
 
     // Combine everything based on IDs
     inputs = id_imgs.join(id_masks).combine( id_pmaps, by:0 )
-	.map{ id, img, msk, mtd, pm, bypass ->
-	tuple("${mtd}-${img.getBaseName().split('\\.').head()}", img, msk, pm, bypass) }
+    	.map{ tag, img, msk, mtd, pm, bypass ->
+	        tuple("${mtd}-${tag}", img, msk, pm, bypass) }
 
     // Apply s3seg to probability-maps only
     s3seg(moduleWS, inputs, pathSeg)
 
     // Merge against instance segmentation outputs
     instSeg = allpmaps.filter{ _1, _2, _3, ws -> ws == 'no' }
-        .map{ mtd, img, _3, _4 -> tuple("${mtd}-${img}", _3) }.groupTuple()
+        .map{ mtd, tag, _3, _4 -> tuple("${mtd}-${tag}", _3) }.groupTuple()
     
     emit:
 
