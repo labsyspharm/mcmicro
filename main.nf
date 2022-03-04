@@ -182,7 +182,6 @@ workflow {
     // Merge segmentation masks against precomputed ones and append markers.csv
     segMsk = segmentation.out.mix(pre_segMsk)
     quantification(params.moduleQuant, allimg, segMsk, chMrk)
-        .view()
 
     // Spatial feature tables -> cell state calling
     sft = quantification.out.mix(pre_qty)
