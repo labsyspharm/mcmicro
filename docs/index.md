@@ -5,7 +5,7 @@ nav_order: 1
 has_children: true
 description: ""
 hero_heading: "Multiple-choice microscopy pipeline"
-hero_body: "An end-to-end processing pipeline to transform large, multi-channel whole slide images into single-cell data. This site is a consolidated source of information on [MCMICRO](https://github.com/labsyspharm/mcmicro), documentation, roadmap, community and test data."
+hero_body: "An end-to-end processing pipeline that transforms multi-channel whole-slide images into single-cell data. This website is a consolidated source of information for when, why, and how to use MCMICRO."
 hero_ctas:
   - label: "QUICK START"
     link: "instructions/"
@@ -13,44 +13,44 @@ hero_ctas:
     link: "overview/"
 # last_modified_date: 2021-03-28
 ---
-
 # Features
+{% include youtube.html id="DY_F-eG9nm4" autoplay=true mute=true controls=false loop=true related=false %}
 
 <div class="basic-grid with-dividers mb-6">
 
 <div markdown="1">
 ## Images to Insights
-Highly multiplexed tissue imaging provides deep insight into the composition, organization and states of normal and diseased tissues. When converted into single cell data, tissue images are a natural complement to scRNA-Seq and similar profiling methods with the added advantage of spatial context. MCMICRO converts raw images into single cell data using state of the art algorithms for illumination correction, stitching, quality control, segmentation, and cell type calling.
+Multiplexed tissue imaging provides deep insight into the composition, organization, and phenotype of normal and diseased tissues. MCMICRO converts these multiplexed images into single-cell data using state of the art algorithms. Single-cell resolution images provide spatial context of the cellular microenvironment and can be used alongside additional profiling methods like scRNA-Seq, to make robust biological conclusions.
+
 </div>
 <div markdown="1">
-## MCMICRO Pipeline
-MCMICRO is open source, community supported software that uses Docker and workflow software to create pipelines for analyzing microscopy-based images of tissues, with an emphasis on highly multiplexed methods and single-cell data. Data is processed sequentially using algorithms (modules) developed in different research groups.
+## Open source pipeline
+MCMICRO is an open source, community supported software that uses Docker and workflow software to create pipelines for analyzing microscopy-based images of tissues. MCMICRO processes data sequentially using algorithms (modules) developed in different research groups.
 </div>
 <div markdown="1">
 ## Flexible tools for a new field
-High-plex tissue imaging is a new field involving a wide range of imaging technologies and the best image analysis approach is not always clear. MCMICRO therefore implements a “multiple choice” approach in which users can select among different modules for critical processing steps.
+High-plex tissue imaging is a new interdisciplinary field involving a wide range of imaging technologies, and the best image analysis approach is not always clear. MCMICRO implements a “multiple choice” approach that allows users to select different modules for customized image processing.
 </div>
 <div markdown="1">
 ## Flexible Implementation
 MCMICRO is implemented in the workflow languages [Nextflow](https://www.nextflow.io/) and [Galaxy](https://galaxyproject.org/). Both implementations can be run locally, on a compute cluster, or on the cloud.
 </div>
 <div markdown="1">
-## Adding Modules
-Modules are being added to MCMICRO incrementally by a diverse developer community seeded by the NCI [Human Tissue Atlas Network](https://humantumoratlas.org/). See what modules we are currently [using](roadmap/), check out [instructions](roadmap/adding.html) to add your own modules, or [get help](help.html) from the community.
+## A growing community 
+Modules are being added to MCMICRO incrementally by a diverse developer community seeded by the NCI [Human Tissue Atlas Network](https://humantumoratlas.org/). See what modules we are currently [using](./modules/), view our growing [community](./community/), or [get help](./community/help.html) from the community.
 </div>
 <div markdown="1">
 ## Test Data
-MCMICRO comes with a growing library of imaging data ([EMIT data](datasets.html#exemplar-microscopy-images-of-tissues-emit)) for testing your test run or for developing new algorithms. There is a lot of unexplored biology in the test data as well!
+MCMICRO comes with a growing library of imaging data ([EMIT data](./datasets.html#exemplar-microscopy-images-of-tissues-emit)) for testing your test run or for developing new algorithms. There is a lot of unexplored biology in the test data as well!
 </div>
 <div markdown="1">
 ## Technology Agnostic
 MCMICRO works with any image that meets the [BioFormats standard](https://www.openmicroscopy.org/bio-formats/), most commonly OME-TIFF. These images can be acquired using a wide range of technologies- CODEX, CyCIF, mIHC, mxIF, IMC or MIBI.
 </div>
 <div markdown="1">
-## Best Practices
-Although it is nice to have many modules to try out, often you just want something that works. The MCMICRO team is collaborating with the NCI to run hackathons and challenges to identify the best modules and pipelines for specific types of data.
+## Evolving Best Practices
+The MCMICRO team is collaborating with the NCI to run hackathons and challenges to identify the best modules and pipelines for specific types of data.
 </div>
 
 </div><!-- end grid -->
 
-{% include youtube.html id="DY_F-eG9nm4" autoplay=true mute=true controls=false loop=true related=false %}
