@@ -49,6 +49,5 @@ workflow quantification {
     mcquant(module, inputs)
     
     emit:
-
-    mcquant.out.tables.flatten()
+      mcquant.out.tables.flatten()
 }
