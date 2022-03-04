@@ -18,25 +18,6 @@ Multiplexed tissue imaging has three distinct phases. In the first phase, tissue
 
 In the following pages, we introduce some key background information relevant to highly multiplexed tissue imaging. These sections provide context on tissue imaging and highlight the need for MCMICRO -- **jump around as needed!**
 
-<div class=" row center-xs">
-
-<div class="col-xs-4 col-sm-4">
-{% assign imageUrl = site.baseurl | append: "/images/main-menu-1.png" %} {% include image-card.html 
-	image=imageUrl
-	link="./exp.html"
-%} 
-</div>
-<div class="col-xs-4 col-sm-4">
-{% assign imageUrl = site.baseurl | append: "/images/main-menu-2.png" %} {% include image-card.html
-	image=imageUrl 
-	link="./exp.html#phase-2-immunofluorescence-imaging-for-biological-samples"
-%} 
-</div>
-<div class="col-xs-4 col-sm-4">
-{% assign imageUrl = site.baseurl | append: "/images/main-menu-3.png" %} {% include image-card.html
-	image=imageUrl 
-	link="./mcmicro.html"
-%} 
-</div>
-</div><!-- end grid -->
-
+<a href="./exp.html"><img src="../images/main-menu-1.png" alt="step1" width="300"/></a>
+<a href="./exp.html#phase-2-immunofluorescence-imaging-for-biological-samples"><img src="../images/main-menu-2.png" alt="step1" width="300"/></a>
+<a href="./mcmicro.html"><img src="../images/main-menu-3.png" alt="step1" width="300"/></a>
