@@ -14,7 +14,7 @@ workflow cellstates {
 		            file(params."$m") : 'built-in') }
 	.combine(input)
         .map{ mod, _2, _3 ->
-        tuple(mod, _2, _3, "${params.pubDir}/${mod.name}", '') }
+        tuple( '', mod, _2, _3, "${params.pubDir}/${mod.name}", '') }
     worker( inp, '*.{csv,h5ad}', 7 )
 
     emit:

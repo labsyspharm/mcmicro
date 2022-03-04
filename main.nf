@@ -122,12 +122,12 @@ pre_masks = findFiles(idxStart > 3 && params.tma,
 pre_pmap = findFiles(idxStart == 5,
 		     "${paths[4]}/*/*-pmap.tif",
 		     {error "No probability maps found in ${paths[4]}"})
-    .map{ f -> tuple(f.getParent().getBaseName(), f) }
+    .map{ f -> tuple(f.getParent().getName(), f) }
     .filter{ params.probabilityMaps.contains(it[0]) }
 pre_segMsk = findFiles(idxStart == 6,
 		       "${paths[5]}/**.tif",
 		       {error "No segmentation masks in ${paths[5]}"})
-    .map{ f -> tuple(f.getParent().getBaseName(), f) }.groupTuple()
+    .map{ f -> tuple(f.getParent().getName(), f) }.groupTuple()
 pre_qty    = findFiles(idxStart == 7,
 		       "${paths[6]}/*.csv",
 		       {error "No quantification tables in ${paths[6]}"})
