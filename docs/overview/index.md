@@ -9,7 +9,7 @@ has_children: true
 
 {% include youtube.html id="fnxBvgJQmtY" autoplay=false mute=false controls=true loop=false related=false %}
 
-A general introduction [video](https://www.youtube.com/watch?v=fnxBvgJQmtY) that provides a high-level overview of the pipeline.
+A general introduction [video](https://www.youtube.com/watch?v=fnxBvgJQmtY){:target="_blank"} that provides a high-level overview of the pipeline.
 
 ---
 # Overview of multiplexed tissue imaging collection, processing, and analysis
@@ -23,19 +23,19 @@ In the following pages, we introduce some key background information relevant to
 <div class="col-xs-4 col-sm-4">
 {% assign imageUrl = site.baseurl | append: "/images/main-menu-1.png" %} {% include image-card.html 
 	image=imageUrl
-	link="./exp-methods.html"
+	link="./exp.html"
 %} 
 </div>
 <div class="col-xs-4 col-sm-4">
 {% assign imageUrl = site.baseurl | append: "/images/main-menu-2.png" %} {% include image-card.html
 	image=imageUrl 
-	link="./exp-methods.html#phase-2-immunofluorescence-imaging-for-biological-samples"
+	link="./exp.html#phase-2-immunofluorescence-imaging-for-biological-samples"
 %} 
 </div>
 <div class="col-xs-4 col-sm-4">
 {% assign imageUrl = site.baseurl | append: "/images/main-menu-3.png" %} {% include image-card.html
 	image=imageUrl 
-	link="./mcmicro-methods.html"
+	link="./mcmicro.html"
 %} 
 </div>
 </div><!-- end grid -->

@@ -28,16 +28,16 @@ Multiplexed tissue imaging provides deep insight into the composition, organizat
 MCMICRO is an open source, community supported software that uses Docker and workflow software to create pipelines for analyzing microscopy-based images of tissues. MCMICRO processes data sequentially using algorithms (modules) developed in different research groups.
 </div>
 <div markdown="1">
-## Flexible tools for a new field
+## Modular tools for a new field
 High-plex tissue imaging is a new interdisciplinary field involving a wide range of imaging technologies, and the best image analysis approach is not always clear. MCMICRO implements a “multiple choice” approach that allows users to select different modules for customized image processing.
 </div>
 <div markdown="1">
 ## Flexible Implementation
-MCMICRO is implemented in the workflow languages [Nextflow](https://www.nextflow.io/) and [Galaxy](https://galaxyproject.org/). Both implementations can be run locally, on a compute cluster, or on the cloud.
+MCMICRO is implemented in the workflow languages [Nextflow](https://www.nextflow.io/){:target="_blank"} and [Galaxy](https://galaxyproject.org/){:target="_blank"}. Both implementations can be run locally, on a compute cluster, or on the cloud.
 </div>
 <div markdown="1">
 ## A growing community 
-Modules are being added to MCMICRO incrementally by a diverse developer community seeded by the NCI [Human Tissue Atlas Network](https://humantumoratlas.org/). See what modules we are currently [using](./modules/), view our growing [community](./community/), or [get help](./community/help.html) from the community.
+Modules are being added to MCMICRO incrementally by a diverse developer community seeded by the NCI [Human Tissue Atlas Network](https://humantumoratlas.org/){:target="_blank"}. See what modules we are currently [using](./modules/), view our growing [community](./community/), or [get help](./community/help.html) from the community.
 </div>
 <div markdown="1">
 ## Test Data
@@ -45,7 +45,7 @@ MCMICRO comes with a growing library of imaging data ([EMIT data](./datasets.htm
 </div>
 <div markdown="1">
 ## Technology Agnostic
-MCMICRO works with any image that meets the [BioFormats standard](https://www.openmicroscopy.org/bio-formats/), most commonly OME-TIFF. These images can be acquired using a wide range of technologies- CODEX, CyCIF, mIHC, mxIF, IMC or MIBI.
+MCMICRO works with any image that meets the [BioFormats standard](https://www.openmicroscopy.org/bio-formats/){:target="_blank"}, most commonly OME-TIFF. These images can be acquired using a wide range of technologies- CODEX, CyCIF, mIHC, mxIF, IMC or MIBI.
 </div>
 <div markdown="1">
 ## Evolving Best Practices
