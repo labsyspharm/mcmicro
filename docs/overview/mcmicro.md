@@ -17,9 +17,9 @@ has_children: true
 </details>
 
 # Phase 3: Processing and analyzing images with the MCMICRO
-Multiplexed imaging results in a potentially unwieldy volume of data. Whole-slide sample areas are generally quite large, so whole slides are imaged by dividing a large specimen into a grid of tiles – often 100-1,000 tiles are needed per slide.  Together, this results in highly multiplexed, biologically rich, image sets that encompass many sample positions and many proteins. Each tile is a multi-dimensional TIFF that encompasses the multiple channels of data. After multiple imaging cycles the full data set is massive –up to 50,000 x 50,000 pixels x 100 channels per tile or ~500 GB of data per slide – too large to be processed by conventional image processing methods.
+Multiplexed imaging results in a potentially unwieldy volume of data. Whole-slide sample areas are generally quite large, so whole slides are imaged by dividing a large specimen into a grid of tiles – often 100-1,000 tiles are needed per slide.  Together, this results in highly multiplexed, biologically rich, image sets that encompass many sample positions and many proteins. Each tile is a multi-dimensional TIFF that encompasses the multiple channels of data. After multiple imaging cycles the full data set is massive –up to 50,000 x 50,000 pixels x 100 channels per tile or ~500 GB of data per slide – too large to be processed by conventional image processing methods. _**This is where MCMICRO comes in.**_ 
 
-That’s where MCMICRO comes in. MCMICRO provides a modular, customizable pipeline that allows users to process images into cohesive images that can be easily visualized and quantified as single cell data.
+MCMICRO provides a modular, customizable pipeline that allows users to process images into cohesive images that can be easily visualized and quantified as single cell data.
 
 Walk through the process of turning image tiles into single-cell segmented mosaic image with our [pipeline visual guide](link).
 
@@ -52,28 +52,27 @@ UnMICST is one example of a method that segments images using pixel probability 
 ### Quantification
    
 **MCQuant**   
-[MCQuant](https://github.com/labsyspharm/quantification){:target="_blank"} takes in a multichannel image and segmentation mask and extracts single-cell data. Additional capabilities for MCQuant are in active development - check the [GitHub release notes](https://github.com/labsyspharm/quantification/releases){:target="_blank"} for the latest updates related to MCQuant. 
+[MCQuant](https://github.com/labsyspharm/quantification){:target="_blank"} takes in a multichannel image and segmentation mask and extracts single-cell data. This generates a _Cell Feature Table_ – analogous to a count table in RNA sequencing – that records the positions of individual cells and the associated features such as marker intensity, morphology, and quality control attributes. The Cell Feature Table is used for all subsequent analysis and is compatible with many tools developed for visualization of single cell sequencing data, like cellxgene<sup>23</sup>. It's important to note that a single marker in an image can be processed to generate a large number of distinct descriptive features beyond marker intensity (e.g. shape, granularity, localization within the cell, etc.).
 
-**Cell feature tables**  
-The conversion of images into single cell data generates a _Cell Feature Table_ – analogous to a count table in RNA sequencing – that records the positions of individual cells and the associated features such as marker intensity, morphology, and quality control attributes. The Cell Feature Table is used for all subsequent analysis.
+Additional capabilities for MCQuant are in active development - check the [GitHub release notes](https://github.com/labsyspharm/quantification/releases){:target="_blank"} for the latest updates related to MCQuant. 
 
-MCMICRO also includes a variety of specialized tools for analyzing spatial data using methods derived from physics, geographic information systems and ecology, but Cell Feature Tables can also be visualized using many tools developed for visualization of single cell sequencing data, like cellxgene<sup>23</sup>. It is important to note that a single marker in an image can be processed to generate a large number of distinct descriptive features beyond marker intensity (e.g. shape, granularity, localization within the cell, etc.).
+### Quality control
+
+In practice, all tissue images contain technical artifacts that can disrupt image analysis. Artifacts can include sectioning artifacts (areas where the knife compresses or tears the specimen), embedded foreign objects (dust, hair), regions of fat or necrotic tissue that cannot easily be analyzed. Foreign objects are often the brightest pixels in an image and become outliers when high-dimensional data are clustered. Humans are remarkably good at looking past these artifacts to identify biologically meaningful patterns in biological data, but artifacts complicate computational methods of single-cell data analysis. 
+
+**CyLinter**  
+We recently developed [CyLinter](https://labsyspharm.github.io/cylinter/){:target="_blank"}, a human-in-the-loop interactive quality control [software](https://github.com/labsyspharm/cylinter){:target="_blank"} for identifying and removing cells corrupted by microscopy artifacts in multiplexed tissue images. The program takes single-cell feature tables generated by the MCMICRO image processing pipeline as input and returns a set of de-noised feature tables for use in downstream analyses. 
 
 ### Analysis
 **SCIMAP**<sup>29</sup>  
-Scimap is a scalable toolkit for analyzing spatial molecular data. SCIMAP takes in spatial data mapped to X-Y coordinates and supports preprocessing, phenotyping, visualization, clustering, spatial analysis and differential spatial testing. Visit the [SCIMAP](https://scimap.xyz/){:target="_blank"} for more detailed information.
-
-**Image quality control**  
-In practice, all tissue images contain technical artifacts that can disrupt image analysis. Artifacts can include sectioning artifacts (areas where the knife compresses or tears the specimen), embedded foreign objects (dust, hair), regions of fat or necrotic tissue that cannot easily be analyzed. Foreign objects are often the brightest pixels in an image and become outliers when high-dimensional data are clustered. Humans are remarkably good at looking past these artifacts to identify biologically meaningful patterns in biological data, but artifacts complicate computational methods of single-cell data analysis. 
-
-We and others are working on human-in-the loop and automated methods to identify and suppress these artifacts, but until then, MCMICRO users must examine the underlying image data, segmentation mask, and quantified features (per-cell marker intensities) to minimize the impact of noise.
+Scimap is a scalable toolkit for analyzing spatial molecular data. SCIMAP takes in spatial data mapped to X-Y coordinates and supports preprocessing, phenotyping, visualization, clustering, spatial analysis and differential spatial testing. Visit the [SCIMAP website](https://scimap.xyz/){:target="_blank"} for more detailed information.
 
 **\*\*Missing something?? --  [Suggest a module](./modules/#suggest-a-module) for us to develop in the future!\*\***
 
 ### Visualization
 
 **MINERVA**<sup>24</sup>  
-Minerva is a suite of software tools for tissue atlases and digital pathology that enables interactive viewing and fast sharing of large image data. Currently, we have released **Minerva Author**, a tool that lets you easily create and annotate images, and **Minerva Story**, a narrative image viewer for web hosting, but additional tools are in active development. The [Minerva wiki](https://github.com/labsyspharm/minerva-story/wiki){:target="_blank"} hosts the most up-to-date information about the Minerva suite. 
+Minerva is a suite of software tools for tissue atlases and digital pathology that enables interactive viewing and sharing of large image data. Currently, we have released **Minerva Author**, a tool that lets you easily create and annotate images, and **Minerva Story**, a narrative image viewer for web hosting. Additional tools are in active development - go to the [Minerva wiki](https://github.com/labsyspharm/minerva-story/wiki){:target="_blank"} for the most up-to-date information about the Minerva suite. 
 
 ## Training data
 Quality machine learning algorithms can only be generated from quality training data. Currently the field lacks sufficient freely-available data with ground truth labeling (such as pathologist-annotated images). Past experience in the machine learning community with natural scene images<sup>20</sup> proved that acquiring sufficient data with accurate labels remains time consuming and rate limiting<sup>22</sup>. The [Exemplar Microscopy Images of Tissues data set (EMIT)]({{ site.baseurl }}/datasets.html#exemplar-microscopy-images-of-tissues-emit) will help address this limitation. 
@@ -83,4 +82,4 @@ We expect the [EMIT]({{ site.baseurl }}/datasets.html#exemplar-microscopy-images
 ## The open microscopy environment (OME) 
 MCMICRO is designed to solve the problem of processing high volumes of tissue image data and yield reliable image mosaics and single cell data. It does not, however, solve all problems associated in the analysis and publication of images. We strongly recommend that laboratories also adopt the database and visualization tools provided by the OME community. The [OME community](https://www.openmicroscopy.org/events/ome-community-meeting-2021/){:target="_blank"} is welcoming and it has many on-line resources that discuss the topics described above; OME sponsors multiple workshops and conferences of interest to new and experienced microscopists.
 
-In our laboratories, we use MCMICRO, OME/OMERO and [MINERVA](https://github.com/labsyspharm/minerva-story/wiki){:target="_blank"} (an interactive viewing and data sharing platform) in parallel<sup>24</sup>.
+In our laboratories, we use MCMICRO, OME/OMERO and MINERVA in parallel<sup>24</sup>.

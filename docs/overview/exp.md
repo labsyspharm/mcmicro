@@ -18,26 +18,26 @@ has_children: true
 
 # Phase 1: Staining proteins or molecules in biological samples
 
-To diagnose disease, doctors often biopsy patients, removing a small, 2-4 mm cylindrical tissue sample of tissue that can be studied in greater detail under a microscope. A pathologist takes this biopsy, treats it with preservative chemicals, slices it into 1-10 μm sections, and adheres these slices to microscope slides. The pathologist can then stain the slides with molecules that allow them to visualize various aspects of the tissue. There are several methods to staining these tissues – here we describe two classical methods. First, we describe the colorimetric stains - the gold standard for pathology diagnoses. Second, we discuss immunoflourescence - a technique that allows multiple proteins or molecules within a sample to be visualized simultaneously(Boyle, 2008).
+To diagnose disease, doctors often biopsy patients, removing a small, 2-4 mm cylindrical tissue sample of tissue that can be studied in greater detail under a microscope. A pathologist takes this biopsy, treats it with preservative chemicals, slices it into 1-10 μm sections, and adheres these slices to microscope slides. The pathologist can then stain the slides with molecules that allow them to visualize various aspects of the tissue. There are several methods to staining these tissues – here we describe two classical methods. First, we describe the colorimetric stains - the gold standard for pathology diagnoses. Second, we discuss immunoflourescence - a technique that allows multiple proteins or molecules within a sample to be visualized simultaneously (Boyle, 2008).
 
 ### Hematoxylin and eosin (H&E) and colorimetric stains
 
 Pathologists stain tissue components with colorimetric dyes to visualize subtle differences within tissue samples<sup>16,17</sup>. Hematoxylin and Eosin stains (H&E) are one of the most common dyes used to stain biological tissues for pathological analysis. Hematoxylin stains nuclei purple and eosin stains extracellular matrix and cytoplasm pink, while other cell structures display colors in-between. The use of H&E stained samples to diagnose or treat disease, known as histopathology, remains the primary way that diseases such as cancer are staged and managed<sup>18</sup>. Histopathology, therefore, is a critical component of disease diagnosis and treatment but provides a limited view of the specific molecular interactions that are happening within a tissue.
 <figure>
-	<a href="https://iiif.elifesciences.org/lax/31657%2Felife-31657-fig7-v3.tif/full/,1500/0/default.jpg">
+	<a href="https://elifesciences.org/articles/31657/figures#fig7">
 		<img src="{{ site.baseurl }}/images/hande.png" style="max-width: 300px;"
 			 alt="H&E staining of pancreatic ductal adenocarcinoma (PDAC) resection specimen that includes portions of cancer and non-malignant pancreatic tissue and small intestine."  />
-	</a> <figcaption>The image above shows an example H&E stained pancreatic ductal adenocarcinoma (PDAC) specimen that includes portions of cancerous and non-malignant pancreatic tissue and small intestine. From [(Lin et al., 2018).</figcaption> 
+	</a> <figcaption>The image above shows an example H&E stained pancreatic ductal adenocarcinoma (PDAC) specimen that includes portions of cancerous and non-malignant pancreatic tissue and small intestine. From (Lin et al., 2018).</figcaption> 
 </figure>
 
 ### Immuno-labeling
 Text about immunofluorescence. Stained proteins colloquially called “markers”
 
 <figure>
-	<a href="https://iiif.elifesciences.org/lax/31657%2Felife-31657-fig7-v3.tif/full/,1500/0/default.jpg">
+	<a href="https://elifesciences.org/articles/31657/figures#fig7">
 		<img src="{{ site.baseurl }}/images/if.png" style="max-width: 300px;"
 			 alt="Identical sample as H&E stained image above, this section was stained with antibodies & imaged with fluorescent imaging (from Lin et al., 2018, eLife.)"  />
-	</a> <figcaption>The image above shows an immunofluorescent pancreatic ductal adenocarcinoma (PDAC) specimen. From (Lin et al., 2018).</figcaption> 
+	</a> <figcaption>An immunofluorescent PDAC specimen that corresponds to the H&E PDAC specimin shown above. From (Lin et al., 2018).</figcaption> 
 </figure>
 
 # Phase 2: Immunofluorescence imaging for biological samples
