@@ -2,6 +2,7 @@
 layout: default
 title: Datasets
 nav_order: 5
+has_children: true
 ---
 
 # Exemplar data

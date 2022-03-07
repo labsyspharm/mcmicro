@@ -21,9 +21,9 @@ Multiplexed imaging results in a potentially unwieldy volume of data. Whole-slid
 
 MCMICRO provides a modular, customizable pipeline that allows users to process images into cohesive images that can be easily visualized and quantified as single cell data.
 
-Walk through the process of turning image tiles into single-cell segmented mosaic image with our [pipeline visual guide](link).
+Walk through the process of turning image tiles into single-cell segmented mosaic image with our [pipeline visual guide](pipeline-visual-guide.html){:target="_blank"} (created with [Minerva](http://localhost:4000/overview/mcmicro.html#visualization)).
 
-![Visual overview of the MC MICRO pipeline components: Basic for illumination correction, Ashlar for alignment and stitching, Coreograph for TMA Core detection, UnMicst or S3 segmenter for segmentation, MC Quant for image quantification.]({{ site.baseurl }}/images/mcmicro-pipeline-two-rows-v2.png)
+![Visual overview of the MCMICRO pipeline components: Basic for illumination correction, Ashlar for alignment and stitching, Coreograph for TMA Core detection, UnMicst or S3 segmenter for segmentation, MC Quant for image quantification.]({{ site.baseurl }}/images/mcmicro-pipeline-two-rows-v2.png)
 
 ## Image tiles to whole-slide mosaic images
 Before performing analysis, the many image tiles must be combined into a single mosaic image where all tiles and channels can be viewed simultaneously. We do this with: i) illumination correction through BaSIC, ii) alignment and stitching by ASHLAR, and iii) image quality control using human-in-the-loop methods.
