@@ -1,6 +1,6 @@
 ---
 layout: default
-title: MCMICRO Background
+title: MCMICRO
 nav_order: 2
 parent: Overview
 has_children: true
@@ -16,7 +16,7 @@ has_children: true
 {:toc}
 </details>
 
-# Phase 3: Processing and analyzing images with the MCMICRO
+# Phase 3: Processing and analyzing images with MCMICRO
 Multiplexed imaging results in a potentially unwieldy volume of data. Whole-slide sample areas are generally quite large, so whole slides are imaged by dividing a large specimen into a grid of tiles – often 100-1,000 tiles are needed per slide.  Together, this results in highly multiplexed, biologically rich, image sets that encompass many sample positions and many proteins. Each tile is a multi-dimensional TIFF that encompasses the multiple channels of data. After multiple imaging cycles the full data set is massive –up to 50,000 x 50,000 pixels x 100 channels per tile or ~500 GB of data per slide – too large to be processed by conventional image processing methods. _**This is where MCMICRO comes in.**_ 
 
 MCMICRO provides a modular, customizable pipeline that allows users to process images into cohesive images that can be easily visualized and quantified as single cell data.

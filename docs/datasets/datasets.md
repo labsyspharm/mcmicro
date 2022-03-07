@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Example Data Sets
+title: Example data sets
 nav_order: 5
 has_children: true
 ---
