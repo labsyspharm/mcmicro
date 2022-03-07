@@ -17,6 +17,6 @@ parent: Home
 
 4. Go to [modules](./modules/) for detailed information about the various MCMICRO modules and how to tune their parameters.
 
-5. View a visual guide through the steps of MCMICRO, then download [example data](./datasets.html) to try it yourself!
+5. View a visual guide through the steps of MCMICRO, then download [example data](./datasets/datasets.html) to try it yourself!
 
 6. Visit [community](./community/) to learn more about the cross-institutional effort that has culminated in MCMICRO, to get [help](./community/help.html), and to get involved!
