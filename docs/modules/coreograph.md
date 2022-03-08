@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Coreograph
-nav_order: 1
+nav_order: 32
 parent: Modules
 ---
 

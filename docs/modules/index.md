@@ -11,37 +11,37 @@ has_children: true
 
 <div class="col-xs-2 col-sm-2">
 <div markdown="1">
-[![illumination correction "basic"](../images/modules/basic.png)](./)
+[![illumination correction "basic"](../images/modules/basic.png)](./basic.html)
 </div>
 </div>
 
 <div class="col-xs-2 col-sm-2">
 <div markdown="1">
-[![stitching - ashlar](../images/modules/ashlar.png)](./)
+[![stitching - ashlar](../images/modules/ashlar.png)](./ashlar.html)
 </div>
 </div>
 
 <div class="col-xs-2 col-sm-2">
 <div markdown="1">
-[![TMA core detection - coreograph](../images/modules/coreo.png)](./)
+[![TMA core detection - coreograph](../images/modules/coreo.png)](./coreograph.html)
 </div>
 </div>
 
 <div class="col-xs-2 col-sm-2">
 <div markdown="1">
-[![segmentation - un-micst](../images/modules/unmicst.png)](./)
+[![segmentation - un-micst](../images/modules/unmicst.png)](./unmicst.html)
 </div>
 </div>
 
 <div class="col-xs-2 col-sm-2">
 <div markdown="1">
-[![segmentation - s3segmenter](../images/modules/s3seg.png)](./)
+[![segmentation - s3segmenter](../images/modules/s3seg.png)](./s3seg.html)
 </div>
 </div>
 	
 <div class="col-xs-2 col-sm-2">
 <div markdown="1">
-[![quantification - MC Quant](../images/modules/mcquant.png)](./)
+[![quantification - MC Quant](../images/modules/mcquant.png)](./mcquant.html)
 </div>
 </div>
 
@@ -51,25 +51,25 @@ has_children: true
 
 <div class="col-xs-2 col-sm-2">
 <div markdown="1">
-[![quality control - cylinter](../images/modules/cylinter.png)](./)
+[![quality control - cylinter](../images/modules/cylinter.png)](./cylinter.html)
 </div>
 </div>
 	
 <div class="col-xs-2 col-sm-2">
 <div markdown="1">
-[![analysis- sci map](../images/modules/SCIMAP.png)](.)
+[![analysis- sci map](../images/modules/SCIMAP.png)](.scimap.html)
 </div>
 </div>
 
 <div class="col-xs-2 col-sm-2">
 <div markdown="1">
-[![visualization - minerva](../images/modules/minerva.png)](./)
+[![visualization - minerva](../images/modules/minerva.png)](./minerva.html)
 </div>
 </div>
 
 <div class="col-xs-2 col-sm-2">
 <div markdown="1">
-[![Additional modules in progress!](../images//modules/others.png)](./)
+[![Additional modules in progress!](../images//modules/others.png)](./#add-a-module)
 </div>
 </div>
 	
@@ -97,3 +97,5 @@ Module suggestions can be made by posting to [https://forum.image.sc/](https://f
 # Add a module
 
 MCMICRO allows for certain module types to be specified dynamically through a configuration file. If you already have a containerized method with a command-line interface, follow [our instructions]({{ site.baseurl }}/instructions/advanced-topics/adding.html) to incorporate your module into the pipeline.
+
+{: .no_toc }
