@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Experimental Background
+title: Experimental background
 nav_order: 2
 parent: Overview
 has_children: true

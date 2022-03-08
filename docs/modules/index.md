@@ -7,6 +7,8 @@ has_children: true
 
 # Current Modules
 
+![Visual overview of the MCMICRO pipeline components: Basic for illumination correction, Ashlar for alignment and stitching, Coreograph for TMA Core detection, UnMicst or S3 segmenter for segmentation, MC Quant for image quantification.]({{ site.baseurl }}/images/pipeline-two-rows-v3.png)
+
 | Name | Purpose | Parameters | URLs |
 | :-- | :-- | :-- | :-- |
 | BaSiC | Illumination correction | [Reference](https://github.com/labsyspharm/basic-illumination#running-as-a-docker-container) | [Code](https://github.com/labsyspharm/basic-illumination) - [DOI](https://doi.org/10.1038/ncomms14836) |

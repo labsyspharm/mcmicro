@@ -2,7 +2,7 @@
 layout: default
 title: Multiplex Imaging Comparison
 nav_order: 2
-parent: Experimental Background
+parent: Experimental background
 
 ---
 

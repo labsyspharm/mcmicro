@@ -23,7 +23,77 @@ MCMICRO provides a modular, customizable pipeline that allows users to process i
 
 Walk through the process of turning image tiles into single-cell segmented mosaic image with our [pipeline visual guide]({{ site.baseurl }}/datasets/pipeline-visual-guide.html){:target="_blank"} (created with [Minerva](./mcmicro.html#visualization)).
 
-![Visual overview of the MCMICRO pipeline components: Basic for illumination correction, Ashlar for alignment and stitching, Coreograph for TMA Core detection, UnMicst or S3 segmenter for segmentation, MC Quant for image quantification.]({{ site.baseurl }}/images/mcmicro-pipeline-two-rows-v2.png)
+![Visual overview of the MCMICRO pipeline components: Basic for illumination correction, Ashlar for alignment and stitching, Coreograph for TMA Core detection, UnMicst or S3 segmenter for segmentation, MC Quant for image quantification.]({{ site.baseurl }}/images/pipeline-two-rows-v3.png)
+
+
+## The MCMICRO modules
+<div class="row">
+
+<div class="col-xs-2 col-sm-2">
+<div markdown="1">
+[![illumination correction "basic"](../images/modules/basic.png)](./mcmicro.html#image-tiles-to-whole-slide-mosaic-images)
+</div>
+</div>
+
+<div class="col-xs-2 col-sm-2">
+<div markdown="1">
+[![stitching - ashlar](../images//modules/ashlar.png)](./mcmicro.html#image-tiles-to-whole-slide-mosaic-images)
+</div>
+</div>
+
+<div class="col-xs-2 col-sm-2">
+<div markdown="1">
+[![TMA core detection - coreograph](../images//modules/coreo.png)](./mcmicro.html#image-tiles-to-whole-slide-mosaic-images)
+</div>
+</div>
+
+<div class="col-xs-2 col-sm-2">
+<div markdown="1">
+[![segmentation - un-micst](../images//modules/unmicst.png)](./mcmicro.html#segmentation)
+</div>
+</div>
+
+<div class="col-xs-2 col-sm-2">
+<div markdown="1">
+[![segmentation - s3segmenter](../images//modules/s3seg.png)](./mcmicro.html#segmentation)
+</div>
+</div>
+	
+<div class="col-xs-2 col-sm-2">
+<div markdown="1">
+[![quantification - MC Quant](../images//modules/mcquant.png)](./mcmicro.html#quantification)
+</div>
+</div>
+
+</div><!-- end grid -->
+
+<div class="row">
+
+<div class="col-xs-2 col-sm-2">
+<div markdown="1">
+[![quality control - cylinter](../images//modules/cylinter.png)](./mcmicro.html#quality-control)
+</div>
+</div>
+	
+<div class="col-xs-2 col-sm-2">
+<div markdown="1">
+[![analysis- sci map](../images//modules/scimap.png)](./mcmicro.html#analysis)
+</div>
+</div>
+
+<div class="col-xs-2 col-sm-2">
+<div markdown="1">
+[![visualization - minerva](../images/modules/minerva.png)](./mcmicro.html#visualization)
+</div>
+</div>
+
+<div class="col-xs-2 col-sm-2">
+<div markdown="1">
+[![Additional modules in progress!](../images//modules/others.png)](./mcmicro.html#visualization)
+</div>
+</div>
+	
+</div><!-- end grid -->
 
 ## Image tiles to whole-slide mosaic images
 Before performing analysis, the many image tiles must be combined into a single mosaic image where all tiles and channels can be viewed simultaneously. We do this with: i) illumination correction through BaSIC, ii) alignment and stitching by ASHLAR, and iii) image quality control using human-in-the-loop methods.
@@ -46,7 +116,7 @@ Image processing is necessary to extract quantitative data from images. Although
 **UnMICST**<sup>27</sup>  
 UnMICST is one example of a method that segments images using pixel probability maps. UnMICST generates probability maps where the intensity at each pixel defines how confidently that pixel has been classified to either a nucleus or background of the image. UnMICST then uses these probability maps to generate bounding boxes with binary masks that can be used to segment the image into single cells. Visit the [UnMICST website](https://labsyspharm.github.io/UnMICST-info/){:target="_blank"} to learn more!
 
-**S3Segmenter**<sup>28</sup>   
+**S3segmenter**<sup>28</sup>   
 [S3segmenter](https://github.com/HMS-IDAC/S3segmenter){:target="_blank"} provides one example of a watershed based approach to segmentation that uses a Matlab-based set of functions that generates single-cell (nuclei and cytoplasm) masks. 
 
 ### Quantification
@@ -67,12 +137,12 @@ We recently developed [CyLinter](https://labsyspharm.github.io/cylinter/){:targe
 **SCIMAP**<sup>29</sup>  
 Scimap is a scalable toolkit for analyzing spatial molecular data. SCIMAP takes in spatial data mapped to X-Y coordinates and supports preprocessing, phenotyping, visualization, clustering, spatial analysis and differential spatial testing. Visit the [SCIMAP website](https://scimap.xyz/){:target="_blank"} for more detailed information.
 
-**\*\*Missing something?? --  [Suggest a module](./modules/#suggest-a-module) for us to develop in the future!\*\***
-
 ### Visualization
 
-**MINERVA**<sup>24</sup>  
+**Minerva**<sup>24</sup>  
 Minerva is a suite of software tools for tissue atlases and digital pathology that enables interactive viewing and sharing of large image data. Currently, we have released **Minerva Author**, a tool that lets you easily create and annotate images, and **Minerva Story**, a narrative image viewer for web hosting. Additional tools are in active development - go to the [Minerva wiki](https://github.com/labsyspharm/minerva-story/wiki){:target="_blank"} for the most up-to-date information about the Minerva suite. 
+
+**\*\*Missing something?? --  [Suggest a module](./modules/#suggest-a-module) for us to develop in the future!\*\***
 
 ## Training data
 Quality machine learning algorithms can only be generated from quality training data. Currently the field lacks sufficient freely-available data with ground truth labeling (such as pathologist-annotated images). Past experience in the machine learning community with natural scene images<sup>20</sup> proved that acquiring sufficient data with accurate labels remains time consuming and rate limiting<sup>22</sup>. The [Exemplar Microscopy Images of Tissues data set (EMIT)]({{ site.baseurl }}/datasets.html#exemplar-microscopy-images-of-tissues-emit) will help address this limitation. 
