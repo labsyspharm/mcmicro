@@ -5,9 +5,75 @@ nav_order: 4
 has_children: true
 ---
 
-# Current Modules
+# Current MCMICRO Modules
 
-![Visual overview of the MCMICRO pipeline components: Basic for illumination correction, Ashlar for alignment and stitching, Coreograph for TMA Core detection, UnMicst or S3 segmenter for segmentation, MC Quant for image quantification.]({{ site.baseurl }}/images/pipeline-two-rows-v3.png)
+<div class="row">
+
+<div class="col-xs-2 col-sm-2">
+<div markdown="1">
+[![illumination correction "basic"](../images/modules/basic.png)](./)
+</div>
+</div>
+
+<div class="col-xs-2 col-sm-2">
+<div markdown="1">
+[![stitching - ashlar](../images/modules/ashlar.png)](./)
+</div>
+</div>
+
+<div class="col-xs-2 col-sm-2">
+<div markdown="1">
+[![TMA core detection - coreograph](../images/modules/coreo.png)](./)
+</div>
+</div>
+
+<div class="col-xs-2 col-sm-2">
+<div markdown="1">
+[![segmentation - un-micst](../images/modules/unmicst.png)](./)
+</div>
+</div>
+
+<div class="col-xs-2 col-sm-2">
+<div markdown="1">
+[![segmentation - s3segmenter](../images/modules/s3seg.png)](./)
+</div>
+</div>
+	
+<div class="col-xs-2 col-sm-2">
+<div markdown="1">
+[![quantification - MC Quant](../images/modules/mcquant.png)](./)
+</div>
+</div>
+
+</div><!-- end grid -->
+
+<div class="row">
+
+<div class="col-xs-2 col-sm-2">
+<div markdown="1">
+[![quality control - cylinter](../images/modules/cylinter.png)](./)
+</div>
+</div>
+	
+<div class="col-xs-2 col-sm-2">
+<div markdown="1">
+[![analysis- sci map](../images/modules/SCIMAP.png)](.)
+</div>
+</div>
+
+<div class="col-xs-2 col-sm-2">
+<div markdown="1">
+[![visualization - minerva](../images/modules/minerva.png)](./)
+</div>
+</div>
+
+<div class="col-xs-2 col-sm-2">
+<div markdown="1">
+[![Additional modules in progress!](../images//modules/others.png)](./)
+</div>
+</div>
+	
+</div><!-- end grid -->
 
 | Name | Purpose | Parameters | URLs |
 | :-- | :-- | :-- | :-- |

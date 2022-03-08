@@ -17,13 +17,14 @@ has_children: true
 </details>
 
 # Phase 3: Processing and analyzing images with MCMICRO
+
 Multiplexed imaging results in a potentially unwieldy volume of data. Whole-slide sample areas are generally quite large, so whole slides are imaged by dividing a large specimen into a grid of tiles – often 100-1,000 tiles are needed per slide.  Together, this results in highly multiplexed, biologically rich, image sets that encompass many sample positions and many proteins. Each tile is a multi-dimensional TIFF that encompasses the multiple channels of data. After multiple imaging cycles the full data set is massive –up to 50,000 x 50,000 pixels x 100 channels per tile or ~500 GB of data per slide – too large to be processed by conventional image processing methods. _**This is where MCMICRO comes in.**_ 
 
-MCMICRO provides a modular, customizable pipeline that allows users to process images into cohesive images that can be easily visualized and quantified as single cell data.
+![Visual overview of the MCMICRO pipeline components: Basic for illumination correction, Ashlar for alignment and stitching, Coreograph for TMA Core detection, UnMicst or S3 segmenter for segmentation, MC Quant for image quantification.]({{ site.baseurl }}/images/pipeline-two-rows-v3.png)
+
+MCMICRO provides a modular, customizable pipeline that allows users to process whole slide microscopy data into cohesive images that can be easily visualized and quantified as single cell data.
 
 Walk through the process of turning image tiles into single-cell segmented mosaic image with our [pipeline visual guide]({{ site.baseurl }}/datasets/pipeline-visual-guide.html){:target="_blank"} (created with [Minerva](./mcmicro.html#visualization)).
-
-![Visual overview of the MCMICRO pipeline components: Basic for illumination correction, Ashlar for alignment and stitching, Coreograph for TMA Core detection, UnMicst or S3 segmenter for segmentation, MC Quant for image quantification.]({{ site.baseurl }}/images/pipeline-two-rows-v3.png)
 
 
 ## The MCMICRO modules
@@ -37,31 +38,31 @@ Walk through the process of turning image tiles into single-cell segmented mosai
 
 <div class="col-xs-2 col-sm-2">
 <div markdown="1">
-[![stitching - ashlar](../images//modules/ashlar.png)](./mcmicro.html#image-tiles-to-whole-slide-mosaic-images)
+[![stitching - ashlar](../images/modules/ashlar.png)](./mcmicro.html#image-tiles-to-whole-slide-mosaic-images)
 </div>
 </div>
 
 <div class="col-xs-2 col-sm-2">
 <div markdown="1">
-[![TMA core detection - coreograph](../images//modules/coreo.png)](./mcmicro.html#image-tiles-to-whole-slide-mosaic-images)
+[![TMA core detection - coreograph](../images/modules/coreo.png)](./mcmicro.html#image-tiles-to-whole-slide-mosaic-images)
 </div>
 </div>
 
 <div class="col-xs-2 col-sm-2">
 <div markdown="1">
-[![segmentation - un-micst](../images//modules/unmicst.png)](./mcmicro.html#segmentation)
+[![segmentation - un-micst](../images/modules/unmicst.png)](./mcmicro.html#segmentation)
 </div>
 </div>
 
 <div class="col-xs-2 col-sm-2">
 <div markdown="1">
-[![segmentation - s3segmenter](../images//modules/s3seg.png)](./mcmicro.html#segmentation)
+[![segmentation - s3segmenter](../images/modules/s3seg.png)](./mcmicro.html#segmentation)
 </div>
 </div>
 	
 <div class="col-xs-2 col-sm-2">
 <div markdown="1">
-[![quantification - MC Quant](../images//modules/mcquant.png)](./mcmicro.html#quantification)
+[![quantification - MC Quant](../images/modules/mcquant.png)](./mcmicro.html#quantification)
 </div>
 </div>
 
@@ -71,13 +72,13 @@ Walk through the process of turning image tiles into single-cell segmented mosai
 
 <div class="col-xs-2 col-sm-2">
 <div markdown="1">
-[![quality control - cylinter](../images//modules/cylinter.png)](./mcmicro.html#quality-control)
+[![quality control - cylinter](../images/modules/cylinter.png)](./mcmicro.html#quality-control)
 </div>
 </div>
 	
 <div class="col-xs-2 col-sm-2">
 <div markdown="1">
-[![analysis- sci map](../images//modules/scimap.png)](./mcmicro.html#analysis)
+[![analysis- sci map](../images/modules/SCIMAP.png)](./mcmicro.html#analysis)
 </div>
 </div>
 
