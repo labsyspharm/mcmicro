@@ -23,9 +23,6 @@ Multiplexed imaging results in a potentially unwieldy volume of data. Whole-slid
 {: .text-center }
 _**This is where MCMICRO comes in.**_ 
 
-<br>
-<br>
-
 ![Visual overview of the MCMICRO pipeline components: Basic for illumination correction, Ashlar for alignment and stitching, Coreograph for TMA Core detection, UnMicst or S3 segmenter for segmentation, MC Quant for image quantification.]({{ site.baseurl }}/images/pipeline-two-rows-v3.png)
 
 MCMICRO provides a modular, customizable pipeline that allows users to process whole slide microscopy data into cohesive images that can be easily visualized and quantified as single cell data.
@@ -34,6 +31,10 @@ Walk through the process of turning image tiles into single-cell segmented mosai
 
 <br>
 
+{: .text-center }
+{: .fs-9 }
+{: .fw-500}
+{: .text-grey-dk-100}
 ## The MCMICRO modules
 <div class="row">
 
@@ -77,6 +78,11 @@ Walk through the process of turning image tiles into single-cell segmented mosai
 
 <div class="row">
 
+<div class="col-xs-2 col-sm-2">
+<div markdown="1">
+</div>
+</div>
+	
 <div class="col-xs-2 col-sm-2">
 <div markdown="1">
 [![quality control - cylinter](../images/modules/cylinter.png)](./mcmicro.html#quality-control)

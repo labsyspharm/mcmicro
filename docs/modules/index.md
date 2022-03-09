@@ -51,6 +51,11 @@ has_children: true
 
 <div class="col-xs-2 col-sm-2">
 <div markdown="1">
+</div>
+</div>
+	
+<div class="col-xs-2 col-sm-2">
+<div markdown="1">
 [![quality control - cylinter](../images/modules/cylinter.png)](./cylinter.html)
 </div>
 </div>
