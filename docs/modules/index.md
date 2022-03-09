@@ -57,7 +57,7 @@ has_children: true
 	
 <div class="col-xs-2 col-sm-2">
 <div markdown="1">
-[![analysis- sci map](../images/modules/SCIMAP.png)](.scimap.html)
+[![analysis- sci map](../images/modules/SCIMAP.png)](./scimap.html)
 </div>
 </div>
 

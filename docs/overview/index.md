@@ -14,7 +14,7 @@ A general introduction [video](https://www.youtube.com/watch?v=fnxBvgJQmtY){:tar
 ---
 # Overview of multiplexed tissue imaging collection, processing, and analysis
 
-Multiplexed tissue imaging has three distinct phases. In the first phase, tissue samples are collected in clinics, brought into a laboratory, and stained to highlight specific proteins and molecules within the tissue. In the second phase, these samples are imaged on a microscope. In the third phase these images need to be processed and analyzed. Processing and analyzing multiplexed images - which can encompass massive amounts of data - is a computationally intensive task. ***MCMICRO provides a modular solution to this problem.***
+Multiplexed tissue imaging has three distinct phases. In the first phase, tissue samples are collected, brought into a laboratory, and stained to highlight specific proteins and molecules within the tissue. In the second phase, these samples are imaged on a microscope. In the third phase these images need to be processed and analyzed. Processing and analyzing multiplexed images - which can encompass massive amounts of data - is a computationally intensive task. ***MCMICRO provides a modular solution to this problem.***
 
 In the following pages, we introduce some key background information relevant to highly multiplexed tissue imaging. These sections provide context on tissue imaging and highlight the need for MCMICRO -- **jump around as needed!**
 
@@ -22,19 +22,19 @@ In the following pages, we introduce some key background information relevant to
 
 <div class="col-xs-4 col-sm-4">
 <div markdown="1">
-[![step1](../images/main-menu-1.png)](./exp.html)
+[![step1: collect and stain biological samples. picture of microscope slide](../images/main-menu-1.png)](./exp.html)
 </div>
 </div>
 
 <div class="col-xs-4 col-sm-4">
 <div markdown="1">
-[![step1](../images/main-menu-2.png)](./exp.html#phase-2-immunofluorescence-imaging-for-biological-samples)
+[![step2: multiplexed imaging. picture of microscope](../images/main-menu-2.png)](./exp.html#phase-2-immunofluorescence-imaging-for-biological-samples)
 </div>
 </div>
 
 <div class="col-xs-4 col-sm-4">
 <div markdown="1">
-[![step1](../images/main-menu-3.png)](./mcmicro.html)
+[![step3: process and analyze images with mcmicro. Image of connected puzzle pieces.](../images/main-menu-3.png)](./mcmicro.html)
 </div>
 </div>
 

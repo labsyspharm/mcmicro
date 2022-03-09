@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Experimental background
+title: Tissue imaging intro
 nav_order: 2
 parent: Overview
 has_children: true
@@ -18,11 +18,11 @@ has_children: true
 
 # Phase 1: Staining proteins or molecules in biological samples
 
-To diagnose disease, doctors often biopsy patients, removing a small, 2-4 mm cylindrical tissue sample of tissue that can be studied in greater detail under a microscope. A pathologist takes this biopsy, treats it with preservative chemicals, slices it into 1-10 μm sections, and adheres these slices to microscope slides. The pathologist can then stain the slides with molecules that allow them to visualize various aspects of the tissue. There are several methods to staining these tissues – here we describe two classical methods. First, we describe the colorimetric stains - the gold standard for pathology diagnoses. Second, we discuss immunoflourescence - a technique that allows multiple proteins or molecules within a sample to be visualized simultaneously (Boyle, 2008).
+To diagnose disease, doctors often biopsy patients, removing a small, 2-4 mm cylindrical tissue sample of tissue that can be studied in greater detail under a microscope. A pathologist takes this biopsy, treats it with preservative chemicals, slices it into 1-10 μm sections, and adheres these slices to microscope slides. The pathologist can then stain the slides with molecules that allow them to visualize various aspects of the tissue (Boyle et al., 2008)](https://doi.org/10.1002/bmb.20192){:target="_blank"}. There are several methods to staining these tissues – here we describe two classical methods. First, we describe the colorimetric stains - the gold standard for pathology diagnoses. Second, we discuss immunoflourescence - a technique that allows multiple proteins or molecules within a sample to be visualized simultaneously. 
 
 ### Hematoxylin and eosin (H&E) and colorimetric stains
 
-Pathologists stain tissue components with colorimetric dyes to visualize subtle differences within tissue samples<sup>16,17</sup>. Hematoxylin and Eosin stains (H&E) are one of the most common dyes used to stain biological tissues for pathological analysis. Hematoxylin stains nuclei purple and eosin stains extracellular matrix and cytoplasm pink, while other cell structures display colors in-between. The use of H&E stained samples to diagnose or treat disease, known as histopathology, remains the primary way that diseases such as cancer are staged and managed<sup>18</sup>. Histopathology, therefore, is a critical component of disease diagnosis and treatment but provides a limited view of the specific molecular interactions that are happening within a tissue.
+Pathologists stain tissue components with colorimetric dyes to visualize subtle differences within tissue samples ([Albertson et al., 2006;](https://doi.org/10.1016/j.tig.2006.06.007){:target="_blank"} [Shlien et al., 2009](https://doi.org/10.1186/gm62){:target="_blank"}). Hematoxylin and Eosin stains (H&E) are one of the most common dyes used to stain biological tissues for pathological analysis. Hematoxylin stains nuclei purple and eosin stains extracellular matrix and cytoplasm pink, while other cell structures display colors in-between. The use of H&E stained samples to diagnose or treat disease, known as histopathology, remains the primary way that diseases such as cancer are staged and managed [(Amin et al., 2017)](https://doi.org/10.3322/caac.21388){:target="_blank"}. Histopathology, therefore, is a critical component of disease diagnosis and treatment but provides a limited view of the specific molecular interactions that are happening within a tissue.
 <figure>
 	<a href="https://elifesciences.org/articles/31657/figures#fig7">
 		<img src="{{ site.baseurl }}/images/hande.png" style="max-width: 300px;"
@@ -44,15 +44,15 @@ Text about immunofluorescence. Stained proteins colloquially called “markers�
 
 After staining the samples with fluorescently-labeled antibodies, immunofluorescence microscopy can be used to image these specific proteins within the sample. A microscope pulses the sample with a specific wavelength of light. The light excites the fluorophore - triggering the fluorophore to emit light. The microscope detects the light emitted by the fluorophore, thus capturing the location of the fluorescent antibody within the sample. The specific excitation and emission wavelengths are fluorophore-dependent, so it is possible to carefully select 4-6 fluorophores that can be imaged simultaneously (and many [references]( http://www.geomcnamara.com/data){:target="_blank"} exist to help with this selection).
 
-Classical immunofluorescence is generally performed only once per sample. However, several new techniques enable multiple rounds of immunofluorescence to be performed on a single sample. These multiplexed imaging techniques include cyclic immunofluorescence (CyCIF)<sup>1</sup>, Multiplexed Immunofluorescence (MxIF)<sup>2</sup>, CO-Detection by indEXing (CODEX)<sup>3</sup>, and Signal Amplification by Exchange Reaction (immuno-SABER)<sup>4</sup>. The precise methods vary per technique, but as an example, CyCIF deactivates prior fluorophores between rounds of staining and imaging to allow for 8-20 cycles of imaging per sample <sup>1</sup>.
+Classical immunofluorescence is generally performed only once per sample. However, several new techniques enable multiple rounds of immunofluorescence to be performed on a single sample. These multiplexed imaging techniques include cyclic immunofluorescence (CyCIF) [(Lin et al., 2018)](https://doi.org/10.7554/eLife.31657){:target="_blank"}, Multiplexed Immunofluorescence (MxIF) [(Gerdes et al., 2013)](https://doi.org/10.1073/pnas.1300136110){:target="_blank"}, CO-Detection by indEXing (CODEX) [(Goltsev et al., 2018)](https://doi.org/10.1016/j.cell.2018.07.010){:target="_blank"}, and Signal Amplification by Exchange Reaction (immuno-SABER) [(Saka et al., 2019)](https://doi.org/10.1038/s41587-019-0207-y){:target="_blank"}. The precise methods vary per technique, but as an example, CyCIF deactivates prior fluorophores between rounds of staining and imaging to allow for 8-20 cycles of imaging per sample [(Lin et al., 2018)](https://doi.org/10.7554/eLife.31657){:target="_blank"}.
 
 ![Schematic depicting the stages of CyCIF imaging. 
 1: Pre-staining to reduce auto-fluorescence. 2: Antibody incubation. 3: Nuclear staining. 4: 4-channel imaging. 5. Bleaching (flourophore oxidation). 6. Repeat for 8-20 cycles.
 Note: H&E is done in parallel on seperate, serial sections. 
 Image from Lin et al., 2018.]({{ site.baseurl }}/images/cycifoverview1.png)
-*CyCIF schematic from [(Lin et al., 2018)](https://doi.org/10.7554/eLife.31657).<sup>1</sup>*
+*CyCIF schematic from [(Lin et al., 2018)](https://doi.org/10.7554/eLife.31657){:target="_blank"}.*
 
-All these imaging methods generate data that can be represented as a series of intensity values on a two-dimensional raster, or grid. Imaging multiple fluorophores simply adds a dimension to the raster that's referred to as a separate channel. MCMICRO can process the 2D data from all methods mentioned above – extension to 3D is an area of active development, described [here]({{ site.baseurl }}/overview/future.html#3d-image-processing).
+All these imaging methods generate data that can be represented as a series of intensity values on a two-dimensional raster, or grid. Imaging multiple fluorophores simply adds a dimension to the raster that's referred to as a separate channel. MCMICRO can process the 2D data from all methods mentioned above – [extension to 3D is an area of active interest]({{ site.baseurl }}/overview/future.html#3d-image-processing).
 
 More information about how to compare multiplexed imaging technologies is provided [here]({{ site.baseurl }}/overview/mpi-comparison.html).
 
@@ -61,6 +61,6 @@ The TIFF (Tagged Image File Format) is ideal for storing microscopy data at nati
 
 TIFF files also contain metadata in the header that describes the organization and key properties of the images. For biomedical data, the [Open Microscopy Environment](https://www.openmicroscopy.org/ome-files/){:target="_blank"} (OME) TIFF format has become the most widely used standard for XML-based metadata and raster images. Because different vendors also have their own internal data standards, [Bio-Formats](https://www.openmicroscopy.org/bio-formats/){:target="_blank"} software was developed by the OME community to convert proprietary formats into a standardized, open format, most recently [OME-TIFF 6.0](https://docs.openmicroscopy.org/ome-model/6.0.1/ome-tiff/){:target="_blank"}. This is a pyramid-encoded TIFF in which multiple resolutions of the same image are found in a single file to enable rapid pan and zoom, particularly using web tools (e.g. Google Maps). Many microscope vendors support Bio-Formats and it is the standard supported by MCMICRO and other image processing software developed by the Laboratory of Systems Pharmacology.
 
-Metadata standards for high-plex image data are rapidly developing: a wide variety of laboratories have come together to create the Minimum Information about Tissue Imaging Standard [(MITI)](https://arxiv.org/abs/2108.09499){:target="_blank"}<sup>25</sup>. 
+Metadata standards for high-plex image data are rapidly developing: a wide variety of laboratories have come together to create the Minimum Information about Tissue Imaging Standard [(MITI) (Schapiro et al., 2021)](https://arxiv.org/abs/2108.09499){:target="_blank"}. 
 
 **Continue to [Phase 3](./mcmicro.html) to learn how these images are processed and analyzed by MCMICRO**
