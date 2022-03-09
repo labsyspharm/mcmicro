@@ -23,21 +23,28 @@ To diagnose disease, doctors often biopsy patients, removing a small, 2-4 mm cyl
 ### Hematoxylin and eosin (H&E) and colorimetric stains
 
 Pathologists stain tissue components with colorimetric dyes to visualize subtle differences within tissue samples ([Albertson et al., 2006;](https://doi.org/10.1016/j.tig.2006.06.007){:target="_blank"} [Shlien et al., 2009](https://doi.org/10.1186/gm62){:target="_blank"}). Hematoxylin and Eosin stains (H&E) are one of the most common dyes used to stain biological tissues for pathological analysis. Hematoxylin stains nuclei purple and eosin stains extracellular matrix and cytoplasm pink, while other cell structures display colors in-between. The use of H&E stained samples to diagnose or treat disease, known as histopathology, remains the primary way that diseases such as cancer are staged and managed [(Amin et al., 2017)](https://doi.org/10.3322/caac.21388){:target="_blank"}. Histopathology, therefore, is a critical component of disease diagnosis and treatment but provides a limited view of the specific molecular interactions that are happening within a tissue.
+
+{: .text-center }
+{: .fs-3 }
+{: .fw-300 }
 <figure>
 	<a href="https://elifesciences.org/articles/31657/figures#fig7">
 		<img src="{{ site.baseurl }}/images/hande.png" style="max-width: 300px;"
 			 alt="H&E staining of pancreatic ductal adenocarcinoma (PDAC) resection specimen that includes portions of cancer and non-malignant pancreatic tissue and small intestine."  />
-	</a> <figcaption>The image above shows an example H&E stained pancreatic ductal adenocarcinoma (PDAC) specimen that includes portions of cancerous and non-malignant pancreatic tissue and small intestine. From (Lin et al., 2018).</figcaption> 
+	</a> <figcaption>The image above shows an example H&E stained pancreatic ductal adenocarcinoma (PDAC) specimen that includes portions of cancerous and non-malignant pancreatic tissue and small intestine. From Lin et al., 2018.</figcaption> 
 </figure>
 
 ### Immuno-labeling
 Text about immunofluorescence. Stained proteins colloquially called “markers”
 
+{: .text-center }
+{: .fs-3 }
+{: .fw-300 }
 <figure>
 	<a href="https://elifesciences.org/articles/31657/figures#fig7">
 		<img src="{{ site.baseurl }}/images/if.png" style="max-width: 300px;"
 			 alt="Identical sample as H&E stained image above, this section was stained with antibodies & imaged with fluorescent imaging (from Lin et al., 2018, eLife.)"  />
-	</a> <figcaption>An immunofluorescent PDAC specimen that corresponds to the H&E PDAC specimin shown above. From (Lin et al., 2018).</figcaption> 
+	</a> <figcaption>An immunofluorescent PDAC specimen that corresponds to the H&E PDAC specimin shown above. From Lin et al., 2018.</figcaption> 
 </figure>
 
 # Phase 2: Immunofluorescence imaging for biological samples
@@ -46,11 +53,14 @@ After staining the samples with fluorescently-labeled antibodies, immunofluoresc
 
 Classical immunofluorescence is generally performed only once per sample. However, several new techniques enable multiple rounds of immunofluorescence to be performed on a single sample. These multiplexed imaging techniques include cyclic immunofluorescence (CyCIF) [(Lin et al., 2018)](https://doi.org/10.7554/eLife.31657){:target="_blank"}, Multiplexed Immunofluorescence (MxIF) [(Gerdes et al., 2013)](https://doi.org/10.1073/pnas.1300136110){:target="_blank"}, CO-Detection by indEXing (CODEX) [(Goltsev et al., 2018)](https://doi.org/10.1016/j.cell.2018.07.010){:target="_blank"}, and Signal Amplification by Exchange Reaction (immuno-SABER) [(Saka et al., 2019)](https://doi.org/10.1038/s41587-019-0207-y){:target="_blank"}. The precise methods vary per technique, but as an example, CyCIF deactivates prior fluorophores between rounds of staining and imaging to allow for 8-20 cycles of imaging per sample [(Lin et al., 2018)](https://doi.org/10.7554/eLife.31657){:target="_blank"}.
 
+{: .text-center }
+{: .fs-3 }
+{: .fw-300 }
 ![Schematic depicting the stages of CyCIF imaging. 
 1: Pre-staining to reduce auto-fluorescence. 2: Antibody incubation. 3: Nuclear staining. 4: 4-channel imaging. 5. Bleaching (flourophore oxidation). 6. Repeat for 8-20 cycles.
 Note: H&E is done in parallel on seperate, serial sections. 
 Image from Lin et al., 2018.]({{ site.baseurl }}/images/cycifoverview1.png)
-*CyCIF schematic from [(Lin et al., 2018)](https://doi.org/10.7554/eLife.31657){:target="_blank"}.*
+CyCIF schematic from Lin et al., 2018.
 
 All these imaging methods generate data that can be represented as a series of intensity values on a two-dimensional raster, or grid. Imaging multiple fluorophores simply adds a dimension to the raster that's referred to as a separate channel. MCMICRO can process the 2D data from all methods mentioned above – [extension to 3D is an area of active interest]({{ site.baseurl }}/overview/future.html#3d-image-processing).
 

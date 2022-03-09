@@ -20,7 +20,11 @@ has_children: true
 
 Multiplexed imaging results in a potentially unwieldy volume of data. Whole-slide sample areas are generally quite large, so whole slides are imaged by dividing a large specimen into a grid of tiles – often 100-1,000 tiles are needed per slide.  Together, this results in highly multiplexed, biologically rich, image sets that encompass many sample positions and many proteins. Each tile is a multi-dimensional TIFF that encompasses the multiple channels of data. After multiple imaging cycles the full data set is massive –up to 50,000 x 50,000 pixels x 100 channels per tile or ~500 GB of data per slide – too large to be processed by conventional image processing methods. 
 
+{: .text-center }
 _**This is where MCMICRO comes in.**_ 
+
+<br>
+<br>
 
 ![Visual overview of the MCMICRO pipeline components: Basic for illumination correction, Ashlar for alignment and stitching, Coreograph for TMA Core detection, UnMicst or S3 segmenter for segmentation, MC Quant for image quantification.]({{ site.baseurl }}/images/pipeline-two-rows-v3.png)
 
@@ -28,6 +32,7 @@ MCMICRO provides a modular, customizable pipeline that allows users to process w
 
 Walk through the process of turning image tiles into single-cell segmented mosaic image with our [pipeline visual guide]({{ site.baseurl }}/datasets/pipeline-visual-guide.html){:target="_blank"} (created with [Minerva](./mcmicro.html#visualization)).
 
+<br>
 
 ## The MCMICRO modules
 <div class="row">
@@ -127,7 +132,8 @@ UnMICST is one example of a method that segments images using pixel probability 
 **MCQuant**   
 [MCQuant](https://github.com/labsyspharm/quantification){:target="_blank"} takes in a multichannel image and segmentation mask and extracts single-cell data. This generates a _Cell Feature Table_ – analogous to a count table in RNA sequencing – that records the positions of individual cells and the associated features such as marker intensity, morphology, and quality control attributes. The Cell Feature Table is used for all subsequent analysis and is compatible with many tools developed for visualization of single cell sequencing data, like cellxgene [(Megill et al., 2021)](https://doi.org/10.1101/2021.04.05.438318){:target="_blank"}. It's important to note that a single marker in an image can be processed to generate a large number of distinct descriptive features beyond marker intensity (e.g. shape, granularity, localization within the cell, etc.).
 
-Additional capabilities for MCQuant are in active development - check the [GitHub release notes](https://github.com/labsyspharm/quantification/releases){:target="_blank"} for the latest updates related to MCQuant. 
+{: .text-center }
+*Additional capabilities for MCQuant are in active development - check the [GitHub release notes](https://github.com/labsyspharm/quantification/releases){:target="_blank"} for the latest updates related to MCQuant.* 
 
 ### Quality control
 
@@ -145,6 +151,7 @@ Scimap is a scalable toolkit for analyzing spatial molecular data. SCIMAP takes 
 **Minerva**<sup>24</sup>  
 Minerva is a suite of software tools for tissue atlases and digital pathology that enables interactive viewing and sharing of large image data [(Rashid et al., 2021)](https://doi.org/10.1038/s41551-021-00789-8){:target="_blank"}. Currently, we have released **Minerva Author**, a tool that lets you easily create and annotate images, and **Minerva Story**, a narrative image viewer for web hosting. Additional tools are in active development - go to the [Minerva wiki](https://github.com/labsyspharm/minerva-story/wiki){:target="_blank"} for the most up-to-date information about the Minerva suite. 
 
+{: .text-center }
 **\*\*Missing something?? --  [Suggest a module](./modules/#suggest-a-module) for us to develop in the future!\*\***
 
 ## Training data
@@ -155,4 +162,6 @@ We expect the [EMIT]({{ site.baseurl }}/datasets.html#exemplar-microscopy-images
 ## The open microscopy environment (OME) 
 MCMICRO is designed to solve the problem of processing high volumes of tissue image data and yield reliable image mosaics and single cell data. It does not, however, solve all problems associated in the analysis and publication of images. We strongly recommend that laboratories also adopt the database and visualization tools provided by the OME community. The [OME community](https://www.openmicroscopy.org/events/ome-community-meeting-2021/){:target="_blank"} is welcoming and it has many on-line resources that discuss the topics described above; OME sponsors multiple workshops and conferences of interest to new and experienced microscopists.
 
+{: .text-center }
+{: .fs-5 }
 In our laboratories, we use MCMICRO, OME/OMERO and MINERVA in parallel.

@@ -10,8 +10,9 @@ parent: Modules
   "So... you want to do single-cell image segmentation?"
 </p>
 
+
 ## Prerequisite input files
-S3segmenter assumes that you have:
+[S3segmenter](https://github.com/HMS-IDAC/S3segmenter) assumes that you have:
 1. acquired images of your sample with optimal acquisition settings.
 2. stitched and registered the tiles and channels respectively (if working with a large piece of tissue) and saved it as a Bioformats compatible tiff file.
 3. processed your image in some way so as to increase contrast between individual nuclei using classical or machine learning methods such as ilastik (a random forest model) or UnMICST (a deep learning semantic segmentation model based on the UNet architecture). MCMICRO supports both.

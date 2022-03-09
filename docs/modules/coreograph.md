@@ -12,12 +12,12 @@ parent: Modules
 <br>
 <br>
 
-Coreograph uses UNet [(Ronneberger et al., 2015)](https://arxiv.org/abs/1505.04597), a deep learning model, to identify complete/incomplete tissue cores on a tissue microarray, and export them individually for faster downstream processing. It has been trained on 9 TMA slides of different sizes and tissue types.
+[Coreograph](https://doi.org/10.1038/s41592-021-01308-y){:target="_blank"} [(code)](https://github.com/HMS-IDAC/Coreograph){:target="_blank"} uses UNet [(Ronneberger et al., 2015)](https://arxiv.org/abs/1505.04597){:target="_blank"}, a deep learning model, to identify complete/incomplete tissue cores on a tissue microarray, and export them individually for faster downstream processing. It has been trained on 9 TMA slides of different sizes and tissue types.
 
-Training sets were acquired at 0.65 microns/pixel resolution and downsampled 1/32 times, **or 2^5 times**, to speed up performance. Once the center of each core has been identifed, active contours is used to generate a tissue mask of each core that can aid downstream single cell segmentation. A GPU is not required but will reduce computation time.
+Training sets were acquired at 0.65 microns/pixel resolution and downsampled 1/32 times, **or 2<sup>5</s> times**, to speed up performance. Once the center of each core has been identifed, active contours is used to generate a tissue mask of each core that can aid downstream single cell segmentation. A GPU is not required but will reduce computation time.
 
 ## Prerequisitie input files:
--a fluorescence image of a tissue microarray where at least one channel is of DNA, ie. labelled with Hoechst or DAPI. The image will likely be a stitched images that spans multiple tiles. <br>
+- a fluorescence image of a tissue microarray where at least one channel is of DNA, ie. labelled with Hoechst or DAPI. The image will likely be a stitched images that spans multiple tiles. <br>
 
 ## Parameter list:
 The Coreograph parameters described in this manual should be provided to mcmicro via the `--core-opts` flag, as shown in [Parameter Reference examples]({{ site.baseurl }}/documentation/parameter-reference.html). <br>

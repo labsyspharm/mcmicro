@@ -24,7 +24,8 @@ Most microscopy advances over the past two decades focused on increasing spatial
 ### Spatial scale and statistical power
 The size of samples being imaged is also critical for generating robust conclusions from tissue imaging data. Images exhibit spatial correlation on length scales up to 500 micron, so imaging insufficient sample areas may not provide an accurate representation – for many purposes, specimens at least one square centimeter are essential [(Lin et al., 2021)](https://doi.org/10.1101/2021.03.31.437984){:target="_blank"}. Additionally, it is increasingly clear that tissue microarrays (TMAs) are generally inadequate, despite their widespread use for increasing sample numbers. Clinically, TMAs are not used for diagnosis, and the FDA requires that digital histology be based on whole-slide imaging (WSI) [(FDA guidance document: FDA-2015-D-0230)](http://www.fda.gov/regulatory-information/search-fda-guidance-documents/technical-performance-assessment-digital-pathology-whole-slide-imaging-devices){:target="_blank"}.  
 
-MCMICRO was developed with the demands of high-plex, whole-slide imaging in mind.
+{: .text-center }
+*MCMICRO was developed with the demands of high-plex, whole-slide imaging in mind.*
            
 ### Sensitivity
 The sensitivity of an imaging method depends on a range of factors including the selectivity of the reagents, the quality of the instrumentation, resolution, etc. As such, sensitivity must be evaluated with respect to objective criteria. As mentioned above, the field awaits a rigorous comparison of different tissue imaging platforms (and of identical imaging platforms across multiple laboratories) before we can make robust comparisons of platform sensitivity.
