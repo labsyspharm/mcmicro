@@ -60,6 +60,8 @@ An ```.ome.tif``` or ```.tif```
 | `--stackOutput` | Specified | If selected, UnMicst will write all probability maps as a single multipage tiff file. Otherwise, UnMicst will write each class as a separate file. |
 | `--GPU <index>` | Automatic | Explicitly specify which GPU (1-based indexing) you want to use. Useful for running on local workstations with multiple GPUs. |
 
+
+	
 ## Troubleshooting Scenarios
 **1. I just wanted to get started.** <br>
 set `--tool unmicst-solo` and choose a channel that has your DNA stain. If this is in the first channel, use `--channel 1`. <br>

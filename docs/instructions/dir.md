@@ -7,13 +7,20 @@ parent: Instructions
 ---
 
 # Directory structure
-Upon the full successful completion of a pipeline run, the directory structure will follow Fig. 1A in the [mcmicro manuscript](https://www.biorxiv.org/content/10.1101/2021.03.15.435473v1):
+Upon the full successful completion of a pipeline run, the directory structure will follow Fig. 1A in the [MCMICRO manuscript](https://doi.org/10.1038/s41592-021-01308-y){:target="_blank"}:
+
+{: .fs-3 }
+{: .fw-300 }
+**Note:** *This directory should correspond directly to the Nextflow workflow. For the Galaxy workflow, the intermediaries and output files should be identical, but the organization of the files within directories and the filenames will be different.*
 
 | Schematic | Directory&nbsp;Structure |
 | :-: | :-- |
 | <img src="{{ site.baseurl }}/images/Fig1.png" alt="MCMICRO" width="400"/> | <code>exemplar-002<br>├── markers.csv<br>├── raw/<br>├── illumination/<br>├── registration/<br>├── dearray/<br>├── probability-maps/<br>├── segmentation/<br>├── quantification/<br>└── qc/<br></code> |
 
+{: .text-center}
 The name of the parent directory (e.g., `exemplar-002`) is assumed by the pipeline to be the sample name.
+
+<br>
 
 {: .no_toc }
 

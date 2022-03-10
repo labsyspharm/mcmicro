@@ -6,7 +6,7 @@ parent: Tissue imaging intro
 
 ---
 
-# Comparison of Multiplex Imaging Technologies
+## Comparison of Multiplex Imaging Technologies
 To our knowledge, no systematic comparison of tissue imaging technologies has yet been published. There are four relevant performance metrics to compare: 
 >1. the multiplicity or 'plex' of the assay  
 >2. spatial resolution  
