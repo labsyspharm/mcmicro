@@ -31,77 +31,80 @@ Walk through the process of turning image tiles into single-cell segmented mosai
 
 <br>
 
-{: .text-center }
 {: .fs-9 }
 {: .fw-500}
 {: .text-grey-dk-100}
 ## The MCMICRO modules
 <div class="row">
 
-<div class="col-xs-2 col-sm-2">
+<div class="col-xs-3 col-sm-2">
 <div markdown="1">
 [![illumination correction "basic"](../images/modules/basic.png)](./mcmicro.html#image-tiles-to-whole-slide-mosaic-images)
 </div>
 </div>
 
-<div class="col-xs-2 col-sm-2">
+<div class="col-xs-3 col-sm-2">
 <div markdown="1">
 [![stitching - ashlar](../images/modules/ashlar.png)](./mcmicro.html#image-tiles-to-whole-slide-mosaic-images)
 </div>
 </div>
 
-<div class="col-xs-2 col-sm-2">
+<div class="col-xs-3 col-sm-2">
 <div markdown="1">
 [![TMA core detection - coreograph](../images/modules/coreo.png)](./mcmicro.html#image-tiles-to-whole-slide-mosaic-images)
 </div>
 </div>
 
-<div class="col-xs-2 col-sm-2">
+<div class="col-xs-3 col-sm-2">
 <div markdown="1">
 [![segmentation - un-micst](../images/modules/unmicst.png)](./mcmicro.html#segmentation)
-</div>
-</div>
-
-<div class="col-xs-2 col-sm-2">
-<div markdown="1">
-[![segmentation - s3segmenter](../images/modules/s3seg.png)](./mcmicro.html#segmentation)
-</div>
-</div>
-	
-<div class="col-xs-2 col-sm-2">
-<div markdown="1">
-[![quantification - MC Quant](../images/modules/mcquant.png)](./mcmicro.html#quantification)
 </div>
 </div>
 
 </div><!-- end grid -->
 
 <div class="row">
-
-<div class="col-xs-2 col-sm-2">
+	
+<div class="col-xs-3 col-sm-2">
 <div markdown="1">
+[![segmentation - s3segmenter](../images/modules/s3seg.png)](./mcmicro.html#segmentation)
 </div>
 </div>
 	
-<div class="col-xs-2 col-sm-2">
+<div class="col-xs-3 col-sm-2">
+<div markdown="1">
+[![quantification - MC Quant](../images/modules/mcquant.png)](./mcmicro.html#quantification)
+</div>
+</div>
+	
+<div class="col-xs-3 col-sm-2">
 <div markdown="1">
 [![quality control - cylinter](../images/modules/cylinter.png)](./mcmicro.html#quality-control)
 </div>
 </div>
 	
-<div class="col-xs-2 col-sm-2">
+<div class="col-xs-3 col-sm-2">
 <div markdown="1">
 [![analysis- sci map](../images/modules/SCIMAP.png)](./mcmicro.html#analysis)
 </div>
 </div>
 
-<div class="col-xs-2 col-sm-2">
+</div><!-- end grid -->
+
+<div class="row">	
+
+<div class="col-xs-3 col-sm-2">
+<div markdown="1">
+</div>
+</div>
+
+<div class="col-xs-3 col-sm-2">
 <div markdown="1">
 [![visualization - minerva](../images/modules/minerva.png)](./mcmicro.html#visualization)
 </div>
 </div>
 
-<div class="col-xs-2 col-sm-2">
+<div class="col-xs-3 col-sm-2">
 <div markdown="1">
 [![Additional modules in progress!](../images//modules/others.png)](./mcmicro.html#visualization)
 </div>

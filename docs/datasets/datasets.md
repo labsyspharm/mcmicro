@@ -55,6 +55,8 @@ with `/local/path/` pointing to a local directory where the exemplars should be 
 ### Visual Guide: Processing Exemplar-002 with MCMICRO 
 This detailed [visual guide]({{ site.baseurl }}/datasets/pipeline-visual-guide.html){:target="_blank"}  walks you through the MCMICRO pipeline steps as it processes `exemplar-002`. This guide was generated using the [Minerva](./mcmicro.html#visualization) software package.
 
+[View the visual guide]({{ site.baseurl }}/datasets/pipeline-visual-guide.html){: .btn .btn-green .btn-outline .btn-arrow }
+
 ## Exemplar Microscopy Images of Tissues (EMIT)
 
 The EMIT (Exemplar Microscopy Images of Tissues) data set is reference data containing a variety of images that can be used to develop and benchmark computational methods for image processing. These data are expected to be useful for biological studies; however, annotation of this data set for biological interpretation ongoing. Users of these data should expect to see updates and additions - these will be versioned and made backwards compatible whenever possible.
