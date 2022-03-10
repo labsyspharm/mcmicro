@@ -24,6 +24,11 @@ source ~/.bashrc                                    # Reload the shell configura
 
 Verify that Nextflow is accessible by going to your home directory (`cd ~`) and typing `nextflow` on the command line.
 
-## Install Docker
+## Install Docker*
 
 Install [Docker](https://docs.docker.com/install/). Ensure that the Docker engine is running by typing `docker images`. If the engine is running, it should return a (possibly empty) list of container images currently downloaded to your system.
+
+{: .text-center }
+{: .fs-3 }
+{: .fw-300 }
+\* *Harvard Medical School users using the O2 Compute Cluster should not install Docker - learn more [here](./advanced-topics/run-O2.html).*	

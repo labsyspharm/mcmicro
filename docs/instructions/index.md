@@ -12,12 +12,10 @@ has_children: true
 1. Nextflow (a command line interface), or  
 2. Galaxy (a GUI interface)
 
-Details for implementing Nextflow or Galaxy can be found on the detailed sub-pages:  
+Details for implementing Nextflow or Galaxy can be found on the sub-pages:  
 [Nextflow Workflow](./nextflow/){: .btn .btn-green .btn-outline } [Galaxy Workflow](./galaxy/){: .btn .btn-green .btn-outline}
 
----
-
-Experienced developers may find instructions on implementing MCMICRO through Amazon Web Services, or how to add a module within the [advanced topics](./advanced-topics/).
+For experienced developers, instructions for using Amazon Web Services, the HMS O2 Compute Cluster, and how to add a module within the [advanced topics](./advanced-topics/).
 
 
 
