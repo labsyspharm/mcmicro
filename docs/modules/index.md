@@ -13,6 +13,11 @@ has_children: true
 *Click image to learn more:*
 <div class="row">
 
+<div class="col-xs-0 col-sm-2">
+<div markdown="1">
+</div>
+</div>
+	
 <div class="col-xs-3 col-sm-2">
 <div markdown="1">
 [![illumination correction "basic"](../images/modules/basic.png)](./basic.html)
@@ -41,6 +46,11 @@ has_children: true
 
 <div class="row">
 	
+<div class="col-xs-0 col-sm-2">
+<div markdown="1">
+</div>
+</div>
+	
 <div class="col-xs-3 col-sm-2">
 <div markdown="1">
 [![segmentation - s3segmenter](../images/modules/s3seg.png)](./s3seg.html)
@@ -68,6 +78,11 @@ has_children: true
 </div><!-- end grid -->
 
 <div class="row">
+	
+<div class="col-xs-0 col-sm-2">
+<div markdown="1">
+</div>
+</div>
 
 <div class="col-xs-3 col-sm-2">
 <div markdown="1">

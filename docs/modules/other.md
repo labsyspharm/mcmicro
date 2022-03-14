@@ -1,11 +1,11 @@
 ---
 layout: default
-title: Deprecated
+title: Other Modules
 nav_order: 40
 parent: Modules
 ---
 
-# Deprecated Modules
+# Other Modules
 
 | Name | Purpose | Parameters | URLs |
 | :-- | :-- | :-- | :-- |

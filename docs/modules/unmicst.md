@@ -6,21 +6,34 @@ parent: Modules
 ---
 
 # UnMICST - Universal Models for Identifying Cells and Segmenting Tissue <br>
-![]({{ site.baseurl }}/images/unmicstbannerv2.png) <br>
+![UnMICST banner image]({{ site.baseurl }}/images/unmicstbannerv2.png) <br>
 <p align="center"> 
   (pronounced un-mixed)
 </p>
 
 ## Introduction
-Nuclei segmentation, especially for tissues, is a challenging and unsolved problem. Convolutional neural networks are particularly well-suited for this task: separating the foreground class (nuclei pixels) from the background class. [UnMICST](https://labsyspharm.github.io/UnMICST-info/){:target="_blank"} generates probability maps where the intensity at each pixel defines how confident the pixel has been correctly classified to the aforementioned classes. These maps can make downstream image binarization more accurate using tools such as [S3segmenter](https://github.com/HMS-IDAC/S3segmenter) [(Saka et al., 2019)](https://doi.org/10.1038/s41587-019-0207-y){:target="_blank"}. UnMICST currently uses the UNet architecture [(Ronneberger et al., 2015)](https://arxiv.org/abs/1505.04597){:target="_blank"} but Mask R-CNN and Pyramid Scene Parsing (PSP)Net are coming very soon!
+Nuclei segmentation, especially for tissues, is a challenging and unsolved problem. Convolutional neural networks are particularly well-suited for this task: separating the foreground class (nuclei pixels) from the background class. [UnMICST](https://labsyspharm.github.io/UnMICST-info/){:target="_blank"} generates probability maps where the intensity at each pixel defines how confident the pixel has been correctly classified to the aforementioned classes. UnMICST can utilize a nuclear envelope channel (lamin B and nucleoporin 98) alongside a DNA channel to improve segmentation accuracy, in addition to more standard single-channel segmentation.
+
+These probability maps can make downstream image binarization more accurate using tools such as [S3segmenter](https://github.com/HMS-IDAC/S3segmenter) [(Saka et al., 2019)](https://doi.org/10.1038/s41587-019-0207-y){:target="_blank"}. UnMICST currently uses the UNet architecture [(Ronneberger et al., 2015)](https://arxiv.org/abs/1505.04597){:target="_blank"} but Mask R-CNN and Pyramid Scene Parsing (PSP) Net are coming very soon!
+
+## Training data
+Quality machine learning algorithms can only be generated from quality training data. 
+
+*UnMICST has been trained on 6 issue types that encapsulate the different morphologies of the entire tissue microarray:*
+1) lung adenocarcinoma, 
+2) non-neoplastic prostate
+3) non-neoplastic small intestine, 
+4) tonsil, 
+5) glioblastoma, and 
+6) colon adenocarcinoma. 
+
+UnMICST also trained on **real augmentations** - such as intentionally de-focused planes and saturated pixels - to further improve segmentation accuracy relative to real-world experimental artifacts. 
 
 **For more information about accessing the training data visit:** [https://github.com/HMS-IDAC/UnMicst](https://github.com/HMS-IDAC/UnMicst){:target="_blank"}
 <br>
-**or read the article here:** [(Yapp et al., 2021)](https://doi.org/10.1101/2021.04.02.438285){:target="_blank"}
+**or read the publication here:** [(Yapp et al., 2021)](https://doi.org/10.1101/2021.04.02.438285){:target="_blank"}
 
-![]({{ site.baseurl }}/images/unmicst2.png)
-This model has been trained on 6 issue types that appeared to encapsulate the different morphologies of the entire tissue microarray: 1) lung adenocarcinoma, 2) non-neoplastic prostate, 3) non-neoplastic small intestine, 4) tonsil, 5) glioblastoma, and 6) colon adenocarcinoma. Also, single and dual channels are possible through a DNA channel and nuclear envelope staining (lamin B and nucleoporin 98) for improved accuracy. Intentionally defocused planes and saturated pixels were also added for better dealing with real-world artifacts.
-
+![Image of a single TMA core with two insets that show single cells that have been segmented]({{ site.baseurl }}/images/unmicst2.png)
 
 ## Input
 

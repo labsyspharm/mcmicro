@@ -37,6 +37,11 @@ Walk through the process of turning image tiles into single-cell segmented mosai
 ## The MCMICRO modules
 <div class="row">
 
+<div class="col-xs-0 col-sm-2">
+<div markdown="1">
+</div>
+</div>
+	
 <div class="col-xs-3 col-sm-2">
 <div markdown="1">
 [![illumination correction "basic"](../images/modules/basic.png)](./mcmicro.html#image-tiles-to-whole-slide-mosaic-images)
@@ -65,6 +70,11 @@ Walk through the process of turning image tiles into single-cell segmented mosai
 
 <div class="row">
 	
+<div class="col-xs-0 col-sm-2">
+<div markdown="1">
+</div>
+</div>
+	
 <div class="col-xs-3 col-sm-2">
 <div markdown="1">
 [![segmentation - s3segmenter](../images/modules/s3seg.png)](./mcmicro.html#segmentation)
@@ -92,6 +102,11 @@ Walk through the process of turning image tiles into single-cell segmented mosai
 </div><!-- end grid -->
 
 <div class="row">	
+	
+<div class="col-xs-0 col-sm-2">
+<div markdown="1">
+</div>
+</div>
 
 <div class="col-xs-3 col-sm-2">
 <div markdown="1">
@@ -128,13 +143,13 @@ The tiles must then be combined into a seamlessly aligned mosaic image in a proc
 Extracting single-cell level data from highly multiplexed image data allows for clinically useful biological data at a depth that was not previously possible. To do this, images must first be segmented into single cells, then interesting features can be extracted into a descriptive cell features table. 
 
 ### Segmentation
-Image processing is necessary to extract quantitative data from images. Although machine learning directly on images shows promise, most high-plex tissue imaging studies require the image to be 'segmented' into single cells before extracting single-cell data on a per-cell or per organelle basis. There are a number of solutions for segmentation that can be used with MCMICRO. We describe two, UnMICST [(Yapp et al., 2021)](https://doi.org/10.1101/2021.04.02.438285){:target="_blank"}, a method based on pixel probability maps, and S3segmenter [(Saka et al., 2019)](https://doi.org/10.1038/s41587-019-0207-y){:target="_blank"}, a watershed method.
+Image processing is necessary to extract quantitative data from images. Although machine learning directly on images shows promise, most high-plex tissue imaging studies require the image to be 'segmented' into single cells before extracting single-cell data on a per-cell or per organelle basis. There are a number of solutions for segmentation that can be used with MCMICRO. We describe two, UnMICST [(Yapp et al., 2021)](https://doi.org/10.1101/2021.04.02.438285){:target="_blank"}, a method that generates pixel probability maps, and S3segmenter [(Saka et al., 2019)](https://doi.org/10.1038/s41587-019-0207-y){:target="_blank"}, a watershed method for generating segmentation masks.
 
 **UnMICST**  
-UnMICST is one example of a method that segments images using pixel probability maps. UnMICST generates probability maps where the intensity at each pixel defines how confidently that pixel has been classified to either a nucleus or background of the image. UnMICST then uses these probability maps to generate bounding boxes with binary masks that can be used to segment the image into single cells [(Yapp et al., 2021)](https://doi.org/10.1101/2021.04.02.438285){:target="_blank"}. Visit the [UnMICST website](https://labsyspharm.github.io/UnMICST-info/){:target="_blank"} to learn more!
+UnMICST is one example of a semantic segmentation method that  generates pixel-level probability maps. These probability maps use pixel intensity to indicate how confidently that pixel has been classified as either the nucleus or background of the image [(Yapp et al., 2021)](https://doi.org/10.1101/2021.04.02.438285){:target="_blank"}. Visit the [UnMICST website](https://labsyspharm.github.io/UnMICST-info/){:target="_blank"} to learn more!
 
 **S3segmenter**<sup>28</sup>   
-[S3segmenter](https://github.com/HMS-IDAC/S3segmenter){:target="_blank"} provides one example of a watershed based approach to segmentation that uses a Matlab-based set of functions that generates single-cell (nuclei and cytoplasm) masks. 
+[S3segmenter](https://github.com/HMS-IDAC/S3segmenter){:target="_blank"} provides one example of a watershed based approach to segmentation. S3segmenter takes in segmentation probability maps and uses them to generate single-cell (nuclei and cytoplasm) masks. 
 
 ### Quantification
    
