@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Galaxy workflow
-nav_order: 26
+nav_order: 24
 has_children: true
 parent: Instructions
 ---

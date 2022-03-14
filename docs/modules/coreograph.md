@@ -19,14 +19,7 @@ Training sets were acquired at 0.65 microns/pixel resolution and downsampled 1/3
 ## Prerequisitie input files:
 - a fluorescence image of a tissue microarray where at least one channel is of DNA, ie. labelled with Hoechst or DAPI. The image will likely be a stitched images that spans multiple tiles. <br>
 
-## Parameter list:
-The Coreograph parameters described in this manual should be provided to mcmicro via the `--core-opts` flag, as shown in [Parameter Reference examples]({{ site.baseurl }}/documentation/parameter-reference.html). <br>
-1. `--downsampleFactor` : how many times to downsample the raw image file. **Default is 5 times to match the training data.** <br>
-2. `--channel` : which is the channel to feed into UNet and generate probabiltiy maps from. This is usually a DAPI channel. <br>
-3. `--buffer` : the extra space around a core before cropping it. A value of 2 means there is twice the width of the core added as buffer around it. 2 is default. <br>
-4. `--outputChan` : a range of channels to be exported. -1 is default and will export all channels (takes awhile). Select a single channel or a continuous range. --outputChan 0 10 will export channel 0 up to and including channel 10. <br>
-
-## Output files:
+## Output:
 1. individual cores as tiff stacks with user-selectable channel ranges
 2. binary tissue masks (saved in the 'mask' subfolder)
 3. a TMA map showing the labels and outlines of each core for quality control purposes<br>
@@ -34,8 +27,19 @@ The Coreograph parameters described in this manual should be provided to mcmicro
 
 ![map]({{ site.baseurl }}/images/coreograph1.png)<br>
 
-## Scenarios
-**NOTE: When using Coreograph on O2, the O2tma profile should be used!!**<br>
+## Usage
+The Coreograph parameters described in this manual should be provided to mcmicro via the `--core-opts` flag
+
+## Parameter list:
+1. `--downsampleFactor` : how many times to downsample the raw image file. **Default is 5 times to match the training data.** <br>
+2. `--channel` : which is the channel to feed into UNet and generate probabiltiy maps from. This is usually a DAPI channel. <br>
+3. `--buffer` : the extra space around a core before cropping it. A value of 2 means there is twice the width of the core added as buffer around it. 2 is default. <br>
+4. `--outputChan` : a range of channels to be exported. -1 is default and will export all channels (takes awhile). Select a single channel or a continuous range. --outputChan 0 10 will export channel 0 up to and including channel 10. <br>
+
+## Troubleshooting scenarios
+
+{: .fs-3}
+**NOTE for HMS users:** When using Coreograph on O2, the O2tma profile should be used!!<br>
 ### **1. Alright, let's get started!**
 When using MCMICRO, Coreograph does not require any additional input parameters to run. The DNA channel is assumed to be in the 1st channel.<br>
 `--core-opts: <leave blank>`<br>

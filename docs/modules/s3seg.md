@@ -11,29 +11,76 @@ parent: Modules
 </p>
 
 
-## Prerequisite input files
+## Input
+
+1.  An ``.ome.tif`` (preferably flat field corrected)
+2.  A 3-class probability map (derived from a deep learning model such as [UnMICST](./unmicst.html) or [Ilastik](./other.html#ilastik)).
+
 [S3segmenter](https://github.com/HMS-IDAC/S3segmenter) assumes that you have:
-1. acquired images of your sample with optimal acquisition settings.
-2. stitched and registered the tiles and channels respectively (if working with a large piece of tissue) and saved it as a Bioformats compatible tiff file.
-3. processed your image in some way so as to increase contrast between individual nuclei using classical or machine learning methods such as ilastik (a random forest model) or UnMICST (a deep learning semantic segmentation model based on the UNet architecture). MCMICRO supports both.
 
-The s3segmenter parameters described in this manual should be provided to mcmicro via the `--s3seg-opts` flag, as shown in [Parameter Reference examples](parameter-reference.html#parameters-for-individual-modules).
+{: .fs-3}
+1. Acquired images of your sample with optimal acquisition settings.
+2. Stitched and registered the tiles and channels respectively (if working with a large piece of tissue) and saved it as a Bioformats compatible tiff file.
+3. Processed your image in some way so as to increase contrast between individual nuclei using classical or machine learning methods such as [Ilastik](./other.html#ilastik) (a random forest model) or [UnMICST](./unmicst.html) (a deep learning semantic segmentation model based on the UNet architecture). MCMICRO supports both.
 
-## Output files
-1. 32-bit label masks for each compartment of the cell: 
-  * nuclei.ome.tif (nuclei), 
-  * cytoplasm.ome.tif (cytoplasm), 
-  * cell.ome.tif (whole cell)
-  * If only nuclei segmentation was carried out, cell.ome.tif is identical to nuclei.ome.tif
-2. 2-channel quality control files with outlines overlaid on grayscale image of channel used for segmentation
-  * nucleiOutlines.tif (nuclei), 
-  * cytoplasmOutlines.tif (cytoplasm), 
-  * cellOutlines.tif (whole cell)
-  * If only nuclei segmentation was carried out, cellOutlines.tif is identical to nucleiOutilnes.tif
+## Output
+**1) 32-bit label masks for each compartment of the cell:**  
 
-**NOTE: There are at least 2 ways to segment cytoplasm: using a watershed approach or taking an annulus/ring around nuclei. Files generated using the annulus/ring method will have ‘Ring’ in the filename whereas files generated using watershed segmentation will not. It is important that these two groups of files are NOT combined and analyzed simultaneously as cell IDs will be different between them.**
+{: .fs-3}
+  >* `nuclei.ome.tif` (nuclei) 
+  >* `cytoplasm.ome.tif` (cytoplasm) 
+  >* `cell.ome.tif` (whole cell)
+  >* If only nuclei segmentation was carried out, `cell.ome.tif` is identical to `nuclei.ome.tif`
+ 
+**2) Two-channel quality control files with outlines overlaid on gray scale image of channel used for segmentation**  
 
-## Scenarios
+{: .fs-3}
+  >* `nucleiOutlines.tif` (nuclei),
+  >* `cytoplasmOutlines.tif` (cytoplasm) 
+  >* `cellOutlines.tif` (whole cell)
+  >* If only nuclei segmentation was carried out, `cellOutlines.tif` is identical to `nucleiOutilnes.tif`
+
+{: .fs-3}
+**NOTE:** There are at least 2 ways to segment cytoplasm: i) using a watershed approach or ii) taking an annulus/ring around nuclei. Files generated using the annulus/ring method will have ‘Ring’ in the filename whereas files generated using watershed segmentation will not. It is important that these two groups of files are NOT combined and analyzed simultaneously as cell IDs will be different between them.
+
+## Usage
+
+ `--s3seg-opts`
+ 
+ Example: ``nextflow run labsyspharm/mcmicro --in /my/data --s3seg-opts``
+
+ 
+## Parameter list
+
+### Required arguments
+
+### Optional arguments
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `--probMapChan <index>` | `1` | which channel is used for nuclei segmentation. **Coincides with the channel used in upstream semantic segmentation modules. Must specify when different from default.**  |
+| `--crop <selection>` | `noCrop` | Type of cropping: `interactiveCrop` - a window will appear for user input to crop a smaller region of the image; `plate` - this is for small fields of view such as from a multiwell plate; `noCrop`, the default, is to use the entire image |
+
+#### Nuclei parameters:
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `--nucleiFilter <selection>` | `IntPM` | Method to filter false positive nuclei: `IntPM` - filter based on probability intensity; `Int` - filted based on raw image intensity |
+| `--logSigma <value> <value>` | `3 60` | A range of nuclei diameters to search for. |
+
+#### Cytoplasm parameters:
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `--segmentCytoplasm <selection>` | `ignoreCytoplasm` | Select whether to `segmentCytoplasm` or `ignoreCytoplasm` |
+| `--CytoMaskChan <index>` | `2` | One or more channels to use for segmenting cytoplasm, specified as 1-based indices (e.g., `2` is the 2nd channel). |
+| `--cytoMethod <selection>` | `distanceTransform` | The method to segment cytoplasm: `distanceTransform` - take the distance transform outwards from each nucleus and mask with the tissue mask; `ring` - take an annulus of a certain pixel size around the nucleus (see `cytoDilation`); `hybrid` - uses a combination of greyscale intensity and distance transform to more accurately approximate the extent of the cytoplasm. Similar to Cellprofiler's implementation. |
+| `--cytoDilation <value>` | `5` | The number of pixels to expand from the nucleus to get the cytoplasm ring. |
+| `--TissueMaskChan <index>` | Union of `probMapChan` and `CytoMaskChan` | One or more channels to use for identifying the general tissue area for masking purposes. |
+
+---
+
+## Troubleshooting scenarios
 ### **1. I’m new to this whole segmentation thingy. And I have a deadline. Just get me started with finding nuclei!**<br>
 In its simplest form, s3segmenter by default will identify primary objects only (usually nuclei) and assumes this is in channel 1 (the first channel). In this case, no settings need to be specified.<br>
 

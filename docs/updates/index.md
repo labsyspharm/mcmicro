@@ -1,8 +1,8 @@
 ---
 layout: default
 title: Updates
-nav_order: 98
-parent: Community
+nav_order: 10
+has_children: true
 ---
 
 # Software Updates

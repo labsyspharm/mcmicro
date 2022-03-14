@@ -4,13 +4,16 @@ title: Modules
 nav_order: 4
 has_children: true
 ---
+{: .text-center }
+# The Current MCMICRO Modules
 
-# Current MCMICRO Modules
+![Schematic of the mcmicro pipeline. Level 1 image data is illumination corrected with basic, stitched and registered with ASHLAR, TMA cores can be isolated with Coreograph, then single cells can be segmented with UnMICST and S3segmenter, quantified with MCQuant, checked for quality control with CyLinter, analyzed with SciMap, and visualized with the Minerva Suite]({{ site.baseurl }}/images/pipeline-no-microscope.png)
 
-{: .fs-4 }
-{: .fw-200}
-{: .text-grey-dk-100}
-*Click image to learn more:*
+<br>
+<br>
+
+
+## Click image to learn more:
 <div class="row">
 
 <div class="col-xs-0 col-sm-2">
@@ -102,6 +105,15 @@ has_children: true
 </div>
 	
 </div><!-- end grid -->
+
+## Other modules
+
+| Name | Purpose | References |
+| :-- | :-- | :-- | :-- |
+| [Ilastik](./other.html#ilastik) | Probability map generator | [Code](https://github.com/labsyspharm/mcmicro-ilastik) - [DOI](https://doi.org/10.1038/s41592-019-0582-9) |
+| [Cypository](./other.html#ilastik) | Probability map generator (cytoplasm only) | [Code](https://github.com/HMS-IDAC/Cypository) |
+| [naivestates](./other.html#naivestates) | Cell type calling | [Code](https://github.com/labsyspharm/naivestates) |
+| [FastPG](./other.html#fastpg) | Cell type calling | [Code](https://github.com/labsyspharm/celluster) - [DOI](https://www.biorxiv.org/content/10.1101/2020.06.19.159749v2) |
 
 
 # Suggest a module
