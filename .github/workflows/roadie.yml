@@ -6,12 +6,16 @@ on:
     branches:
       - main
     paths:
-      - 'modules/lib/roadie.Dockerfile'
+      - 'modules/lib/Dockerfile'
 
 jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      - 
+        name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -31,7 +35,7 @@ jobs:
         with:
           context: modules/lib
           push: true
-          tags: labsyspharm/roadie:latest
+          tags: labsyspharm/roadie:${{ steps.date.outputs.date }}
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
