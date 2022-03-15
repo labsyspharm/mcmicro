@@ -20,7 +20,7 @@ nextflow pull labsyspharm/mcmicro
 
 <br>
 
-**Step 2:** [Download]({{ site.baseurl }}/datasets/datasets.html) exemplar data (downloads files into the current directory).  
+**Step 2:** [Download]({{ site.baseurl }}/datasets/datasets.html) exemplar data (downloads files into the current directory)
 
 ```
 nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-001 --path
