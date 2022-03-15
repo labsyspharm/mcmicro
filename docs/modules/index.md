@@ -5,21 +5,22 @@ nav_order: 4
 has_children: true
 ---
 {: .text-center }
-# The Modular MCMICRO pipeline
+# The MCMICRO pipeline
 
 ![Schematic of the mcmicro pipeline. Level 1 image data is illumination corrected with basic, stitched and registered with ASHLAR, TMA cores can be isolated with Coreograph, then single cells can be segmented with UnMICST and S3segmenter, quantified with MCQuant, checked for quality control with CyLinter, analyzed with SciMap, and visualized with the Minerva Suite]({{ site.baseurl }}/images/pipeline-no-microscope.png)
 
 <br>
 
-# Current modules
+{: .fw-400}
+{: .fs-7}
+{: .text-blue-000}
+Current modules:
 
-## Click image to learn more:
+{: .fw-300}
+{: .fs-4}
+{: .text-grey-dk-250}
+ *Click image to learn more:*
 <div class="row">
-
-<div class="col-xs-0 col-sm-2">
-<div markdown="1">
-</div>
-</div>
 	
 <div class="col-xs-3 col-sm-2">
 <div markdown="1">
@@ -42,15 +43,6 @@ has_children: true
 <div class="col-xs-3 col-sm-2">
 <div markdown="1">
 [![segmentation - un-micst](../images/modules/unmicst.png)](./unmicst.html)
-</div>
-</div>
-	
-</div><!-- end grid -->
-
-<div class="row">
-	
-<div class="col-xs-0 col-sm-2">
-<div markdown="1">
 </div>
 </div>
 	
@@ -78,20 +70,6 @@ has_children: true
 </div>
 </div>
 	
-</div><!-- end grid -->
-
-<div class="row">
-	
-<div class="col-xs-0 col-sm-2">
-<div markdown="1">
-</div>
-</div>
-
-<div class="col-xs-3 col-sm-2">
-<div markdown="1">
-</div>
-</div>
-
 <div class="col-xs-3 col-sm-2">
 <div markdown="1">
 [![visualization - minerva](../images/modules/minerva.png)](https://github.com/labsyspharm/minerva-story/wiki){:target="_blank"}

@@ -2,7 +2,7 @@
 layout: default
 title: Parameter reference
 nav_order: 26
-parent: Instructions
+parent: How to Use
 ---
 
 # Parameter reference

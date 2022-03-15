@@ -3,7 +3,7 @@ layout: default
 title: Directory Structure
 nav_order: 28
 has_children: true
-parent: Instructions
+parent: How to Use
 ---
 
 # Directory structure
