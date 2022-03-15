@@ -84,6 +84,8 @@ Current modules:
 	
 </div><!-- end grid -->
 
+---
+
 ## BaSiC
 {: .fw-500}
 {: .text-yellow-100}
@@ -95,6 +97,8 @@ Illumination correction
 
 * The BaSiC software is found on [GitHub](https://github.com/labsyspharm/basic-illumination){:target="_blank"} with an accompanying [ReadMe](https://github.com/labsyspharm/basic-illumination#running-as-a-docker-container){:target="_blank"}. 
 
+---
+
 ## ASHLAR
 {: .fw-500}
 {: .text-yellow-200}
@@ -104,27 +108,192 @@ Illumination correction
 {: .fs-3}
 Last updated on 03-15-2022, check the [ASHLAR website](https://labsyspharm.github.io/ashlar){:target="_blank"} for the most up-to-date documentation.
 
+### Input\**
+An ```.ome.tiff``` file of **unstitched**\* images
+
+{: .fs-3}
+\* If operating within the pipeline, this will be fed in by Nextflow after stitching and registration
+
+### Output
+A pyramidal, tiled ```.ome.tif```
+
+### Usage
+Arguments should be provided to MCMICRO with the `--ashlar-opts` flag
+
+### Optional arguments
+
+|  Name; Shorthand | Description | Default|
+|---|---|---|
+|```--help; -h```| Show this help message and exit| |
+|```--output DIR; -o DIR```|Write image files to DIR|Current directory|
+|```--align-channel CHANNEL; -c CHANNEL```| Align images using channel number CHANNEL | Numbering starts at 0|
+|```--flip-x```|Flip tile positions left-to-right to account for unusual microscope configurations | |
+|```--flip-y```|Flip tile positions top-to-bottom to account for unusual microscope configurations | |
+|```--flip-mosaic-x```|Flip mosaic image horizontally||
+|```--flip-mosaic-y```|Flip mosaic image vertically||
+|```--output-channels CHANNEL [CHANNEL...]```|Output only channels listed in CHANNELS|Numbering starts at 0|
+|```--maximum-shift SHIFT; -m SHIFT```|Maximum allowed per-tile corrective shift in microns||
+|```--filter-sigma SIGMA```|Width in pixels of Gaussian filter to apply to images before alignment| Default is 0 (which disables filtering)|
+|```--filename-format FORMAT; -f FORMAT```|Use FORMAT to generate output filenames, with {cycle} and {channel} as required placeholders for the cycle and channel numbers | default is cycle\_{cycle}\_channel\_{channel}.tif|
+|```--pyramid```|Write output as a single pyramidal TIFF||
+|```--tile-size PIXELS```|Set tile width and height to PIXELS (pyramid output only)|Default is 1024|
+|```--ffp FILE [FILE ...]```|Read flat field profile image from FILES|If specified must be one common file for all cycles or one file for each cycle|
+|```--dfp FILE [FILE ...]```|Read dark field profile image from FILES|If specified must be one common file for all cycles or one file for each cycle|
+|```--plates```|Enable mode for multi-well plates (for high-throughput screening assays)||
+|```--quiet; -q```|Suppress progress display||
+|```--version```|Print version||
+
+---
+
 ## Coreograph
 {: .fw-500}
 {: .text-red-300}
 *TMA core detection*
 
+### Input\*
+A fluorescence image of a tissue microarray where at least one channel is of DNA (such as Hoechst or DAPI).
+
+{: .fs-3}
+\* If operating within the pipeline, this will be fed in by Nextflow after stitching and registration
+
+### Output
+1. Individual cores as `.tif` stacks with user-selectable channel ranges
+2. Binary tissue masks (saved in the 'mask' subfolder)
+3. A TMA map showing the labels and outlines of each core for quality control purposes<br>
+4. A text file listing the centroids of each core in the format: Y, X
+
+![map]({{ site.baseurl }}/images/coreograph1.png)<br>
+
+### Usage
+Arguments should be provided to MCMICRO with the `--core-opts` flag
+
+### Optional arguments
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `--downsampleFactor`  | Default is 5 times to match the training data |How many times to downsample the raw image file|
+|`--channel` | | Which channel is fed into UNet to generate probability maps (usually DAPI) |
+|`--buffer` | 2 | The extra space around a core before cropping it. A value of 2 means there is twice the width of the core added as buffer around it.|
+ | `--outputChan` | |a range of channels to be exported. -1 is default and will export all channels (takes awhile). Select a single channel or a continuous range. ``--outputChan 0 10`` will export channel 0 up to and including channel 10 |
+
+### Troubleshooting
+A troubleshooting guide can be found within [Coreograph parameter tuning](./coreograph.html).
+
+---
 
 ## UnMICST
 {: .fw-500}
 {: .text-red-100}
 *Image segmentation - probability map generation*
 
+### Input\*
+1.  An ``.ome.tif`` (preferably flat field corrected - The model is trained on images acquired at a pixelsize of 0.65 microns/px. If your settings differ, you can upsample/downsample to some extent.)
+
+{: .fs-3}
+\* If operating within the pipeline, this will be fed in by Nextflow after stitching and registration
+
+### Output
+1. a ```.tif``` stack where the different probability maps for each class are concatenated in the Z-axis in the order: nuclei foreground, nuclei contours, and background.
+2. a QC image with the DNA image concatenated with the nuclei contour probability map with suffix *Preview*
+
+### Usage
+Arguments should be provided to MCMICRO with the `--unmicst-opts` flag
+
+### Optional arguments
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `--tool <version>` | `unmicst-solo` | UnMicst version: *unmicst-legacy* is the old single channel model. *unmicst-solo* uses DAPI. *unmicst-duo* uses DAPI and lamin. |
+| `--model` | human nuclei from DAPI | The name of the UNet model. By default, this is the human nuclei model that identifies nuclei centers, nuclei contours, and background from a DAPI channel. Other models include mouse nuclei from DAPI, and cytoplasm from stains resembling WGA |
+| `--channel <number>` | `1` | The channel used to infer and generate probability maps from. If using UnMicst2, then specify 2 channels. If only 1 channel is specified, it will simply be duplicated. **NOTE: If not using default value, the 1st channel must be specified to S3segmenter as --probMapChan in --s3seg-opts**|
+| `--classOrder` | None | If your training data isn't in the order 1. background, 2. contours, 3. foreground, you can specify the order here. For example, if you had trained the class order backwards, specify `--classOrder 3 2 1`. If you only have background and contours, use `--classOrder 1 2 1`. |
+| `--mean <value>` | Extracted from the model | Override the trained model's mean intensity. Useful if your images are significantly dimmer or brighter. |
+| `--std <value>` | Extracted from the model | Override the trained model's standard deviation intensity. Useful if your images are significantly dimmer or brighter. |
+| `--scalingFactor <value>` | `1` | An upsample or downsample factor used to resize the image. Useful when the pixel sizes of your image differ from the model (ie. 0.65 microns/pixel for human nuclei model) |
+| `--stackOutput` | Specified | If selected, UnMicst will write all probability maps as a single multipage tiff file. Otherwise, UnMicst will write each class as a separate file. |
+| `--GPU <index>` | Automatic | Explicitly specify which GPU (1-based indexing) you want to use. Useful for running on local workstations with multiple GPUs. |
+
+### Troubleshooting
+A troubleshooting guide can be found within [UnMICST parameter tuning](./unmicst.html).
+
 {: .fw-200}
 {: .fs-3}
 Last updated on 03-15-2022, check the [UnMICST website](https://labsyspharm.github.io/UnMICST-info/){:target="_blank"} for the most up-to-date documentation.
 
+___
 
 ## S3segmenter
 {: .fw-500}
 {: .text-purple-000}
 *Image segmentation - cell mask generation*
 
+### Input\*
+1.  An ``.ome.tif`` (preferably flat field corrected)
+2.  A 3-class probability map (derived from a deep learning model such as [UnMICST](./unmicst.html) or [Ilastik](./other.html#ilastik))
+
+{: .fs-3}
+\* If operating within the pipeline, this will be fed in by Nextflow after stitching and registration
+
+[S3segmenter](https://github.com/HMS-IDAC/S3segmenter) assumes that you have:
+1. Acquired images of your sample with optimal acquisition settings.
+2. Stitched and registered the tiles and channels respectively (if working with a large piece of tissue) and saved it as a Bioformats compatible tiff file.
+3. Processed your image in some way so as to increase contrast between individual nuclei using classical or machine learning methods such as [Ilastik](./other.html#ilastik) (a random forest model) or [UnMICST](./unmicst.html) (a deep learning semantic segmentation model based on the UNet architecture). MCMICRO supports both.
+{: .fs-3}
+
+### Output
+**1) 32-bit label masks for each compartment of the cell:**  
+
+{: .fs-3}
+  >* `nuclei.ome.tif` (nuclei) 
+  >* `cytoplasm.ome.tif` (cytoplasm) 
+  >* `cell.ome.tif` (whole cell)
+  >* If only nuclei segmentation was carried out, `cell.ome.tif` is identical to `nuclei.ome.tif`
+ 
+**2) Two-channel quality control files with outlines overlaid on gray scale image of channel used for segmentation**  
+
+{: .fs-3}
+  >* `nucleiOutlines.tif` (nuclei),
+  >* `cytoplasmOutlines.tif` (cytoplasm) 
+  >* `cellOutlines.tif` (whole cell)
+  >* If only nuclei segmentation was carried out, `cellOutlines.tif` is identical to `nucleiOutilnes.tif`
+
+{: .fs-3}
+**NOTE:** There are at least 2 ways to segment cytoplasm: i) using a watershed approach or ii) taking an annulus/ring around nuclei. Files generated using the annulus/ring method will have ‘Ring’ in the filename whereas files generated using watershed segmentation will not. It is important that these two groups of files are NOT combined and analyzed simultaneously as cell IDs will be different between them.
+
+### Usage
+Arguments should be provided to MCMICRO with the `--s3seg-opts` flag
+
+Example: ``nextflow run labsyspharm/mcmicro --in /my/data --s3seg-opts``
+
+### Optional arguments
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `--probMapChan <index>` | `1` | which channel is used for nuclei segmentation. **Coincides with the channel used in upstream semantic segmentation modules. Must specify when different from default.**  |
+| `--crop <selection>` | `noCrop` | Type of cropping: `interactiveCrop` - a window will appear for user input to crop a smaller region of the image; `plate` - this is for small fields of view such as from a multiwell plate; `noCrop`, the default, is to use the entire image |
+
+#### Nuclei parameters:
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `--nucleiFilter <selection>` | `IntPM` | Method to filter false positive nuclei: `IntPM` - filter based on probability intensity; `Int` - filted based on raw image intensity |
+| `--logSigma <value> <value>` | `3 60` | A range of nuclei diameters to search for. |
+
+#### Cytoplasm parameters:
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `--segmentCytoplasm <selection>` | `ignoreCytoplasm` | Select whether to `segmentCytoplasm` or `ignoreCytoplasm` |
+| `--CytoMaskChan <index>` | `2` | One or more channels to use for segmenting cytoplasm, specified as 1-based indices (e.g., `2` is the 2nd channel). |
+| `--cytoMethod <selection>` | `distanceTransform` | The method to segment cytoplasm: `distanceTransform` - take the distance transform outwards from each nucleus and mask with the tissue mask; `ring` - take an annulus of a certain pixel size around the nucleus (see `cytoDilation`); `hybrid` - uses a combination of greyscale intensity and distance transform to more accurately approximate the extent of the cytoplasm. Similar to Cellprofiler's implementation. |
+| `--cytoDilation <value>` | `5` | The number of pixels to expand from the nucleus to get the cytoplasm ring. |
+| `--TissueMaskChan <index>` | Union of `probMapChan` and `CytoMaskChan` | One or more channels to use for identifying the general tissue area for masking purposes. |
+
+
+### Troubleshooting
+A troubleshooting guide can be found within [S3segmenter parameter tuning](./s3seg.html).
+
+___
 
 ## MCQuant
 {: .fw-500}
@@ -134,6 +303,13 @@ Last updated on 03-15-2022, check the [UnMICST website](https://labsyspharm.gith
 {: .fw-200}
 {: .fs-3}
 Last updated on 03-15-2022, check the [MCQuant README](https://github.com/labsyspharm/quantification#single-cell-quantification){:target="_blank"} for the most up-to-date documentation.
+
+### Usage
+Arguments should be provided to MCMICRO with the `--quant-opts` flag
+
+Example: `nextflow run labsyspharm/mcmicro --in /my/data --quant-opts '--masks cytoMask.tif nucleiMask.tif'`
+
+___
 
 ## CyLinter
 {: .fw-500}
@@ -146,6 +322,8 @@ Last updated on 03-15-2022, check the [CyLinter website](https://labsyspharm.git
 
 CyLinter takes single-cell feature tables generated by the MCMICRO image processing pipeline as input and returns a set of de-noised feature tables for use in downstream analyses. 
 
+___
+
 ## SCIMAP
 {: .fw-500}
 {: .text-blue-100}
@@ -155,12 +333,16 @@ CyLinter takes single-cell feature tables generated by the MCMICRO image process
 {: .fs-3}
 Last updated on 03-15-2022, check the [SCIMAP website](https://scimap.xyz){:target="_blank"} for the most up-to-date documentation.
 
+---
+
 ## Minerva
 {: .fw-500}
 {: .text-green-200}
 *Interactive viewing and sharing*
 
 Minerva is used in parallel with MCMICRO, so the image outputs need to be run through Minerva separately. To learn more about how to use Minerva, visit the [Minerva wiki](https://github.com/labsyspharm/minerva-story/wiki){:target="_blank"} for the most up-to-date information about the Minerva suite.
+
+---
 
 ## Other modules
 

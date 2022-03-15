@@ -35,48 +35,8 @@ UnMICST also trained on **real augmentations** - such as intentionally de-focuse
 
 ![Image of a single TMA core with two insets that show single cells that have been segmented]({{ site.baseurl }}/images/unmicst2.png)
 
-## Input
-
-{: .fs-3 }
-An ```.ome.tif``` or ```.tif```  
-
-{: .text-center}
-{: .fs-3 }
-{: .fw-300 }
-(preferably flat field corrected, minimal saturated pixels, and in focus. The model is trained on images acquired at a pixelsize of 0.65 microns/px. If your settings differ, you can upsample/downsample to some extent.
-
-## Expected output files
-
-{: .fs-3 }
-1. a ```.tif``` stack where the different probability maps for each class are concatenated in the Z-axis in the order: nuclei foreground, nuclei contours, and background.
-2. a QC image with the DNA image concatenated with the nuclei contour probability map with suffix *Preview*
-
-## Usage
-
-`--unmicst-opts`
-
-## Parameter list
-
-### Required arguments
-
-Image path for input and output
-
-### Optional arguments
-
-| Parameter | Default | Description |
-| --- | --- | --- |
-| `--tool <version>` | `unmicst-solo` | UnMicst version: *unmicst-legacy* is the old single channel model. *unmicst-solo* uses DAPI. *unmicst-duo* uses DAPI and lamin. |
-| `--model` | human nuclei from DAPI | The name of the UNet model. By default, this is the human nuclei model that identifies nuclei centers, nuclei contours, and background from a DAPI channel. Other models include mouse nuclei from DAPI, and cytoplasm from stains resembling WGA |
-| `--channel <number>` | `1` | The channel used to infer and generate probability maps from. If using UnMicst2, then specify 2 channels. If only 1 channel is specified, it will simply be duplicated. **NOTE: If not using default value, the 1st channel must be specified to S3segmenter as --probMapChan in --s3seg-opts**|
-| `--classOrder` | None | If your training data isn't in the order 1. background, 2. contours, 3. foreground, you can specify the order here. For example, if you had trained the class order backwards, specify `--classOrder 3 2 1`. If you only have background and contours, use `--classOrder 1 2 1`. |
-| `--mean <value>` | Extracted from the model | Override the trained model's mean intensity. Useful if your images are significantly dimmer or brighter. |
-| `--std <value>` | Extracted from the model | Override the trained model's standard deviation intensity. Useful if your images are significantly dimmer or brighter. |
-| `--scalingFactor <value>` | `1` | An upsample or downsample factor used to resize the image. Useful when the pixel sizes of your image differ from the model (ie. 0.65 microns/pixel for human nuclei model) |
-| `--stackOutput` | Specified | If selected, UnMicst will write all probability maps as a single multipage tiff file. Otherwise, UnMicst will write each class as a separate file. |
-| `--GPU <index>` | Automatic | Explicitly specify which GPU (1-based indexing) you want to use. Useful for running on local workstations with multiple GPUs. |
-
 ---
-	
+
 ## Troubleshooting Scenarios
 **1. I just wanted to get started.** <br>
 set `--tool unmicst-solo` and choose a channel that has your DNA stain. If this is in the first channel, use `--channel 1`. <br>

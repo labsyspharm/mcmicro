@@ -16,9 +16,15 @@ parent: Modules
 
 ## Ilastik
 
-Access Ilastik on GitHub: [https://github.com/labsyspharm/mcmicro-ilastik](https://github.com/labsyspharm/mcmicro-ilastik)
+{: .fw-200}
+{: .fs-3}
+Last updated on 03-15-2022, check the [GitHub](https://github.com/labsyspharm/mcmicro-ilastik){:target="_blank"} for the most up-to-date documentation.
 
-### Arguments to Ilastik(`--ilastik-opts`):
+### Usage
+
+Arguments should be passed to Ilastik with the `--ilastik-opts` flag
+
+### Optional arguments
 
 | Parameter | Default | Description |
 | --- | --- | --- |
@@ -34,11 +40,16 @@ Access Ilastik on GitHub: [https://github.com/labsyspharm/mcmicro-ilastik](https
 
 ## Cypository
 
-View on GitHub [https://github.com/HMS-IDAC/Cypository#cypository---pytorch-mask-rcnn-for-cell-segmentation](https://github.com/HMS-IDAC/Cypository#cypository---pytorch-mask-rcnn-for-cell-segmentation)
+{: .fw-200}
+{: .fs-3}
+Last updated on 03-15-2022, check the [GitHub](https://github.com/HMS-IDAC/Cypository#cypository---pytorch-mask-rcnn-for-cell-segmentation){:target="_blank"} for the most up-to-date documentation.
 
 ### Required arguments
 
-Image path
+Image path (provided by Nextflow when operating through the MCMICRO pipeline)
+
+### Usage
+Arguments should be provided to MCMICRO with the `--___-opts` flag
 
 ### Optional arguments
 
@@ -58,10 +69,12 @@ Image path
 
 `naivestates` is a label-free, cluster-free tool for inferring cell types from quantified marker expression data, based on known marker <-> cell type associations. 
 
-Access on GitHub: [https://github.com/labsyspharm/naivestates](https://github.com/labsyspharm/naivestates)
+{: .fw-200}
+{: .fs-3}
+Last updated on 03-15-2022, check the [GitHub](https://github.com/labsyspharm/naivestates){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
-`--nstates-opts`
+Arguments should be provided to MCMICRO with the `--nstates-opts` flag
 
 Example: `nextflow run labsyspharm/mcmicro --in /my/data --nstates-opts '--log no --plots pdf'`
 
@@ -123,32 +136,23 @@ docker run --rm -v /path/to/data/folder:/data labsyspharm/naivestates:1.2.0 \
 | `--umap`|disabled| Include this flag to generate UMAP plots.|
 |`--mct <filename>` | |The tool has a basic marker -> cell type (mct) mapping in `typemap.csv`. More sophisticated mct mappings can be defined by creating a `custom-map.csv` file with two columns: `Marker` and `State`. Ensure that `custom map.csv` is in `/path/to/data/folder` and point the tool at it with `--mct` (e.g., `/app/main.R -i /data/myfile.csv --mct /data/custom-map.csv -m aSMA,CD45,panCK`) |
 
-
 ---
 
 ## FastPG
 
-An mcmicro module that provides a command-line interface for [FastPG](https://github.com/sararselitsky/FastPG), a C++ implementation of the popular Phenograph method.
+An MCMICRO module that provides a command-line interface for [FastPG](https://github.com/sararselitsky/FastPG), a C++ implementation of the popular Phenograph method.
 
-Access on GitHub [https://github.com/labsyspharm/mcmicro-fastPG#parameter-reference](https://github.com/labsyspharm/mcmicro-fastPG#parameter-reference).
+{: .fw-200}
+{: .fs-3}
+Last updated on 03-15-2022, check the [GitHub](https://github.com/labsyspharm/mcmicro-fastPG#parameter-reference){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
 
-```
-docker run --rm -v "$PWD":/data labsyspharm/mc-fastpg:1.0.4 python3 /app/cluster.py \
-  -i /data/unmicst-exemplar-001.csv -o /data/
-```
-
-where `unmicst-exemplar-001.csv` is a spatial feature table produced by MCMICRO. Note that the above command must be executed from the directory containing `uncmist-exemplar-001.csv`. Alternatively, replace `"$PWD"` with a full path to the data. If the largest value in the input data set is >1000, the data will be log<sub>10</sub> transformed. This will be reflected in the means of the output `clusters` file.
+Arguments should be provided to MCMICRO with the `--fastpg-opts` flag
 
 ### Required arguments
 
-Input and output paths
-
-| Parameter | Description |
-| --- | --- |
-|`--i INPUT`| Input CSV of mcmicro marker expression data for cells|
-|`--o OUTPUT`|The directory to which output files will be saved |
+Input and output paths (provided by Nextflow when operating through the MCMICRO pipeline)
 
 ### Optional arguments
 
