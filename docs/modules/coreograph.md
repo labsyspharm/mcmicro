@@ -2,7 +2,7 @@
 layout: default
 title: Coreograph
 nav_order: 32
-parent: Modules
+parent: Parameter tuning
 ---
 
 ![]({{ site.baseurl }}/images/coreographbannerv10.png)
