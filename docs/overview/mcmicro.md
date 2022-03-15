@@ -21,7 +21,7 @@ MCMICRO provides a modular pipeline that processes whole slide microscopy data i
 
 {: .text-center }
 {: .fw-500}
-Walk through the process of turning image tiles into single-cell segmented mosaic image: [MCMICRO Pipeline Visual Guide]({{ site.baseurl }}/datasets/pipeline-visual-guide.html){: .btn .btn-green .btn-outline .btn-arrow }
+Walk through the process of turning image tiles into single-cell segmented mosaic image: <br>[MCMICRO Pipeline Visual Guide]({{ site.baseurl }}/datasets/pipeline-visual-guide.html){: .btn .btn-green .btn-outline .btn-arrow }
 
 <br>
 
