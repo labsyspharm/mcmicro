@@ -162,8 +162,6 @@ Last updated on 03-15-2022, check the [SCIMAP website](https://scimap.xyz){:targ
 
 Minerva is used in parallel with MCMICRO, so the image outputs need to be run through Minerva separately. To learn more about how to use Minerva, visit the [Minerva wiki](https://github.com/labsyspharm/minerva-story/wiki){:target="_blank"} for the most up-to-date information about the Minerva suite.
 
-There are two manuscripts associated with Minerva [(Rashid et al., 2021)](https://doi.org/10.1038/s41551-021-00789-8){:target="_blank"} and [(Hoffer et al., 2020)](https://doi.org/10.21105/joss.02579). 
-
 ## Other modules
 
 | Name | Purpose | References |
