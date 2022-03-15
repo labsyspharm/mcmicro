@@ -56,8 +56,21 @@ Image path
 
 ## Naivestates
 
-`naivestates` is a label-free, cluster-free tool for inferring cell types from quantified marker expression data, based on known marker <-> cell type associations. `naivestates` expects as input information about marker expression on a per-cell basis, provided in `.csv` format. One of the columns must contain cell IDs. An example input file may look as follows:
+`naivestates` is a label-free, cluster-free tool for inferring cell types from quantified marker expression data, based on known marker <-> cell type associations. 
 
+Access on GitHub: [https://github.com/labsyspharm/naivestates](https://github.com/labsyspharm/naivestates)
+
+### Usage
+`--nstates-opts`
+
+Example: `nextflow run labsyspharm/mcmicro --in /my/data --nstates-opts '--log no --plots pdf'`
+
+### Required arguments
+
+* A list of marker names. You can provide a `markers.csv` defined in an MCMICRO-compatible format (i.e., comma-delimited with marker names listed in the `marker_name` column). 
+* * Marker expression on a per-cell basis, provided in `.csv` format. One of the columns must contain cell IDs. 
+
+Example input file:
 ```
 CellID,KERATIN,FOXP3,SMA
 1,64.18060200668896,193.00334448160535,303.5016722408027
@@ -72,16 +85,7 @@ CellID,KERATIN,FOXP3,SMA
 ...
 ```
 
-Access on GitHub: [https://github.com/labsyspharm/naivestates](https://github.com/labsyspharm/naivestates)
-
-### Usage
-`--nstates-opts`
-
-Example: `nextflow run labsyspharm/mcmicro --in /my/data --nstates-opts '--log no --plots pdf'`
-
-### Required arguments
-
-Naivestates requires an input file and a list of marker names. You can provide a `markers.csv` defined in an MCMICRO-compatible format (i.e., comma-delimited with marker names listed in the `marker_name` column). Ensure that the file lives in `/path/to/data/folder/` and modify the Docker call to use the new file:
+* Ensure that the file lives in `/path/to/data/folder/` and modify the Docker call to use the new file:
 
 ```
 docker run --rm -v /path/to/data/folder:/data labsyspharm/naivestates:1.2.0 \
@@ -119,9 +123,6 @@ docker run --rm -v /path/to/data/folder:/data labsyspharm/naivestates:1.2.0 \
 | `--umap`|disabled| Include this flag to generate UMAP plots.|
 |`--mct <filename>` | |The tool has a basic marker -> cell type (mct) mapping in `typemap.csv`. More sophisticated mct mappings can be defined by creating a `custom-map.csv` file with two columns: `Marker` and `State`. Ensure that `custom map.csv` is in `/path/to/data/folder` and point the tool at it with `--mct` (e.g., `/app/main.R -i /data/myfile.csv --mct /data/custom-map.csv -m aSMA,CD45,panCK`) |
 
-#### Alternative environments
-
-The tool is designed to be run as a Docker container, but can also be installed in a Conda environment or as an R package - learn more at [https://github.com/labsyspharm/naivestates#alternative-execution-environments](https://github.com/labsyspharm/naivestates#alternative-execution-environments).
 
 ---
 

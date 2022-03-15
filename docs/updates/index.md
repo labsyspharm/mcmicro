@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Changes
+title: Updates
 nav_order: 10
 has_children: true
 ---

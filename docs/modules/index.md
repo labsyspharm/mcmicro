@@ -5,13 +5,13 @@ nav_order: 4
 has_children: true
 ---
 {: .text-center }
-# The Current MCMICRO Modules
+# The Modular MCMICRO pipeline
 
 ![Schematic of the mcmicro pipeline. Level 1 image data is illumination corrected with basic, stitched and registered with ASHLAR, TMA cores can be isolated with Coreograph, then single cells can be segmented with UnMICST and S3segmenter, quantified with MCQuant, checked for quality control with CyLinter, analyzed with SciMap, and visualized with the Minerva Suite]({{ site.baseurl }}/images/pipeline-no-microscope.png)
 
 <br>
-<br>
 
+# Current modules
 
 ## Click image to learn more:
 <div class="row">
