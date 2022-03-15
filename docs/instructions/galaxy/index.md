@@ -3,7 +3,7 @@ layout: default
 title: Galaxy workflow
 nav_order: 24
 has_children: true
-parent: How to use
+parent: How to Use
 ---
 
 # MCMICRO Galaxy Workflow
