@@ -29,3 +29,6 @@ The size of samples being imaged is also critical for generating robust conclusi
            
 ### Sensitivity
 The sensitivity of an imaging method depends on a range of factors including the selectivity of the reagents, the quality of the instrumentation, resolution, etc. As such, sensitivity must be evaluated with respect to objective criteria. As mentioned above, the field awaits a rigorous comparison of different tissue imaging platforms (and of identical imaging platforms across multiple laboratories) before we can make robust comparisons of platform sensitivity.
+
+
+	

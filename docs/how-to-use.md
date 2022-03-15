@@ -12,10 +12,10 @@ parent: Home
 
 2. Tutorial (coming soon!) will provides a step-by-step example workflow that will allow beginners to turn a sample of multiplexed images  into a mosaic image.  
 
-3. The [instructions](./instructions/) section provides a step-by-step guide for how to begin using MCMICRO. 
+3. The [how to use](./instructions/) section provides a step-by-step guide for how to begin using MCMICRO. 
 >\*View the [frequently asked questions](./instructions/faq.html) for step-by-step troubleshooting guides.
 
-4. Go to [modules](./modules/) for detailed information about the various MCMICRO modules and how to tune their parameters.
+4. Go to [modules](./modules/) for reference information about the various MCMICRO modules and how to tune their parameters.
 
 5. View a [visual guide]({{ site.baseurl }}/datasets/pipeline-visual-guide.html){:target="_blank"} through the steps of MCMICRO, then download [example data](./datasets/datasets.html) to try it yourself!
 

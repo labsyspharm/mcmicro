@@ -42,3 +42,7 @@ In the following pages, we introduce some key background information relevant to
 </div>
 
 </div><!-- end grid -->
+
+{: .text-center}
+{: .fw-200}
+*Click images to learn more.*
