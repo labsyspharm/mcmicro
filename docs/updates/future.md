@@ -3,6 +3,7 @@ layout: default
 title: Future development
 nav_order: 2
 parent: Updates
+nav_exclude: true
 
 ---
 

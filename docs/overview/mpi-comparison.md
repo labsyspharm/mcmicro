@@ -3,7 +3,7 @@ layout: default
 title: Multiplex Imaging Comparison
 nav_order: 2
 parent: Tissue imaging intro
-
+nav_exclude: true
 ---
 
 ## Comparison of Multiplex Imaging Technologies

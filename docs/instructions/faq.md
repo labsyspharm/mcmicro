@@ -2,7 +2,7 @@
 layout: default
 title: FAQ
 nav_order: 30
-parent: How to Use
+parent: Pipeline documentation
 ---
 
 # Frequently Asked Questions

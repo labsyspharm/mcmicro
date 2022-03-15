@@ -21,7 +21,7 @@ MCMICRO provides a modular pipeline that processes whole slide microscopy data i
 
 {: .text-center }
 {: .fw-500}
-Walk through the process of turning image tiles into single-cell segmented mosaic image: <br>[MCMICRO Pipeline Visual Guide]({{ site.baseurl }}/datasets/pipeline-visual-guide.html){: .btn .btn-green .btn-outline .btn-arrow }
+Walk through the process of turning image tiles into single-cell segmented mosaic image: <br>[MCMICRO Pipeline Visual Guide]({{ site.baseurl }}/tutorial/pipeline-visual-guide.html){: .btn .btn-green .btn-outline .btn-arrow }
 
 <br>
 
@@ -136,6 +136,12 @@ The tiles must then be combined into a seamlessly aligned mosaic image in a proc
 
 ## Mosaic images to single-cell data
 Extracting single-cell level data from highly multiplexed image data allows for clinically useful biological data at a depth that was not previously possible. To do this, images must first be segmented into single cells, then interesting features can be extracted into a descriptive cell features table. 
+
+{: .text-center }
+{: .fs-3 }
+{: .fw-300 }
+![Visualization of raw image of cells being segmented into single cells from left to right]({{ site.baseurl }}/images/Segmentation_crop2.png)
+Segmentation - from raw image (left) to single cells (right)
 
 ### Segmentation
 Image processing is necessary to extract quantitative data from images. Although machine learning directly on images shows promise, most high-plex tissue imaging studies require the image to be 'segmented' into single cells before extracting single-cell data on a per-cell or per organelle basis. There are a number of solutions for segmentation that can be used with MCMICRO. We describe two, UnMICST [(Yapp et al., 2021)](https://doi.org/10.1101/2021.04.02.438285){:target="_blank"}, a method that generates pixel probability maps, and S3segmenter [(Saka et al., 2019)](https://doi.org/10.1038/s41587-019-0207-y){:target="_blank"}, a watershed method for generating segmentation masks.

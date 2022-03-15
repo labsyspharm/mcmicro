@@ -1,6 +1,6 @@
 ---
 layout: default
-title: How to Use
+title: Pipeline documentation
 nav_order: 4
 has_children: true
 

@@ -3,7 +3,7 @@ layout: default
 title: Advanced Topics
 nav_order: 32
 has_children: true
-parent: How to Use
+parent: Pipeline documentation
 ---
 
 # Advanced topics

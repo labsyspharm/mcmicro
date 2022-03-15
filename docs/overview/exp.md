@@ -64,8 +64,6 @@ CyCIF schematic from Lin et al., 2018.
 
 All these imaging methods generate data that can be represented as a series of intensity values on a two-dimensional raster, or grid. Imaging multiple fluorophores simply adds a dimension to the raster that's referred to as a separate channel. MCMICRO can process the 2D data from all methods mentioned above – [extension to 3D is an area of active interest]({{ site.baseurl }}/overview/future.html#3d-image-processing).
 
-More information about how to compare multiplexed imaging technologies is provided [here]({{ site.baseurl }}/overview/mpi-comparison.html).
-
 ### Data and metadata formats
 The TIFF (Tagged Image File Format) is ideal for storing microscopy data at native resolution because it can combine multiple images in a single file (with each image occupying a separate layer in the file). 
 

@@ -2,7 +2,7 @@
 layout: default
 title: Example data sets
 nav_order: 6
-has_children: true
+has_children: false
 ---
 # Example data sets
 {: .no_toc }
@@ -50,12 +50,22 @@ has_children: true
 nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-001 --path /local/path/
 nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-002 --path /local/path/
 ```
-with `/local/path/` pointing to a local directory where the exemplars should be downloaded to.
+(Content download to the directory indicated by `/local/path/`.)
+
+<br>
+<br>
 
 ### Visual Guide: Processing Exemplar-002 with MCMICRO 
 This detailed [visual guide]({{ site.baseurl }}/datasets/pipeline-visual-guide.html){:target="_blank"}  walks you through the MCMICRO pipeline steps as it processes `exemplar-002`. This guide was generated using the [Minerva](./mcmicro.html#visualization) software package.
 
-[View the visual guide]({{ site.baseurl }}/datasets/pipeline-visual-guide.html){: .btn .btn-green .btn-outline .btn-arrow }
+[View the visual guide]({{ site.baseurl }}/tutorial/pipeline-visual-guide.html){: .btn .btn-green .btn-outline .btn-arrow }
+
+<br>
+
+{: .text-center}
+**Want to give it a try??** Process Exemplar-001 and -002 using our [tutorial](../tutorial/tutorial.html)!
+
+<br>
 
 ## Exemplar Microscopy Images of Tissues (EMIT)
 

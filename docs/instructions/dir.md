@@ -3,7 +3,7 @@ layout: default
 title: Directory Structure
 nav_order: 28
 has_children: true
-parent: How to Use
+parent: Pipeline documentation
 ---
 
 # Directory structure

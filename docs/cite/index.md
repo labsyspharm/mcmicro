@@ -5,3 +5,9 @@ nav_order: 9
 has_children: true
 
 ---
+
+# Citing MCMICRO
+
+**Please cite the MCMICRO manuscript:**
+
+Schapiro, D., Sokolov, A., Yapp, C. _et al._ MCMICRO: a scalable, modular image-processing pipeline for multiplexed tissue imaging. _Nat Methods_ **19,** 311–315 (2022). [https://doi.org/10.1038/s41592-021-01308-y](https://doi.org/10.1038/s41592-021-01308-y)

@@ -8,37 +8,20 @@ nav_order: 7
 
 MCMICRO is a multi-institutional effort, led by the following developers:
 
-**Harvard Medical School**
-* [Artem Sokolov](https://scholar.harvard.edu/artem-sokolov)
-* [Clarence Yapp](https://scholar.harvard.edu/clarence/who-clarence)
+{: .text-center}
+|Institution| People|
+|---|---|
+|**Harvard Medical School**|[Artem Sokolov](https://scholar.harvard.edu/artem-sokolov) <br>[Clarence Yapp](https://scholar.harvard.edu/clarence/who-clarence)|
+|**Heidelberg University**|[Denis Schapiro](https://twitter.com/denisschapiro)|
+|**Oregon Health and Sciences University**|[Allison Creason](https://www.ohsu.edu/people/allison-creason-phd)<br>[Jeremy Goecks](https://www.ohsu.edu/people/jeremy-goecks-phd)|
+|**Dana-Farber Cancer Institute**|[Ajit Johnson](https://ajitjohnson.com/)|
+|**Vanderbilt University**|[Darren Tyson](https://medschool.vanderbilt.edu/cancer-biology/person/darren-tyson-ph-d/)|
+|**Brigham and Women's Hospital**|[Giorgio Gaglia](https://connects.catalyst.harvard.edu/Profiles/display/Person/25408)|
+|**The Jackson Laboratory**|[Brian White](https://www.jax.org/people/brian-white)|
+|**Broad Institute**|[Huan Wang](https://www.linkedin.com/in/huan-wang-4b940473/)|
+|**Brigham Young University**|[Matthew Hodgman](https://www.linkedin.com/in/matthodgman/)|
+|**Indica Labs**|[Erik Burlingame](https://www.linkedin.com/in/erik-burlingame/)|
 
-**Heidelberg University**
-* [Denis Schapiro](https://twitter.com/denisschapiro)
-
-**Oregon Health and Sciences University**
-* [Allison Creason](https://www.ohsu.edu/people/allison-creason-phd)
-* [Jeremy Goecks](https://www.ohsu.edu/people/jeremy-goecks-phd)
-
-**Dana-Farber Cancer Institute**
-* [Ajit Johnson](https://ajitjohnson.com/)
-
-**Vanderbilt University**
-* [Darren Tyson](https://medschool.vanderbilt.edu/cancer-biology/person/darren-tyson-ph-d/)
-
-**Brigham and Women's Hospital**
-* [Giorgio Gaglia](https://connects.catalyst.harvard.edu/Profiles/display/Person/25408)
-
-**The Jackson Laboratory**
-* [Brian White](https://www.jax.org/people/brian-white)
-
-**Broad Institute**
-* [Huan Wang](https://www.linkedin.com/in/huan-wang-4b940473/)
-
-**Brigham Young University**
-* [Matthew Hodgman](https://www.linkedin.com/in/matthodgman/)
-
-**Indica Labs**
-* [Erik Burlingame](https://www.linkedin.com/in/erik-burlingame/)
 
 # Additional efforts
 Additional development is contributed by researchers in the laboratory of [Peter Sorger](http://orcid.org/0000-0002-3364-1838) and the HMS Laboratory of Systems Pharmacology.
@@ -47,6 +30,10 @@ Additional development is contributed by researchers in the laboratory of [Peter
 * [Jeremy Muhlich](https://github.com/jmuhlich)
 * [Yu-An Chen](https://github.com/Yu-AnChen)
 * [Juha Ruokonen](https://github.com/Juha-Ruokonen)
+
+## Website Developers
+* [Juliann Tefft](https://www.linkedin.com/in/juliann-tefft)
+* [Han Xu](https://www.linkedin.com/in/han-xu-16a0216b/)
 
 ## Early adopters
 * [Roxy Pelletier](https://github.com/rjp21)

@@ -2,7 +2,7 @@
 layout: default
 title: Nextflow workflow
 nav_order: 20
-parent: How to Use
+parent: Pipeline documentation
 description: ""
 # permalink: /
 last_modified_date: 2021-03-28

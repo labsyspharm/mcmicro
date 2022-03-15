@@ -2,7 +2,7 @@
 layout: default
 title: Parameter reference
 nav_order: 26
-parent: How to Use
+parent: Pipeline documentation
 ---
 
 # Parameter reference
