@@ -12,16 +12,24 @@ parent: Modules
 3. [naivestates](./other.html#naivestates)
 4. [FastPG](./other.html#fastpg) 
 
+
+<br>
+
+[Back to main modules](./){: .btn .btn-outline} 
+
 ---
 
 ## Ilastik
 
+{: .text-grey-dk-250}
 {: .fw-200}
 {: .fs-3}
 Last updated on 03-15-2022, check the [GitHub](https://github.com/labsyspharm/mcmicro-ilastik){:target="_blank"} for the most up-to-date documentation.
 
-### Usage
+## Description
+Ilastik is another method for generating probability maps that can be used as an alternative to UnMICST
 
+### Usage
 Arguments should be passed to Ilastik with the `--ilastik-opts` flag
 
 ### Optional arguments
@@ -36,20 +44,27 @@ Arguments should be passed to Ilastik with the `--ilastik-opts` flag
 | `--ring_mask`| Omitted | Specify if you have a ring mask in the same directory to use for reducing size of hdf5 image |
 | `--crop_amount <integer>`| `None`| Number of crops you would like to extract |
 
+
+
+[Back to top](./other.html#other-modules){: .btn .btn-purple} 
+
 ---
 
 ## Cypository
 
+{: .text-grey-dk-250}
 {: .fw-200}
 {: .fs-3}
 Last updated on 03-15-2022, check the [GitHub](https://github.com/HMS-IDAC/Cypository#cypository---pytorch-mask-rcnn-for-cell-segmentation){:target="_blank"} for the most up-to-date documentation.
 
-### Required arguments
-
-Image path (provided by Nextflow when operating through the MCMICRO pipeline)
+## Description
+Cypository is used to segment the cytoplasm of cells. 
 
 ### Usage
 Arguments should be provided to MCMICRO with the `--___-opts` flag
+
+### Required arguments
+Image path (provided by Nextflow when operating through the MCMICRO pipeline)
 
 ### Optional arguments
 
@@ -63,15 +78,19 @@ Arguments should be provided to MCMICRO with the `--___-opts` flag
 |``--scalingFactor``| 1 (no resizing)  |Factor by which to increase/decrease image size by.| 
 |``--GPU``|Default behavior is the first GPU card (0-based indexing).| If multiple GPUs are available, this specifies which GPU card to use.|
 
+[Back to top](./other.html#other-modules){: .btn .btn-purple} 
+
 ---
 
 ## Naivestates
 
-`naivestates` is a label-free, cluster-free tool for inferring cell types from quantified marker expression data, based on known marker <-> cell type associations. 
-
+{: .text-grey-dk-250}
 {: .fw-200}
 {: .fs-3}
 Last updated on 03-15-2022, check the [GitHub](https://github.com/labsyspharm/naivestates){:target="_blank"} for the most up-to-date documentation.
+
+### Description
+`naivestates` is a label-free, cluster-free tool for inferring cell types from quantified marker expression data, based on known marker <-> cell type associations. 
 
 ### Usage
 Arguments should be provided to MCMICRO with the `--nstates-opts` flag
@@ -79,7 +98,6 @@ Arguments should be provided to MCMICRO with the `--nstates-opts` flag
 Example: `nextflow run labsyspharm/mcmicro --in /my/data --nstates-opts '--log no --plots pdf'`
 
 ### Required arguments
-
 * A list of marker names. You can provide a `markers.csv` defined in an MCMICRO-compatible format (i.e., comma-delimited with marker names listed in the `marker_name` column). 
 * * Marker expression on a per-cell basis, provided in `.csv` format. One of the columns must contain cell IDs. 
 
@@ -136,22 +154,24 @@ docker run --rm -v /path/to/data/folder:/data labsyspharm/naivestates:1.2.0 \
 | `--umap`|disabled| Include this flag to generate UMAP plots.|
 |`--mct <filename>` | |The tool has a basic marker -> cell type (mct) mapping in `typemap.csv`. More sophisticated mct mappings can be defined by creating a `custom-map.csv` file with two columns: `Marker` and `State`. Ensure that `custom map.csv` is in `/path/to/data/folder` and point the tool at it with `--mct` (e.g., `/app/main.R -i /data/myfile.csv --mct /data/custom-map.csv -m aSMA,CD45,panCK`) |
 
+[Back to top](./other.html#other-modules){: .btn .btn-purple} 
+
 ---
 
 ## FastPG
 
-An MCMICRO module that provides a command-line interface for [FastPG](https://github.com/sararselitsky/FastPG), a C++ implementation of the popular Phenograph method.
-
+{: .text-grey-dk-250}
 {: .fw-200}
 {: .fs-3}
 Last updated on 03-15-2022, check the [GitHub](https://github.com/labsyspharm/mcmicro-fastPG#parameter-reference){:target="_blank"} for the most up-to-date documentation.
 
-### Usage
+### Description
+FastPG does "fast phenograph-like clustering of items with scores of features". This module provides a command-line interface for the popular Phenograph method [(FastPG - developed elsewhere)](https://github.com/sararselitsky/FastPG), through a C++ implementation.
 
+### Usage
 Arguments should be provided to MCMICRO with the `--fastpg-opts` flag
 
 ### Required arguments
-
 Input and output paths (provided by Nextflow when operating through the MCMICRO pipeline)
 
 ### Optional arguments
@@ -167,3 +187,5 @@ Input and output paths (provided by Nextflow when operating through the MCMICRO 
 | ``-y CONFIG``| | A yaml config file that states whether the input data should be log/logicl transformed.|
 |``  --force-transform ``| | Log transform the input data. If omitted, and --no-- transform is omitted, log transform is only performed if the max value in the input data is >1000.|
 |`` --no-transform`` | |Do not perform Log transformation on the input data. If omitted, and --force-transform is omitted, log transform is only performed if the max value in the input data is >1000.|
+
+[Back to top](./other.html#other-modules){: .btn .btn-purple} [Back to main modules](./){: .btn .btn-outline} 
