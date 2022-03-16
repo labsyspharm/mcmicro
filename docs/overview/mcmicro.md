@@ -32,16 +32,16 @@ svg {
         }
 </style>
 </defs>
-<a xlink:href="./overview/mcmicro.html#illumination-correction">
+<a xlink:href="../overview/mcmicro.html#illumination-correction">
 <path d="m8 159 1 55h64l-1-55z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
 </a>
-<a xlink:href="./overview/mcmicro.html#stitching-and-registration">
+<a xlink:href="../overview/mcmicro.html#stitching-and-registration">
 <path d="M81 158v52l7 3v17l8 4 40-2 4-7-1-13 7-2-1-51z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
 </a>
-<a xlink:href="./overview/mcmicro.html#tma-core-detection-optional">
+<a xlink:href="../overview/mcmicro.html#tma-core-detection-optional">
 <path d="M115 244v53l66-1-3-55z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
 </a>
-<a xlink:href="./overview/mcmicro.html#mosaic-images-to-single-cell-data">
+<a xlink:href="../overview/mcmicro.html#mosaic-images-to-single-cell-data">
 <path d="m206 159 1 81 4 2-1 20 59 1-1-20 5-7-2-79z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
 </a>
 </svg>
