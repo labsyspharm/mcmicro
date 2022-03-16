@@ -16,6 +16,40 @@ _**This is where MCMICRO comes in.**_
 
 ![Visual overview of the MCMICRO pipeline components: Basic for illumination correction, Ashlar for alignment and stitching, Coreograph for TMA Core detection, UnMicst or S3 segmenter for segmentation, MC Quant for image quantification.]({{ site.baseurl }}/images/pipeline-two-rows-v3.png)
 
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 466 250" inkscape:version="0.92.4 (5da689c313, 2019-01-14)" sodipodi:docname="trial1.svg" style="background-image: url(../images/pipeline-two-rows-v3.png)">
+
+<link rel="stylesheet"
+    href="imgmapstyle.css" type="test/css"/>
+
+<defs>
+<style>
+svg {
+          background-size: 100% 100%;
+          background-repeat: no-repeat;
+          max-width: 1500px;
+          width: 100%
+        }
+        path {
+            fill: transparent;
+        }
+</style>
+</defs>
+<a xlink:href="../overview/mcmicro.html#illumination-correction">
+<path d="m8 159 1 55h64l-1-55z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
+</a>
+<a xlink:href="/overview/mcmicro.html#stitching-and-registration">
+<path d="M81 158v52l7 3v17l8 4 40-2 4-7-1-13 7-2-1-51z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
+</a>
+<a xlink:href="/overview/mcmicro.html#tma-core-detection-optional">
+<path d="M115 244v53l66-1-3-55z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
+</a>
+<a xlink:href="/overview/mcmicro.html#mosaic-images-to-single-cell-data">
+<path d="m206 159 1 81 4 2-1 20 59 1-1-20 5-7-2-79z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
+</a>
+</svg>
+
+
+
 MCMICRO provides a modular pipeline that processes whole slide microscopy data into cohesive images that can be easily visualized and quantified as single cell data.
 
 <br>
