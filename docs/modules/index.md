@@ -77,13 +77,12 @@ svg {
 
 <br>
 
+Standard modules:
 {: .fw-400}
 {: .fs-7}
 {: .text-blue-000}
 
-All modules in MCMICRO are available as standalone executable containers. When running modules within MCMICRO, the inputs and outputs will be handled by the pipeline and do not need to be explicitly specified.
-
-Standard modules:
+All modules in MCMICRO are available as standalone executable Docker containers. When running modules within MCMICRO, the inputs and outputs will be handled by the pipeline and do not need to be specified explicitly.
 
 ## BaSiC
 {: .fw-500}
@@ -98,12 +97,12 @@ The module implements the BaSiC method for correcting uneven illumination, devel
 
 By default, MCMICRO skips this step as it requires manual inspection of the outputs to ensure that illumination correction does not introduce artifacts for downstream processing.  Use `--start-at illumination` to request that MCMICRO runs the module.
 
-Nextflow example: `nextflow run labsyspharm/mcmicro --in /my/data --start-at illumination`
+Nextflow example: `nextflow run labsyspharm/mcmicro --in /my/project --start-at illumination`
 
 Running outside of MCMICRO: [Instructions](https://github.com/labsyspharm/basic-illumination#running-as-a-docker-container){:target="_blank"}.
 
 ### Input
-Unstitched images in any [BioFormats-compatible format](https://docs.openmicroscopy.org/bio-formats/latest/supported-formats.html){:target="_blank"}.
+Unstitched images in any [BioFormats-compatible format](https://docs.openmicroscopy.org/bio-formats/latest/supported-formats.html){:target="_blank"}. Nextflow will take these from the `raw/` subdirectory within the project.
 
 ### Output
 Dark-field and flat-field profiles for each unstitched image. Nextflow will write these to the `illumination/` subdirectory within the project.
@@ -120,26 +119,33 @@ Dark-field and flat-field profiles for each unstitched image. Nextflow will writ
 {: .text-grey-dk-300}
 {: .fw-200}
 {: .fs-3}
-Last updated on 03-15-2022, check the [ASHLAR website](https://labsyspharm.github.io/ashlar){:target="_blank"} for the most up-to-date documentation.
+Last updated on 03-15-2022.
 
-### Input\**
-An ```.ome.tiff``` file of **unstitched** images
+### Description
 
-{: .fs-3}
-\* If operating within the pipeline, this will be fed in by Nextflow after stitching and registration
-
-### Output
-A pyramidal, tiled ```.ome.tif```
+The module performs simultaneous stiching of tiles and registration across channels. Check the [ASHLAR website](https://labsyspharm.github.io/ashlar){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
-Arguments should be provided to MCMICRO with the `--ashlar-opts` flag
 
-### Optional arguments
+MCMICRO runs ASHLAR by default. Use `--ashlar-opts` to provide additional arguments to the module.
+
+Nextflow example: `nextflow run labsyspharm/mcmicro --in /my/project --ashlar-opts '--flip-y -c 5'`
+
+Default `--ashlar-opts` parameters: `'-m 30'`
+
+Running outside of MCMICRO: [Instructions](https://github.com/labsyspharm/ashlar){:target="_blank"}.
+
+### Input
+* Unstitched images in any [BioFormats-compatible format](https://docs.openmicroscopy.org/bio-formats/latest/supported-formats.html){:target="_blank"}. Nextflow will take these from the `raw/` subdirectory within the project.
+* [Optional] Dark-field and flat-field profiles from illumination correction. Nextflow will take these from the `illumination/` subdirectory within the project.
+
+### Output
+A pyramidal, tiled `.ome.tif`. Nextflow will write the output file to `registration/` within the project directory.
+
+### Optional parameters to ASHLAR
 
 |  Name; Shorthand | Description | Default|
 |---|---|---|
-|```--help; -h```| Show this help message and exit| |
-|```--output DIR; -o DIR```|Write image files to DIR|Current directory|
 |```--align-channel CHANNEL; -c CHANNEL```| Align images using channel number CHANNEL | Numbering starts at 0|
 |```--flip-x```|Flip tile positions left-to-right to account for unusual microscope configurations | |
 |```--flip-y```|Flip tile positions top-to-bottom to account for unusual microscope configurations | |
@@ -151,12 +157,8 @@ Arguments should be provided to MCMICRO with the `--ashlar-opts` flag
 |```--filename-format FORMAT; -f FORMAT```|Use FORMAT to generate output filenames, with {cycle} and {channel} as required placeholders for the cycle and channel numbers | default is cycle\_{cycle}\_channel\_{channel}.tif|
 |```--pyramid```|Write output as a single pyramidal TIFF||
 |```--tile-size PIXELS```|Set tile width and height to PIXELS (pyramid output only)|Default is 1024|
-|```--ffp FILE [FILE ...]```|Read flat field profile image from FILES|If specified must be one common file for all cycles or one file for each cycle|
-|```--dfp FILE [FILE ...]```|Read dark field profile image from FILES|If specified must be one common file for all cycles or one file for each cycle|
 |```--plates```|Enable mode for multi-well plates (for high-throughput screening assays)||
 |```--quiet; -q```|Suppress progress display||
-|```--version```|Print version||
-
 
 ### Troubleshooting
 Visit the [ASHLAR website](https://labsyspharm.github.io/ashlar){:target="_blank"} for troubleshooting tips.
