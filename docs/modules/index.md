@@ -134,7 +134,7 @@ The module performs simultaneous stiching of tiles and registration across chann
 MCMICRO runs ASHLAR by default. Use `--ashlar-opts` to provide additional arguments to the module.
 
 * Example: `nextflow run labsyspharm/mcmicro --in /my/project --ashlar-opts '--flip-y -c 5'`
-* Default `--ashlar-opts` parameters: `'-m 30'`
+* Default `--ashlar-opts`: `'-m 30'`
 * Running outside of MCMICRO: [Instructions](https://github.com/labsyspharm/ashlar){:target="_blank"}.
 
 ### Input
@@ -178,10 +178,9 @@ The modules uses the popular UNet deep learning architecture to identify cores w
 
 ### Usage
 
-By default, MCMICRO assumes that the input is a whole-slide image. Use `--tma` to indicate that the input is a TMA instead. Use `--core-opts` to provide module-specific parameters.
+By default, MCMICRO assumes that the input is a whole-slide image. Use `--tma` to indicate that the input is a TMA instead. Use `--core-opts` to provide additional module-specific parameters.
 
 * Example: `nextflow run labsyspharm/mcmicro --in /my/project --tma --core-opts '--channel 3'`
-* Default `--core-opts` parameters: none
 * Running outside of MCMICRO: [Instructions](https://github.com/HMS-IDAC/UNetCoreograph){:target="_blank"}.
 
 ### Input
@@ -232,7 +231,6 @@ UnMICST uses a convolutional neural network to annotate each pixel with the prob
 MCMICRO applies UnMicst to all input images by default. Use `--unmicst-opts` to provide optional parameters to the module.
 
 * Example: `nextflow run labsyspharm/mcmicro --in /my/project --unmicst-opts '--scalingFactor 0.5'`
-* Default `--unmicst-opts` parameters: none
 * Running outside of MCMICRO: [Instructions](https://github.com/HMS-IDAC/UnMicst){:target="_blank"}.
 
 ### Input
@@ -242,6 +240,7 @@ An ``.ome.tif``, preferably flat field corrected. The model is trained on images
 1. a ```.tif``` stack where the different probability maps for each class are concatenated in the Z-axis in the order: nuclei foreground, nuclei contours, and background.
 2. a QC image with the DNA image concatenated with the nuclei contour probability map with suffix *Preview*
 
+{: .fs-3}
 \* Nextflow will write probability maps to the `probability-maps/unmicst/` subfolder and the previews to the `qc/unmicst/` subfolder within the project.
 
 ### Optional arguments to UnMicst
@@ -270,12 +269,18 @@ ___
 {: .text-purple-000}
 *Image segmentation - cell mask generation*
 
-### Input\*
-1.  An ``.ome.tif`` (preferably flat field corrected)
-2.  A 3-class probability map (derived from a deep learning model such as [UnMICST](./unmicst.html) or [Ilastik](./other.html#ilastik))
+### Description
 
-{: .fs-3}
-\* If operating within the pipeline, this will be fed in by Nextflow after stitching and registration
+The modules applies standard watershed segmentation to probability maps to produce the final cell/nucleus/cytoplasm/etc. masks.
+
+### Usage
+By default, MCMICRO applies S3segmenter to the output of all modules that produce probability maps. Additional arguments should be provided to MCMICRO with the `--s3seg-opts` flag.
+
+* Example: ``nextflow run labsyspharm/mcmicro --in /my/data --s3seg-opts '--logSigma 2 10'``
+
+### Inputs
+1.  A fully-stitched and registered ``.ome.tif``, preferably flat field corrected. Nextflow will take these from the `registration/` and `dearray/` subdirectories, as approrpriate.
+2.  A 3-class probability map, as derived by modules such as [UnMICST](./unmicst.html) or [Ilastik](./other.html#ilastik).
 
 [S3segmenter](https://github.com/HMS-IDAC/S3segmenter) assumes that you have:
 1. Acquired images of your sample with optimal acquisition settings.
@@ -291,6 +296,8 @@ ___
   >* `cytoplasm.ome.tif` (cytoplasm) 
   >* `cell.ome.tif` (whole cell)
   >* If only nuclei segmentation was carried out, `cell.ome.tif` is identical to `nuclei.ome.tif`
+
+Nextflow saves these files to the `segmentation/` subfolder within your project.
  
 **2) Two-channel quality control files with outlines overlaid on gray scale image of channel used for segmentation**  
 
@@ -300,13 +307,10 @@ ___
   >* `cellOutlines.tif` (whole cell)
   >* If only nuclei segmentation was carried out, `cellOutlines.tif` is identical to `nucleiOutilnes.tif`
 
+Nextflow saves these files to the `qc/s3seg/` subfolder within your project.
+
 {: .fs-3}
 **NOTE:** There are at least 2 ways to segment cytoplasm: i) using a watershed approach or ii) taking an annulus/ring around nuclei. Files generated using the annulus/ring method will have ‘Ring’ in the filename whereas files generated using watershed segmentation will not. It is important that these two groups of files are NOT combined and analyzed simultaneously as cell IDs will be different between them.
-
-### Usage
-Arguments should be provided to MCMICRO with the `--s3seg-opts` flag
-
-Example: ``nextflow run labsyspharm/mcmicro --in /my/data --s3seg-opts``
 
 ### Optional arguments
 
