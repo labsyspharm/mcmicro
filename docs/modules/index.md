@@ -86,7 +86,7 @@ Core modules:
 {: .fs-7}
 {: .text-blue-000}
 
-Last updated on 03-17-2022.
+Last updated on {{ page.date | date: "%Y-%m-%d" }}.
 
 All modules in MCMICRO are available as standalone executable Docker containers. When running modules within MCMICRO, the inputs and outputs will be handled by the pipeline and do not need to be specified explicitly.
 
@@ -134,7 +134,7 @@ The module performs simultaneous stiching of tiles and registration across chann
 MCMICRO runs ASHLAR by default. Use `--ashlar-opts` to provide additional arguments to the module.
 
 * Example: `nextflow run labsyspharm/mcmicro --in /my/project --ashlar-opts '--flip-y -c 5'`
-* Default `--ashlar-opts`: `'-m 30'`
+* Default: `--ashlar-opts '-m 30'`
 * Running outside of MCMICRO: [Instructions](https://github.com/labsyspharm/ashlar){:target="_blank"}.
 
 ### Input
@@ -144,7 +144,7 @@ MCMICRO runs ASHLAR by default. Use `--ashlar-opts` to provide additional argume
 ### Output
 A pyramidal, tiled `.ome.tif`. Nextflow will write the output file to `registration/` within the project directory.
 
-### Optional parameters to ASHLAR
+### Optional parameters for ASHLAR
 
 |  Name; Shorthand | Description | Default|
 |---|---|---|
@@ -276,7 +276,7 @@ The modules applies standard watershed segmentation to probability maps to produ
 ### Usage
 By default, MCMICRO applies S3segmenter to the output of all modules that produce probability maps. Additional arguments should be provided to MCMICRO with the `--s3seg-opts` flag.
 
-* Example: ``nextflow run labsyspharm/mcmicro --in /my/data --s3seg-opts '--logSigma 2 10'``
+* Example: ``nextflow run labsyspharm/mcmicro --in /my/project --s3seg-opts '--logSigma 2 10'``
 
 ### Inputs
 1.  A fully-stitched and registered ``.ome.tif``, preferably flat field corrected. Nextflow will take these from the `registration/` and `dearray/` subdirectories, as approrpriate.
@@ -312,7 +312,7 @@ Nextflow saves these files to the `qc/s3seg/` subfolder within your project.
 {: .fs-3}
 **NOTE:** There are at least 2 ways to segment cytoplasm: i) using a watershed approach or ii) taking an annulus/ring around nuclei. Files generated using the annulus/ring method will have ‘Ring’ in the filename whereas files generated using watershed segmentation will not. It is important that these two groups of files are NOT combined and analyzed simultaneously as cell IDs will be different between them.
 
-### Optional arguments
+### Optional arguments to S3Segmenter
 
 | Parameter | Default | Description |
 | --- | --- | --- |
@@ -351,12 +351,33 @@ ___
 {: .text-grey-dk-300}
 {: .fw-200}
 {: .fs-3}
-Last updated on 03-15-2022, check the [MCQuant README](https://github.com/labsyspharm/quantification#single-cell-quantification){:target="_blank"} for the most up-to-date documentation.
+
+### Description
+The modules uses one or more segmentation masks against the original image to quantify the expression of every channel on a per-cell basis. Check the [MCQuant README](https://github.com/labsyspharm/quantification#single-cell-quantification){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
-Arguments should be provided to MCMICRO with the `--quant-opts` flag
+By default, MCMICRO runs MCQuant on all cell segmentation masks. Use the `--quant-opts` flag to specify a different mask or to provide additional module-specific arguments to MCMICRO.
 
-Example: `nextflow run labsyspharm/mcmicro --in /my/data --quant-opts '--masks cytoMask.tif nucleiMask.tif'`
+* Example: `nextflow run labsyspharm/mcmicro --in /my/project --quant-opts '--masks cytoMask.tif nucleiMask.tif'`
+* Default: `--quant-opts '--masks cell*.tif'`
+* Running outside of MCMICRO: [Instructions](https://github.com/labsyspharm/quantification){:target="_blank"}.
+
+### Inputs
+
+1. A fully stitched and registered image in `.ome.tif` format. Nextflow will use images in the `registration/` and `dearray/` subfolders as appropriate.
+2. One or more segmentation masks in `.tif` format. Nextflow will use files in the `segmentation/` subfolder within the project.
+3. A `.csv` file containing a `marker_name` column specifying names of individual channels. Nextflow will look for this file in the project directory.
+
+### Output
+
+A cell-by-feature table mapping Cell IDs to marker expression and morphological features (including x,y coordinates).
+
+### Optional parameters for MCQuant
+
+| Parameter | Description |
+| --- | --- |
+| `--mask_props` | Space separated list of additional metrics to be calculated for every mask. This is intended for metrics that depend only on the cell mask. If the metric depends on signal intensity, use `--intensity-props` instead. See list at https://scikit-image.org/docs/dev/api/skimage.measure.html#regionprops. |
+| `--intensity_props` | Space separated list of additional metrics to be calculated for every marker separately. By default only mean intensity is calculated. If the metric doesn't depend on signal intensity, use `--mask-props` instead. See list at https://scikit-image.org/docs/dev/api/skimage.measure.html#regionprops Additionally available is gini_index, which calculates a single number between 0 and 1, representing how unequal the signal is distributed in each region. See https://en.wikipedia.org/wiki/Gini_coefficient. For example, to calculate the median intensity, specify `--intensity_props median_intensity`.
 
 [Back to top](./){: .btn .btn-outline} 
 
