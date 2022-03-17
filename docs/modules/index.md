@@ -80,18 +80,33 @@ svg {
 {: .fw-400}
 {: .fs-7}
 {: .text-blue-000}
-Current modules:
+
+All modules in MCMICRO are available as standalone executable containers. When running modules within MCMICRO, the inputs and outputs will be handled by the pipeline and do not need to be explicitly specified.
+
+Standard modules:
 
 ## BaSiC
 {: .fw-500}
 {: .text-yellow-100}
 *Illumination correction*
 
-* BaSiC generally works well with default parameters.
+### Description
 
-* BaSiC was developed externally by [(Peng et al., 2017)](https://doi.org/10.1038/ncomms14836){:target="_blank"} - we recommend referring to the manuscript for more detailed parameter tuning information. 
+The module implements the BaSiC method for correcting uneven illumination, developed externally by [(Peng et al., 2017)](https://doi.org/10.1038/ncomms14836){:target="_blank"}. The module doesn't have any additional parameters.
 
-* The BaSiC software is found on [GitHub](https://github.com/labsyspharm/basic-illumination){:target="_blank"} with an accompanying [ReadMe](https://github.com/labsyspharm/basic-illumination#running-as-a-docker-container){:target="_blank"}. 
+### Usage
+
+By default, MCMICRO skips this step as it requires manual inspection of the outputs to ensure that illumination correction does not introduce artifacts for downstream processing.  Use `--start-at illumination` to request that MCMICRO runs the module.
+
+Nextflow example: `nextflow run labsyspharm/mcmicro --in /my/data --start-at illumination`
+
+Running outside of MCMICRO: [Instructions](https://github.com/labsyspharm/basic-illumination#running-as-a-docker-container){:target="_blank"}.
+
+### Input
+Unstitched images in any [BioFormats-compatible format](https://docs.openmicroscopy.org/bio-formats/latest/supported-formats.html){:target="_blank"}.
+
+### Output
+Dark-field and flat-field profiles for each unstitched image. Nextflow will write these to the `illumination/` subdirectory within the project.
 
 [Back to top](./){: .btn .btn-outline} 
 
