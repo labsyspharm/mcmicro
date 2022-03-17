@@ -23,57 +23,61 @@ svg {
 </style>
 </defs>
 
-<a xlink:href="../modules/#basic">
+<a xlink:href="./#basic">
 <title>BaSic</title>
 <path d="M1 161h63l-1 52-63 1Z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="../modules/#ashlar">
+<a xlink:href="./#ashlar">
 <title>ASHLAR</title>
 <path d="m73 160 65 1-2 50H73z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="../modules/#coreograph">
+<a xlink:href="./#coreograph">
 <title>Coreograph</title>
 <path d="M107 245h63v52h-62z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="../modules/#unmicst">
+<a xlink:href="./#unmicst">
 <title>UNMICST</title>
 <path d="m198 161 64-1v46l-64-2z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="../modules/#s3segmenter">
+<a xlink:href="./#s3segmenter">
 <title>S3Segmenter</title>
 <path d="m200 206 63 1-1 32-63-3z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="../modules/#mcquant">
+<a xlink:href="./#mcquant">
 <title>MCQuant</title>
 <path d="M271 160h63l1 52h-63z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="../modules/#cylinter">
+<a xlink:href="./#cylinter">
 <title>CyLinter</title>
 <path d="m271 245 62-1 2 52-63-1z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="../modules/#scimap">
+<a xlink:href="./#scimap">
 <title>SCIMAP</title>
 <path d="m344 159 42 1v56l-41-1z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="../modules/#minerva">
+<a xlink:href="./#minerva">
 <title>Minerva</title>
 <path d="M396 160h42l-1 57-41-1z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="../modules/#other-modules">
+<a xlink:href="./#other-modules">
 <title>Other Modules</title>
 <path d="m394 242 44 1 1 54h-46z"  inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
 </svg>
+
+{: .text-center}
+{: .fw-200}
+*Click on the different modules to learn more.*
 
 <br>
 
