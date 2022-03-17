@@ -77,7 +77,7 @@ svg {
 
 <br>
 
-Standard modules:
+Core modules:
 {: .fw-400}
 {: .fs-7}
 {: .text-blue-000}
@@ -170,26 +170,36 @@ Visit the [ASHLAR website](https://labsyspharm.github.io/ashlar){:target="_blank
 ## Coreograph
 {: .fw-500}
 {: .text-red-300}
-*TMA core detection*
+*TMA core detection and dearraying*
 
-### Input\*
-A fluorescence image of a tissue microarray where at least one channel is of DNA (such as Hoechst or DAPI).
+### Description
+The modules uses the popular UNet deep learning architecture to identify cores within a tissue microarray (TMA). After identifying the cores, it extracts each one into a separate image to enable parallel downstream processing of all cores.
 
-{: .fs-3}
-\* If operating within the pipeline, this will be fed in by Nextflow after stitching and registration
+### Usage
 
-### Output
+By default, MCMICRO assumes that the input is a whole-slide image. Use `--tma` to indicate that the input is a TMA instead. Use `--core-opts` to provide module-specific parameters.
+
+Nextflow example: `nextflow run labsyspharm/mcmicro --in /my/project --tma --core-opts '--channel 3'`
+
+Default `--core-opts` parameters: none
+
+Running outside of MCMICRO: [Instructions](https://github.com/HMS-IDAC/UNetCoreograph){:target="_blank"}.
+
+### Input
+A fluorescence image of a tissue microarray where at least one channel is of DNA (such as Hoechst or DAPI). Nextflow will take this from the `registration/` subfolder within the project.
+
+### Output\**
+
 1. Individual cores as `.tif` stacks with user-selectable channel ranges
 2. Binary tissue masks (saved in the 'mask' subfolder)
 3. A TMA map showing the labels and outlines of each core for quality control purposes<br>
 4. A text file listing the centroids of each core in the format: Y, X
 
+* Nextflow will write images and masks to the `dearray/` subfolder and the TMA map to the `qc/coreo/` subfolder within the project.
+
 ![map]({{ site.baseurl }}/images/coreograph1.png)<br>
 
-### Usage
-Arguments should be provided to MCMICRO with the `--core-opts` flag
-
-### Optional arguments
+### Optional arguments to Coreograph
 
 | Parameter | Default | Description |
 | --- | --- | --- |
