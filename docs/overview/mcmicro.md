@@ -14,7 +14,73 @@ Multiplexed imaging results in a potentially unwieldy volume of data. Whole-slid
 {: .fs-5}
 _**This is where MCMICRO comes in.**_ 
 
-![Visual overview of the MCMICRO pipeline components: Basic for illumination correction, Ashlar for alignment and stitching, Coreograph for TMA Core detection, UnMicst or S3 segmenter for segmentation, MC Quant for image quantification.]({{ site.baseurl }}/images/pipeline-two-rows-v3.png)
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 466 250" inkscape:version="0.92.4 (5da689c313, 2019-01-14)" sodipodi:docname="imgmap_overview.svg" style="background-image: url(../images/pipeline-two-rows-v3.png)">
+
+<defs>
+<style>
+svg {
+          background-size: 100% 100%;
+          background-repeat: no-repeat;
+          max-width: 1500px;
+          width: 100%
+        }
+        path {
+            fill: transparent;
+        }
+</style>
+</defs>
+
+<a xlink:href="../overview/mcmicro.html#image-tiles-to-whole-slide-mosaic-images">
+<title>BaSiC</title>
+<path d="M10 160h63v53H9Z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
+</a>
+
+<a xlink:href="../overview/mcmicro.html#image-tiles-to-whole-slide-mosaic-images">
+<title>Coreograph</title>
+<path d="M116 244v53l65-1-2-54z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
+</a>
+
+<a xlink:href="../overview/mcmicro.html#mosaic-images-to-single-cell-data">
+<title>UnMICST</title>
+<path d="m208 159 64 1-1 44h-64z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
+</a>
+
+<a xlink:href="../overview/mcmicro.html#segmentation">
+<title>S3Segmenter</title>
+<path d="m208 205 63 1v31l-64 1z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
+</a>
+
+<a xlink:href="../overview/mcmicro.html#image-tiles-to-whole-slide-mosaic-images">
+<title>ASHLAR</title>
+<path d="m82 160 63 1v47H82Z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
+</a>
+
+<a xlink:href="../overview/mcmicro.html#quantification">
+<title>MCQuant</title>
+<path d="m282 160 61 1v49l-62-1z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
+</a>
+
+<a xlink:href="../overview/mcmicro.html#quality-control">
+<title>CyLinter</title>
+<path d="M281 244h62v52h-61z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
+</a>
+
+<a xlink:href="../overview/mcmicro.html#analysis">
+<title>SCIMAP</title>
+<path d="m354 159 41 1v54h-41z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
+</a>
+
+<a xlink:href="../overview/mcmicro.html#visualization">
+<title>MINERVA</title>
+<path d="M405 160h42l-1 56-41-1z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
+</a>
+
+<a xlink:href="../overview/mcmicro.html#visualization">
+<title>Other Modules</title>
+<path d="m401 234 46 1-1 48-2 7-42-1z"  inkscape:connector-curvature="0" transform="translate(0 -47)"/>
+</a>
+
+</svg>
 
 MCMICRO provides a modular pipeline that processes whole slide microscopy data into cohesive images that can be easily visualized and quantified as single cell data.
 
@@ -30,69 +96,6 @@ Walk through the process of turning image tiles into single-cell segmented mosai
 {: .fw-500}
 {: .text-grey-dk-100}
 ## The MCMICRO modules:
-<div class="row">
-	
-<div class="col-xs-3 col-sm-2">
-<div markdown="1">
-[![illumination correction "basic"](../images/modules/basic.png)](./mcmicro.html#image-tiles-to-whole-slide-mosaic-images)
-</div>
-</div>
-
-<div class="col-xs-3 col-sm-2">
-<div markdown="1">
-[![stitching - ashlar](../images/modules/ashlar.png)](./mcmicro.html#image-tiles-to-whole-slide-mosaic-images)
-</div>
-</div>
-
-<div class="col-xs-3 col-sm-2">
-<div markdown="1">
-[![TMA core detection - coreograph](../images/modules/coreo.png)](./mcmicro.html#image-tiles-to-whole-slide-mosaic-images)
-</div>
-</div>
-
-<div class="col-xs-3 col-sm-2">
-<div markdown="1">
-[![segmentation - un-micst](../images/modules/unmicst.png)](./mcmicro.html#mosaic-images-to-single-cell-data)
-</div>
-</div>
-	
-<div class="col-xs-3 col-sm-2">
-<div markdown="1">
-[![segmentation - s3segmenter](../images/modules/s3seg.png)](./mcmicro.html#segmentation)
-</div>
-</div>
-	
-<div class="col-xs-3 col-sm-2">
-<div markdown="1">
-[![quantification - MC Quant](../images/modules/mcquant.png)](./mcmicro.html#quantification)
-</div>
-</div>
-	
-<div class="col-xs-3 col-sm-2">
-<div markdown="1">
-[![quality control - cylinter](../images/modules/cylinter.png)](./mcmicro.html#quality-control)
-</div>
-</div>
-	
-<div class="col-xs-3 col-sm-2">
-<div markdown="1">
-[![analysis- sci map](../images/modules/SCIMAP.png)](./mcmicro.html#analysis)
-</div>
-</div>
-
-<div class="col-xs-3 col-sm-2">
-<div markdown="1">
-[![visualization - minerva](../images/modules/minerva.png)](./mcmicro.html#visualization)
-</div>
-</div>
-
-<div class="col-xs-3 col-sm-2">
-<div markdown="1">
-[![Additional modules in progress!](../images//modules/others.png)](./mcmicro.html#visualization)
-</div>
-</div>
-	
-</div><!-- end grid -->
 
 {: .text-purple-300}
 {: .fw-500}

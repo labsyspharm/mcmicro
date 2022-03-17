@@ -7,7 +7,73 @@ has_children: true
 {: .text-center }
 # The MCMICRO pipeline
 
-![Schematic of the mcmicro pipeline. Level 1 image data is illumination corrected with basic, stitched and registered with ASHLAR, TMA cores can be isolated with Coreograph, then single cells can be segmented with UnMICST and S3segmenter, quantified with MCQuant, checked for quality control with CyLinter, analyzed with SciMap, and visualized with the Minerva Suite]({{ site.baseurl }}/images/pipeline-no-microscope-white.png)
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 439 166" inkscape:version="0.92.4 (5da689c313, 2019-01-14)" sodipodi:docname="imgmap_modules.svg" style="background-image: url(../images/pipeline-no-microscope.png)">
+
+<defs>
+<style>
+svg {
+          background-size: 100% 100%;
+          background-repeat: no-repeat;
+          max-width: 1500px;
+          width: 100%
+        }
+        path {
+            fill: transparent;
+        }
+</style>
+</defs>
+
+<a xlink:href="../modules/#basic">
+<title>BaSic</title>
+<path d="M1 161h63l-1 52-63 1Z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
+</a>
+
+<a xlink:href="../modules/#ashlar">
+<title>ASHLAR</title>
+<path d="m73 160 65 1-2 50H73z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
+</a>
+
+<a xlink:href="../modules/#coreograph">
+<title>Coreograph</title>
+<path d="M107 245h63v52h-62z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
+</a>
+
+<a xlink:href="../modules/#unmicst">
+<title>UNMICST</title>
+<path d="m198 161 64-1v46l-64-2z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
+</a>
+
+<a xlink:href="../modules/#s3segmenter">
+<title>S3Segmenter</title>
+<path d="m200 206 63 1-1 32-63-3z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
+</a>
+
+<a xlink:href="../modules/#mcquant">
+<title>MCQuant</title>
+<path d="M271 160h63l1 52h-63z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
+</a>
+
+<a xlink:href="../modules/#cylinter">
+<title>CyLinter</title>
+<path d="m271 245 62-1 2 52-63-1z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
+</a>
+
+<a xlink:href="../modules/#scimap">
+<title>SCIMAP</title>
+<path d="m344 159 42 1v56l-41-1z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
+</a>
+
+<a xlink:href="../modules/#minerva">
+<title>Minerva</title>
+<path d="M396 160h42l-1 57-41-1z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
+</a>
+
+<a xlink:href="../modules/#other-modules">
+<title>Other Modules</title>
+<path d="m394 242 44 1 1 54h-46z"  inkscape:connector-curvature="0" transform="translate(0 -131)"/>
+</a>
+
+</svg>
 
 <br>
 
@@ -15,76 +81,6 @@ has_children: true
 {: .fs-7}
 {: .text-blue-000}
 Current modules:
-
-{: .fw-300}
-{: .fs-4}
-{: .text-grey-dk-250}
- *Click image to learn more:*
-<div class="row">
-	
-<div class="col-xs-3 col-sm-2">
-<div markdown="1">
-[![illumination correction "basic"](../images/modules/basic.png)](./#basic)
-</div>
-</div>
-
-<div class="col-xs-3 col-sm-2">
-<div markdown="1">
-[![stitching - ashlar](../images/modules/ashlar.png)](./#ashlar)
-</div>
-</div>
-
-<div class="col-xs-3 col-sm-2">
-<div markdown="1">
-[![TMA core detection - coreograph](../images/modules/coreo.png)](./#coreograph)
-</div>
-</div>
-
-<div class="col-xs-3 col-sm-2">
-<div markdown="1">
-[![segmentation - un-micst](../images/modules/unmicst.png)](./#unmicst)
-</div>
-</div>
-	
-<div class="col-xs-3 col-sm-2">
-<div markdown="1">
-[![segmentation - s3segmenter](../images/modules/s3seg.png)](./#s3segmenter)
-</div>
-</div>
-	
-<div class="col-xs-3 col-sm-2">
-<div markdown="1">
-[![quantification - MC Quant](../images/modules/mcquant.png)](./#mcquant)
-</div>
-</div>
-	
-<div class="col-xs-3 col-sm-2">
-<div markdown="1">
-[![quality control - cylinter](../images/modules/cylinter.png)](./#cylinter)
-</div>
-</div>
-	
-<div class="col-xs-3 col-sm-2">
-<div markdown="1">
-[![analysis- sci map](../images/modules/SCIMAP.png)](./#scimap)
-</div>
-</div>
-	
-<div class="col-xs-3 col-sm-2">
-<div markdown="1">
-[![visualization - minerva](../images/modules/minerva.png)](./#minerva)
-</div>
-</div>
-
-<div class="col-xs-3 col-sm-2">
-<div markdown="1">
-[![Additional modules in progress!](../images//modules/others.png)](./#other-modules)
-</div>
-</div>
-	
-</div><!-- end grid -->
-
----
 
 ## BaSiC
 {: .fw-500}
