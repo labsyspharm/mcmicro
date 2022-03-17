@@ -81,21 +81,36 @@ svg {
 
 <br>
 
+Core modules:
 {: .fw-400}
 {: .fs-7}
 {: .text-blue-000}
-Current modules:
+
+Last updated on 03-17-2022.
+
+All modules in MCMICRO are available as standalone executable Docker containers. When running modules within MCMICRO, the inputs and outputs will be handled by the pipeline and do not need to be specified explicitly.
 
 ## BaSiC
 {: .fw-500}
 {: .text-yellow-100}
 *Illumination correction*
 
-* BaSiC generally works well with default parameters.
+### Description
 
-* BaSiC was developed externally by [(Peng et al., 2017)](https://doi.org/10.1038/ncomms14836){:target="_blank"} - we recommend referring to the manuscript for more detailed parameter tuning information. 
+The module implements the BaSiC method for correcting uneven illumination, developed externally by [(Peng et al., 2017)](https://doi.org/10.1038/ncomms14836){:target="_blank"}. The module doesn't have any additional parameters.
 
-* The BaSiC software is found on [GitHub](https://github.com/labsyspharm/basic-illumination){:target="_blank"} with an accompanying [ReadMe](https://github.com/labsyspharm/basic-illumination#running-as-a-docker-container){:target="_blank"}. 
+### Usage
+
+By default, MCMICRO skips this step as it requires manual inspection of the outputs to ensure that illumination correction does not introduce artifacts for downstream processing.  Use `--start-at illumination` to request that MCMICRO runs the module.
+
+* Example: `nextflow run labsyspharm/mcmicro --in /my/project --start-at illumination`
+* Running outside of MCMICRO: [Instructions](https://github.com/labsyspharm/basic-illumination#running-as-a-docker-container){:target="_blank"}.
+
+### Input
+Unstitched images in any [BioFormats-compatible format](https://docs.openmicroscopy.org/bio-formats/latest/supported-formats.html){:target="_blank"}. Nextflow will take these from the `raw/` subdirectory within the project.
+
+### Output
+Dark-field and flat-field profiles for each unstitched image. Nextflow will write these to the `illumination/` subdirectory within the project.
 
 [Back to top](./){: .btn .btn-outline} 
 
@@ -109,26 +124,30 @@ Current modules:
 {: .text-grey-dk-300}
 {: .fw-200}
 {: .fs-3}
-Last updated on 03-15-2022, check the [ASHLAR website](https://labsyspharm.github.io/ashlar){:target="_blank"} for the most up-to-date documentation.
 
-### Input\**
-An ```.ome.tiff``` file of **unstitched** images
+### Description
 
-{: .fs-3}
-\* If operating within the pipeline, this will be fed in by Nextflow after stitching and registration
-
-### Output
-A pyramidal, tiled ```.ome.tif```
+The module performs simultaneous stiching of tiles and registration across channels. Check the [ASHLAR website](https://labsyspharm.github.io/ashlar){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
-Arguments should be provided to MCMICRO with the `--ashlar-opts` flag
 
-### Optional arguments
+MCMICRO runs ASHLAR by default. Use `--ashlar-opts` to provide additional arguments to the module.
+
+* Example: `nextflow run labsyspharm/mcmicro --in /my/project --ashlar-opts '--flip-y -c 5'`
+* Default `--ashlar-opts` parameters: `'-m 30'`
+* Running outside of MCMICRO: [Instructions](https://github.com/labsyspharm/ashlar){:target="_blank"}.
+
+### Input
+* Unstitched images in any [BioFormats-compatible format](https://docs.openmicroscopy.org/bio-formats/latest/supported-formats.html){:target="_blank"}. Nextflow will take these from the `raw/` subdirectory within the project.
+* [Optional] Dark-field and flat-field profiles from illumination correction. Nextflow will take these from the `illumination/` subdirectory within the project.
+
+### Output
+A pyramidal, tiled `.ome.tif`. Nextflow will write the output file to `registration/` within the project directory.
+
+### Optional parameters to ASHLAR
 
 |  Name; Shorthand | Description | Default|
 |---|---|---|
-|```--help; -h```| Show this help message and exit| |
-|```--output DIR; -o DIR```|Write image files to DIR|Current directory|
 |```--align-channel CHANNEL; -c CHANNEL```| Align images using channel number CHANNEL | Numbering starts at 0|
 |```--flip-x```|Flip tile positions left-to-right to account for unusual microscope configurations | |
 |```--flip-y```|Flip tile positions top-to-bottom to account for unusual microscope configurations | |
@@ -140,12 +159,7 @@ Arguments should be provided to MCMICRO with the `--ashlar-opts` flag
 |```--filename-format FORMAT; -f FORMAT```|Use FORMAT to generate output filenames, with {cycle} and {channel} as required placeholders for the cycle and channel numbers | default is cycle\_{cycle}\_channel\_{channel}.tif|
 |```--pyramid```|Write output as a single pyramidal TIFF||
 |```--tile-size PIXELS```|Set tile width and height to PIXELS (pyramid output only)|Default is 1024|
-|```--ffp FILE [FILE ...]```|Read flat field profile image from FILES|If specified must be one common file for all cycles or one file for each cycle|
-|```--dfp FILE [FILE ...]```|Read dark field profile image from FILES|If specified must be one common file for all cycles or one file for each cycle|
 |```--plates```|Enable mode for multi-well plates (for high-throughput screening assays)||
-|```--quiet; -q```|Suppress progress display||
-|```--version```|Print version||
-
 
 ### Troubleshooting
 Visit the [ASHLAR website](https://labsyspharm.github.io/ashlar){:target="_blank"} for troubleshooting tips.
@@ -157,26 +171,35 @@ Visit the [ASHLAR website](https://labsyspharm.github.io/ashlar){:target="_blank
 ## Coreograph
 {: .fw-500}
 {: .text-red-300}
-*TMA core detection*
+*TMA core detection and dearraying*
 
-### Input\*
-A fluorescence image of a tissue microarray where at least one channel is of DNA (such as Hoechst or DAPI).
+### Description
+The modules uses the popular UNet deep learning architecture to identify cores within a tissue microarray (TMA). After identifying the cores, it extracts each one into a separate image to enable parallel downstream processing of all cores.
 
-{: .fs-3}
-\* If operating within the pipeline, this will be fed in by Nextflow after stitching and registration
+### Usage
 
-### Output
+By default, MCMICRO assumes that the input is a whole-slide image. Use `--tma` to indicate that the input is a TMA instead. Use `--core-opts` to provide module-specific parameters.
+
+* Example: `nextflow run labsyspharm/mcmicro --in /my/project --tma --core-opts '--channel 3'`
+* Default `--core-opts` parameters: none
+* Running outside of MCMICRO: [Instructions](https://github.com/HMS-IDAC/UNetCoreograph){:target="_blank"}.
+
+### Input
+A fluorescence image of a tissue microarray where at least one channel is of DNA (such as Hoechst or DAPI). Nextflow will take this from the `registration/` subfolder within the project.
+
+### Output\*
+
 1. Individual cores as `.tif` stacks with user-selectable channel ranges
 2. Binary tissue masks (saved in the 'mask' subfolder)
 3. A TMA map showing the labels and outlines of each core for quality control purposes<br>
 4. A text file listing the centroids of each core in the format: Y, X
 
+{: .fs-3}
+\* Nextflow will write images and masks to the `dearray/` subfolder and the TMA map to the `qc/coreo/` subfolder within the project.
+
 ![map]({{ site.baseurl }}/images/coreograph1.png)<br>
 
-### Usage
-Arguments should be provided to MCMICRO with the `--core-opts` flag
-
-### Optional arguments
+### Optional arguments to Coreograph
 
 | Parameter | Default | Description |
 | --- | --- | --- |
@@ -200,22 +223,28 @@ A troubleshooting guide can be found within [Coreograph parameter tuning](./core
 {: .text-grey-dk-300}
 {: .fw-200}
 {: .fs-3}
-Last updated on 03-15-2022, check the [UnMICST website](https://labsyspharm.github.io/UnMICST-info/){:target="_blank"} for the most up-to-date documentation.
 
-### Input\*
-1.  An ``.ome.tif`` (preferably flat field corrected - The model is trained on images acquired at a pixelsize of 0.65 microns/px. If your settings differ, you can upsample/downsample to some extent.)
+### Description
 
-{: .fs-3}
-\* If operating within the pipeline, this will be fed in by Nextflow after stitching and registration
+UnMICST uses a convolutional neural network to annotate each pixel with the probability that it belongs to a given subcellular component (nucleus, cytoplasm, cell boundary). Check the [UnMICST website](https://labsyspharm.github.io/UnMICST-info/){:target="_blank"} for the most up-to-date documentation.
 
-### Output
+### Usage
+MCMICRO applies UnMicst to all input images by default. Use `--unmicst-opts` to provide optional parameters to the module.
+
+* Example: `nextflow run labsyspharm/mcmicro --in /my/project --unmicst-opts '--scalingFactor 0.5'`
+* Default `--unmicst-opts` parameters: none
+* Running outside of MCMICRO: [Instructions](https://github.com/HMS-IDAC/UnMicst){:target="_blank"}.
+
+### Input
+An ``.ome.tif``, preferably flat field corrected. The model is trained on images acquired at a pixelsize of 0.65 microns/px. If your settings differ, you can upsample/downsample to some extent. Nextflow will use as input files from the `registration/` subdirectory for whole-slide images and from the `dearray/` subdirectory for tissue microarrays.
+
+### Output \*
 1. a ```.tif``` stack where the different probability maps for each class are concatenated in the Z-axis in the order: nuclei foreground, nuclei contours, and background.
 2. a QC image with the DNA image concatenated with the nuclei contour probability map with suffix *Preview*
 
-### Usage
-Arguments should be provided to MCMICRO with the `--unmicst-opts` flag
+\* Nextflow will write probability maps to the `probability-maps/unmicst/` subfolder and the previews to the `qc/unmicst/` subfolder within the project.
 
-### Optional arguments
+### Optional arguments to UnMicst
 
 | Parameter | Default | Description |
 | --- | --- | --- |
