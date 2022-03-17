@@ -2,8 +2,9 @@
 layout: default
 title: Directory Structure
 nav_order: 28
-has_children: true
+has_children: false
 parent: Pipeline documentation
+nav_exclude: true
 ---
 
 # Directory structure

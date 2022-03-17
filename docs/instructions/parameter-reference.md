@@ -3,6 +3,7 @@ layout: default
 title: Parameter reference
 nav_order: 26
 parent: Pipeline documentation
+nav_exclude: true
 ---
 
 # Parameter reference

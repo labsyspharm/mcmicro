@@ -32,3 +32,14 @@ Install [Docker](https://docs.docker.com/install/). Ensure that the Docker engin
 {: .fs-3 }
 {: .fw-300 }
 \* *Harvard Medical School users using the O2 Compute Cluster should not install Docker - learn more [here](./advanced-topics/run-O2.html).*	
+
+<br>
+
+Ready to run??
+{: .fw-500}
+{: .fs-7}
+{: .text-grey-dk-250}
+
+Beginners, start with the [tutorial]({{site.baseurl}}/tutorial/tutorial.html){: .btn .btn-outline .btn-arrow }
+
+Experienced users can go to the [Nextflow Reference Sheet](./){: .btn .btn-outline .btn-arrow }

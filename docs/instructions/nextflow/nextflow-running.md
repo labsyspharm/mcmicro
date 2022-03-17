@@ -3,6 +3,7 @@ layout: default
 title: Running MCMICRO
 nav_order: 20
 parent: Nextflow workflow
+nav_exclude: true
 ---
 
 # Running mcmicro

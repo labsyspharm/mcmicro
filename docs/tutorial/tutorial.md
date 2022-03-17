@@ -8,7 +8,13 @@ has_children: true
 
 # MCMICRO tutorial
 
-**Here we show an example of how to execute MCMICRO on two exemplar datasets:**
+**Here we show an example of how to execute MCMICRO on two exemplar datasets using the command line (Nextflow) interface:**
+
+<br>
+
+ **Step 0:** Be sure to [install](../instructions/nextflow/installation.html) MCMICRO before proceeding through these steps.
+ 
+Enter the commands `nextflow run hello` and `docker images` to verify that both Nexflow and Docker are functional.
 
 <br>
 
@@ -38,6 +44,8 @@ nextflow run labsyspharm/mcmicro --in path/to/exemplar-001
 # Use --tma to dearray a tissue microarray and process each core in parallel
 nextflow run labsyspharm/mcmicro --in path/to/exemplar-002 --tma
 ```
+**Note:** On an average workstation, it takes approximately 5-10 minutes to process exemplar-001 from start to finish. Exemplar-002 is substantially larger, and takes 30-40 minutes on an average workstation.
+
 
 {: .fs-3}
 {: .fw-200}
