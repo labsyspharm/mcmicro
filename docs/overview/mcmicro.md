@@ -6,7 +6,7 @@ parent: Overview
 has_children: true
 ---
 
-# Phase 3: Processing and analyzing images with MCMICRO
+# Processing and analyzing images with MCMICRO
 
 Multiplexed imaging results in a potentially unwieldy volume of data. Whole-slide sample areas are large, so slides are imaged by dividing the specimen into a grid of tiles – between 10<sup>2</sup> to 10<sup>3</sup> tiles per slide - where each tile is a multidimensional TIFF. When combined with multiplexed imaging methods, this results in biologically rich image sets that encompass many sample positions and many proteins. The resulting data set is massive – up to 50,000 x 50,000 pixels x 100 channels per tile or ~500 GB of data per slide – too large to be handled with conventional image processing methods. 
 
