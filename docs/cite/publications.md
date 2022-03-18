@@ -17,6 +17,8 @@ The [Laboratory of Systems Pharmacology (LSP)](https://labsyspharm.org/){:target
 
 * Muhlich, J., Chen, Y.-A., Russell, D., & Sorger, P. K. (2021). Stitching and registering highly multiplexed whole slide images of tissues and tumors using ASHLAR software. _BioRxiv_. [https://doi.org/10.1101/2021.04.20.440625](https://doi.org/10.1101/2021.04.20.440625){:target="_blank"}
 
+* Nirmal, A. J., Maliga, Z., Vallius, T., Quattrochi, B., Chen, A. A., Jacobson, C. A., Pelletier, R. J., Yapp, C., Arias-Camison, R., Chen, Y.-A., Lian, C. G., Murphy, G. F., Santagata, S., & Sorger, P. K. (2021). The spatial landscape of progression and immunoediting in primary melanoma at single cell resolution. _BioRxiv_. [https://doi.org/10.1101/2021.05.23.445310](https://doi.org/10.1101/2021.05.23.445310){:target="_blank"}
+
 * Rashid, R., Chen, Y.-A., Hoffer, J., Muhlich, J. L., Lin, J.-R., Krueger, R., Pfister, H., Mitchell, R., Santagata, S., & Sorger, P. K. (2021). Narrative online guides for the interpretation of digital-pathology images and tissue-atlas data. _Nature Biomedical Engineering_. [https://doi.org/10.1038/s41551-021-00789-8](https://doi.org/10.1038/s41551-021-00789-8){:target="_blank"}
 
 * Schapiro, D., Sokolov, A., Yapp, C., Chen, Y.-A., Muhlich, J. L., Hess, J., Creason, A. L., Nirmal, A. J., Baker, G. J., Nariya, M. K., Lin, J.-R., Maliga, Z., Jacobson, C. A., Hodgman, M. W., Ruokonen, J., Farhi, S. L., Abbondanza, D., McKinley, E. T., Persson, D., … Sorger, P. K. (2021). MCMICRO: A scalable, modular image-processing pipeline for multiplexed tissue imaging. _Nature Methods_. [https://doi.org/10.1038/s41592-021-01308-y](https://doi.org/10.1038/s41592-021-01308-y){:target="_blank"}
