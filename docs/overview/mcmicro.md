@@ -110,6 +110,12 @@ Walk through the process of turning image tiles into single-cell segmented mosai
 ## Image tiles to whole-slide mosaic images
 Before performing analysis, the image tiles must be combined into a single mosaic image where all tiles and channels can be viewed simultaneously. We do this with i) illumination correction through BaSIC, ii) alignment and stitching by ASHLAR, and iii) image quality control using human-in-the-loop methods.
 
+{: .text-center }
+{: .fs-3 }
+{: .fw-300 }
+![Visualization of illumination correction and stitching into a mosaic image]({{ site.baseurl }}/images/stitching-art.png)
+From raw image (left) to illumination corrected tiles using BaSiC (center left) to a stitched mosaic image with ASHLAR (right). <sub>Credit: C. Yapp</sub>
+
 {: .fs-6}
 {: .text-purple-300}
 ### Illumination Correction  
@@ -129,7 +135,13 @@ The tiles must then be combined into a seamlessly aligned mosaic image in a proc
 ### TMA core detection (optional) 
 
 **Coreograph**  
-[Coreograph]({{ site.baseurl }}/modules/coreograph.html) uses a deep learning model UNet [(Ronneberger et al., 2015)](https://arxiv.org/abs/1505.04597){:target="_blank"} to identify complete/incomplete tissue cores on a tissue microarray. Coreograph exports these tissue core images individually for faster downstream image processing [(Schapiro et al., 2021)](https://doi.org/10.1038/s41592-021-01308-y){:target="_blank"}. 
+[Coreograph]({{ site.baseurl }}/modules/coreograph.html) identifies complete/incomplete tissue cores on a tissue microarray and exports these individual tissue core images for faster downstream image processing [(Schapiro et al., 2021)](https://doi.org/10.1038/s41592-021-01308-y){:target="_blank"}. Coreograph uses a deep learning model, UNet [(Ronneberger et al., 2015)](https://arxiv.org/abs/1505.04597){:target="_blank"}.
+
+{: .text-center }
+{: .fs-3 }
+{: .fw-300 }
+![TMA array showing TMA cores and their corresponding masks]({{ site.baseurl }}/images/coreograph-crop.png)
+A TMA array showing tissue cores (center) that have been processed with Coreograph to generate individual core masks (green outlines, left and right). <sub>Credit: C. Yapp</sub>
 
 ---
 
@@ -148,7 +160,7 @@ Image processing is necessary to extract quantitative data from images. Although
 {: .fs-3 }
 {: .fw-300 }
 ![Visualization of raw image of cells being segmented into single cells from left to right]({{ site.baseurl }}/images/Segmentation_crop2.png)
-Segmentation - from raw image (left) to single cells (right)
+Segmentation - from raw image (left) to preprocessing using UnMICST (center) to single cells (right). <sub>Credit: C. Yapp</sub>
 
 **UnMICST**  
 UnMICST is one example of a semantic segmentation method that  generates pixel-level probability maps. These probability maps use pixel intensity to indicate how confidently that pixel has been classified as either the nucleus or background of the image [(Yapp et al., 2021)](https://doi.org/10.1101/2021.04.02.438285){:target="_blank"}. Visit the [UnMICST website](https://labsyspharm.github.io/UnMICST-info/){:target="_blank"} to learn more!
@@ -190,7 +202,14 @@ Scimap is a scalable toolkit for analyzing spatial molecular data. SCIMAP takes 
 Minerva is a suite of software tools that enables interactive viewing and sharing of large image data ([Rashid et al., 2021](https://doi.org/10.1038/s41551-021-00789-8){:target="_blank"}; [Hoffer et al., 2020](https://doi.org/10.21105/joss.02579){:target="_blank"}). Currently, we have released **Minerva Author**, a tool that lets you easily create and annotate images, and **Minerva Story**, a narrative image viewer for web hosting. Additional tools are in active development - go to the [Minerva wiki](https://github.com/labsyspharm/minerva-story/wiki){:target="_blank"} for the most up-to-date information about the Minerva suite. 
 
 {: .text-center }
-**\*\*Missing something?? --  [Suggest a module](./modules/#suggest-a-module) for us to develop in the future!\*\***
+{: .fs-3 }
+{: .fw-300 }
+![Screenshot from Minerva story on lung cancer]({{ site.baseurl }}/images/minerva-examp.png)
+A screenshot from a Minerva story on primary lung cancer - view the story [here](https://www.cycif.org/data/du-lin-rashid-nat-protoc-2019/osd-LUNG_3#s=1#w=3#g=0#m=0_3_2_1#a=-100_-100#v=0.5_0.5_0.5#o=-100_-100_1_1#p=Q){:target="_blank"} .
+
+{: .text-center }
+{: .fs-6}
+\*\*Missing something?? --  [Suggest a module]({{site.baseurl}}/modules/#suggest-a-module) for us to develop in the future!\*\*
 
 {: .fs-9 }
 {: .fw-500}
