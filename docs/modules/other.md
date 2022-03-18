@@ -166,7 +166,7 @@ docker run --rm -v /path/to/data/folder:/data labsyspharm/naivestates:1.2.0 \
 Last updated on 03-15-2022, check the [GitHub](https://github.com/labsyspharm/mcmicro-fastPG#parameter-reference){:target="_blank"} for the most up-to-date documentation.
 
 ### Description
-FastPG does "fast phenograph-like clustering of items with scores of features". This module provides a command-line interface for the popular Phenograph method [(FastPG - developed elsewhere)](https://github.com/sararselitsky/FastPG), through a C++ implementation.
+FastPG does "fast phenograph-like clustering of items with scores of features". This module provides a command-line interface for the popular Phenograph method [(FastPG - developed elsewhere)](https://github.com/sararselitsky/FastPG){:target="_blank"}, through a C++ implementation.
 
 ### Usage
 Arguments should be provided to MCMICRO with the `--fastpg-opts` flag

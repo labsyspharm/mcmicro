@@ -20,7 +20,7 @@ hero_ctas:
 
 <div markdown="1">
 ## Images to insights
-Multiplexed tissue imaging provides deep insight into the composition, organization, and phenotype of normal and diseased tissues. MCMICRO converts these multiplexed images into single-cell data using state of the art algorithms. Single-cell resolution images provide spatial context of the cellular microenvironment and can be used alongside additional profiling methods like scRNA-Seq, to make robust biological conclusions.
+Multiplexed tissue imaging provides deep insight into the composition, organization, and phenotype of normal and diseased tissues. MCMICRO converts these multiplexed images into single-cell data using state of the art algorithms. Single-cell resolution images provide spatial context of the cellular microenvironment and can be used alongside additional profiling methods like scRNA-Seq to make robust biological conclusions.
 
 </div>
 <div markdown="1">

@@ -51,20 +51,20 @@ MCMICRO assumes that CLI conforms to the following input-output specifications.
 **Output:**
 
 * An image file in `.tif` format, written to `.` (i.e., the "current working directory"). The file can be either a probability map or a segmentation mask. The image channels in probability maps annotate each pixel with probabilities that it belongs to the background or different parts of the cell such as the nucleus, cytoplasm, cell membrane or the intercellular region. Similarly, segmentation masks annotate each pixel with an integer index of the cell it belongs to, or 0 if none.
-* (Optional) One or more files written to `./qc/` (i.e., `qc/` subdirectory within the "current working directory"). These will be copied by the pipeline to the corresponding location in the [project's `qc/` directory]({{ site.baseurl }}/documentation/dir.html#quality-control).
+* (Optional) One or more files written to `./qc/` (i.e., `qc/` subdirectory within the "current working directory"). These will be copied by the pipeline to the corresponding location in the [project's `qc/` directory]({{ site.baseurl }}/instructions/nextflow/#quality-control).
 
 ## Cell state calling modules
 
 **Input:**
 
-* A file in `.csv` format containing a [spatial feature table]({{ site.baseurl }}/documentation/dir.html#quantification). Each row in a table corresponds to a cell, while columns contain features characterizing marker expression or morphological properties.
+* A file in `.csv` format containing a [spatial feature table]({{ site.baseurl }}/instructions/nextflow/#quantification). Each row in a table corresponds to a cell, while columns contain features characterizing marker expression or morphological properties.
 * (Optional) A file containing a custom model for the algorithm. The file can be in any format, and it is up to the module developer to decide what formats they allow from users.
 
 **Output:**
 
 * One or more files in `.csv` or `.hdf5` format, written to `.` (i.e., the "current working directory"). Each file should annotate individual cells with the corresponding inferred cell state.
 * (Optional) One or more files written to `./plots/` (i.e., `plots/` subdirectory within the "current working directory"). Each file can be in any format and contain any information that the module developer thinks will be useful to the user (e.g., UMAP plots showing how cells cluster together).
-* (Optional) One or more files written to `./qc/` (i.e., `qc/` subdirectory within the "current working directory"). These will be copied by the pipeline to the corresponding location in the [project's `qc/` directory]({{ site.baseurl }}/documentation/dir.html#quality-control).
+* (Optional) One or more files written to `./qc/` (i.e., `qc/` subdirectory within the "current working directory"). These will be copied by the pipeline to the corresponding location in the [project's `qc/` directory]({{ site.baseurl }}/instructions/nextflow/#quality-control).
 
 # Configuration
 
@@ -98,7 +98,7 @@ The `cmd` field must contain a command that, when executed inside the container,
 
 ## Input
 
-The `input` field determines how the pipeline will supply inputs to the module. Some examples in the context of [exemplar-001]({{ site.baseurl }}/datasets.html) may look as follows:
+The `input` field determines how the pipeline will supply inputs to the module. Some examples in the context of [exemplar-001]({{ site.baseurl }}/datasets/datasets.html) may look as follows:
 
 | Configuration | What MCMICRO will execute |
 | :-- | :-- |
@@ -125,7 +125,7 @@ nextflow run labsyspharm/mcmicro --in path/to/exemplar-001 \
   --ilastik-model myawesomemodel.ilp
 ```
 
-As exemplar-001 makes its way through the pipeline, it will eventually encounter the [probability map generation and segmentation step]({{ site.baseurl }}/documentation/dir.html#segmentation). The pipeline will then identify ilastik as the module to be executed from the `--probability-maps` flag. The actual command that MCMICRO runs will then be composed using all the above fields together:
+As exemplar-001 makes its way through the pipeline, it will eventually encounter the [probability map generation and segmentation step]({{ site.baseurl }}instructions/nextflow/#segmentation). The pipeline will then identify ilastik as the module to be executed from the `--probability-maps` flag. The actual command that MCMICRO runs will then be composed using all the above fields together:
 
 ```
 python /app/mc-ilastik.py --output . --input exemplar-001.ome.tif --model myawesomemodel.ilp --num_channels 1
@@ -133,7 +133,7 @@ python /app/mc-ilastik.py --output . --input exemplar-001.ome.tif --model myawes
 
 # (Advanced) Automated tests
 
-MCMICRO uses [GitHub Actions](https://docs.github.com/en/actions) to execute a set of automated tests on the [two exemplar images]({{ site.baseurl }}/datasets.html). The tests ensure that modifications to the pipeline don't break existing module functionality. When contributing a new module to MCMICRO, consider composing a new test that ensures your module runs on the exemplar data without any issues.
+MCMICRO uses [GitHub Actions](https://docs.github.com/en/actions) to execute a set of automated tests on the [two exemplar images]({{ site.baseurl }}/datasets/datasets.html). The tests ensure that modifications to the pipeline don't break existing module functionality. When contributing a new module to MCMICRO, consider composing a new test that ensures your module runs on the exemplar data without any issues.
 
 Automated tests are specified in [`ci.yml`](https://github.com/labsyspharm/mcmicro/blob/master/.github/workflows/ci.yml). The exemplar data is cached and can be easily restored via `actions/cache@v2`. For example, consider the following minimal test that contrasts unmicst and ilastik on exemplar-001:
 
@@ -154,5 +154,5 @@ test-ex001:
         run: ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps unmicst,ilastik --s3seg-opts '--probMapChan 0'
 ```
 
-The test, named `test-ex001`, consists of three steps: 1) Installing nextflow, 2) Restoring exemplar-001 data from cache, and 3) Running the pipeline on the exemplar-001. The `needs:` field specifies that the test should be executed after `setup` (which verifies the existence of cached data and performs caching if it's missing).
+The test, named `test-ex001`, consists of three steps: 1) Installing Nextflow, 2) Restoring exemplar-001 data from cache, and 3) Running the pipeline on the exemplar-001. The `needs:` field specifies that the test should be executed after `setup` (which verifies the existence of cached data and performs caching if it's missing).
 

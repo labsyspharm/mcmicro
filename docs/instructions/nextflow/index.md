@@ -83,7 +83,7 @@ cycle,marker_name
 <br>
 
 ### Raw images
-The exemplar `raw/` files are in the open standard OME-TIFF format, but in practice your input files will be in whatever format your microscope produces. The pipeline supports all [Bio-Formats-compatible](https://docs.openmicroscopy.org/bio-formats/6.0.1/supported-formats.html) image formats.
+The exemplar `raw/` files are in the open standard OME-TIFF format, but in practice your input files will be in whatever format your microscope produces. The pipeline supports all [Bio-Formats-compatible](https://docs.openmicroscopy.org/bio-formats/6.0.1/supported-formats.html){:target="_blank"} image formats.
 
 <br>
 
@@ -106,7 +106,7 @@ exemplar-001
 ```
 
 {: .fs-3}
-\*If no pre-computed profiles are available, MCMICRO can compute these using [BaSiC]({{site.baseurl}}/modules/#basic). This step is not executed by default, because proper illumination correction requires careful curation and visual inspection of the profiles produced by computational tools. After familiarizing yourself with the general concepts [ [1](https://emsis.eu/olh/HTML/topics_glossary_tem_shading_correction.html), [2](https://en.wikipedia.org/wiki/Flat-field_correction) ], the profiles can be computed by [specifying](#specifying-start-and-stop-modules) `--start-at illumination`.
+\*If no pre-computed profiles are available, MCMICRO can compute these using [BaSiC]({{site.baseurl}}/modules/#basic). This step is not executed by default, because proper illumination correction requires careful curation and visual inspection of the profiles produced by computational tools. After familiarizing yourself with the general concepts ([1](https://emsis.eu/olh/HTML/topics_glossary_tem_shading_correction.html){:target="_blank"}, [2](https://en.wikipedia.org/wiki/Flat-field_correction){:target="_blank"}), the profiles can be computed by [specifying](#specifying-start-and-stop-modules) `--start-at illumination`.
 
 [Back to top](./){: .btn .btn-outline} 
 
@@ -327,7 +327,7 @@ nextflow run labsyspharm/mcmicro -params-file myexperiment.yml
 ```
 
 
-[Find more information about the YAML syntax here.](https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html)
+[Find more information about the YAML syntax here.](https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html){:target="_blank"}
 
 [Back to top](./){: .btn .btn-outline} 
 

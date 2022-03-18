@@ -56,7 +56,7 @@ cycle,marker_name
 
 All other columns are optional but can be used to specify additional metadata (e.g., known mapping to cell types) to be used by individual modules.
 
-The exemplar `raw/` files are in the open standard OME-TIFF format, but in practice your input files will be in whatever format your microscope produces. The pipeline supports all [Bio-Formats-compatible](https://docs.openmicroscopy.org/bio-formats/6.0.1/supported-formats.html) image formats.
+The exemplar `raw/` files are in the open standard OME-TIFF format, but in practice your input files will be in whatever format your microscope produces. The pipeline supports all [Bio-Formats-compatible](https://docs.openmicroscopy.org/bio-formats/6.0.1/supported-formats.html){:target="_blank"} image formats.
 
 # (Optional) Illumination correction
 
@@ -73,7 +73,7 @@ exemplar-001
     └── exemplar-001-cycle-03-ffp.tif
 ```
 
-Precomputed flat-field and dark-field illumination profiles must be places in the `illumination/ directory`. If no precomputed profiles are available, mcmicro can compute these using [BaSiC](https://www.nature.com/articles/ncomms14836). This step is not executed by default, because proper illumination correction requires careful curation and visual inspection of the profiles produced by computational tools. After familiarizing yourself with the general concepts [ [1](https://emsis.eu/olh/HTML/topics_glossary_tem_shading_correction.html), [2](https://en.wikipedia.org/wiki/Flat-field_correction) ], the profiles can be computed by specifying `--start-at illumination` during [pipeline execution](running-mcmicro.html).
+Precomputed flat-field and dark-field illumination profiles must be places in the `illumination/ directory`. If no precomputed profiles are available, mcmicro can compute these using [BaSiC](https://www.nature.com/articles/ncomms14836). This step is not executed by default, because proper illumination correction requires careful curation and visual inspection of the profiles produced by computational tools. After familiarizing yourself with the general concepts ( [1](https://emsis.eu/olh/HTML/topics_glossary_tem_shading_correction.html){:target="_blank"}, [2](https://en.wikipedia.org/wiki/Flat-field_correction){:target="_blank"} ), the profiles can be computed by specifying `--start-at illumination` during [pipeline execution](running-mcmicro.html).
 
 # Stitching and registration
 

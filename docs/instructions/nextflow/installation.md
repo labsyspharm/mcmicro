@@ -9,9 +9,9 @@ parent: Nextflow workflow
 
 ## Install Nextflow
 
-If not already installed, install Java: [https://adoptopenjdk.net/](https://adoptopenjdk.net/)
+If not already installed, install Java: [https://adoptopenjdk.net/](https://adoptopenjdk.net/){:target="_blank"}
 
-Install [Nextflow](https://www.nextflow.io/): `curl -s https://get.nextflow.io | bash`
+Install [Nextflow](https://www.nextflow.io/){:target="_blank"}: `curl -s https://get.nextflow.io | bash`
 
 This command will create a `nextflow` executable in the current directory. To simplify usage, consider moving this executable to a directory that is available on `$PATH`. One common place for this is a `bin/` directory in your home folder:
 
@@ -26,12 +26,12 @@ Verify that Nextflow is accessible by going to your home directory (`cd ~`) and 
 
 ## Install Docker*
 
-Install [Docker](https://docs.docker.com/install/). Ensure that the Docker engine is running by typing `docker images`. If the engine is running, it should return a (possibly empty) list of container images currently downloaded to your system.
+Install [Docker](https://docs.docker.com/install/){:target="_blank"}. Ensure that the Docker engine is running by typing `docker images`. If the engine is running, it should return a (possibly empty) list of container images currently downloaded to your system.
 
 {: .text-center }
 {: .fs-3 }
 {: .fw-300 }
-\* *Harvard Medical School users using the O2 Compute Cluster should not install Docker - learn more [here](./advanced-topics/run-O2.html).*	
+\* *Harvard Medical School users using the O2 Compute Cluster should not install Docker - learn more [here](../advanced-topics/run-O2.html).*	
 
 <br>
 

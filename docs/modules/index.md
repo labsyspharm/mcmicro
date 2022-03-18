@@ -82,13 +82,14 @@ svg {
 <br>
 
 Core modules:
-{: .fw-400}
+{: .fw-500}
 {: .fs-7}
 {: .text-blue-000}
 
+{: .fs-3}
 Last updated on {{ site.time | date: "%Y-%m-%d" }}.
 
-All modules in MCMICRO are available as standalone executable Docker containers. When running modules within MCMICRO, the inputs and outputs will be handled by the pipeline and do not need to be specified explicitly.
+*All modules in MCMICRO are available as standalone executable Docker containers. When running modules within MCMICRO, the inputs and outputs will be handled by the pipeline and do not need to be specified explicitly.*
 
 ## BaSiC
 {: .fw-500}
@@ -121,10 +122,6 @@ Dark-field and flat-field profiles for each unstitched image. Nextflow will writ
 {: .text-yellow-200}
 *Stitching and registration*
 
-{: .text-grey-dk-300}
-{: .fw-200}
-{: .fs-3}
-
 ### Description
 
 The module performs simultaneous stiching of tiles and registration across channels. Check the [ASHLAR website](https://labsyspharm.github.io/ashlar){:target="_blank"} for the most up-to-date documentation.
@@ -135,7 +132,7 @@ MCMICRO runs ASHLAR by default. Use `--ashlar-opts` to provide additional argume
 
 * Example: `nextflow run labsyspharm/mcmicro --in /my/project --ashlar-opts '--flip-y -c 5'`
 * Default: `--ashlar-opts '-m 30'`
-* Running outside of MCMICRO: [Instructions](https://github.com/labsyspharm/ashlar){:target="_blank"}.
+* Running outside of MCMICRO: [ASHLAR website](https://labsyspharm.github.io/ashlar){:target="_blank"}.
 
 ### Input
 * Unstitched images in any [BioFormats-compatible format](https://docs.openmicroscopy.org/bio-formats/latest/supported-formats.html){:target="_blank"}. Nextflow will take these from the `raw/` subdirectory within the project.
@@ -219,10 +216,6 @@ A troubleshooting guide can be found within [Coreograph parameter tuning](./core
 {: .text-red-100}
 *Image segmentation - probability map generation*
 
-{: .text-grey-dk-300}
-{: .fw-200}
-{: .fs-3}
-
 ### Description
 
 UnMICST uses a convolutional neural network to annotate each pixel with the probability that it belongs to a given subcellular component (nucleus, cytoplasm, cell boundary). Check the [UnMICST website](https://labsyspharm.github.io/UnMICST-info/){:target="_blank"} for the most up-to-date documentation.
@@ -282,7 +275,7 @@ By default, MCMICRO applies S3segmenter to the output of all modules that produc
 1.  A fully-stitched and registered ``.ome.tif``, preferably flat field corrected. Nextflow will take these from the `registration/` and `dearray/` subdirectories, as approrpriate.
 2.  A 3-class probability map, as derived by modules such as [UnMICST](./unmicst.html) or [Ilastik](./other.html#ilastik).
 
-[S3segmenter](https://github.com/HMS-IDAC/S3segmenter) assumes that you have:
+[S3segmenter](https://github.com/HMS-IDAC/S3segmenter){:target="_blank"} assumes that you have:
 1. Acquired images of your sample with optimal acquisition settings.
 2. Stitched and registered the tiles and channels respectively (if working with a large piece of tissue) and saved it as a Bioformats compatible tiff file.
 3. Processed your image in some way so as to increase contrast between individual nuclei using classical or machine learning methods such as [Ilastik](./other.html#ilastik) (a random forest model) or [UnMICST](./unmicst.html) (a deep learning semantic segmentation model based on the UNet architecture). MCMICRO supports both.
@@ -348,9 +341,6 @@ ___
 {: .text-purple-200}
 *Single-cell data quantification*
 
-{: .text-grey-dk-300}
-{: .fw-200}
-{: .fs-3}
 
 ### Description
 The modules uses one or more segmentation masks against the original image to quantify the expression of every channel on a per-cell basis. Check the [MCQuant README](https://github.com/labsyspharm/quantification#single-cell-quantification){:target="_blank"} for the most up-to-date documentation.
@@ -435,7 +425,7 @@ Minerva is used in parallel with MCMICRO, so the image outputs need to be run th
 
 # Suggest a module
 
-Module suggestions can be made by posting to [https://forum.image.sc/](https://forum.image.sc/) and tagging your post with the `mcmicro` tag.
+Module suggestions can be made by posting to [https://forum.image.sc/](https://forum.image.sc/){:target="_blank"} and tagging your post with the `mcmicro` tag.
 
 # Add a module
 

@@ -35,7 +35,7 @@ Pathologists stain tissue components with colorimetric dyes to visualize subtle 
 </figure>
 
 ### Immunofluorescence
-Alternatively, antibodies can tag specific cell components with high affinity, yielding molecular-level information. Antibodies are produced by an animal (such as a mouse, rat, or goat) to target a specific protein or molecule antigen - known as a _marker_ - with a high affinity. These antibodies are incubated with the sample where they bind their target with high affinity then excess unbound antibodies are rinsed away. Fluorescent molecules can then reveal the location of these antibodies within the sample. Generally, this is done with ‘secondary’ antibodies conjugated to fluorescent molecules that bind antigens from a specific species of animal (i.e. anti-mouse secondary antibodies will bind mouse-origin antibodies). This allows 4-6 markers to be visualized within a single sample through immunofluorescence by using antibodies with different species origins [(Boyle et al., 2008)](https://doi.org/10.1002/bmb.20192){:target="_blank"}. 
+Alternatively, antibodies can tag specific cell components with high affinity, yielding molecular-level information. Antibodies are produced by an animal (such as a mouse, rat, or goat) to target a specific protein or molecule antigen - known as a _marker_. These antibodies are incubated with the sample where they bind their target with high affinity then excess unbound antibodies are rinsed away. Fluorescent molecules can then reveal the location of these antibodies within the sample. Generally, this is done with ‘secondary’ antibodies conjugated to fluorescent molecules that bind antigens from a specific species of animal (i.e. anti-mouse secondary antibodies will bind mouse-origin antibodies). This allows 4-6 markers to be visualized within a single sample through immunofluorescence by using antibodies with different species origins [(Boyle et al., 2008)](https://doi.org/10.1002/bmb.20192){:target="_blank"}. 
 
 {: .text-center }
 {: .fs-3 }
@@ -47,7 +47,7 @@ Alternatively, antibodies can tag specific cell components with high affinity, y
 	</a> <figcaption>An immunofluorescent PDAC specimen that corresponds to the H&E PDAC specimen shown above. From Lin et al., 2018.</figcaption> 
 </figure>
 
-# Phase 2: Immunofluorescence imaging for biological samples
+# Phase 2: Imaging immunofluorescent biological samples
 
 After staining with antibodies, immunofluorescence microscopy is used to image these specific proteins within the sample. A microscope pulses the sample with a specific wavelength of light. The light excites the fluorophore - triggering the fluorophore to emit light. The microscope detects the light emitted by the fluorophore, thus capturing the location of the fluorescent antibody within the sample [(Boyle et al., 2008)](https://doi.org/10.1002/bmb.20192){:target="_blank"}. The specific excitation and emission wavelengths are fluorophore-dependent, so it is possible to carefully select 4-6 fluorophores that can be imaged simultaneously (and many [references]( http://www.geomcnamara.com/data){:target="_blank"} exist to help with this selection).
 
