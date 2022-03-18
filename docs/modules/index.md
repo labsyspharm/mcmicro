@@ -384,6 +384,12 @@ CyLinter is a human-in-the-loop quality control pipeline. It accepts as input th
 ### Usage
 Because it requires human interactivity, CyLinter is not executed by MCMICRO directly. Instead, users are encourage to follow steps outlined on the [CyLinter website](https://labsyspharm.github.io/cylinter/){:target="_blank"} after applying MCMICRO to their data.
 
+{: .text-center }
+{: .fs-3 }
+{: .fw-300 }
+![Overview of CyLinter quality control software]({{ site.baseurl }}/images/cylinter_banner.png)
+Screenshots depicting different phases of the CyLinter workflow.
+
 [Back to top](./){: .btn .btn-outline} 
 
 ___
