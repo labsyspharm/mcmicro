@@ -109,8 +109,10 @@ nextflow run labsyspharm/mcmicro --in path/to/exemplar-002 --tma
 
 {: .fs-3}
 {: .fw-200}
-*After a successful run, the following text will be displayed:*
+*After a successful run, the following text will be displayed for exemplar-001 and exemplar-002:*
 ![screenshot after successful run]({{ site.baseurl }}/images/screenshot-after-run.jpg)
+
+![screenshot after successful run](../images/tutorials/exemplar-002-message.PNG)
 
 {: .fs-3}
 {: .fw-200}
