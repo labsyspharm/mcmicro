@@ -10,7 +10,7 @@ has_children: true
 
 **MCMICRO can be used two ways:**  
 1. Nextflow (a command line interface), or  
-2. Galaxy (a GUI interface)
+2. Galaxy (a web-based interface)
 
 Details for running Nextflow or Galaxy can be found on the sub-pages:  
 [Nextflow Workflow](./nextflow/){: .btn .btn-green .btn-outline } [Galaxy Workflow](./galaxy/){: .btn .btn-green .btn-outline}

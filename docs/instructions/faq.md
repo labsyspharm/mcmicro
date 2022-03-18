@@ -70,13 +70,13 @@ nextflow clean -f -but last
 
 ## Pre-processing
 
-### Q: How does mcmicro handle multi-file formats such as `.xdce`?
+### Q: How does MCMICRO handle multi-file formats such as `.xdce`?
 
-A: Registration and illumination correction modules in mcmicro are [Bio-Formats compatible](https://docs.openmicroscopy.org/bio-formats/6.0.1/supported-formats.html). Place all files into the `raw/` subdirectory, as described in [Directory Structure]({{ site.baseurl }}/documentation/dir.html), and mcmicro modules will correctly identify and use the relevant ones.
+A: Registration and illumination correction modules in MCMICRO are [Bio-Formats compatible](https://docs.openmicroscopy.org/bio-formats/6.0.1/supported-formats.html). Place all files into the `raw/` subdirectory, as described in [Directory Structure]({{ site.baseurl }}/instructions/nextflow/#directory-structure), and MCMICRO modules will correctly identify and use the relevant ones.
 
 ## Segmentation
 
-### Q: How do I run mcmicro with my own ilastik model?
+### Q: How do I run MCMICRO with my own Ilastik model?
 
 A: Use the `--ilastik-model` parameter. Note that the parameter must be specified *outside** `--ilastik-opts`. For example,
 
@@ -86,7 +86,7 @@ nextflow run labsyspharm/mcmicro --in /my/data --probability-maps ilastik --ilas
 
 ### Q: How do I check the quality of segmentation?
 
-A: After a successful mcmicro run, two-channel tif files containing DAPI and nuclei/cell/cytoplasm outlines will reside in `qc/s3seg`. Segmentation quality can be assessed through visual inspection of these files in, e.g., [napari](https://napari.org/).
+A: After a successful MCMICRO run, two-channel tif files containing DAPI and nuclei/cell/cytoplasm outlines will reside in `qc/s3seg`. Segmentation quality can be assessed through visual inspection of these files in, e.g., [napari](https://napari.org/).
 
 ### Q: How do I handle images acquired without pixel binning?
 

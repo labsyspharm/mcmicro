@@ -12,7 +12,7 @@ parent: Home
 
 2. View a [visual guide]({{ site.baseurl }}/tutorial/pipeline-visual-guide.html){:target="_blank"} through the steps of MCMICRO, then download [example data](./datasets/datasets.html) to try it yourself!
 
-4. [Tutorial*](./tutorial/tutorial.html) provides a step-by-step example workflow that allows beginners to process two example sample data sets into mosaic images. 
+4. The [tutorial](./tutorial/tutorial.html)\* provides a step-by-step example workflow that allows beginners to process two example sample data sets into mosaic images. 
  >\* *First time users should start here to verify that MCMICRO is working with their system*
 
 5. [Pipeline documentation](./instructions/) section provides detailed documentation on how to use MCMICRO and how to adjust pipeline parameters. 
