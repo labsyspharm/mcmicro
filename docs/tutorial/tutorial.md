@@ -94,14 +94,14 @@ These images look like the following:
 
 <br>
 
-**Step 3:** Use `--in` to point the pipeline at the data
+**Step 3:** Use `--in` to point the pipeline at the data. \*path\* should point to where your files are stored. (`.` points to the current directory)
 
 ``` bash
 # Run the pipeline on exemplar data (starting from the registration step, by default)
-nextflow run labsyspharm/mcmicro --in path/to/exemplar-001
+nextflow run labsyspharm/mcmicro --in *path*/exemplar-001
 
 # Use --tma to dearray a tissue microarray and process each core in parallel
-nextflow run labsyspharm/mcmicro --in path/to/exemplar-002 --tma
+nextflow run labsyspharm/mcmicro --in *path*/exemplar-002 --tma
 ```
 
 **Note:** On an average workstation, it takes approximately 5-10 minutes to process exemplar-001 from start to finish. Exemplar-002 is substantially larger, and takes 30-40 minutes on an average workstation.
@@ -116,16 +116,26 @@ nextflow run labsyspharm/mcmicro --in path/to/exemplar-002 --tma
 
 {: .fs-3}
 {: .fw-200}
-*The pipeline will also generate the following directory, depending on the modules used.* **Running exemplar-001 and exemplar-002 will produce the following output files\*:**
-
-*\*`raw/` and `illumination/` contents will remain the same. They will be not expanded below.*
+*The pipeline will generate the following directory, depending on the modules used.* 
 
 <style>
   code {
     white-space : pre-wrap !important;
     word-break: break-word;
   }
+  details > summary {
+    color: #00B0E9;
+    font-weight: bold;
+  }
 </style>
+
+<details>
+
+<summary>Expand to see exemplar-001 and exemplar-002 output files*</summary>
+
+<div markdown="1">
+*\*`raw/` and `illumination/` contents will remain the same. They will be not elaborated on here.*
+</div>
 
 <div class="row">
 
@@ -291,6 +301,7 @@ exemplar-002
 </div>
 
 </div>
+</details>
 
 **Visual inspection of quality control (`qc/`) files is recommended after completing the run.**
 
