@@ -110,9 +110,10 @@ nextflow run labsyspharm/mcmicro --in *path*/exemplar-002 --tma
 {: .fs-3}
 {: .fw-200}
 *After a successful run, the following text will be displayed for exemplar-001 and exemplar-002:*
-![screenshot after successful run]({{ site.baseurl }}/images/screenshot-after-run.jpg)
 
-![screenshot after successful run](../images/tutorials/exemplar-002-message.PNG)
+![screenshot after successful run for exemplar-001]({{ site.baseurl }}/images/screenshot-after-run.jpg)
+
+![screenshot after successful run for exemplar-002](../images/tutorials/exemplar-002-message.PNG)
 
 {: .fs-3}
 {: .fw-200}
@@ -303,8 +304,40 @@ exemplar-002
 </div>
 </details>
 
-**Visual inspection of quality control (`qc/`) files is recommended after completing the run.**
+<br>
 
-Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may contain `.tif` images for inspection. 
+**Step 4:** *(Recommended)* Visual inspection of quality control (`qc/`) files
+
+Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may contain `.tif` or `.ome` images for inspection. 
+
+- **s3seg/**: check that `cellOutlines.ome` and `nucleiOutlines.ome` shows satisfactorily outlined areas
+
+  ![exemplar-001-outlinemerge](../images/tutorials/exemplar-001-outlinemerge.PNG)
+
+  {: .fs-3}
+  {: .fw-200}
+  `cellOutlines.ome` exemplar-001, Cycle 6. Preview above shows merged outline with image, zoomed in on an arbitrary ROI.
+
+  *\* `cellOutlines.ome` found under `qc/s3seg1/unmicst-exemplar-001/` can be previewed as Hyperstack in Fiji. Each cycle appears as a 2-image stack. You can split stack into individual images. Then, choose Image>Color>Merge Channels to overlay outline with raw image for visual inspection.*
+  
+  *This example shows the first cycle in exemplar-001 dataset (Cycle 6).*
+
+  Read [Parameter Tuning for S3Segmenter](../modules/s3seg.md) for common troubleshooting scenarios.
+
+- **coreo/**: check for correct partitioning of TMAs
+
+  ![TMA map](../images/tutorials/tma-map.png)
+
+  {: .fs-3}
+  {: .fw-200}
+  `TMA_MAP.tif` exemplar-002
+
+  Read [Parameter Tuning for Coreograph](../modules/coreograph.md) for common troubleshooting scenarios.
+
+- **unmicst/**: examination of `qc/unmicst/` is generally not necessary if `qc/s3seg/` outlines are satisfactory
+
+  However, if segmentation results found in `qc/s3seg/` is not desirable, UnMICST `qc` files can provide a clue for what went wrong. 
+
+  Read [Parameter Tuning for UnMICST](../modules/unmicst.md) for common troubleshooting scenarios.
 
 *More details on output files and quality control can be found in [Directory Structure](/instructions/dir.html).*
