@@ -12,6 +12,7 @@ has_children: true
 
 <br>
 
+{: .fs-6}
  **Step 0:** Be sure to [install](../instructions/nextflow/installation.html) MCMICRO before proceeding through these steps.
  
 Enter the commands `nextflow run hello` and `docker run hello-world` to verify that both Nexflow and Docker* are functional.
@@ -20,6 +21,7 @@ Enter the commands `nextflow run hello` and `docker run hello-world` to verify t
 
 <br>
 
+{: .fs-6}
  **Step 1:** Ensure you have the latest version of the pipeline 
 
 ``` bash
@@ -29,7 +31,10 @@ nextflow pull labsyspharm/mcmicro
 
 <br>
 
-**Step 2:** [Download]({{ site.baseurl }}/datasets/datasets.html) exemplar data. Replace \*path\* with where you want to store the files. (use `.` for path to download files into the current directory)
+{: .fs-6}
+**Step 2:** [Download]({{ site.baseurl }}/datasets/datasets.html) exemplar data. 
+
+Replace \*path\* with where you want to store the files. (use `.` for path to download files into the current directory)
 
 ``` bash
 # Download exemplar-001
@@ -64,9 +69,13 @@ These images look like the following:
 <div markdown="1">
 ![exemplar-001-cycle-06.ome](../images/tutorials/exemplar-001-cycle-06.png)
 
+{: .fs-3}
+{: .fw-200}
 `exemplar-001-cycle-06.ome`
 
-*\* This is the first image in a stack of 24 images.*
+{: .fs-3}
+{: .fw-200}
+*This is the first image in a stack of 24 images.*
 </div>
 </div>
 
@@ -74,9 +83,13 @@ These images look like the following:
 <div markdown="1">
 ![exemplar-001-cycle-06-dfp.tif](../images/tutorials/exemplar-001-cycle-06-dfp.png)
 
+{: .fs-3}
+{: .fw-200}
 `exemplar-001-cycle-06-dfp.tif`
 
-*\* This is the first image of a stack of 4 images, previewed in Fiji with auto adjustments made to brightness and contrast.*
+{: .fs-3}
+{: .fw-200}
+*This is the first image of a stack of 4 images, previewed in Fiji with auto adjustments made to brightness and contrast.*
 </div>
 </div>
 
@@ -84,9 +97,13 @@ These images look like the following:
 <div markdown="1">
 ![exemplar-001-cycle-06-ffp.tif](../images/tutorials/exemplar-001-cycle-06-ffp.png)
 
+{: .fs-3}
+{: .fw-200}
 `exemplar-001-cycle-06-ffp.tif`
 
-*\* This is the first image of a stack of 4 images, previewed in Fiji with auto adjustments made to brightness and contrast.*
+{: .fs-3}
+{: .fw-200}
+*This is the first image of a stack of 4 images, previewed in Fiji with auto adjustments made to brightness and contrast.*
 </div>
 </div>
 
@@ -94,7 +111,11 @@ These images look like the following:
 
 <br>
 
-**Step 3:** Use `--in` to point the pipeline at the data. \*path\* should point to where your files are stored. (`.` points to the current directory)
+{: .fs-6}
+**Step 3:** Use `--in` to point the pipeline at the data.  
+(\*path\* should point to where your files are stored; `.` points to the current directory)
+
+*If your computer has an **Apple M1 chip**, you may need to specify ilastik for probability maps at this step. Read more on the [FAQ page](../instructions/faq.md#q-my-computer-has-an-apple-m1-chip-and-the-pipeline-is-failing-at-the-segmentation-step-what-can-i-do).*
 
 ``` bash
 # Run the pipeline on exemplar data (starting from the registration step, by default)
@@ -306,25 +327,38 @@ exemplar-002
 
 <br>
 
+{: .fs-6}
 **Step 4:** *(Recommended)* Visual inspection of quality control (`qc/`) files
 
 Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may contain `.tif` or `.ome` images for inspection. 
 
-- **s3seg/**: check that `cellOutlines.ome` and `nucleiOutlines.ome` shows satisfactorily outlined areas
+**Here we demonstrate visual inspection using Fiji (Download Fiji [here](https://imagej.net/software/fiji/downloads){:target="_blank"}). You can use any image viewing/processing software that works for `.ome` and `.tif` files.**
+
+<br>
+
+{: .fs-5}
+**s3seg/**  
+
+* check that `cellOutlines.ome` and `nucleiOutlines.ome` shows satisfactorily outlined areas
+
+* `cellOutlines.ome` found under `qc/s3seg1/unmicst-exemplar-001/` can be previewed as Hyperstack in Fiji. Each cycle appears as a 2-image stack. 
+  
+* You can split stack into individual images. Then, choose *Image>Color>Merge Channels* to overlay outline with raw image for visual inspection.
 
   ![exemplar-001-outlinemerge](../images/tutorials/exemplar-001-outlinemerge.PNG)
 
   {: .fs-3}
   {: .fw-200}
-  `cellOutlines.ome` exemplar-001, Cycle 6. Preview above shows merged outline with image, zoomed in on an arbitrary ROI.
+  `cellOutlines.ome` Cell outlines overlaid with raw image, zoomed in on an arbitrary ROI. *(This example shows the first cycle in exemplar-001 data set (Cycle 6).)*
 
-  *\* `cellOutlines.ome` found under `qc/s3seg1/unmicst-exemplar-001/` can be previewed as Hyperstack in Fiji. Each cycle appears as a 2-image stack. You can split stack into individual images. Then, choose Image>Color>Merge Channels to overlay outline with raw image for visual inspection.*
-  
-  *This example shows the first cycle in exemplar-001 dataset (Cycle 6).*
+  >Read [Parameter Tuning for S3Segmenter](../modules/s3seg.md) for common troubleshooting scenarios.**
 
-  Read [Parameter Tuning for S3Segmenter](../modules/s3seg.md) for common troubleshooting scenarios.
+<br>
 
-- **coreo/**: check for correct partitioning of TMAs
+{: .fs-5}
+**coreo/**
+
+* check for correct partitioning of TMAs
 
   ![TMA map](../images/tutorials/tma-map.png)
 
@@ -332,12 +366,19 @@ Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may
   {: .fw-200}
   `TMA_MAP.tif` exemplar-002
 
-  Read [Parameter Tuning for Coreograph](../modules/coreograph.md) for common troubleshooting scenarios.
+  >Read [Parameter Tuning for Coreograph](../modules/coreograph.md) for common troubleshooting scenarios.
+  
+<br>
 
-- **unmicst/**: examination of `qc/unmicst/` is generally not necessary if `qc/s3seg/` outlines are satisfactory
+{: .fs-5}
+**unmicst/**
 
-  However, if segmentation results found in `qc/s3seg/` is not desirable, UnMICST `qc` files can provide a clue for what went wrong. 
+* examination of `qc/unmicst/` is generally not necessary if `qc/s3seg/` outlines are satisfactory
 
-  Read [Parameter Tuning for UnMICST](../modules/unmicst.md) for common troubleshooting scenarios.
+* However, if segmentation results found in `qc/s3seg/` is not desirable, UnMICST `qc` files can provide a clue for what went wrong. 
+
+  >Read [Parameter Tuning for UnMICST](../modules/unmicst.md) for common troubleshooting scenarios.
+
+<br>
 
 *More details on output files and quality control can be found in [Directory Structure](/instructions/dir.html).*
