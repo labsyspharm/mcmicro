@@ -64,9 +64,13 @@ These images look like the following:
 <div markdown="1">
 ![exemplar-001-cycle-06.ome](../images/tutorials/exemplar-001-cycle-06.png)
 
+{: .fs-3}
+{: .fw-200}
 `exemplar-001-cycle-06.ome`
 
-*\* This is the first image in a stack of 24 images.*
+{: .fs-3}
+{: .fw-200}
+*This is the first image in a stack of 24 images.*
 </div>
 </div>
 
@@ -74,9 +78,13 @@ These images look like the following:
 <div markdown="1">
 ![exemplar-001-cycle-06-dfp.tif](../images/tutorials/exemplar-001-cycle-06-dfp.png)
 
+{: .fs-3}
+{: .fw-200}
 `exemplar-001-cycle-06-dfp.tif`
 
-*\* This is the first image of a stack of 4 images, previewed in Fiji with auto adjustments made to brightness and contrast.*
+{: .fs-3}
+{: .fw-200}
+*This is the first image of a stack of 4 images, previewed in Fiji with auto adjustments made to brightness and contrast.*
 </div>
 </div>
 
@@ -84,9 +92,13 @@ These images look like the following:
 <div markdown="1">
 ![exemplar-001-cycle-06-ffp.tif](../images/tutorials/exemplar-001-cycle-06-ffp.png)
 
+{: .fs-3}
+{: .fw-200}
 `exemplar-001-cycle-06-ffp.tif`
 
-*\* This is the first image of a stack of 4 images, previewed in Fiji with auto adjustments made to brightness and contrast.*
+{: .fs-3}
+{: .fw-200}
+*This is the first image of a stack of 4 images, previewed in Fiji with auto adjustments made to brightness and contrast.*
 </div>
 </div>
 
@@ -95,6 +107,8 @@ These images look like the following:
 <br>
 
 **Step 3:** Use `--in` to point the pipeline at the data. \*path\* should point to where your files are stored. (`.` points to the current directory)
+
+*If your computer has an **Apple M1 chip**, you may need to specify ilastik for probability maps at this step. Read more on the [FAQ page](../instructions/faq.md#q-my-computer-has-an-apple-m1-chip-and-the-pipeline-is-failing-at-the-segmentation-step-what-can-i-do).*
 
 ``` bash
 # Run the pipeline on exemplar data (starting from the registration step, by default)
@@ -310,16 +324,22 @@ exemplar-002
 
 Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may contain `.tif` or `.ome` images for inspection. 
 
+**Here we demonstrate visual inspection using Fiji (Download Fiji [here](https://imagej.net/software/fiji/downloads){:target="_blank"}). You can use any image viewing/processing software that works for `.ome` and `.tif` files.**
+
 - **s3seg/**: check that `cellOutlines.ome` and `nucleiOutlines.ome` shows satisfactorily outlined areas
+
+  `cellOutlines.ome` found under `qc/s3seg1/unmicst-exemplar-001/` can be previewed as Hyperstack in Fiji. Each cycle appears as a 2-image stack. 
+  
+  You can split stack into individual images. Then, choose *Image>Color>Merge Channels* to overlay outline with raw image for visual inspection.
 
   ![exemplar-001-outlinemerge](../images/tutorials/exemplar-001-outlinemerge.PNG)
 
   {: .fs-3}
   {: .fw-200}
-  `cellOutlines.ome` exemplar-001, Cycle 6. Preview above shows merged outline with image, zoomed in on an arbitrary ROI.
+  `cellOutlines.ome` Cell outlines overlaied with raw image, zoomed in on an arbitrary ROI.
 
-  *\* `cellOutlines.ome` found under `qc/s3seg1/unmicst-exemplar-001/` can be previewed as Hyperstack in Fiji. Each cycle appears as a 2-image stack. You can split stack into individual images. Then, choose Image>Color>Merge Channels to overlay outline with raw image for visual inspection.*
-  
+  {: .fs-3}
+  {: .fw-200}
   *This example shows the first cycle in exemplar-001 dataset (Cycle 6).*
 
   Read [Parameter Tuning for S3Segmenter](../modules/s3seg.md) for common troubleshooting scenarios.

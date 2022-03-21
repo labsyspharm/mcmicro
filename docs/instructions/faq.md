@@ -67,6 +67,21 @@ nextflow clean -f last           # Proceed with the removal
 nextflow clean -n -but last
 nextflow clean -f -but last
 ```
+### Q: My computer has an Apple M1 chip and the pipeline is failing at the Segmentation step. What can I do?
+
+A: You can use ilastik for probability maps instead. To do so, specify `--probability-maps ilastik` in your command to run MCMIRO
+
+```
+nextflow run labsyspharm/mcmicro --in *path*/exemplar-001 --probability-maps ilastik
+```
+or 
+```
+nextflow run labsyspharm/mcmicro --in *path*/exemplar-002 -- tma --probability-maps ilastik
+```
+
+This is because UnMICST (`segmentation:worker (unmicst-1)`) currently does not work on the M1 architecture. Fortunately, ilastik is suppored by M1. See [GitHub Issue #353](https://github.com/labsyspharm/mcmicro/issues/353) for more details.
+
+*If you came here from Step 3 in Tutorials, head back to [Tutorials](../tutorial/tutorial.md) to finish the rest of the steps!*
 
 ## Pre-processing
 
