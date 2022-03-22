@@ -90,12 +90,12 @@ svg {
 </a>
 
 <a xlink:href="../overview/exp.html#phase-1-staining-proteins-or-molecules-in-biological-samples">
-<title>1</title>
+<title>Whole Slide Sample Preparation</title>
 <path d="m71 61 2 47 59-2-1-45z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
 </a>
 
 <a xlink:href="../overview/exp.html#phase-2-imaging-immunofluorescent-biological-samples">
-<title>2</title>
+<title>Multiplexed Imaging</title>
 <path d="M141 55v59h37l23-7-1-54z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
 </a>
 
