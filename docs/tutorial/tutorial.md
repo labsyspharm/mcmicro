@@ -341,7 +341,7 @@ Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may
 {: .fs-5}
 **s3seg/**  
 
-* check that `cellOutlines.ome` and `nucleiOutlines.ome` shows satisfactorily outlined areas
+* Check that `cellOutlines.ome` and `nucleiOutlines.ome` show satisfactorily outlined areas
 
 * `cellOutlines.ome` found under `qc/s3seg1/unmicst-exemplar-001/` can be previewed as Hyperstack in Fiji. Each cycle appears as a 2-image stack. 
   
@@ -353,14 +353,14 @@ Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may
   {: .fw-200}
   `cellOutlines.ome` Cell outlines overlaid with raw image, zoomed in on an arbitrary ROI. *(This example shows the first cycle in exemplar-001 data set (Cycle 6).)*
 
-  >Read [Parameter Tuning for S3Segmenter](../modules/s3seg.md) for common troubleshooting scenarios.**
+  >Read [Parameter Tuning for S3Segmenter](../modules/s3seg.md) for common troubleshooting scenarios.
 
 <br>
 
 {: .fs-5}
 **coreo/**
 
-* check for correct partitioning of TMAs
+* Check for correct partitioning of TMAs
 
   ![TMA map](../images/tutorials/tma-map.png)
 
@@ -375,7 +375,7 @@ Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may
 {: .fs-5}
 **unmicst/**
 
-* examination of `qc/unmicst/` is generally not necessary if `qc/s3seg/` outlines are satisfactory
+* Examination of `qc/unmicst/` is generally not necessary if `qc/s3seg/` outlines are satisfactory
 
 * However, if segmentation results found in `qc/s3seg/` is not desirable, UnMICST `qc` files can provide a clue for what went wrong. 
 
@@ -383,4 +383,4 @@ Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may
 
 <br>
 
-*More details on output files and quality control can be found in [Directory Structure](/instructions/dir.html).*
+*More details on output files and quality control can be found in [Directory Structure](/instructions/nextflow/#directory-structure).*

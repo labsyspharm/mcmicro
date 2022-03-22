@@ -44,7 +44,7 @@ svg {
 <path d="M10 160h63v53H9Z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
 </a>
 
-<a xlink:href="../overview/#image-tiles-to-whole-slide-mosaic-images">
+<a xlink:href="../overview/#tma-core-detection-optional">
 <title>Coreograph</title>
 <path d="M116 244v53l65-1-2-54z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
 </a>
@@ -54,7 +54,7 @@ svg {
 <path d="m208 159 64 1-1 44h-64z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
 </a>
 
-<a xlink:href="../overview/#segmentation">
+<a xlink:href="../overview/#mosaic-images-to-single-cell-data">
 <title>S3Segmenter</title>
 <path d="m208 205 63 1v31l-64 1z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
 </a>
@@ -87,6 +87,16 @@ svg {
 <a xlink:href="../overview/#visualization">
 <title>Other Modules</title>
 <path d="m401 234 46 1-1 48-2 7-42-1z"  inkscape:connector-curvature="0" transform="translate(0 -47)"/>
+</a>
+
+<a xlink:href="../overview/exp.html#phase-1-staining-proteins-or-molecules-in-biological-samples">
+<title>1</title>
+<path d="m71 61 2 47 59-2-1-45z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
+</a>
+
+<a xlink:href="../overview/exp.html#phase-2-imaging-immunofluorescent-biological-samples">
+<title>2</title>
+<path d="M141 55v59h37l23-7-1-54z" inkscape:connector-curvature="0" transform="translate(0 -47)"/>
 </a>
 
 </svg>
@@ -236,6 +246,8 @@ Walk through the process of turning image tiles into single-cell segmented mosai
 \*\*Missing something?? --  [Suggest a module]({{site.baseurl}}/modules/#suggest-a-module) for us to develop in the future!\*\*
 
 <br>
+
+[Back to top](./#mcmicro-for-processing-and-analyzing-images){: .btn .btn-outline} 
 
 ---
 
