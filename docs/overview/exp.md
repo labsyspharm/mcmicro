@@ -1,9 +1,9 @@
 ---
 layout: default
-title: Tissue imaging intro
+title: Experimental background
 nav_order: 2
 parent: Overview
-has_children: true
+
 ---
 {: .no_toc }
 
@@ -82,7 +82,7 @@ Metadata standards for high-plex image data are rapidly developing: a wide varie
 
 <div class="col-xs-4 col-sm-4">
 <div markdown="1">
-[![step3: process and analyze images with mcmicro. Image of connected puzzle pieces.](../images/main-menu-3.png)](./mcmicro.html)
+[![step3: process and analyze images with mcmicro. Image of connected puzzle pieces.](../images/main-menu-3.png)](./#mcmicro-for-processing-and-analyzing-images)
 </div>
 </div>
 

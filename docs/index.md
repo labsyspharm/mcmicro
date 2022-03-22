@@ -2,16 +2,18 @@
 layout: default
 title: Home
 nav_order: 1
-has_children: false
+has_children: true
 description: ""
 hero_heading: "Multiple-choice microscopy pipeline"
 hero_body: "An end-to-end processing pipeline that transforms multi-channel whole-slide images into single-cell data. This website is a consolidated source of information for when, why, and how to use MCMICRO."
 hero_ctas:
-  - label: "QUICK START"
-    link: "instructions/"
   - label: "OVERVIEW"
     link: "overview/"
-# last_modified_date: 2021-03-28
+  - label: "TUTORIAL"
+    link: "tutorial/tutorial.html"
+  - label: "REFERENCE DOCS"
+    link: "instructions/"
+# last_modified_date: 2022-03-28
 ---
 # Features
 {% include youtube.html id="DY_F-eG9nm4" autoplay=true mute=true controls=false loop=true related=false %}

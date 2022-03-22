@@ -3,7 +3,8 @@ layout: default
 title: MCMICRO intro
 nav_order: 2
 parent: Overview
-has_children: true
+has_children: false
+nav_exclude: true
 ---
 
 # Processing and analyzing images with MCMICRO

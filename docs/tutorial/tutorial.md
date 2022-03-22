@@ -8,7 +8,9 @@ has_children: true
 
 # MCMICRO tutorial
 
-**Here we show an example of how to execute MCMICRO on two exemplar datasets using the command line (Nextflow) interface:**
+**Here we show an example of how to execute MCMICRO on two exemplar datasets using the command line (Nextflow) interface.**
+
+You can view an example of how MCMICRO turns image tiles into single-cell segmented mosaic images here: [MCMICRO Pipeline Visual Guide]({{ site.baseurl }}/tutorial/pipeline-visual-guide.html){:target="_blank"}{: .btn .btn-green .btn-outline .btn-arrow }
 
 <br>
 
