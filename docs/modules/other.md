@@ -7,11 +7,15 @@ parent: Modules
 
 # Other Modules
 
-1. [Ilastik](./other.html#ilastik)
-2. [Cypository](./other.html#ilastik)
-3. [naivestates](./other.html#naivestates)
-4. [FastPG](./other.html#fastpg) 
+{: .fs-3} Last updated on {{ site.time | date: "%Y-%m-%d" }}.
 
+Segmentation
+1. [Ilastik](./other.html#ilastik)
+1. [Cypository](./other.html#cypository)
+
+Clsutering and cell type inference
+1. [naivestates](./other.html#naivestates)
+1. [FastPG](./other.html#fastpg) 
 
 <br>
 
@@ -24,13 +28,25 @@ parent: Modules
 {: .text-grey-dk-250}
 {: .fw-200}
 {: .fs-3}
-Last updated on 03-15-2022, check the [GitHub](https://github.com/labsyspharm/mcmicro-ilastik){:target="_blank"} for the most up-to-date documentation.
+Last updated on 03-15-2022, 
 
 ## Description
-Ilastik is another method for generating probability maps that can be used as an alternative to UnMICST
+The module provides a command-line interface to the popular [ilastik](https://www.ilastik.org/) toolkit and serves as another method for generating probability maps that can be used as an alternative to UnMICST. Check the [GitHub](https://github.com/labsyspharm/mcmicro-ilastik){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
-Arguments should be passed to Ilastik with the `--ilastik-opts` flag
+By default, MCMICRO runs UnMicst for probability map generation. To run Ilastik instead of or in addition to UnMicst, use the `--probability-maps` flag. When specifying multiple methods, note that the method names must be delimited by a comma with no space. Arguments should be passed to Ilastik with the `--ilastik-opts` flag. Custom models can be provided to Ilastik via `--ilastik-model`.
+
+* Examples:
+  * `nextflow run labsyspharm/mcmicro --in /my/project --probability-maps ilastik --ilastik-opts '--crop'`
+  * `nextflow run labsyspharm/mcmicro --in /my/project --probability-maps ilastik,unmicst --ilastik-model mymodel.ilp`
+* Default: `--ilastik-opts '--num_channels 1'`
+* Running outside of MCMICRO: [Instructions](https://github.com/labsyspharm/mcmicro-ilastik){:target="_blank"}.
+
+### Input
+A stitched and registered ``.ome.tif``, preferably flat field corrected. Nextflow will use as input files from the `registration/` subdirectory for whole-slide images and from the `dearray/` subdirectory for tissue microarrays.
+
+### Output
+The output is similar to that produced by UnMicst, namely a ```.tif``` stack where the different probability maps for each class are concatenated in the Z-axis in the order: nuclei foreground, nuclei contours, and background.
 
 ### Optional arguments
 
@@ -43,8 +59,6 @@ Arguments should be passed to Ilastik with the `--ilastik-opts` flag
 | `--channelIDs <indices>` |`None` | Integer indices specifying which channels to export (Ex: 1 2 4). **NOTE: You must specify a channel to use for filtering in S3segmenter as --probMapChan in --s3seg-opts**|
 | `--ring_mask`| Omitted | Specify if you have a ring mask in the same directory to use for reducing size of hdf5 image |
 | `--crop_amount <integer>`| `None`| Number of crops you would like to extract |
-
-
 
 [Back to top](./other.html#other-modules){: .btn .btn-purple} 
 
