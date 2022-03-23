@@ -139,7 +139,7 @@ The tiles must then be combined into a seamlessly aligned mosaic image in a proc
 ### TMA core detection (optional) 
 
 **Coreograph**  
-[Coreograph]({{ site.baseurl }}/modules/coreograph.html) identifies complete/incomplete tissue cores on a tissue microarray and exports these individual tissue core images for faster downstream image processing [(Schapiro et al., 2021)](https://doi.org/10.1038/s41592-021-01308-y){:target="_blank"}. Coreograph uses a deep learning model, UNet [(Ronneberger et al., 2015)](https://arxiv.org/abs/1505.04597){:target="_blank"}.
+[Coreograph]({{ site.baseurl }}/modules/coreograph.html) identifies complete and partial tissue cores on a tissue microarray and exports these tissue cores as individual images for faster downstream image processing [(Schapiro et al., 2021)](https://doi.org/10.1038/s41592-021-01308-y){:target="_blank"}. Coreograph uses a deep learning model, UNet [(Ronneberger et al., 2015)](https://arxiv.org/abs/1505.04597){:target="_blank"}.
 
 {: .text-center }
 {: .fs-3 }
@@ -156,13 +156,13 @@ A TMA array showing tissue cores (center) that have been processed with Coreogra
 {: .fw-500 }
 {: .text-green-200}
 ## Mosaic images to single-cell data
-Extracting single-cell level data from highly multiplexed image data allows for clinically useful biological data at a depth that was not previously possible. To do this, images must first be segmented into single cells, then interesting features can be extracted into a descriptive cell features table. 
+Extracting single-cell level data from highly multiplexed image data allows for clinically useful biological data at a depth that was not previously possible. To do this, images must first be segmented into single cells, then important properties can be extracted on a per-cell or per-organelle basis into a descriptive cell features table. 
 
 {: .fs-6}
 {: .text-green-200}
 ### Segmentation  
 
-Image processing is necessary to extract quantitative data from images. Although machine learning directly on images shows promise, most high-plex tissue imaging studies require the image to be 'segmented' into single cells before extracting single-cell data on a per-cell or per organelle basis. There are many solutions for segmentation that can be used with MCMICRO. We describe two, UnMICST [(Yapp et al., 2021)](https://doi.org/10.1101/2021.04.02.438285){:target="_blank"}, a method that generates pixel probability maps, and S3segmenter [(Saka et al., 2019)](https://doi.org/10.1038/s41587-019-0207-y){:target="_blank"}, a watershed method for generating segmentation masks.
+There are many solutions for segmentation that can be used with MCMICRO. We describe two, UnMICST [(Yapp et al., 2021)](https://doi.org/10.1101/2021.04.02.438285){:target="_blank"}, a method that generates pixel probability maps, and S3segmenter [(Saka et al., 2019)](https://doi.org/10.1038/s41587-019-0207-y){:target="_blank"}, a watershed method for generating segmentation masks.
 
 {: .text-center }
 {: .fs-3 }
@@ -187,7 +187,7 @@ UnMICST is one example of a semantic segmentation method that  generates pixel-l
 ### Quantification  
    
 **MCQuant**   
-[MCQuant](https://github.com/labsyspharm/quantification){:target="_blank"} takes in a multichannel image and segmentation mask and extracts single-cell data. This generates a _Cell Feature Table_ that records the positions of individual cells and the associated features such as marker intensity, morphology, and quality control attributes. The Cell Feature Table is used for all subsequent analysis and is compatible with many tools developed for visualization of single cell sequencing data, like cellxgene [(Megill et al., 2021)](https://doi.org/10.1101/2021.04.05.438318){:target="_blank"}. 
+[MCQuant](https://github.com/labsyspharm/quantification){:target="_blank"} takes in a multichannel image and segmentation masks and extracts single-cell data. For each mask, this generates a _Cell Feature Table_ that records the positions of individual cells and the associated features such as marker intensity, morphology, and quality control attributes. The Cell Feature Table is used for all subsequent analysis and is compatible with many tools developed for visualization of single cell sequencing data, like cellxgene [(Megill et al., 2021)](https://doi.org/10.1101/2021.04.05.438318){:target="_blank"}. 
 
 {: .fs-3}
 **Note:** A single marker can be processed to generate a large number of distinct descriptive features beyond marker intensity (e.g. shape, granularity, localization within the cell, etc.).
@@ -196,7 +196,7 @@ UnMICST is one example of a semantic segmentation method that  generates pixel-l
 {: .text-green-200}
 ### Quality control  
 
-All tissue images contain technical artifacts that can disrupt image analysis. These can include sectioning artifacts (areas where the knife compresses or tears the specimen), embedded foreign objects (dust, hair), or regions of fat or necrotic tissue that cannot easily be analyzed. Humans are remarkably good at looking past these artifacts to identify biologically meaningful patterns in biological data, but artifacts complicate computational methods of single-cell data analysis. 
+All tissue images contain technical artifacts that can disrupt image analysis. These can include sectioning artifacts (areas where the knife compresses or tears the specimen), embedded foreign objects (dust, hair), or regions of fat or necrotic tissue that cannot be easily analyzed. Humans are remarkably good at looking past these artifacts to identify biologically meaningful patterns in biological data, but artifacts complicate computational methods of single-cell data analysis. 
 
 **CyLinter**  
 [CyLinter](https://labsyspharm.github.io/cylinter/){:target="_blank"} is a human-in-the-loop interactive quality control [software](https://github.com/labsyspharm/cylinter){:target="_blank"} for identifying and removing cells corrupted by microscopy artifacts in multiplexed tissue images. The program takes single-cell feature tables generated by the MCMICRO image processing pipeline as input and returns a set of de-noised feature tables for use in downstream analyses. 
@@ -254,10 +254,9 @@ Walk through the process of turning image tiles into single-cell segmented mosai
 {: .fs-9 }
 {: .fw-500}
 {: .text-grey-dk-100}
-## Training data
-Quality machine learning algorithms can only be generated from quality training data. Currently the field lacks sufficient freely-available data with ground truth labeling (such as pathologist-annotated images). Past experience in the machine learning community with natural scene images [(Ronnenberger et al., 2015)](https://doi.org/10.48550/arXiv.1505.04597){:target="_blank"} proved that acquiring sufficient data with accurate labels remains time consuming and rate limiting [(Gurari et al., 2015)](https://doi.org/10.1109/WACV.2015.160){:target="_blank"}. The Exemplar Microscopy Images of Tissues data set [(EMIT)]({{ site.baseurl }}/datasets.html#exemplar-microscopy-images-of-tissues-emit) will help address this limitation. 
+## Example datasets for method development
 
-We expect the [EMIT]({{ site.baseurl }}/datasets.html#exemplar-microscopy-images-of-tissues-emit) data set to grow steadily; users of MCMICRO should stay abreast of updates in segmentation methods and models.
+We release The Exemplar Microscopy Images of Tissues dataset [(EMIT)]({{ site.baseurl }}/datasets.html#exemplar-microscopy-images-of-tissues-emit) to enable the development additional modules for MCMICRO. Presently, the dataset consists of one TMA and one set of whole-slide images, acquired using multiple imaging platforms. The dataset provides real-world scenarios for testing of image processing methods, and we expect to expand the dataset with additional images in the future.
 
 {: .fs-9 }
 {: .fw-500}
