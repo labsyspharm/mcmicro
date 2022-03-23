@@ -14,8 +14,8 @@ Segmentation
 1. [Cypository](./other.html#cypository)
 
 Clsutering and cell type inference
+1. [Clustering](./other.html#clustering) 
 1. [naivestates](./other.html#naivestates)
-1. [FastPG](./other.html#fastpg) 
 
 <br>
 
@@ -92,18 +92,79 @@ A `.tif` file that annotates individual pixels with the probability that they be
 
 ---
 
+## Clustering
+
+### Description
+MCMICRO integrates three methods for clustering single-cell data. These are [FastPG](https://www.biorxiv.org/content/10.1101/2020.06.19.159749v2){:target="_blank"} (Fast C++ implementation of the popular Phenograph method), Leiden community detection via [scanpy](https://scanpy.readthedocs.io/en/stable/){:target="_blank"}, and [FlowSOM](https://bioconductor.org/packages/release/bioc/html/FlowSOM.html){:target="_blank"}.
+
+### Usage
+Use the `--cell-states` flag to select one or more methods. Method names should be delimited with a comma and no space. Additional method parameters should be provided to MCMICRO with the following flags: `--fastpg-opts`, `--scanpy-opts`, `--flowsom-opts`.
+
+* Examples:
+  * `nextflow run labsyspharm/mcmicro --in /my/project --stop-at cell-states --cell-states fastpg,flowsom --fastpg-opts '-k 10'`
+  * `nextflow run labsyspharm/mcmicro --in /my/project --stop-at cell-states --cell-states scanpy --scanpy-opts '-k 10'`
+* Running outside of MCMICRO:
+  * [Instructions for FastPG](https://github.com/labsyspharm/mcmicro-fastpg)
+  * [Instructions for scanpy](https://github.com/labsyspharm/mcmicro-scanpy)
+  * [Instructions for FlowSOM](https://github.com/labsyspharm/mcmicro-flowsom)
+
+### Input
+
+All methods accept as input the cell-by-feature matrix in `.csv` format. Nextflow looks for these files in the `quantification/` subfolder within the project directory.
+
+### Output
+
+All methods output a `.csv` file annotating individual cells with their cluster index. Nextflow will write these files to the `cell-states/` subfolder within the project directory.
+
+### Optional arguments to FastPG
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| ``-v, --verbose`` ||Flag to print out progress of script |
+| ``-k NEIGHBORS `` | 30 |The number of nearest neighbors to use when clustering.|
+|``-n NUM_THREADS``| 1 |The number of cpus to use during the k nearest neighbors part of clustering.|
+|``-c, --method``| | Include a column with the method name in the output files.|
+|``--force-transform``| | Log transform the input data. If omitted, and --no-- transform is omitted, log transform is only performed if the max value in the input data is >1000.|
+|`` --no-transform`` | |Do not perform Log transformation on the input data. If omitted, and --force-transform is omitted, log transform is only performed if the max value in the input data is >1000.|
+
+### Optional arguments to scapy
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| ``-v, --verbose`` ||Flag to print out progress of script |
+| ``-k NEIGHBORS `` | 30 |The number of nearest neighbors to use when clustering.|
+|``-c, --method``| | Include a column with the method name in the output files.|
+|``--force-transform``| | Log transform the input data. If omitted, and --no-- transform is omitted, log transform is only performed if the max value in the input data is >1000.|
+|`` --no-transform`` | |Do not perform Log transformation on the input data. If omitted, and --force-transform is omitted, log transform is only performed if the max value in the input data is >1000.|
+
+### Optional arguments to scanpy
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `-v, --verbose` | | Flag to print out progress of script |
+| `-c, --method` | | Include a column with the method name in the output files. |
+| `-n, --num-metaclusters` | 25 | The number of clusters for meta-clustering. |
+| `--xdim XDIM` | 10 | The number of neurons in the SOM in the x dimension. |
+| `--ydim YDIM` | 10 | The number of neurons in the SOM in the y dimension. |
+|``--force-transform``| | Log transform the input data. If omitted, and --no-- transform is omitted, log transform is only performed if the max value in the input data is >1000.|
+|`` --no-transform`` | |Do not perform Log transformation on the input data. If omitted, and --force-transform is omitted, log transform is only performed if the max value in the input data is >1000.|
+
+[Back to top](./other.html#other-modules){: .btn .btn-purple} [Back to main modules](./){: .btn .btn-outline} 
+
+---
+
 ## Naivestates
 
 ### Description
 `naivestates` is a label-free, cluster-free tool for inferring cell types from quantified marker expression data, based on known marker <-> cell type associations. Check the [GitHub repository](https://github.com/labsyspharm/naivestates){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
-Use the `--cell-states` flag to select naivestates. When running alongside other methods, such as SCIMAP, method names should be delimited with a comma and no space. Custom marker to cell type (mct) mapping can be provided to naivestates via `--naivestates-model`. Arguments should be provided to MCMICRO with the `--naivestates-opts` flag.
+Use the `--cell-states` flag to select naivestates. When running alongside other cell state inference methods, such as SCIMAP, method names should be delimited with a comma and no space. Custom marker to cell type (mct) mapping can be provided to naivestates via `--naivestates-model`. Arguments should be provided to MCMICRO with the `--naivestates-opts` flag.
 
 * Examples:
   * `nextflow run labsyspharm/mcmicro --in /my/project --stop-at cell-states --cell-states naivestates --naivestates-opts '--log no'`
   * `nextflow run labsyspharm/mcmicro --in /my/project --stop-at cell-states --cell-states naivestates,scimap --naivestates-model map.csv`
-* Default: `--naivestates--opts '-ps png'`
+* Default: `--naivestates--opts '-p png'`
 * Running outside of MCMICRO: [Instructions](https://github.com/labsyspharm/mcmicro-ilastik){:target="_blank"}.
 
 ### Inputs
@@ -131,37 +192,3 @@ Nextflow will write all outputs to the `cell-states/naivestates/` subdirectory w
 |`--mct <filename>` | |The tool has a basic marker -> cell type (mct) mapping in `typemap.csv`. More sophisticated mct mappings can be defined by creating a `custom-map.csv` file with two columns: `Marker` and `State`. |
 
 [Back to top](./other.html#other-modules){: .btn .btn-purple} 
-
----
-
-## FastPG
-
-{: .text-grey-dk-250}
-{: .fw-200}
-{: .fs-3}
-Last updated on 03-15-2022, check the [GitHub](https://github.com/labsyspharm/mcmicro-fastPG#parameter-reference){:target="_blank"} for the most up-to-date documentation.
-
-### Description
-FastPG does "fast phenograph-like clustering of items with scores of features". This module provides a command-line interface for the popular Phenograph method [(FastPG - developed elsewhere)](https://github.com/sararselitsky/FastPG){:target="_blank"}, through a C++ implementation.
-
-### Usage
-Arguments should be provided to MCMICRO with the `--fastpg-opts` flag
-
-### Required arguments
-Input and output paths (provided by Nextflow when operating through the MCMICRO pipeline)
-
-### Optional arguments
-
-| Parameter | Default | Description |
-| --- | --- | --- |
-|```-h, --help``` | |Show help message and exit|
-| ``-m MARKERS`` | | A text file with a marker on each line to specify which markers to use for clustering |
-| ``-v, --verbose`` ||Flag to print out progress of script |
-| ``-k NEIGHBORS `` | 30 |The number of nearest neighbors to use when clustering.|
-|``-n NUM_THREADS``| 1 |The number of cpus to use during the k nearest neighbors part of clustering.|
-|``-c, --method``| | Include a column with the method name in the output files.|
-| ``-y CONFIG``| | A yaml config file that states whether the input data should be log/logicl transformed.|
-|``--force-transform``| | Log transform the input data. If omitted, and --no-- transform is omitted, log transform is only performed if the max value in the input data is >1000.|
-|`` --no-transform`` | |Do not perform Log transformation on the input data. If omitted, and --force-transform is omitted, log transform is only performed if the max value in the input data is >1000.|
-
-[Back to top](./other.html#other-modules){: .btn .btn-purple} [Back to main modules](./){: .btn .btn-outline} 
