@@ -7,7 +7,7 @@ parent: Modules
 
 # Other Modules
 
-{: .fs-3} Last updated on {{ site.time | date: "%Y-%m-%d" }}.
+Last updated on {{ site.time | date: "%Y-%m-%d" }}.
 
 Segmentation
 1. [Ilastik](./other.html#ilastik)
@@ -25,12 +25,7 @@ Clsutering and cell type inference
 
 ## Ilastik
 
-{: .text-grey-dk-250}
-{: .fw-200}
-{: .fs-3}
-Last updated on 03-15-2022, 
-
-## Description
+### Description
 The module provides a command-line interface to the popular [ilastik](https://www.ilastik.org/) toolkit and serves as another method for generating probability maps that can be used as an alternative to UnMICST. Check the [GitHub](https://github.com/labsyspharm/mcmicro-ilastik){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
@@ -46,7 +41,7 @@ By default, MCMICRO runs UnMicst for probability map generation. To run Ilastik 
 A stitched and registered ``.ome.tif``, preferably flat field corrected. Nextflow will use as input files from the `registration/` subdirectory for whole-slide images and from the `dearray/` subdirectory for tissue microarrays.
 
 ### Output
-The output is similar to that produced by UnMicst, namely a ```.tif``` stack where the different probability maps for each class are concatenated in the Z-axis in the order: nuclei foreground, nuclei contours, and background.
+The output is similar to that produced by UnMicst, namely a ```.tif``` stack where the different probability maps for each class are concatenated in the Z-axis in the order: nuclei foreground, nuclei contours, and background. Nextflow will write output to the `probability-maps/ilastik/` subdirectory within the project folder.
 
 ### Optional arguments
 
@@ -66,28 +61,29 @@ The output is similar to that produced by UnMicst, namely a ```.tif``` stack whe
 
 ## Cypository
 
-{: .text-grey-dk-250}
-{: .fw-200}
-{: .fs-3}
-Last updated on 03-15-2022, check the [GitHub](https://github.com/HMS-IDAC/Cypository#cypository---pytorch-mask-rcnn-for-cell-segmentation){:target="_blank"} for the most up-to-date documentation.
+### Description
 
-## Description
-Cypository is used to segment the cytoplasm of cells. 
+Cypository is used to segment the cytoplasm of cells. Check the [GitHub repository](https://github.com/HMS-IDAC/Cypository#cypository---pytorch-mask-rcnn-for-cell-segmentation){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
-Arguments should be provided to MCMICRO with the `--___-opts` flag
+Use `--probability-maps` to enable Cypository. In general, it would be uncommon to run Cypository alongside probability map generators for nuclei, but it can be done by specifying method names delimited with a comma and no space, e.g., `--probability-maps cypository,unmicst`. Additional Cypository parameters should be provided to MCMICRO with the `--cypository-opts` flag.
 
-### Required arguments
-Image path (provided by Nextflow when operating through the MCMICRO pipeline)
+* Example: `nextflow run labsyspharm/mcmicro --in /my/project --probability-maps cypository --cypository-opts '--channel 5'`
+* Default: `--cypository-opts '--model zeisscyto'`
+
+### Input
+A stitched and registered ``.ome.tif``, preferably flat field corrected. Nextflow will use as input files from the `registration/` subdirectory for whole-slide images and from the `dearray/` subdirectory for tissue microarrays.
+
+### Output
+A `.tif` file that annotates individual pixels with the probability that they belong to the cytoplasm of a cell. Nextflow will write output to the `probability-maps/cypository/` subdirectory within the project folder.
 
 ### Optional arguments
 
 | Parameter | Default | Description |
 | --- | --- | --- |
 |``--model``|  | Currently only one model exists (zeisscyto)|
-|``--outputPath``| |path where output files should be saved to.  |
 |``--channel``| | channel containing the cytoplasm stain. 0-based indexing. | 
-| ``--threshold``|  0.6  |A value between 0 and 1 to filter out false detections.|  
+|``--threshold``|  0.6  |A value between 0 and 1 to filter out false detections.|  
 |``--overlap`` | |The image is split into overlapping tiles before cytoplasm detection. This parameter specifies the amount of overlap in pixels.|
 |``--scalingFactor``| 1 (no resizing)  |Factor by which to increase/decrease image size by.| 
 |``--GPU``|Default behavior is the first GPU card (0-based indexing).| If multiple GPUs are available, this specifies which GPU card to use.|
