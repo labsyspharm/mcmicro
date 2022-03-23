@@ -448,8 +448,11 @@ At the moment, MCMICRO does not automatically generate Minerva stories of the in
 | :-- | :-- | :-- | :-- |
 | [Ilastik](./other.html#ilastik) | Probability map generator | [Code](https://github.com/labsyspharm/mcmicro-ilastik) - [DOI](https://doi.org/10.1038/s41592-019-0582-9) |
 | [Cypository](./other.html#ilastik) | Probability map generator (cytoplasm only) | [Code](https://github.com/HMS-IDAC/Cypository) |
-| [naivestates](./other.html#naivestates) | Cell type calling | [Code](https://github.com/labsyspharm/naivestates) |
-| [FastPG](./other.html#fastpg) | Cell type calling | [Code](https://github.com/labsyspharm/celluster) - [DOI](https://www.biorxiv.org/content/10.1101/2020.06.19.159749v2) |
+| [Mesmer](./other.html#mesmer) | Instance segmentation | [Code](https://github.com/vanvalenlab/deepcell-applications) - [DOI](https://doi.org/10.1038/s41587-021-01094-0) |
+| [naivestates](./other.html#naivestates) | Cell type calling with Naive Bayes | [Code](https://github.com/labsyspharm/naivestates) |
+| [FastPG](./other.html#clustering) | Clustering (Louvain community detection) | [Code](https://github.com/labsyspharm/mcmicro-fastPG) - [DOI](https://www.biorxiv.org/content/10.1101/2020.06.19.159749v2) |
+| [scanpy](./other.html#clustering) | Clustering (Leiden community detection) | [Code](https://github.com/labsyspharm/mcmicro-scanpy) |
+| [FlowSOM](./other.html#clustering) | Clustering (Self-organizing maps) | [Code](https://github.com/labsyspharm/mcmicro-flowsom) |
 
 
 # Suggest a module
