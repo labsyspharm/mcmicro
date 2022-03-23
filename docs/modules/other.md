@@ -104,9 +104,9 @@ Use the `--cell-states` flag to select one or more methods. Method names should 
   * `nextflow run labsyspharm/mcmicro --in /my/project --stop-at cell-states --cell-states fastpg,flowsom --fastpg-opts '-k 10'`
   * `nextflow run labsyspharm/mcmicro --in /my/project --stop-at cell-states --cell-states scanpy --scanpy-opts '-k 10'`
 * Running outside of MCMICRO:
-  * [Instructions for FastPG](https://github.com/labsyspharm/mcmicro-fastpg)
-  * [Instructions for scanpy](https://github.com/labsyspharm/mcmicro-scanpy)
-  * [Instructions for FlowSOM](https://github.com/labsyspharm/mcmicro-flowsom)
+  * [Instructions for FastPG](https://github.com/labsyspharm/mcmicro-fastpg){:target="_blank"}
+  * [Instructions for scanpy](https://github.com/labsyspharm/mcmicro-scanpy){:target="_blank"}
+  * [Instructions for FlowSOM](https://github.com/labsyspharm/mcmicro-flowsom){:target="_blank"}
 
 ### Input
 
@@ -149,7 +149,7 @@ All methods output a `.csv` file annotating individual cells with their cluster 
 |``--force-transform``| | Log transform the input data. If omitted, and --no-- transform is omitted, log transform is only performed if the max value in the input data is >1000.|
 |`` --no-transform`` | |Do not perform Log transformation on the input data. If omitted, and --force-transform is omitted, log transform is only performed if the max value in the input data is >1000.|
 
-[Back to top](./other.html#other-modules){: .btn .btn-purple} [Back to main modules](./){: .btn .btn-outline} 
+[Back to top](./other.html#other-modules){: .btn .btn-purple}
 
 ---
 
@@ -191,4 +191,4 @@ Nextflow will write all outputs to the `cell-states/naivestates/` subdirectory w
 | `--umap`|disabled| Include this flag to generate UMAP plots.|
 |`--mct <filename>` | |The tool has a basic marker -> cell type (mct) mapping in `typemap.csv`. More sophisticated mct mappings can be defined by creating a `custom-map.csv` file with two columns: `Marker` and `State`. |
 
-[Back to top](./other.html#other-modules){: .btn .btn-purple} 
+[Back to top](./other.html#other-modules){: .btn .btn-purple} [Back to main modules](./){: .btn .btn-outline} 
