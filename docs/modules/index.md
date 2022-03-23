@@ -397,12 +397,31 @@ ___
 ## SCIMAP
 {: .fw-500}
 {: .text-blue-100}
-*Data analysis*
 
+*Spatial analysis*
 {: .text-grey-dk-300}
 {: .fw-200}
 {: .fs-3}
-Last updated on 03-15-2022, check the [SCIMAP website](https://scimap.xyz){:target="_blank"} for the most up-to-date documentation.
+
+### Description
+SCIMAP is a suite of tools that enables spatial single-cell analyses. Check the [SCIMAP website](https://scimap.xyz){:target="_blank"} for the most up-to-date documentation.
+
+### Usage
+MCMICRO allows users to automatically apply SCIMAP's clustering algorithms to the cell-by-feature table produced by MCQuant. The clustering results can be subsequently used for manual assignment of cell states. Since MCMICRO stops at MCQuant by default, users will need to explicitly request that the pipeline continues to the clustering step. MCMICRO's usage of SCIMAP doesn't have any parameters, and users are encouraged to check the [SCIMAP website](https://scimap.xyz){:target="_blank"} for more sophisticated human-in-the-loop analyses.
+
+* Example: `nextflow run labsyspharm/mcmicro --in /my/project --stop-at cell-states`
+* Running outside of MCMICRO: [Instructions](https://scimap.xyz){:target="_blank"}.
+
+### Input
+
+A cell-by-feature table in `.csv` format, as produced by MCQuant. Nextflow will look for these tables in the `quantification/` subdirectory within the project.
+
+### Output
+
+1. A table of cluster assignments for each cell by the different clustering algorithms implemented within SCIMAP. These tables will be generated in `.csv` and `.h5ad` formats.
+2. A set of UMAP plots for the different clustering algorithms, with individual plots written to the `plots/` subdirectory in `.pdf` format.
+
+Nextflow will write all outputs to the `cell-states/scimap/` subdirectory within the project.
 
 [Back to top](./){: .btn .btn-outline} 
 
