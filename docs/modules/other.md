@@ -12,6 +12,7 @@ Last updated on {{ site.time | date: "%Y-%m-%d" }}.
 Segmentation
 1. [Ilastik](./other.html#ilastik)
 1. [Cypository](./other.html#cypository)
+1. [Mesmer](./other.html#mesmer)
 
 Clsutering and cell type inference
 1. [Clustering](./other.html#clustering) 
@@ -92,6 +93,40 @@ A `.tif` file that annotates individual pixels with the probability that they be
 
 ---
 
+## Mesmer
+
+### Description
+
+The [Mesmer](https://doi.org/10.1038/s41587-021-01094-0){:target="_blank"} modules provides an alternative segmentation approach to UnMicst and ilastik. It is implemented and maintained by an external group. Check their [GitHub repository](https://github.com/vanvalenlab/deepcell-applications){:target="_blank"} for the most up-to-date information.
+
+### Usage
+
+Use `--probability-maps` to select mesmer. When running together with UnMicst and/or ilastik, method names must be separated by a comma without spaces. Additional Mesmer parameters can be provided to MCMICRO via the `--mesmer-opts` flag.
+
+* Examples:
+  * `nextflow run labsyspharm/mcmicro --in /my/project --probability-maps mesmer --mesmer-opts '--image-mpp 0.25'`
+  * `nextflow run labsyspharm/mcmicro --in /my/project --probability-maps mesmer,ilastik,unmicst`
+* Running outside of MCMICRO: [Instructions](https://github.com/vanvalenlab/deepcell-applications){:target="_blank"}.
+
+### Input
+
+A stitched and registered ``.ome.tif``, preferably flat field corrected. Nextflow will use as input files from the `registration/` subdirectory for whole-slide images and from the `dearray/` subdirectory for tissue microarrays.
+
+### Output
+
+A segmentation mask, similar to the ones produced by S3segmenter. Nextflow will write these files directly to `segmentation/`.
+
+### Optional arguments
+
+| Name | Description | Default Value |
+| :--- | :--- | :--- |
+| `--nuclear-channel` | The numerical index of the channel(s) from `nuclear-image` to select. If multiple values are passed, the channels will be summed. | `0` |
+| `--compartment` | Predict nuclear or whole-cell segmentation. | `"whole-cell"` |
+| `--image-mpp` | The resolution of the image in microns-per-pixel. A value of 0.5 corresponds to 20x zoom. | `0.5` |
+| `--batch-size` | Number of images to predict on per batch. | `4` |
+
+---
+
 ## Clustering
 
 ### Description
@@ -137,7 +172,7 @@ All methods output a `.csv` file annotating individual cells with their cluster 
 |``--force-transform``| | Log transform the input data. If omitted, and --no-- transform is omitted, log transform is only performed if the max value in the input data is >1000.|
 |`` --no-transform`` | |Do not perform Log transformation on the input data. If omitted, and --force-transform is omitted, log transform is only performed if the max value in the input data is >1000.|
 
-### Optional arguments to scanpy
+### Optional arguments to FlowSOM
 
 | Parameter | Default | Description |
 | --- | --- | --- |
