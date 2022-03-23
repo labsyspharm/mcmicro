@@ -19,7 +19,8 @@ You can view an example of how MCMICRO turns image tiles into single-cell segmen
  
 Enter the commands `nextflow run hello` and `docker run hello-world` to verify that both Nexflow and Docker* are functional.
 
-*\*You may need to run Docker as Administrator.*
+*\*If using a Windows environment, you may need to run Docker as Administrator.*
+*\*If using a MacOS environment, you may need to increase the amount of [RAM allocated to Docker](https://docs.docker.com/desktop/mac/#resources){:target="_blank"}.*
 
 <br>
 
@@ -27,7 +28,6 @@ Enter the commands `nextflow run hello` and `docker run hello-world` to verify t
  **Step 1:** Ensure you have the latest version of the pipeline 
 
 ``` bash
-# Get the latest version of the pipeline
 nextflow pull labsyspharm/mcmicro
 ```
 
@@ -36,14 +36,14 @@ nextflow pull labsyspharm/mcmicro
 {: .fs-6}
 **Step 2:** [Download]({{ site.baseurl }}/datasets/datasets.html) exemplar data. 
 
-Replace \*path\* with where you want to store the files. (use `.` for path to download files into the current directory)
+Replace `/my/path` with where you want to store the files. (use `.` for path to download files into the current directory)
 
 ``` bash
 # Download exemplar-001
-nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-001 --path *path*
+nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-001 --path /my/path
 
 # Download exemplar-002
-nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-002 --path *path*
+nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-002 --path /my/path
 ```
 
 Both exemplar datasets have the [directory structure]({{ site.baseurl }}/instructions/nextflow/#input) of
@@ -62,9 +62,11 @@ exemplar-001 or exemplar-002
     ├── exemplar-001-cycle-06-ffp.tif
     ├── ...
     └── ...
-# exemplar-001 contains cycle 6-8; exemplar-002 contains cycle 1-10.Ecah cycle has one .ome file in raw/ and two .tif files in illumination/
 ```
-These images look like the following:
+
+By default, `exemplar-001` contains cycles 6 through 8, while exemplar-002 contains all 10 cycles. Use `nextflow run labsyspharm/mcmicro/exemplar.nf --help` to learn how to download a different range of cycles for each exemplar.
+
+Each cycle has one .ome file in `raw/` and two .tif files in `illumination/`. These images look like the following:
 
 <div class="row">
 <div class="col-xs-4 col-sm-4">
@@ -73,11 +75,11 @@ These images look like the following:
 
 {: .fs-3}
 {: .fw-200}
-`exemplar-001-cycle-06.ome`
+`exemplar-001-cycle-06.ome.tif`
 
 {: .fs-3}
 {: .fw-200}
-*This is the first image in a stack of 24 images.*
+*This is the first image in a stack of 24 images showing the Hoechst stain for DNA.*
 </div>
 </div>
 
@@ -91,7 +93,7 @@ These images look like the following:
 
 {: .fs-3}
 {: .fw-200}
-*This is the first image of a stack of 4 images, previewed in Fiji with auto adjustments made to brightness and contrast.*
+*This is the first image of a stack of 4 images, previewed in Fiji with auto adjustments made to brightness and contrast. The image contains the dark-field illumination profile.*
 </div>
 </div>
 
@@ -105,7 +107,7 @@ These images look like the following:
 
 {: .fs-3}
 {: .fw-200}
-*This is the first image of a stack of 4 images, previewed in Fiji with auto adjustments made to brightness and contrast.*
+*This is the first image of a stack of 4 images, previewed in Fiji with auto adjustments made to brightness and contrast. The image contains the flat-field illumination profile.*
 </div>
 </div>
 
@@ -115,19 +117,20 @@ These images look like the following:
 
 {: .fs-6}
 **Step 3:** Use `--in` to point the pipeline at the data.  
-(\*path\* should point to where your files are stored; `.` points to the current directory)
 
-*If your computer has an **Apple M1 chip**, you may need to specify ilastik for probability maps at this step. Read more on the [FAQ page](../instructions/faq.md#q-my-computer-has-an-apple-m1-chip-and-the-pipeline-is-failing-at-the-segmentation-step-what-can-i-do).*
+In the commands below, `/my/path` should match what was used to run the `exemplar.nf` command above (`.` can be used to point to the current directory).
 
 ``` bash
 # Run the pipeline on exemplar data (starting from the registration step, by default)
-nextflow run labsyspharm/mcmicro --in *path*/exemplar-001
+nextflow run labsyspharm/mcmicro --in /my/path/exemplar-001
 
 # Use --tma to dearray a tissue microarray and process each core in parallel
-nextflow run labsyspharm/mcmicro --in *path*/exemplar-002 --tma
+nextflow run labsyspharm/mcmicro --in /my/path/exemplar-002 --tma
 ```
 
-**Note:** On an average workstation, it takes approximately 5-10 minutes to process exemplar-001 from start to finish. Exemplar-002 is substantially larger, and takes 30-40 minutes on an average workstation.
+*If your computer has an **Apple M1 chip**, you may need to specify ilastik for probability maps at this step. Read more on the [FAQ page](../instructions/faq.md#q-my-computer-has-an-apple-m1-chip-and-the-pipeline-is-failing-at-the-segmentation-step-what-can-i-do).*
+
+*On an average workstation, it takes approximately 5-10 minutes to process exemplar-001 from start to finish. Exemplar-002 is substantially larger, and takes 30-40 minutes on an average workstation.
 
 
 {: .fs-3}
