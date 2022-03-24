@@ -98,6 +98,14 @@ nextflow run labsyspharm/mcmicro --in /my/project --multi-formats ndpis
 
 for multi-file formats. Note that in the latter case, you need to specify the extension of the index file (`.ndpis` in this case) and not the individual files being indexed (`.ndpi` in this case).
 
+### Q: My execution environment doesn't support Docker. Can I run MCMICRO using Singularity instead?
+
+Yes, MCMICRO can be configured to used Singularity in place of Docker. Use the `-profile` flag to switch configurations:
+
+```
+nextflow run labsyspharm/mcmicro --in /my/project -profile singularity
+```
+
 ## Segmentation
 
 ### Q: How do I run MCMICRO with my own Ilastik model?
