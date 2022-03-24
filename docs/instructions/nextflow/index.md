@@ -41,10 +41,10 @@ nextflow run labsyspharm/mcmicro --in path/to/my/data
 
 ## Input
 
-**At the minimum, the pipeline expects two inputs:**
+**At the minimum, the pipeline expects two inputs with an optional third one:**
 1. `markers.csv` in the parent directory (containing [metadata with markers](./#markers))
 2. [Raw images](./#raw-images) in the `raw/` subdirectory
-3. (Optional) [Illumination corrected](./#optional-illumination-corrected-images) images
+3. (Optional) [Illumination profiles](./#optional-illumination-corrected-images) in the `illumination/` subdirectory.
 
 {: .fs-3}
 Example input directory:
@@ -52,6 +52,7 @@ Example input directory:
 exemplar-001
 ├── markers.csv
 ├── raw/
+└── illumination/
 ```
 
 <br>
@@ -83,30 +84,12 @@ cycle,marker_name
 <br>
 
 ### Raw images
-The exemplar `raw/` files are in the open standard OME-TIFF format, but in practice your input files will be in whatever format your microscope produces. The pipeline supports all [Bio-Formats-compatible](https://docs.openmicroscopy.org/bio-formats/6.0.1/supported-formats.html){:target="_blank"} image formats.
+The exemplar `raw/` files are in the open standard OME-TIFF format, but in practice your input files will be in whatever format your microscope produces. The pipeline supports all [Bio-Formats-compatible](https://docs.openmicroscopy.org/bio-formats/6.0.1/supported-formats.html){:target="_blank"} image formats, but [additional parameters may be required]({{site.baseurl}}/instructions/faq.html#q-mcmicro-doesnt-seem-to-recognize-my-file-format-how-do-i-tell-it-what-files-to-look-for).
 
 <br>
 
 ### (Optional) Illumination corrected images
-Pre-computed flat-field and dark-field illumination profiles can be placed in the `illumination/ directory`. 
-
-{: .fs-3}
-Example input directory with illumination corrected images:
-```
-exemplar-001
-├── markers.csv
-├── raw/
-└── illumination/
-    ├── exemplar-001-cycle-01-dfp.tif
-    ├── exemplar-001-cycle-01-ffp.tif
-    ├── exemplar-001-cycle-02-dfp.tif
-    ├── exemplar-001-cycle-02-ffp.tif
-    ├── exemplar-001-cycle-03-dfp.tif
-    └── exemplar-001-cycle-03-ffp.tif
-```
-
-{: .fs-3}
-\*If no pre-computed profiles are available, MCMICRO can compute these using [BaSiC]({{site.baseurl}}/modules/#basic). This step is not executed by default, because proper illumination correction requires careful curation and visual inspection of the profiles produced by computational tools. After familiarizing yourself with the general concepts ([1](https://emsis.eu/olh/HTML/topics_glossary_tem_shading_correction.html){:target="_blank"}, [2](https://en.wikipedia.org/wiki/Flat-field_correction){:target="_blank"}), the profiles can be computed by [specifying](#specifying-start-and-stop-modules) `--start-at illumination`.
+Pre-computed flat-field and dark-field illumination profiles can be placed in the `illumination/` directory. If no pre-computed profiles are available, MCMICRO can compute these using [BaSiC]({{site.baseurl}}/modules/#basic). This step is not executed by default, because proper illumination correction requires careful curation and visual inspection of the profiles produced by computational tools. After familiarizing yourself with the general concepts ([1](https://emsis.eu/olh/HTML/topics_glossary_tem_shading_correction.html){:target="_blank"}, [2](https://en.wikipedia.org/wiki/Flat-field_correction){:target="_blank"}), the profiles can be computed by [specifying](#specifying-start-and-stop-modules) `--start-at illumination`.
 
 [Back to top](./){: .btn .btn-outline} 
 
