@@ -89,7 +89,7 @@ The exemplar `raw/` files are in the open standard OME-TIFF format, but in pract
 <br>
 
 ### (Optional) Illumination corrected images
-Pre-computed flat-field and dark-field illumination profiles can be placed in the `illumination/` directory. If no pre-computed profiles are available, MCMICRO can compute these using [BaSiC]({{site.baseurl}}/modules/#basic). This step is not executed by default, because proper illumination correction requires careful curation and visual inspection of the profiles produced by computational tools. After familiarizing yourself with the general concepts ([1](https://emsis.eu/olh/HTML/topics_glossary_tem_shading_correction.html){:target="_blank"}, [2](https://en.wikipedia.org/wiki/Flat-field_correction){:target="_blank"}), the profiles can be computed by [specifying](#specifying-start-and-stop-modules) `--start-at illumination`.
+Pre-computed flat-field and dark-field illumination profiles can be placed in the `illumination/` directory. If no pre-computed profiles are available, MCMICRO can compute these using [BaSiC]({{site.baseurl}}/modules/#basic). This step is not executed by default, because proper illumination correction requires careful curation and visual inspection of the profiles produced by computational tools. After familiarizing yourself with the [general concepts] (https://en.wikipedia.org/wiki/Flat-field_correction){:target="_blank"}, the profiles can be computed by [specifying](#specifying-start-and-stop-modules) `--start-at illumination`.
 
 [Back to top](./){: .btn .btn-outline} 
 
@@ -204,7 +204,7 @@ exemplar-002
 1. The file `params.yml` will contain the full record of module versions and all parameters used to run the pipeline. This allows for full reproducibility of future runs.
 1. The `provenance/` subdirectory will contain exact commands (`.sh`) executed by individual modules, as well the output (`.log`) of these commands.  
 
-\* *You should retain `params.yml` and `provenance/` because these files enable full reproducibility of a pipeline run.*
+\* *You should retain `params.yml` and `provenance/` because these files enable full reproducibility of a pipeline run. The other QC files can be safely deleted once the quality of the outputs has been verified and no more parameter tuning is expected.*
 {: .fs-3}
 {: .fw-500}
 
@@ -215,10 +215,7 @@ exemplar-002
 1. When working with TMAs, `coreo/` will contain `TMA_MAP.tif`, a mask showing where in the original TMA image the segmented cores reside.
 1. If UnMicst was used to generate probability maps, `unmicst/` will contain thumbnail previews, allowing for a quick assessment of their quality.
 1. After segmentation, two-channel tif files containing DAPI and nuclei/cell/cytoplasm outlines will reside in `s3seg/`, allowing for a visual inspection of segmentation quality.
-
- The other QC files can be safely deleted once the quality of the outputs has been verified and no more parameter tuning is expected.
- {: .fs-3}
-
+ 
 [Back to top](./){: .btn .btn-outline} 
 
 ---
@@ -241,7 +238,7 @@ The following parameters control the pipeline as a whole. These can be specified
 | `--stop-at <step>` | `quantification` | Name of the final step to be executed by the pipeline. Spans the same vocabulary as `--start-at`. |
 | `--tma` | Omitted | If specified, MCMICRO treats input data as a TMA. If omitted, the input is assumed to be a whole-slide image. |
 | `--ilastik-model <model.ilp>` | None | A custom `.ilp` file to be used as the classifier model for ilastik. |
-| `--probability-maps <choice>` | `unmicst` | Which module(s) to use for probability map computation. Must be one of `unmicst`, `ilastik`, `all` (`unmicst` AND `ilastik`), and `cypository` for cytoplasm segmentation |
+| `--probability-maps <choice>` | `unmicst` | Which module(s) to use for probability map computation. Module names should be delimited with a comma without spaces, e.g., `--probability-maps unmicst,ilastik` |
 
 <br>
 
@@ -255,7 +252,7 @@ nextflow run labsyspharm/mcmicro --in /path/to/my-data -w /path/to/work/
 <br>
 
 ### Specifying start and stop modules
-By default, the pipeline starts from the registration step ([ASHLAR]({{site.baseurl}}/modules/#ashlar)), proceeds through [UnMICST]({{site.baseurl}}/modules/#unmicst), [S3segmenter]({{site.baseurl}}/modules/#s3segmenter), and stops after executing the quantification [UnMICST]({{site.baseurl}}/modules/#mcquant) step. 
+By default, the pipeline starts from the registration step ([ASHLAR]({{site.baseurl}}/modules/#ashlar)), proceeds through [UnMICST]({{site.baseurl}}/modules/#unmicst), [S3segmenter]({{site.baseurl}}/modules/#s3segmenter), and stops after executing the quantification [MCQuant]({{site.baseurl}}/modules/#mcquant) step. 
 
 Use `--start-at` and `--stop-at` flags to execute any contiguous section of the pipeline instead. Any subdirectory name listed in the [directory structure](./#directory-structure) is a valid starting and stopping point.  
 
@@ -275,7 +272,7 @@ nextflow run labsyspharm/mcmicro --in path/to/exemplar-001 --start-at illuminati
 ### Specifying module-specific parameters
 The pipeline provides a sensible set of [default parameters for individual modules]({{site.baseurl}}/modules/). To change these use <br> `--ashlar-opts`, `--unmicst-opts`, `--s3seg-opts` and `--quant-opts`. 
 
-For example: ```bash nextflow run labsyspharm/mcmicro --in /path/to/my-data --ashlar-opts '-m 35 --pyramid' ``` will provide `-m 35 --pyramid` as additional command line arguments to ASHLAR.
+For example: ```nextflow run labsyspharm/mcmicro --in /path/to/my-data --ashlar-opts '-m 35 --pyramid' ``` will provide `-m 35 --pyramid` as additional command line arguments to ASHLAR.
 
 *Go to [modules]({{site.baseurl}}/modules/) for a list of options available for each module.*
 
