@@ -55,7 +55,7 @@ Verify that Nextflow is accessible by going to your home directory (`cd ~`) and 
 
 ## Install Docker*
 
-Install [Docker](https://docs.docker.com/install/){:target="_blank"}. Ensure that the Docker engine is running by typing `docker images`. If the engine is running, it should return a (possibly empty) list of container images currently downloaded to your system.
+Install [Docker](https://docs.docker.com/install/){:target="_blank"}. Ensure that the Docker engine is running by typing `docker run hello-world`. If the engine is running, you should see "This message shows that your installation appears to be working correctly." in the output.
 
 {: .text-center }
 {: .fs-3 }
@@ -71,4 +71,4 @@ Ready to run??
 
 Beginners, start with the [tutorial]({{site.baseurl}}/tutorial/tutorial.html){: .btn .btn-outline .btn-arrow }
 
-Experienced users can go to the [Nextflow Reference Sheet](./){: .btn .btn-outline .btn-arrow }
+Experienced users can go to the [MCMICRO Reference Sheet](./){: .btn .btn-outline .btn-arrow }
