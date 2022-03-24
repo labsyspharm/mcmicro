@@ -22,38 +22,37 @@ parent: Pipeline documentation
 
 ### Q: How do I resume a pipeline run that halted partway?
 
-The intermediate files in the `work/` directory allow you to restart a pipeline partway, without re-running everything from scratch. For example, consider the following scenario on O2:
+The intermediate files in the `work/` directory allow you to restart a pipeline partway, without re-running everything from scratch. For example, consider the following scenario:
 
 ``` bash
 # This run will fail because --some-invalid-arg is not a valid argument for UnMicst
 nextflow run labsyspharm/mcmicro --in ~/data/exemplar-001 --unmicst-opts '--some-invalid-arg'
 
-# N E X T F L O W  ~  version 20.01.0
-# Launching `labsyspharm/mcmicro` [jolly_hodgkin] - revision: eeaa364408 [master]
+# N E X T F L O W  ~  version 21.10.6
+# Launching `labsyspharm/mcmicro` [wise_pasteur] - revision: bdfd39da0e [master]
 # executor >  local (2)
-# [-        ] process > illumination   -
-# [7e/bf811b] process > ashlar         [100%] 1 of 1 ✔
-# [-        ] process > dearray        -
-# [29/dfdfac] process > unmicst        [100%] 1 of 1, failed: 1 ✘
-# [-        ] process > ilastik        -
-# [-        ] process > s3seg          -
-# [-        ] process > quantification -
-# [-        ] process > naivestates    -
+# [-        ] process > illumination                    -
+# [64/0cb43c] process > registration:ashlar             [100%] 1 of 1 ✔
+# [-        ] process > dearray:coreograph              -
+# [fe/f60c41] process > segmentation:worker (unmicst-1) [100%] 1 of 1, failed: 1 ✘
+# [-        ] process > segmentation:s3seg              -
+# [-        ] process > quantification:mcquant          -
+# [-        ] process > cellstates:worker               -
+
 
 # Address the issue by removing the invalid argument and restart the pipeline with -resume
 nextflow run labsyspharm/mcmicro --in ~/data/exemplar-001 -resume
 
-# N E X T F L O W  ~  version 20.01.0
-# Launching `labsyspharm/mcmicro` [backstabbing_goodall] - revision: eeaa364408 [master]
-# executor >  local (1)
-# [-        ] process > illumination   -
-# [7e/bf811b] process > ashlar         [100%] 1 of 1, cached: 1 ✔      <- NOTE: cached
-# [-        ] process > dearray        -
-# [9e/08ab35] process > unmicst        [100%] 1 of 1 ✔
-# [-        ] process > ilastik        -
-# [84/918c38] process > s3seg          [100%] 1 of 1 ✔
-# [0a/7f71f7] process > quantification [100%] 1 of 1 ✔
-# [ff/be5a97] process > naivestates    [100%] 1 of 1 ✔
+N E X T F L O W  ~  version 21.10.6
+Launching `labsyspharm/mcmicro` [reverent_cori] - revision: bdfd39da0e [master]
+executor >  local (3)
+[-        ] process > illumination                    -
+[64/0cb43c] process > registration:ashlar             [100%] 1 of 1, cached: 1 ✔  # <-- NOTE: Cached
+[-        ] process > dearray:coreograph              -
+[61/d7614c] process > segmentation:worker (unmicst-1) [100%] 1 of 1 ✔
+[6b/06cd6b] process > segmentation:s3seg (1)          [100%] 1 of 1 ✔
+[5a/d17d36] process > quantification:mcquant (1)      [100%] 1 of 1 ✔
+[-        ] process > cellstates:worker               -
 ```
 
 As you run the pipeline on your datasets, the size of the `work/` directory can grow substantially. Use [nextflow clean](https://github.com/nextflow-io/nextflow/blob/cli-docs/docs/cli.rst#clean) to selectively remove portions of the work directory. Use `-n` flag to list which files will be removed, inspect the list to ensure that you don't lose anything important, and repeat the command with `-f` to actually remove the files:
@@ -69,7 +68,7 @@ nextflow clean -f -but last
 ```
 ### Q: My computer has an Apple M1 chip and the pipeline is failing at the Segmentation step. What can I do?
 
-A: You can use ilastik for probability maps instead. To do so, specify `--probability-maps ilastik` in your command to run MCMIRO
+A: You can use ilastik for probability map generation instead. To do so, specify `--probability-maps ilastik` in your command to run MCMICRO
 
 ```
 nextflow run labsyspharm/mcmicro --in /my/path/exemplar-001 --probability-maps ilastik
@@ -103,7 +102,7 @@ for multi-file formats. Note that in the latter case, you need to specify the ex
 
 ### Q: How do I run MCMICRO with my own Ilastik model?
 
-A: Use the `--ilastik-model` parameter. Note that the parameter must be specified *outside** `--ilastik-opts`. For example,
+A: Use the `--ilastik-model` parameter. Note that the parameter must be specified *outside* `--ilastik-opts`. For example,
 
 ```
 nextflow run labsyspharm/mcmicro --in /my/data --probability-maps ilastik --ilastik-model mymodel.ilp
