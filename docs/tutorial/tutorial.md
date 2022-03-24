@@ -20,6 +20,7 @@ You can view an example of how MCMICRO turns image tiles into single-cell segmen
 Enter the commands `nextflow run hello` and `docker run hello-world` to verify that both Nexflow and Docker* are functional.
 
 *\*If using a Windows environment, you may need to run Docker as Administrator.*
+
 *\*If using a MacOS environment, you may need to increase the amount of [RAM allocated to Docker](https://docs.docker.com/desktop/mac/#resources){:target="_blank"}.*
 
 <br>
@@ -36,7 +37,7 @@ nextflow pull labsyspharm/mcmicro
 {: .fs-6}
 **Step 2:** [Download]({{ site.baseurl }}/datasets/datasets.html) exemplar data. 
 
-Replace `/my/path` with where you want to store the files. (use `.` for path to download files into the current directory)
+Replace `/my/path` with where you want to store the files. (Use `.` for path to download files into the current directory.)
 
 ``` bash
 # Download exemplar-001
@@ -66,7 +67,7 @@ exemplar-001 or exemplar-002
 
 By default, `exemplar-001` contains cycles 6 through 8, while exemplar-002 contains all 10 cycles. Use `nextflow run labsyspharm/mcmicro/exemplar.nf --help` to learn how to download a different range of cycles for each exemplar.
 
-Each cycle has one .ome file in `raw/` and two .tif files in `illumination/`. These images look like the following:
+Each cycle has one `.ome.tif` file in `raw/` and two `.tif` files in `illumination/`. These images look like the following:
 
 <div class="row">
 <div class="col-xs-4 col-sm-4">
@@ -118,7 +119,7 @@ Each cycle has one .ome file in `raw/` and two .tif files in `illumination/`. Th
 {: .fs-6}
 **Step 3:** Use `--in` to point the pipeline at the data.  
 
-In the commands below, `/my/path` should match what was used to run the `exemplar.nf` command above (`.` can be used to point to the current directory).
+In the commands below, `/my/path` should match what was used to download exemplar data with `exemplar.nf` command above (`.` can again be used to point to the current directory).
 
 ``` bash
 # Run the pipeline on exemplar data (starting from the registration step, by default)
@@ -161,7 +162,7 @@ nextflow run labsyspharm/mcmicro --in /my/path/exemplar-002 --tma
 <summary>Expand to see exemplar-001 and exemplar-002 output files*</summary>
 
 <div markdown="1">
-*\*`raw/` and `illumination/` contents will remain the same. They will be not elaborated on here.*
+*\*`raw/` and `illumination/` contents will remain the same.*
 </div>
 
 <div class="row">
@@ -335,18 +336,18 @@ exemplar-002
 {: .fs-6}
 **Step 4:** *(Recommended)* Visual inspection of quality control (`qc/`) files
 
-Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may contain `.tif` or `.ome` images for inspection. 
+Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may contain `.tif` or `.ome.tif` images for inspection. 
 
-**Here we demonstrate visual inspection using Fiji (Download Fiji [here](https://imagej.net/software/fiji/downloads){:target="_blank"}). You can use any image viewing/processing software that works for `.ome` and `.tif` files.**
+**Here we demonstrate visual inspection using Fiji (Download Fiji [here](https://imagej.net/software/fiji/downloads){:target="_blank"}). You can use any image viewing/processing software that works for `.ome.tif` and `.tif` files.**
 
 <br>
 
 {: .fs-5}
 **s3seg/**  
 
-* Check that `cellOutlines.ome` and `nucleiOutlines.ome` show satisfactorily outlined areas
+* Check that `cellOutlines.ome.tif` and `nucleiOutlines.ome.tif` show satisfactorily outlined areas
 
-* `cellOutlines.ome` found under `qc/s3seg1/unmicst-exemplar-001/` can be previewed as Hyperstack in Fiji. Each cycle appears as a 2-image stack. 
+* `cellOutlines.ome.tif` found under `qc/s3seg1/unmicst-exemplar-001/` can be previewed as Hyperstack in Fiji. Each cycle appears as a 2-image stack. 
   
 * You can split stack into individual images. Then, choose *Image>Color>Merge Channels* to overlay outline with raw image for visual inspection.
 
@@ -354,7 +355,7 @@ Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may
 
   {: .fs-3}
   {: .fw-200}
-  `cellOutlines.ome` Cell outlines overlaid with raw image, zoomed in on an arbitrary ROI. *(This example shows the first cycle in exemplar-001 data set (Cycle 6).)*
+  `cellOutlines.ome.tif` Cell outlines overlaid with raw image, zoomed in on an arbitrary area. *(This example shows the first available cycle (Cycle 6) in the default exemplar-001 data set .)*
 
   >Read [Parameter Tuning for S3Segmenter](../modules/s3seg.md) for common troubleshooting scenarios.
 
@@ -380,7 +381,7 @@ Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may
 
 * Examination of `qc/unmicst/` is generally not necessary if `qc/s3seg/` outlines are satisfactory
 
-* However, if segmentation results found in `qc/s3seg/` is not desirable, UnMICST `qc` files can provide a clue for what went wrong. 
+* However, if segmentation results found in `qc/s3seg/` are not desirable, UnMICST `qc` files can provide a clue for what went wrong. 
 
   >Read [Parameter Tuning for UnMICST](../modules/unmicst.md) for common troubleshooting scenarios.
 
