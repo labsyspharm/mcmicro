@@ -135,7 +135,7 @@ python /app/mc-ilastik.py --output . --input exemplar-001.ome.tif --model myawes
 
 MCMICRO uses [GitHub Actions](https://docs.github.com/en/actions) to execute a set of automated tests on the [two exemplar images]({{ site.baseurl }}/datasets/datasets.html). The tests ensure that modifications to the pipeline don't break existing module functionality. When contributing a new module to MCMICRO, consider composing a new test that ensures your module runs on the exemplar data without any issues.
 
-Automated tests are specified in [`ci.yml`](https://github.com/labsyspharm/mcmicro/blob/master/.github/workflows/ci.yml). The exemplar data is cached and can be easily restored via `actions/cache@v2`. For example, consider the following minimal test that contrasts unmicst and ilastik on exemplar-001:
+Automated tests are specified in [`ci.yml`](https://github.com/labsyspharm/mcmicro/blob/master/.github/workflows/ci.yml). The exemplar data is [cached](https://github.com/labsyspharm/mcmicro/blob/master/.github/workflows/ci.yml#L24-L34) and can be easily restored via `actions/cache@v2`. For example, consider the following minimal test that contrasts unmicst and ilastik on exemplar-001:
 
 ```
 test-ex001:
@@ -149,10 +149,10 @@ test-ex001:
         uses: actions/cache@v2
         with:
           path: ~/data/exemplar-001
-          key: mcmicro-exemplar-001
+          key: ex001-2022-02-24
       - name: Test exemplar-001
         run: ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps unmicst,ilastik --s3seg-opts '--probMapChan 0'
 ```
 
-The test, named `test-ex001`, consists of three steps: 1) Installing Nextflow, 2) Restoring exemplar-001 data from cache, and 3) Running the pipeline on the exemplar-001. The `needs:` field specifies that the test should be executed after `setup` (which verifies the existence of cached data and performs caching if it's missing).
+The test, named `test-ex001`, consists of three steps: 1) Installing Nextflow, 2) Restoring exemplar-001 data from a cache, and 3) Running the pipeline on the exemplar-001. The `needs:` field specifies that the test should be executed after `setup` (which verifies the existence of cached data and performs caching if it's missing).
 
