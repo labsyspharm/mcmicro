@@ -100,7 +100,7 @@ for multi-file formats. Note that in the latter case, you need to specify the ex
 
 ### Q: My execution environment doesn't support Docker. Can I run MCMICRO using Singularity instead?
 
-Yes, MCMICRO can be configured to used Singularity in place of Docker. Use the `-profile` flag to switch configurations:
+Yes, MCMICRO can be configured to use Singularity in place of Docker. Use the `-profile` flag to switch configurations:
 
 ```
 nextflow run labsyspharm/mcmicro --in /my/project -profile singularity
