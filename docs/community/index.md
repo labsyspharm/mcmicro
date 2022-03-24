@@ -12,8 +12,8 @@ MCMICRO is a multi-institutional effort with contributions by the following deve
 |Institution| People|
 |---|---|
 |**Harvard Medical School**|[Artem Sokolov](https://scholar.harvard.edu/artem-sokolov)<br>[Clarence Yapp](https://scholar.harvard.edu/clarence/who-clarence)<br>[Jeremy Muhlich](https://github.com/jmuhlich)<br>[Yu-An Chen](https://github.com/Yu-AnChen)<br>[Juha Ruokonen](https://github.com/Juha-Ruokonen)|
-|**Heidelberg University**|[Denis Schapiro](https://twitter.com/denisschapiro)<br>[Florian Wünnemann](https://github.com/FloWuenne)|
-|**Oregon Health and Sciences University**|[Allison Creason](https://www.ohsu.edu/people/allison-creason-phd)<br>[Jeremy Goecks](https://www.ohsu.edu/people/jeremy-goecks-phd)<br>Daniel Persson<br>[Qiang Gu](https://github.com/qiagu)<br>[Luke Sargent](https://github.com/luke-c-sargent)|
+|**Heidelberg University**|[Denis Schapiro](https://twitter.com/denisschapiro)<br>[Florian Wünnemann](https://github.com/FloWuenne)<br>Miguel Ibarra|
+|**Oregon Health and Sciences University**|[Allison Creason](https://www.ohsu.edu/people/allison-creason-phd)<br>[Jeremy Goecks](https://www.ohsu.edu/people/jeremy-goecks-phd)<br>Daniel Persson<br>[Qiang Gu](https://github.com/qiagu)<br>[Luke Sargent](https://github.com/luke-c-sargent)<br>Cameron Watson<br>Luke Strgar|
 |**Dana-Farber Cancer Institute**|[Ajit Johnson](https://ajitjohnson.com/)|
 |**Vanderbilt University**|[Darren Tyson](https://medschool.vanderbilt.edu/cancer-biology/person/darren-tyson-ph-d/)|
 |**Brigham and Women's Hospital**|[Giorgio Gaglia](https://connects.catalyst.harvard.edu/Profiles/display/Person/25408)|
