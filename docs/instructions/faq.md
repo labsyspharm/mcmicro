@@ -72,22 +72,32 @@ nextflow clean -f -but last
 A: You can use ilastik for probability maps instead. To do so, specify `--probability-maps ilastik` in your command to run MCMIRO
 
 ```
-nextflow run labsyspharm/mcmicro --in *path*/exemplar-001 --probability-maps ilastik
+nextflow run labsyspharm/mcmicro --in /my/path/exemplar-001 --probability-maps ilastik
 ```
 or 
 ```
-nextflow run labsyspharm/mcmicro --in *path*/exemplar-002 -- tma --probability-maps ilastik
+nextflow run labsyspharm/mcmicro --in /my/path/exemplar-002 --tma --probability-maps ilastik
 ```
 
 This is because UnMICST (`segmentation:worker (unmicst-1)`) currently does not work on the M1 architecture. Fortunately, ilastik is supported by M1. See [GitHub Issue #353](https://github.com/labsyspharm/mcmicro/issues/353) for more details.
 
 *If you came here from Step 3 in Tutorials, head back to [Tutorials](../tutorial/tutorial.md) to finish the rest of the steps!*
 
-## Pre-processing
+### Q: MCMICRO doesn't seem to recognize my file format. How do I tell it what files to look for?
 
-### Q: How does MCMICRO handle multi-file formats such as `.xdce`?
+A: By default, MCMICRO looks for a small number of image formats that we have verified to work. In principle, MCMICRO can be applied to any [Bio-Formats compatible](https://docs.openmicroscopy.org/bio-formats/6.0.1/supported-formats.html) images. We make a distinction between images stored as single files (e.g., `.png`) and those stored as an index file that points to other files (e.g., `.xdce`, `.ndpis`, etc.). Place all image files into the `raw/` subdirectory and specify the file extension(s) to look for with
 
-A: Registration and illumination correction modules in MCMICRO are [Bio-Formats compatible](https://docs.openmicroscopy.org/bio-formats/6.0.1/supported-formats.html). Place all files into the `raw/` subdirectory, as described in [Directory Structure]({{ site.baseurl }}/instructions/nextflow/#directory-structure), and MCMICRO modules will correctly identify and use the relevant ones.
+```
+nextflow run labsyspharm/mcmicro --in /my/project --single-formats png
+```
+
+for single-file image formats and
+
+```
+nextflow run labsyspharm/mcmicro --in /my/project --multi-formats ndpis
+```
+
+for multi-file formats. Note that in the latter case, you need to specify the extension of the index file (`.ndpis` in this case) and not the individual files being indexed (`.ndpi` in this case).
 
 ## Segmentation
 
