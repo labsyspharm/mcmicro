@@ -33,7 +33,10 @@ has_children: false
 %}
 
 </div><!-- end grid -->
->*Note that the representative images above depict only a subset of the image channels present in each data set.*
+*Note that the representative images above depict only a subset of the image channels present in each data set.*
+{: .fs-3}
+
+<br>
 
 **Two exemplars are currently available for demonstration purposes:**
 * `exemplar-001` is a minimal reproducible example for running all modules of the pipeline, except the dearray step. 
@@ -50,9 +53,20 @@ has_children: false
 nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-001 --path /local/path/
 nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-002 --path /local/path/
 ```
-(Content download to the directory indicated by `/local/path/`.)
+
+>(Content download to the directory indicated by `/local/path/`.)
+{: .fs-3}
 
 <br>
+
+**Or, the examples can be downloaded as .zip files.**
+
+{: .fs-3}
+> **Note:** When downloading the example files from this link, your system will need enough space for both the .zip file and for the expanded contents (indicated above). Downloading via these links is slower than the command line download, but may be preferred by users that are not using Nextflow.
+
+* **Exemplar-001:** [https://mcmicro.s3.amazonaws.com/exemplars/exemplar-001.zip](https://mcmicro.s3.amazonaws.com/exemplars/exemplar-001.zip) - 240 MB (320 MB unzipped)
+* **Exemplar-002:** [https://mcmicro.s3.amazonaws.com/exemplars/exemplar-002.zip](https://mcmicro.s3.amazonaws.com/exemplars/exemplar-002.zip) - 2.5 GB (3.5 GB unzipped)
+
 <br>
 
 ### Visual Guide: Processing Exemplar-002 with MCMICRO 
