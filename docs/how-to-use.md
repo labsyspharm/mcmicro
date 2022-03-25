@@ -10,7 +10,7 @@ parent: Home
 
 1. [Overview](./overview/) provides relevant background information related to multiplexed tissue imaging and MCMICRO.  
 
-2. View a [visual guide]({{ site.baseurl }}/tutorial/pipeline-visual-guide.html){:target="_blank"} through the steps of MCMICRO, then download [example data](./datasets/datasets.html) to try it yourself!
+2. View a [visual guide]({{ site.baseurl }}/tutorial/pipeline-visual-guide.html){:target="_blank"} through the steps of MCMICRO, then download [example data](./datasets/) to try it yourself!
 
 4. The [tutorial](./tutorial/tutorial.html)\* provides a step-by-step example workflow that allows beginners to process two example sample data sets into mosaic images. 
  >\* *First time users should start here to verify that MCMICRO is working with their system*

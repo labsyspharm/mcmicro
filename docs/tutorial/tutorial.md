@@ -35,7 +35,7 @@ nextflow pull labsyspharm/mcmicro
 <br>
 
 {: .fs-6}
-**Step 2:** [Download]({{ site.baseurl }}/datasets/datasets.html) exemplar data. 
+**Step 2:** [Download]({{ site.baseurl }}/datasets/) exemplar data. 
 
 Replace `/my/path` with where you want to store the files. (Use `.` for path to download files into the current directory.)
 

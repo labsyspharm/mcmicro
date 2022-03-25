@@ -256,7 +256,7 @@ Walk through the process of turning image tiles into single-cell segmented mosai
 {: .text-grey-dk-100}
 ## Example datasets for method development
 
-We release The Exemplar Microscopy Images of Tissues dataset [(EMIT)]({{ site.baseurl }}/datasets.html#exemplar-microscopy-images-of-tissues-emit) to enable the development additional modules for MCMICRO. Presently, the dataset consists of one TMA and one set of whole-slide images, acquired using multiple imaging platforms. The dataset provides real-world scenarios for testing of image processing methods, and we expect to expand the dataset with additional images in the future.
+We release The Exemplar Microscopy Images of Tissues dataset [(EMIT)]({{ site.baseurl }}/datasets/#exemplar-microscopy-images-of-tissues-emit) to enable the development additional modules for MCMICRO. Presently, the dataset consists of one TMA and one set of whole-slide images, acquired using multiple imaging platforms. The dataset provides real-world scenarios for testing of image processing methods, and we expect to expand the dataset with additional images in the future.
 
 {: .fs-9 }
 {: .fw-500}
