@@ -8,9 +8,14 @@ has_children: true
 
 # Using MCMICRO
 
-**MCMICRO can be used two ways:**  
-1. Nextflow (a command line interface), or  
-2. Galaxy (a web-based interface)
+{: .fs-5}
+{: .fw-500}
+MCMICRO can be used two ways:
+
+1. **Nextflow** (a command line interface)  
+		- *Compatible with Mac, Linux, or [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/about)*  
+2. **Galaxy** (a web-based interface)  
+		- *Compatible with Mac, Linux, or Windows*  
 
 Details for running Nextflow or Galaxy can be found on the sub-pages:  
 [Nextflow Workflow](./nextflow/){: .btn .btn-green .btn-outline } [Galaxy Workflow](./galaxy/){: .btn .btn-green .btn-outline}
