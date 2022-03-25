@@ -394,4 +394,4 @@ Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may
 
 <br>
 
-*More details on output files and quality control can be found in [Directory Structure](./instructions/nextflow/#directory-structure).*
+*More details on output files and quality control can be found in [Directory Structure]({{site.baseurl}}/instructions/nextflow/#directory-structure).*
