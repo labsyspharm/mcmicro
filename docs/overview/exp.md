@@ -71,7 +71,7 @@ TIFF files also contain metadata in the header that describes the organization a
 
 Metadata standards for high-plex image data are rapidly developing: a wide variety of laboratories have come together to create the Minimum Information about Tissue Imaging Standard [(MITI) (Schapiro et al., 2021)](https://arxiv.org/abs/2108.09499){:target="_blank"}. 
 
-**Continue to [Phase 3](./mcmicro.html) to learn how these images are processed and analyzed by MCMICRO**
+**Continue to learn how these images are processed and analyzed by [MCMICRO](./mcmicro.html)**
 
 <div class="row">
 
