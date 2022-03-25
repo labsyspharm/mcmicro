@@ -399,9 +399,7 @@ ___
 {: .text-blue-100}
 
 *Spatial analysis*
-{: .text-grey-dk-300}
-{: .fw-200}
-{: .fs-3}
+
 
 ### Description
 SCIMAP is a suite of tools that enables spatial single-cell analyses. Check the [SCIMAP website](https://scimap.xyz){:target="_blank"} for the most up-to-date documentation.
