@@ -1,3 +1,7 @@
+### 2022-03-04
+
+* The pipeline now correctly carries through image names with `.` in them, e.g., `slide0.ROI7.ome.tif`.
+
 ### 2022-02-24
 
 * Added more flexibility to `exemplar.nf`, which allows for downloading any contiguous set of cycles. For more information, see
