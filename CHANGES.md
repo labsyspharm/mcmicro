@@ -2,12 +2,16 @@
 
 * The pipeline now correctly carries through image names with `.` in them, e.g., `slide0.ROI7.ome.tif`.
 
+### 2022-03-01
+
+* [illumination] CZI files are now loaded correctly.
+
 ### 2022-02-24
 
 * Added more flexibility to `exemplar.nf`, which allows for downloading any contiguous set of cycles. For more information, see
 
 ```
-nextflow labsyspharm/mcmicro/exemplar.nf --help
+nextflow run labsyspharm/mcmicro/exemplar.nf --help
 ```
 
 ### 2022-02-22
@@ -25,3 +29,11 @@ nextflow labsyspharm/mcmicro/exemplar.nf --help
 * Reworked GPU config profile to expose all GPUs across all platforms
   * When running MCMICRO on O2, use `-profile O2,GPU` (comma, no space) instead of `-profile O2gpu`
 * `quantification` is now the default stopping point
+
+### 2022-01-04
+
+* Coreograph now supports splitting of large tissue chunks and will split them into individual files for faster downstream segmentation. If your image sizes were too large for s3segmenter because they contained multiple tissue sections, this should help. To turn Coreograph on, include `--tma` as if you had a TMA. By default, Coreograph is set to deal with TMAs, so you will need to tweak `--core-opts` to have it handle multiple tissue sections instead:
+
+```
+nextflow run labsyspharm/mcmicro --in /my/project --tma --core-opts '--tissue --downsampleFactor 6'
+```
