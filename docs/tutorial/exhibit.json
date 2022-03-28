@@ -1,0 +1,242 @@
+{
+    "Images": [
+        {
+            "Name": "WORKAROUND-decouple-storyname-image-description"
+        },
+        {
+            "Name": "i0",
+            "Description": "",
+            "Path": "https://s3.amazonaws.com/www.cycif.org/schapiro-mcmicro-2021/exemplar-002",
+            "Width": 6197,
+            "Height": 6231,
+            "MaxLevel": 3
+        }
+    ],
+    "PixelsPerMicron": 1.5385,
+    "Name": "MCMICRO Exemplar-002", 
+    "Header": "This visual guide takes you through a series of steps for deriving biological information from highly-multiplexed images using MCMICRO pipeline. To learn more about the pipeline and the exemplar-002 dataset, visit [MCMICRO website](https://mcmicro.org)\n\n![https://mcmicro.org/images/Fig1.png](https://jteffthits.github.io/mcmicro-1/images/pipeline-no-microscope-white.png)",
+    "Footer": "<a href=\"https://mcmicro.org\" class=\"btn btn-secondary mt-5\" role=\"button\">Back to MCMICRO</a>",
+    "FirstGroup": "Staining",
+    "Rotation": 0,
+    "Layout": {
+        "Grid": [
+            [
+                "i0"
+            ]
+        ]
+    },
+    "Stories": [
+        {
+            "Name": "",
+            "Description": "",
+            "Waypoints": [
+                {
+                    "Name": "Raw Image Tiles (Level 1)",
+                    "Description": "When performing highly-multiplexed whole slide imaging (WSI), data acquisition routinely produces thousands of multichannel image tiles. Although the stage positioning is robust in modern microscopes, image tiles from identical and subsequent cycles still require further aligment. \n\nWhen tiles are stitched by relying on the microscope stage coordinates alone, stage movement errors are highly obvious in the yellow overlapping regions, with the red-green checkerboard pattern showing neighboring tiles. <a class=\"btn btn-primary btn-sm\" href=\"#s=1#w=0#g=0#m=-1#a=-100_-100#v=2.1534_0.1881_0.7653#o=-100_-100_1_1#p=Q\" role=\"button\">🔍</a>\n\nThe errors are even more pronounced when three DNA channels from subsequent cycles are overlayed using their stage positions. <a class=\"btn btn-primary btn-sm\" href=\"#s=1#w=0#g=1#m=-1#a=-100_-100#v=2.1534_0.1881_0.7653#o=-100_-100_1_1#p=Q\" role=\"button\">🔍</a>\n\nThe first step in MCMICRO is to align the provided **raw image tiles (Level 1)** and correct uneven illuminations in each of the tiles. MCMICRO currently accepts [Bio-formats](https://www.openmicroscopy.org/bio-formats/) compatible image formats, along with [a .csv file containing channel names](https://mcmicro.org/instructions/nextflow/#markers) as inputs and outputs a stitched-and-registered image <a class=\"btn btn-primary btn-sm\" href=\"#s=1#w=0#g=2#m=-1#a=-100_-100#v=2.1534_0.1881_0.7653#o=-100_-100_1_1#p=Q\" role=\"button\">🔍</a>",
+                    "Arrows": [],
+                    "Overlays": [],
+                    "Group": "Before Stitching",
+                    "Masks": [],
+                    "ActiveMasks": [],
+                    "Zoom": 0.5,
+                    "Pan": [
+                        0.5,
+                        0.5
+                    ]
+                },
+                {
+                    "Name": "Whole-Slide Image (Level 2)",
+                    "Description": "To produce the **whole-slide image (Level 2)** in OME-TIFF format, Individual image tiles are [corrected for illumination](https://mcmicro.org/overview/mcmicro.html#illumination-correction), followed by simultaneous [tile stitching and registration across cycles](https://mcmicro.org/overview/mcmicro.html#stitching-and-registration). After these pre-processing steps, channels from different cycles can be \"merged\" and visualized.",
+                    "Arrows": [],
+                    "Overlays": [],
+                    "Group": "Staining",
+                    "Masks": [],
+                    "ActiveMasks": [],
+                    "Zoom": 0.5,
+                    "Pan": [
+                        0.5,
+                        0.5
+                    ]
+                },
+                {
+                    "Name": "TMA dearray",
+                    "Description": "When working with Tissue Microarrays (TMAs), MCMICRO can identify and isolate individual cores using [Coreograph](https://mcmicro.org/overview/mcmicro.html#tma-core-detection-optional). Each core will be written out into a standalone file to enable parallel downstream processing.",
+                    "Arrows": [],
+                    "Overlays": [],
+                    "Group": "Staining",
+                    "Masks": ["Dearray"],
+                    "ActiveMasks": ["Dearray"],
+                    "Zoom": 0.6,
+                    "Pan": [
+                        0.5,
+                        0.5
+                    ]
+                },
+                {
+                    "Name": "Segmentation Probability Maps",
+                    "Description": "Basic cell segmentation in MCMICRO consists of two steps. In the first step, [machine learning models](https://mcmicro.org/overview/mcmicro.html#segmentation) are used to generate probability maps that annotate each pixel with probabilities that it belongs to background or different parts of the cell such as the nucleus, cytoplasm, cell membrane or the intercellular region. MCMICRO can executes multiple machine learning algorithms in parallel, allowing for a direct comparison of their outputs.",
+                    "Arrows": [],
+                    "Overlays": [],
+                    "Group": "DNA",
+                    "Masks": ["Cell Mask Outlines", "Probability Maps"],
+                    "ActiveMasks": ["Probability Maps"],
+                    "Zoom": 1,
+                    "Pan": [
+                        0.5,
+                        0.5
+                    ]
+                },
+                {
+                    "Name": "Segmentation Masks (Level 3)",
+                    "Description": "The second step in cell segmentation applies [watershed-like algorithms](https://mcmicro.org/overview/mcmicro.html#segmentation) to probability maps produced by the first step. The resulting segmentation labelled masks assign each cell with a unique index number, where each pixel value adopts its cell's corresponding index number (background is assigned 0). MCMICRO generates labelled masks for nuclei, cytoplasm, and whole cell regions with matching indexed numbers to facilitate single cell analysis.",
+                    "Arrows": [],
+                    "Overlays": [],
+                    "Group": "DNA",
+                    "Masks": ["Cell Mask Outlines", "Probability Maps"],
+                    "ActiveMasks": ["Cell Mask Outlines"],
+                    "Zoom": 1,
+                    "Pan": [
+                        0.5,
+                        0.5
+                    ]
+                },
+                {
+                    "Name": "Spatial Feature Tables (Level 4)",
+                    "Description": "The final step in the MCMICRO pipeline is [quantification](https://mcmicro.org/overview/mcmicro.html#quantification), which utilizes the segmentation masks and the original image data to generate a spatial feature table. Each row in the table corresponds to an individual cell, while columns catalogue cell position, average marker expression, and morphological features.\n\nAs an example, the cell masks are colored using the mean intensities of CD3d in each cell.",
+                    "Arrows": [],
+                    "Overlays": [],
+                    "Group": "Staining",
+                    "Masks": ["CD3d Expression", "Cell Mask Outlines", "Probability Maps"],
+                    "ActiveMasks": ["CD3d Expression"],
+                    "Zoom": 1.292,
+                    "Pan": [
+                        0.6706,
+                        0.7835
+                    ]
+                }
+            ]
+        }
+    ],
+    "Masks": [
+        {
+            "Name": "Cell Mask Outlines",
+            "Path": "mask/cellRingMask-outlines",
+            "Colors": [
+                "ff00ff"
+            ],
+            "Channels": [
+                "Cell Mask Outlines"
+            ]
+        },
+        {
+            "Name": "Probability Maps",
+            "Path": "mask/probability-maps",
+            "Colors": [
+                "00ff00",
+                "0000ff"
+            ],
+            "Channels": [
+                "Nuclei contours probability",
+                "Nuclei probability"
+            ]
+        },
+        {
+            "Name": "Dearray",
+            "Path": "mask/dearray-mask",
+            "Colors": [
+                "1c9e77",
+                "d96003",
+                "7570b4",
+                "e8298a"
+            ],
+            "Channels": [
+                "TMA Core - 1",
+                "TMA Core - 2",
+                "TMA Core - 3",
+                "TMA Core - 4"
+            ]
+        },
+        {
+            "Name": "CD3d Expression",
+            "Path": "mask/cd3d_expression_mask",
+            "Colors": [
+                "0000aa"
+            ],
+            "Channels": [
+                "CD3d Expression"
+            ]
+        }
+    ],
+    "Groups": [
+        {
+            "Name": "Before Stitching",
+            "Path": "ashlar_debug",
+            "Colors": [
+                "ff0000",
+                "00ff00"
+            ],
+            "Channels": [
+                "Tiles",
+                "Tiles"            
+            ]
+        },
+        {
+            "Name": "Before Registration",
+            "Path": "Before-stitching-and-registration_0__DNA-1--1__DNA-2--2__DNA-3",
+            "Colors": [
+                "00ffff",
+                "ffff00",
+                "ff00ff"
+            ],
+            "Channels": [
+                "DNA - 1",
+                "DNA - 2",
+                "DNA - 3"
+            ]
+        },
+        {
+            "Name": "Registered",
+            "Path": "Stitching_0__DNA--4__DNA-2--8__DNA-3",
+            "Colors": [
+                "00ffff",
+                "ffff00",
+                "ff00ff"
+            ],
+            "Channels": [
+                "DNA - 1",
+                "DNA - 2",
+                "DNA - 3"
+            ]
+        },
+        {
+            "Name": "Staining",
+            "Path": "Staining_0__DNA--13__CD163--14__CD3D--15__CD31--19__VDAC1--34__Pan-CK",
+            "Colors": [
+                "ffffff",
+                "ffff00",
+                "0000ff",
+                "ff0000",
+                "00ff00",
+                "f79209"
+            ],
+            "Channels": [
+                "DNA ",
+                "CD163",
+                "CD3d",
+                "CD31",
+                "VDAC1",
+                "Pan-CK"
+            ]
+        },
+        {
+            "Name": "DNA",
+            "Path": "Stitching_0__DNA--4__DNA-2--8__DNA-3",
+            "Colors": [
+                "ffffff"
+            ],
+            "Channels": [
+                "DNA"
+            ]
+        }
+    ]
+}

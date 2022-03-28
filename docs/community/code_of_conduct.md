@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Code of Conduct
-nav_order: 98
+nav_order: 94
 parent: Community
 ---
 

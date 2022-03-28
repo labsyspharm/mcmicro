@@ -17,3 +17,5 @@ Gemfile.lock
 
 # Files
 .DS_Store
+
+*/.obsidian/
