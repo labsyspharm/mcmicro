@@ -13,6 +13,8 @@ There are several important caveats to run mcmicro on O2.
 
 1. [Installation](../nextflow/installation.html) only requires Nextflow. Docker is not needed, because O2 uses Singularity to execute module containers, and Singularity is already available on O2.
 
+1. Please ensure that Java is available by running `module load java`.
+
 1. If your account is not in the `lsp` group (type `groups` to check), then please run the following command to prepare your environment: `nextflow run labsyspharm/mcmicro/setup/O2ext.nf`
 
 1. When working with [exemplars]({{ site.baseurl }}/datasets/datasets.html), please download your own copy to `/n/scratch3/users/.../$USER/` (where `$USER` is your eCommons ID and `...` is its first letter).
@@ -20,7 +22,6 @@ There are several important caveats to run mcmicro on O2.
 ## O2 execution
 
 To run the pipeline on O2, the following additional steps are required:
-1. Please ensure that Java is available by running `module load java`.
 1. If your account is in the `lsp` group, please add the flag `-profile O2`. Use `-profile O2,WSI` and `-profile O2,TMA` for very large whole-slide images (WSIs) and tissue microarrays (TMAs), respectively. The profiles differ in the amount of resources requested for each module.
 1. If your account is not in the `lsp` group, please use `-profile O2ext`. Similarly, use `-profile O2ext,WSI` and `-profile O2ext,TMA` for WSIs and TMAs.
 1. To avoid running over on your disk quota, it is also recommended to use `/n/scratch3` for holding the `work/` directory. Furthermore, `/n/scratch3` is faster than `/home` or `/n/groups`, so jobs will complete faster. 
