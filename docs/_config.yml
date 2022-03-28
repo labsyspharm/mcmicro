@@ -41,7 +41,7 @@ license:
 footer_logos:
   - name: "Laboratory of Systems Pharmacology"
     image: "/assets/images/logo_lsp_white.svg"
-    url: "https://hits.harvard.edu/the-program/laboratory-of-systems-pharmacology/about/"
+    url: "https://labsyspharm.org/"
   - name: "Harvard Medical School"
     image: "/assets/images/logo_hms.svg"
     url: "https://hms.harvard.edu/"
