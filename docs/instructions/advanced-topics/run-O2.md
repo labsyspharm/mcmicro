@@ -30,9 +30,8 @@ Compose an `sbatch` script that encapsulates resource requests, module loading a
 ```
 #!/bin/sh
 #SBATCH -p short
-#SBATCH -J nextflow_O2              
-#SBATCH -o run.o
-#SBATCH -e run.e
+#SBATCH -J mcmicro              
+#SBATCH -o mcmicro-%J.log
 #SBATCH -t 0-12:00
 #SBATCH --mem=8G
 #SBATCH --mail-type=END         # Type of email notification- BEGIN,END,FAIL,ALL
