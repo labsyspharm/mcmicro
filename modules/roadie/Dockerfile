@@ -4,4 +4,5 @@ RUN python -m pip install \
   sklearn \
   tifffile \
   zarr \
+  scikit-image \
   ome_types
