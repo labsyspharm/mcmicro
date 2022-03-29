@@ -203,6 +203,7 @@ A fluorescence image of a tissue microarray where at least one channel is of DNA
 |`--channel` | | Which channel is fed into UNet to generate probability maps (usually DAPI) |
 |`--buffer` | 2 | The extra space around a core before cropping it. A value of 2 means there is twice the width of the core added as buffer around it.|
  | `--outputChan` | |a range of channels to be exported. -1 is default and will export all channels (takes awhile). Select a single channel or a continuous range. ``--outputChan 0 10`` will export channel 0 up to and including channel 10 |
+ | `--tissue` | | Coreograph will assume that its input is a whole-slide image and will work to isolate individual tissue chunks into separate files |
 
 ### Troubleshooting
 A troubleshooting guide can be found within [Coreograph parameter tuning](./coreograph.html).
