@@ -1,3 +1,7 @@
+### 2022-03-28
+
+* Complete rework of the mcmicro.org
+
 ### 2022-03-04
 
 * The pipeline now correctly carries through image names with `.` in them, e.g., `slide0.ROI7.ome.tif`.
