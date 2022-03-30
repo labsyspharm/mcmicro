@@ -34,25 +34,27 @@ params.nc   = 0
 params.path = '.'
 dir_ilp     = "illumination"
 
-// Map the exemplar name to remote URL
+// Define remote URLs and default parameters
 switch( params.name ) {
     case "exemplar-001":
 	url = 'https://mcmicro.s3.amazonaws.com/exemplars/001/exemplar-001'
+    prestitched       = false
 	params.fromCycle  = 6
 	params.toCycle    = 8
     dir_img           = "raw"
 	break
     case "exemplar-002":
 	url = 'https://mcmicro.s3.amazonaws.com/exemplars/002/exemplar-002'
+    prestitched       = false
 	params.fromCycle  = 1
     params.toCycle    = 10
     dir_img           = "raw"
 	break
     case "exemplar-003":
     url = 'https://mcmicro.s3.amazonaws.com/exemplars/003/exemplar-003'
-    params.fromCycle  = 1
-    params.toCycle    = 1
+    prestitched       = true
     dir_img           = "registration"
+    break
     default:
 	error "Unknown exemplar name"
 }
