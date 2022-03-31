@@ -32,28 +32,24 @@ if( params.containsKey('help') ) {
 
 params.nc   = 0
 params.path = '.'
-dir_ilp     = "illumination"
 
 // Define remote URLs and default parameters
 switch( params.name ) {
     case "exemplar-001":
 	url = 'https://mcmicro.s3.amazonaws.com/exemplars/001/exemplar-001'
-    prestitched       = false
+    registered        = false
 	params.fromCycle  = 6
 	params.toCycle    = 8
-    dir_img           = "raw"
 	break
     case "exemplar-002":
 	url = 'https://mcmicro.s3.amazonaws.com/exemplars/002/exemplar-002'
-    prestitched       = false
+    registered        = false
 	params.fromCycle  = 1
     params.toCycle    = 10
-    dir_img           = "raw"
 	break
     case "exemplar-003":
     url = 'https://mcmicro.s3.amazonaws.com/exemplars/003/exemplar-003'
-    prestitched       = true
-    dir_img           = "registration"
+    registered        = true
     break
     default:
 	error "Unknown exemplar name"
@@ -62,64 +58,84 @@ switch( params.name ) {
 process getImages {
     publishDir "${params.path}/${params.name}", mode: 'move'
 
-    input: val i
+    input:
+        val name
+        val loc
     output:	file '**'
     
-    shell:
-    '''
-    mkdir !{dir_img}
-    name="!{params.name}-cycle-$(printf %02d !{i})"
-    name_raw="!{dir_img}/$name.ome.tiff"
-    curl -f -o $name_raw "!{url}/$name_raw"
-    '''
+    script:
+    def img = "${loc}/${name}.ome.tiff"
+    """
+    mkdir ${loc}
+    curl -f -o ${img} ${url}/${img}
+    """
 }
 
 process getIllumination {
     publishDir "${params.path}/${params.name}", mode: 'move'
 
-    input: val i
+    input: val name
     output:	file '**'
 
-    shell:
-    '''
-    mkdir !{dir_ilp}
-    name="!{params.name}-cycle-$(printf %02d !{i})"
-    name_dfp="!{dir_ilp}/$name-dfp.tif"
-    name_ffp="!{dir_ilp}/$name-ffp.tif"
-    curl -f -o $name_dfp "!{url}/$name_dfp"
-    curl -f -o $name_ffp "!{url}/$name_ffp"
-    '''
+    script:
+    def ilp = 'illumination'
+    def dfp = "${ilp}/${name}-dfp.tif"
+    def ffp = "${ilp}/${name}-ffp.tif"
+    """
+    mkdir $ilp
+    curl -f -o $dfp ${url}/$dfp
+    curl -f -o $ffp ${url}/$ffp
+    """
 }
 
 process getMarkers {
     publishDir "${params.path}/${params.name}", mode: 'move'
 
-    input: 
-      val a
-      val b
-
-    output:
-      file '**'
+    input: val post
+    output: file 'markers.csv'
 
     """
-    curl -f "${url}/markers.csv" | sed -n "1p;${a},${b}p" > markers.csv
+    curl -f "${url}/markers.csv" ${post} > markers.csv
     """
 }
 
 workflow {
-    // Sequence of individual cycles to download
-    if(params.nc > 0 ) {
-        seq   = Channel.of( 1..params.nc )
-        mFrom = 2
-        mTo   = params.nc * 4 + 1    // Four markers per channel, plus header
-    }
-    else {
-        seq   = Channel.of( params.fromCycle..params.toCycle )
-        mFrom = (params.fromCycle-1) * 4 + 2
-        mTo   = (params.toCycle) * 4 + 1
-    }
+
+    // Is the exemplar pre-registered?
+    if(registered) {
+
+    // Write downloaded images directly to registration/
+    getImages(params.name, "registration")
+
+    // No post-processing of markers.csv
+    getMarkers('')
+
+    } else {
+
+    // Write downloaded images to raw/
+    dir_img = "raw"
+
+        // Determine the sequence of individual cycles to download
+        if(params.nc > 0 ) {
+            seq   = Channel.of( 1..params.nc )
+            mFrom = 2
+            mTo   = params.nc * 4 + 1    // Four markers per channel, plus header
+        }
+        else {
+            seq   = Channel.of( params.fromCycle..params.toCycle )
+            mFrom = (params.fromCycle-1) * 4 + 2
+            mTo   = (params.toCycle) * 4 + 1
+        }
+
+    /*
+    post = '| sed -n "1p;${mFrom},${mTo}p"'
+    name="!{params.name}-cycle-$(printf %02d !{i})"
+    name="!{params.name}-cycle-$(printf %02d !{i})"
 
     getImages(seq)
     getIllumination(seq)
     getMarkers(mFrom, mTo)
+    */
+
+    }
 }
