@@ -1,14 +1,17 @@
 #!/usr/bin/env nextflow
 
+nextflow.enable.dsl=2
+
 if( params.containsKey('help') ) {
     println """
     Download MCMICRO exemplar datasets
 
     Expected parameters
-      --name - Name of the exemplar, e.g., "exemplar-001", "exemplar-002", etc.
-      --path - Path to the destination folder
+      --name       - Name of the exemplar, e.g., "exemplar-001", "exemplar-002", etc.
     
     Optional parameters
+      --help       - Print this message and exit
+      --path       - Path to the destination folder (Default: . or current directory)
       --from-cycle - Index of the first cycle to download
       --to-cycle   - Index of the final cycle to download
       --nc         - Number of cycles to download (overrides --from-cycle and --to-cycle)
@@ -16,7 +19,7 @@ if( params.containsKey('help') ) {
     Examples:
       1. Download the first five cycles of exemplar-001 to the current directory
 
-         nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-001 --path . --nc 5
+         nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-001 --nc 5
 
       2. Download cycle 3 through 9 (inclusively) of exemplar-002 to /data
 
@@ -27,70 +30,108 @@ if( params.containsKey('help') ) {
     exit 0
 }
 
-params.nc = 0
-dir_raw   = "raw"
-dir_ilp   = "illumination"
+params.nc   = 0
+params.path = '.'
 
-// Map the exemplar name to remote URL
+// Define remote URLs and default parameters
 switch( params.name ) {
     case "exemplar-001":
 	url = 'https://mcmicro.s3.amazonaws.com/exemplars/001/exemplar-001'
+    registered        = false
 	params.fromCycle  = 6
 	params.toCycle    = 8
 	break
     case "exemplar-002":
 	url = 'https://mcmicro.s3.amazonaws.com/exemplars/002/exemplar-002'
+    registered        = false
 	params.fromCycle  = 1
-        params.toCycle    = 10
+    params.toCycle    = 10
 	break
+    case "exemplar-003":
+    url = 'https://mcmicro.s3.amazonaws.com/exemplars/003/exemplar-003'
+    registered        = true
+    break
     default:
 	error "Unknown exemplar name"
-}
-
-// Sequence of individual cycles to download
-if(params.nc > 0 ) {
-    seq   = Channel.of( 1..params.nc )
-    mFrom = 2
-    mTo   = params.nc * 4 + 1    // Four markers per channel, plus header
-}
-else {
-    seq = Channel.of( params.fromCycle..params.toCycle )
-    mFrom = (params.fromCycle-1) * 4 + 2
-    mTo   = (params.toCycle) * 4 + 1
 }
 
 process getImages {
     publishDir "${params.path}/${params.name}", mode: 'move'
 
     input:
-	val i from seq
+        val name
+        val loc
+    output:	file '**'
     
-    output:
-	file '**'
-    
-    shell:
-    '''
-    mkdir !{dir_raw}
-    mkdir !{dir_ilp}
+    script:
+    def img = "${loc}/${name}.ome.tiff"
+    """
+    mkdir ${loc}
+    curl -f -o ${img} ${url}/${img}
+    """
+}
 
-    name="!{params.name}-cycle-$(printf %02d !{i})"
-    name_raw="!{dir_raw}/$name.ome.tiff"
-    name_dfp="!{dir_ilp}/$name-dfp.tif"
-    name_ffp="!{dir_ilp}/$name-ffp.tif"
+process getIllumination {
+    publishDir "${params.path}/${params.name}", mode: 'move'
 
-    curl -f -o $name_raw "!{url}/$name_raw"
-    curl -f -o $name_dfp "!{url}/$name_dfp"
-    curl -f -o $name_ffp "!{url}/$name_ffp"
-    '''
+    input: val name
+    output:	file '**'
+
+    script:
+    def ilp = 'illumination'
+    def dfp = "${ilp}/${name}-dfp.tif"
+    def ffp = "${ilp}/${name}-ffp.tif"
+    """
+    mkdir $ilp
+    curl -f -o $dfp ${url}/$dfp
+    curl -f -o $ffp ${url}/$ffp
+    """
 }
 
 process getMarkers {
     publishDir "${params.path}/${params.name}", mode: 'move'
 
-    output:
-	file '**'
+    input: val post
+    output: file 'markers.csv'
 
     """
-    curl -f "${url}/markers.csv" | sed -n "1p;${mFrom},${mTo}p" > markers.csv
+    curl -f "${url}/markers.csv" ${post} > markers.csv
     """
+}
+
+workflow {
+
+    // Is the exemplar pre-registered?
+    if(registered) {
+
+        // Write downloaded images directly to registration/
+        getImages(params.name, 'registration')
+
+        // No post-processing of markers.csv
+        getMarkers('')
+
+    } else {
+
+        // Determine the sequence of individual cycles to download
+        if(params.nc > 0 ) {
+            seq   = Channel.of( 1..params.nc )
+            mFrom = 2
+            mTo   = params.nc * 4 + 1    // Four markers per channel, plus header
+        }
+        else {
+            seq   = Channel.of( params.fromCycle..params.toCycle )
+            mFrom = (params.fromCycle-1) * 4 + 2
+            mTo   = (params.toCycle) * 4 + 1
+        }
+
+        // Compose filenames and write downloads to raw/
+        fn = seq.map{it -> "${params.name}-cycle-${String.format("%02d", it)}"}
+        getImages(fn, 'raw')
+
+        // Fetch illumination profiles
+        getIllumination(fn)
+
+        // Cut the appropriate rows from markers.csv
+        getMarkers("| sed -n \"1p;${mFrom},${mTo}p\"")
+    }
 }

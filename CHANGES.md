@@ -1,3 +1,7 @@
+### 2022-03-31
+
+* Added exemplar-003 for spot detection
+
 ### 2022-03-28
 
 * Complete rework of the mcmicro.org
