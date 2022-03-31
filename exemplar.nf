@@ -104,16 +104,13 @@ workflow {
     // Is the exemplar pre-registered?
     if(registered) {
 
-    // Write downloaded images directly to registration/
-    getImages(params.name, "registration")
+        // Write downloaded images directly to registration/
+        getImages(params.name, 'registration')
 
-    // No post-processing of markers.csv
-    getMarkers('')
+        // No post-processing of markers.csv
+        getMarkers('')
 
     } else {
-
-    // Write downloaded images to raw/
-    dir_img = "raw"
 
         // Determine the sequence of individual cycles to download
         if(params.nc > 0 ) {
@@ -127,15 +124,14 @@ workflow {
             mTo   = (params.toCycle) * 4 + 1
         }
 
-    /*
-    post = '| sed -n "1p;${mFrom},${mTo}p"'
-    name="!{params.name}-cycle-$(printf %02d !{i})"
-    name="!{params.name}-cycle-$(printf %02d !{i})"
+        // Compose filenames and write downloads to raw/
+        fn = seq.map{it -> "${params.name}-cycle-${String.format("%02d", it)}"}
+        getImages(fn, 'raw')
 
-    getImages(seq)
-    getIllumination(seq)
-    getMarkers(mFrom, mTo)
-    */
+        // Fetch illumination profiles
+        getIllumination(fn)
 
+        // Cut the appropriate rows from markers.csv
+        getMarkers("| sed -n \"1p;${mFrom},${mTo}p\"")
     }
 }
