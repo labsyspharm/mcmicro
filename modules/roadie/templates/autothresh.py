@@ -69,4 +69,4 @@ for ci in range(zarray.shape[0]):
     vmin, vmax = auto_threshold(img)
     vmin /= scale
     vmax /= scale
-    out.write(f"{ci},{vmin},{vmax}\\n")
+    out.write(f"{ci+1},{vmin},{vmax}\\n")
