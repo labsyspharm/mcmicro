@@ -1,3 +1,6 @@
+# Use Roadie environment for dev -- REMOVE BEFORE PR
+image: labsyspharm/roadie:2022-03-14
+
 tasks:
   - init: |
       cd /workspace; curl -s https://get.nextflow.io | bash
