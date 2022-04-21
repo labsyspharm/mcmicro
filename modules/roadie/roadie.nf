@@ -1,19 +1,20 @@
 process autothreshold {
-    container 'labsyspharm/roadie:2022-03-14'
+    container "${params.contPfx}${params.roadie}"
 
-    input:
-        path(input_image)
-    
-    script:
-    template 'autothresh.py'
+    input:  tuple val(tag), path(input_image)
+    output: path("output.csv")
+    when:   params.thresh
+    script: template 'autothresh.py'
 }
+
+include {getImageID} from '../lib/util'
 
 workflow roadie {
     take:
-      module
-      imgs
+        imgs
     
     main:
 
-    autothreshold(imgs)
+    imgs.map{ f -> tuple(getImageID(f), f) }
+        | autothreshold
 }

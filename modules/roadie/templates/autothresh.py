@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 
 import sys
-#import tifffile
+import tifffile
+import zarr
+import numpy as np
+import scipy.stats
+import sklearn.mixture
 
 def auto_threshold(img):
 
@@ -36,7 +40,33 @@ def auto_threshold(img):
 path = sys.argv[1] if len(sys.argv) >= 2 else "$input_image"
 
 print(f"Opening image: {path}")
+tiff = tifffile.TiffFile(path)
 
-#tiff = tifffile.TiffFile("$input_image")
-#print("Loaded image with the following dimensions:")
-#print(tiff.series[0].shape)
+# Verify image dimensionality
+ndim = tiff.series[0].ndim
+if ndim != 3: raise Exception(f"Can't handle {ndim}-dimensional images")
+
+# Get smallest pyramid level that's at least 200 in both dimensions.
+level_series = next(
+    level for level in reversed(tiff.series[0].levels)
+    if all(d >= 200 for d in level.shape[1:])
+)
+zarray = zarr.open(level_series.aszarr())
+print("Image shape: ", zarray.shape)
+
+# Additional information about the value range
+scale = np.iinfo(zarray.dtype).max if np.issubdtype(zarray.dtype, np.integer) else 1
+signed = not np.issubdtype(zarray.dtype, np.unsignedinteger)
+
+# Auto-threshold channel by channel
+out = open("output.csv", "w")
+out.write("Channel,vmin,vmax\\n")
+for ci in range(zarray.shape[0]):
+    print(f"Analyzing channel {ci + 1}")
+    img = zarray[ci]
+    if signed and img.min() < 0:
+        print("  WARNING: Ignoring negative pixel values", file=sys.stderr)
+    vmin, vmax = auto_threshold(img)
+    vmin /= scale
+    vmax /= scale
+    out.write(f"{ci},{vmin},{vmax}\\n")

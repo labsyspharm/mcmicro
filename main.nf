@@ -17,6 +17,7 @@ params.startAt     = 'registration'
 params.stopAt      = 'quantification'
 params.qcFiles     = 'copy'   // what to do with qc/ files when publishing them
 params.tma         = false    // whether working with a TMA (true) or whole-slide image (false)
+params.thresh      = false    // misc: autothresholding of channels
 
 // Some image formats store multiple fields of view in a single file. Other
 // formats store each field separately, typically in .tif files, with a separate
@@ -190,7 +191,7 @@ workflow {
     cellstates(sft, modCS)
 
     // Run miscellaneous tasks
-    roadie(modPM, allimg)
+    roadie(allimg)
 }
 
 // Write out parameters used
