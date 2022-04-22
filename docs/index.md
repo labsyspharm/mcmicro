@@ -43,7 +43,7 @@ Modules are being added to MCMICRO incrementally by a diverse developer communit
 </div>
 <div markdown="1">
 ## Robust test data
-MCMICRO comes with a growing library of imaging data ([EMIT data](./datasets.html#exemplar-microscopy-images-of-tissues-emit)) for testing your test run or for developing new algorithms. There is a lot of unexplored biology in the test data as well!
+MCMICRO comes with a growing library of imaging data ([EMIT data](./datasets/#exemplar-microscopy-images-of-tissues-emit)) for testing your test run or for developing new algorithms. There is a lot of unexplored biology in the test data as well!
 </div>
 <div markdown="1">
 ## Technology agnostic
