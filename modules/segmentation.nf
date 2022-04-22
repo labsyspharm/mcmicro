@@ -6,8 +6,8 @@ process s3seg {
       mode: 'copy', pattern: '*/*.ome.tif', saveAs: {f -> file(f).name}
 
     // QC
-    publishDir "${params.path_qc}/s3seg/$tag",
-      mode: 'copy', pattern: '*/qc/**', saveAs: {f -> file(f).name}
+    publishDir "${params.path_qc}/s3seg/$tag", mode: "${params.qcFiles}",
+      pattern: '*/qc/**', saveAs: {f -> file(f).name}
 
     // Provenance
     publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',

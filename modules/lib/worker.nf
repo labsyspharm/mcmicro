@@ -35,7 +35,7 @@ process worker {
     publishDir "${pubDir}", mode: 'copy', pattern: 'plots/**'
 
     // QC
-    publishDir "${params.path_qc}/${module.name}", mode: 'copy',
+    publishDir "${params.path_qc}/${module.name}", mode: "${params.qcFiles}",
       pattern: 'qc/**', saveAs: { fn -> fn.replaceFirst("qc/","") }
     
     // Provenance

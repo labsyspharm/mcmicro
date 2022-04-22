@@ -1,3 +1,11 @@
+### 2022-04-22
+
+* By default, MCMICRO was copying `qc/*` files from work directories to the project directory. This was creating unnecessary duplication of potentially large files. The new `--qc-files` option allows users to `copy`, `move` or `symlink` all QC files, providing more flexibility. Example:
+
+```
+nextflow run labsyspharm/mcmicro --in exemplar-001 --qc-files move
+```
+
 ### 2022-03-31
 
 * Added exemplar-003 for spot detection
