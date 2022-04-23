@@ -5,8 +5,10 @@ process coreograph {
     publishDir params.pubDir, mode: 'copy', pattern: '**{[0-9],mask}.tif'
 
     // QC
-    publishDir "${params.path_qc}/coreo", mode: 'copy', pattern: 'TMA_MAP.tif'
-    publishDir "${params.path_qc}/coreo", mode: 'copy', pattern: 'centroidsY-X.txt'
+    publishDir "${params.path_qc}/coreo", mode: "${params.qcFiles}",
+      pattern: 'TMA_MAP.tif'
+    publishDir "${params.path_qc}/coreo", mode: "${params.qcFiles}",
+      pattern: 'centroidsY-X.txt'
     
     // Provenance
     publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',

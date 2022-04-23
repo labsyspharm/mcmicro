@@ -15,6 +15,7 @@ nextflow.enable.dsl=2
 params.sampleName  = file(params.in).name
 params.startAt     = 'registration'
 params.stopAt      = 'quantification'
+params.qcFiles     = 'copy'   // what to do with qc/ files when publishing them
 params.tma         = false    // whether working with a TMA (true) or whole-slide image (false)
 
 // Some image formats store multiple fields of view in a single file. Other

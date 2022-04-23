@@ -239,6 +239,7 @@ The following parameters control the pipeline as a whole. These can be specified
 | `--tma` | Omitted | If specified, MCMICRO treats input data as a TMA. If omitted, the input is assumed to be a whole-slide image. |
 | `--ilastik-model <model.ilp>` | None | A custom `.ilp` file to be used as the classifier model for ilastik. |
 | `--probability-maps <choice>` | `unmicst` | Which module(s) to use for probability map computation. Module names should be delimited with a comma without spaces, e.g., `--probability-maps unmicst,ilastik` |
+| `--qc-files <op>` | `copy` | Must be one of `copy`, `move` or `symlink`, controlling whether QC files should be copied, moved or symbolically linked from work directories to the project directory |
 
 <br>
 
