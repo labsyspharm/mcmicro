@@ -1,4 +1,8 @@
 tasks:
-  - init: |
+  - name: Install Nextflow and download exemplar
+    init: |
       cd /workspace; curl -s https://get.nextflow.io | bash
       ./nextflow mcmicro/exemplar.nf --name exemplar-001 --path .
+  - name: Pull Roadie
+    init: |
+      docker pull labsyspharm/roadie:2022-03-14

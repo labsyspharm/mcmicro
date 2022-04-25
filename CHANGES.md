@@ -6,6 +6,16 @@
 nextflow run labsyspharm/mcmicro --in exemplar-001 --qc-files move
 ```
 
+### 2022-04-21
+
+* Added a script for automatically detecting dynamic range of the signal in each channel. The script is not executed by default but can be triggered with `--dynrange`. For example,
+
+```
+nextflow run labsyspharm/mcmicro --in exemplar-001 --dynrange
+```
+
+The output will be written to `qc/dynrange`.
+
 ### 2022-03-31
 
 * Added exemplar-003 for spot detection
