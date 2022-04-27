@@ -69,9 +69,11 @@ The TIFF (Tagged Image File Format) is ideal for storing microscopy data at nati
 
 TIFF files also contain metadata in the header that describes the organization and key properties of the images. For biomedical data, the [Open Microscopy Environment](https://www.openmicroscopy.org/ome-files/){:target="_blank"} (OME) TIFF format has become the most widely used standard for XML-based metadata and raster images. Because different vendors also have their own internal data standards, [Bio-Formats](https://www.openmicroscopy.org/bio-formats/){:target="_blank"} software was developed by the OME community to convert proprietary formats into a standardized, open format, most recently [OME-TIFF 6.0](https://docs.openmicroscopy.org/ome-model/6.0.1/ome-tiff/){:target="_blank"}. This is a pyramid-encoded TIFF in which multiple resolutions of the same image are found in a single file to enable rapid pan and zoom, particularly using web tools (e.g. Google Maps). Many microscope vendors support Bio-Formats and it is the standard supported by MCMICRO and other image processing software developed by the Laboratory of Systems Pharmacology.
 
-Metadata standards for high-plex image data are rapidly developing: a wide variety of laboratories have come together to create the Minimum Information about Tissue Imaging Standard [(MITI) (Schapiro et al., 2021)](https://arxiv.org/abs/2108.09499){:target="_blank"}. 
+Metadata standards for high-plex image data are rapidly developing: a wide variety of laboratories have come together to create the Minimum Information about Tissue Imaging Standard [(MITI) (Schapiro et al., 2021)](https://doi.org/10.1038/s41592-022-01415-4){:target="_blank"}. 
 
-**Continue to learn how these images are processed and analyzed by [MCMICRO](./mcmicro.html)**
+<br>
+
+**Go back to overview to learn how these images are processed and analyzed by MCMICRO**
 
 <div class="row">
 

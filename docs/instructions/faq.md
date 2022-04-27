@@ -154,3 +154,7 @@ A: Use `--quant-opts` to specify the corresponding `--intensity_props` parameter
 ```
 nextflow run labsyspharm/mcmicro --in /path/to/exemplar-001 --quant-opts '--intensity_props median_intensity'
 ```
+
+### Q: What are the units of the MCMICRO `Area` outputs?
+
+A: `Area` is in pixels.

@@ -218,7 +218,13 @@ Screenshots depicting different phases of the CyLinter workflow.
 ### Analysis  
 
 **SCIMAP**  
-Scimap is a scalable toolkit for analyzing spatial molecular data. SCIMAP takes in spatial data mapped to X-Y coordinates and supports preprocessing, phenotyping, visualization, clustering, spatial analysis and differential spatial testing [(Nirmal et al., 2022)](https://doi.org/10.1101/2021.05.23.445310){:target="_blank"}. Visit the [SCIMAP website](https://scimap.xyz/){:target="_blank"} for more detailed information.
+[SCIMAP](https://scimap.xyz/){:target="_blank"} is a scalable toolkit for analyzing spatial molecular data. SCIMAP takes in spatial data mapped to X-Y coordinates and supports preprocessing, phenotyping, visualization, clustering, spatial analysis, and differential spatial testing [(Nirmal et al., 2022)](https://doi.org/10.1158/2159-8290.CD-21-1357){:target="_blank"}.
+
+{: .text-center }
+{: .fs-3 }
+{: .fw-300 }
+![Overview of SCIMAP. Spatial cell data is imported into SCIMAP and used to gate, cluster, and phenotype the data, build neighborhood graphs, then analyze spatial cellular neighborhoods and cell-cell interactions. The data can be visualized with Napari, used to make Voronoi diagrams, and more!]({{ site.baseurl }}/images/scimap.png)
+An overview of the [SCIMAP](https://scimap.xyz/){:target="_blank"} toolkit.
 
 {: .fs-6}
 {: .text-green-200}
@@ -231,7 +237,7 @@ Minerva is a suite of software tools that enables interactive viewing and sharin
 {: .fs-3 }
 {: .fw-300 }
 ![Screenshot from Minerva story on lung cancer]({{ site.baseurl }}/images/minerva-examp.png)
-A screenshot from a Minerva story on primary lung cancer - view the story [here](https://www.cycif.org/data/du-lin-rashid-nat-protoc-2019/osd-LUNG_3#s=1#w=3#g=0#m=0_3_2_1#a=-100_-100#v=0.5_0.5_0.5#o=-100_-100_1_1#p=Q){:target="_blank"} .
+A screenshot from a Minerva story on primary lung cancer - view the story [here](https://www.cycif.org/data/du-lin-rashid-nat-protoc-2019/osd-LUNG_3#s=1#w=3#g=0#m=0_3_2_1#a=-100_-100#v=0.5_0.5_0.5#o=-100_-100_1_1#p=Q){:target="_blank"}.
 
 <br>
 
