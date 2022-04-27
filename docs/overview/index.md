@@ -218,7 +218,7 @@ Screenshots depicting different phases of the CyLinter workflow.
 ### Analysis  
 
 **SCIMAP**  
-Scimap is a scalable toolkit for analyzing spatial molecular data. SCIMAP takes in spatial data mapped to X-Y coordinates and supports preprocessing, phenotyping, visualization, clustering, spatial analysis and differential spatial testing [(Nirmal et al., 2022)](https://doi.org/10.1101/2021.05.23.445310){:target="_blank"}. Visit the [SCIMAP website](https://scimap.xyz/){:target="_blank"} for more detailed information.
+Scimap is a scalable toolkit for analyzing spatial molecular data. SCIMAP takes in spatial data mapped to X-Y coordinates and supports preprocessing, phenotyping, visualization, clustering, spatial analysis and differential spatial testing [(Nirmal et al., 2022)](https://doi.org/10.1158/2159-8290.CD-21-1357){:target="_blank"}. Visit the [SCIMAP website](https://scimap.xyz/){:target="_blank"} for more detailed information.
 
 {: .fs-6}
 {: .text-green-200}
