@@ -1,3 +1,9 @@
+### 2022-04-27
+
+* [registration] Updated Ashlar to v1.15.2.
+  * OME-TIFF output now conforms to the official [OME-TIFF pyramid spec](https://docs.openmicroscopy.org/ome-model/6.0.0/ome-tiff/specification.html#sub-resolutions).
+  * Memory usage is dramatically reduced -- registration now only requires enough memory to hold all tiles in the first cycle's reference channel plus a fixed overhead of about 400 MB.
+
 ### 2022-04-22
 
 * By default, MCMICRO was copying `qc/*` files from work directories to the project directory. This was creating unnecessary duplication of potentially large files. The new `--qc-files` option allows users to `copy`, `move` or `symlink` all QC files, providing more flexibility. Example:
