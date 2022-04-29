@@ -1,6 +1,11 @@
+### 2022-04-29
+
+* [registration] Updated Ashlar to v1.15.3.
+  * Slightly non-square pixels (relative difference between width and height of <= 0.0001) are now tolerated.
+
 ### 2022-04-27
 
-* [registration] Updated Ashlar to v1.15.2.
+* [registration] Updated Ashlar to v1.15.3.
   * OME-TIFF output now conforms to the official [OME-TIFF pyramid spec](https://docs.openmicroscopy.org/ome-model/6.0.0/ome-tiff/specification.html#sub-resolutions).
   * Memory usage is dramatically reduced -- registration now only requires enough memory to hold all tiles in the first cycle's reference channel plus a fixed overhead of about 400 MB.
 
