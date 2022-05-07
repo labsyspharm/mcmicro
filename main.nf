@@ -33,26 +33,19 @@ params.singleFormats = '{.ome.tiff,.ome.tif,.rcpnl,.btf,.nd2,.tif,.czi}'
 params.probabilityMaps = 'unmicst'
 params.cellStates      = 'scimap'
 
-// Legacy parameters (to be deprecated in future versions)
-params.illum              = false
-params.quantificationMask = ''
-params.maskSpatial        = ''
-params.maskAdd            = ''
-params.nstatesOpts        = ''
-
 // Deprecation messages
-if( params.quantificationMask != '' )
+if( params.containsKey('quantificationMask') )
     error "--quantification-mask is deprecated; please use --quant-opts '--masks ...'"
-if( params.illum )
+if( params.containsKey('illum') )
     error "--illum is deprecated; please use --start-at illumination"
-if( params.maskSpatial != '' )
+if( params.containsKey('maskSpatial') )
     error "--maskSpatial is deprecated; please use --quant-opts '--masks ...'"
-if( params.maskAdd != '' )
+if( params.containsKey('maskAdd') )
     error "--maskAdd is deprecated; please use --quant-opts '--masks ...'"
+if( params.containsKey('nstatesOpts') )
+    error "--nstatesOpts is deprecated; please use --naivestatesOpts"
 if( params.probabilityMaps == 'all' )
     error "--probability-maps all is deprecated; please be explicit, e.g., --probability-maps unmicst,ilastik"
-if( params.nstatesOpts != '' )
-    error "--nstatesOpts is deprecated; please use --naivestatesOpts"
 
 // Steps in the mcmicro pipeline
 mcmsteps = ["raw",		// Step 0
