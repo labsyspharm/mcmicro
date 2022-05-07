@@ -6,8 +6,6 @@ if( !(nextflow.version >= '20.07') ) {
     exit 1
 }
 
-println "$projectDir"
-
 nextflow.enable.dsl=2
 
 // Expecting params
