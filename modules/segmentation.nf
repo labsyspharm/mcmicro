@@ -42,8 +42,8 @@ process s3seg {
     """
 }
 
-include { worker }                 from './lib/worker'
-include { getFileID; getImageID }  from './lib/util'
+include { worker }                 from "$projectDir/lib/worker"
+include { getFileID; getImageID }  from "$projectDir/lib/util"
 
 workflow segmentation {
     take:

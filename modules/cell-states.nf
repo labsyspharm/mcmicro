@@ -1,4 +1,4 @@
-include {worker} from './lib/worker'
+include {worker} from "$projectDir/lib/worker"
 
 workflow cellstates {
     take:

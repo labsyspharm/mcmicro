@@ -1,4 +1,4 @@
-include { escapeForShell } from './lib/util'
+include { escapeForShell } from "$projectDir/lib/util"
 
 def escapeForImagej(s) {
     // When passing an arbitrary string as an ImageJ macro parameter value, we

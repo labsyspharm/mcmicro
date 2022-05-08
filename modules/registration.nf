@@ -1,4 +1,4 @@
-include { escapeForShell } from './lib/util'
+include { escapeForShell } from "$projectDir/lib/util"
 
 process ashlar {
     container "${params.contPfx}${module.container}:${module.version}"

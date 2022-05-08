@@ -8,8 +8,9 @@ if( !(nextflow.version >= '20.07') ) {
 
 nextflow.enable.dsl=2
 
-// Expecting params
-// .in - location of the data
+// Expecting --in parameter
+if( !params.containsKey('in') )
+    error "Please specify the project directory with --in"
 
 // Default parameters for the pipeline as a whole
 params.sampleName  = file(params.in).name

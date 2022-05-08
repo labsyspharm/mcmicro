@@ -25,7 +25,7 @@ process mcquant {
     """
 }
 
-include {getImageID} from './lib/util'
+include {getImageID} from "$projectDir/lib/util"
     
 workflow quantification {
     take:
