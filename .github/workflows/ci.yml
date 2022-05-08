@@ -56,7 +56,7 @@ jobs:
         run: ./nextflow exemplar.nf --name exemplar-002 --path ~/data --from-cycle 6 --to-cycle 7
 
   # Test exemplar-001
-  ex001-extra:
+  ex001:
     strategy:
       matrix:
         params:
