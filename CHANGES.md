@@ -1,3 +1,9 @@
+### 2022-05-07
+
+* Docker containers are now always executed as root, which solves the permission problem for BaSiC illumination
+* Added a new CI test for illumination
+* Cleaned up CI test definitions
+
 ### 2022-04-29
 
 * [registration] Updated Ashlar to v1.15.3.
@@ -5,7 +11,7 @@
 
 ### 2022-04-27
 
-* [registration] Updated Ashlar to v1.15.3.
+* [registration] Updated Ashlar to v1.15.2.
   * OME-TIFF output now conforms to the official [OME-TIFF pyramid spec](https://docs.openmicroscopy.org/ome-model/6.0.0/ome-tiff/specification.html#sub-resolutions).
   * Memory usage is dramatically reduced -- registration now only requires enough memory to hold all tiles in the first cycle's reference channel plus a fixed overhead of about 400 MB.
 

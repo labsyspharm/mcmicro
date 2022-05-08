@@ -6,11 +6,19 @@ on:
   push:
     branches: [ master ]
     paths-ignore:
+      - README.md
+      - CHANGES.md
+      - .gitpod.yml
       - 'docs/**'
+      - 'setup/**'
   pull_request:
     branches: [ master ]
     paths-ignore:
+      - README.md
+      - CHANGES.md
+      - .gitpod.yml
       - 'docs/**'
+      - 'setup/**'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -21,61 +29,66 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install Nextflow
         run: curl -fsSL get.nextflow.io | bash
 
       # Exemplars will be cached
       - name: Exemplar-001 cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
+        id: cache-ex001
         with:
           path: ~/data/exemplar-001
           key: ex001-2022-02-24
       - name: Exemplar-002 cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
+        id: cache-ex002
         with:
           path: ~/data/exemplar-002
           key: ex002-2022-02-24
 
       # Download data only if no cache is available
       - name: Exemplar-001 download
-        run: |
-          if [ -d ~/data/exemplar-001 ]; then
-            echo "Using cached exemplar-001 download"
-            ls ~/data/exemplar-001/*
-          else
-            ./nextflow exemplar.nf --name exemplar-001 --path ~/data
-          fi
+        if: steps.cache-ex001.outputs.cache-hit != 'true'
+        run: ./nextflow exemplar.nf --name exemplar-001 --path ~/data
       - name: Exemplar-002 download
-        run: |
-          if [ -d ~/data/exemplar-002 ]; then
-            echo "Using exemplar-002 cache"
-            ls ~/data/exemplar-002/*
-          else
-            ./nextflow exemplar.nf --name exemplar-002 --path ~/data --from-cycle 6 --to-cycle 7
-          fi
+        if: steps.cache-ex002.outputs.cache-hit != 'true'
+        run: ./nextflow exemplar.nf --name exemplar-002 --path ~/data --from-cycle 6 --to-cycle 7
 
-  # One-shot test of exemplar-001
-  ex001:
+  # Test exemplar-001
+  ex001-extra:
+    strategy:
+      matrix:
+        params:
+          - ''
+          - --start-at illumination --stop-at registration --dynrange
+          - --probability-maps cypository --cypository-opts '--channel 10 --scalingFactor 2' --s3seg-opts '--logSigma 45 300'
+          - --probability-maps ilastik,mesmer
+          - -profile singularity
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - name: Install Singularity
+        uses: eWaterCycle/setup-singularity@v6
+        if: ${{ contains(matrix.params, 'singularity') }}
+        with:
+          singularity-version: 3.6.4
       - name: Install Nextflow
         run: curl -fsSL get.nextflow.io | bash
       - name: Restore exemplar-001 cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/data/exemplar-001
           key: ex001-2022-02-24
-      - name: Test exemplar-001
+      - name: Test exemplar-001 with additional parameters
         run: |
           docker rmi -f $(docker images -a -q)
-          ./nextflow main.nf --in ~/data/exemplar-001
-          ls ~/data/exemplar-001/*
+          ./nextflow main.nf --in ~/data/exemplar-001 ${{ matrix.mcopts }}
+          ls -R ~/data/exemplar-001
       - name: Upload processed result
         uses: actions/upload-artifact@v2
-        if: ${{ github.event_name == 'push' }}
+        if: ${{ github.event_name == 'push' && matrix.params == '' }}
         with:
           name: exemplar-001
           path: |
@@ -83,74 +96,18 @@ jobs:
             !~/data/exemplar-001/raw
             !~/data/exemplar-001/illumination
             !~/data/exemplar-001/qc/provenance
-
-  # One-shot test of exemplar-001 using Cypository
-  ex001-cypository:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install Nextflow
-        run: curl -fsSL get.nextflow.io | bash
-      - name: Restore exemplar-001 cache
-        uses: actions/cache@v2
-        with:
-          path: ~/data/exemplar-001
-          key: ex001-2022-02-24
-      - name: Test exemplar-001 with Cypository
-        run: |
-          docker rmi -f $(docker images -a -q)
-          ./nextflow main.nf --in ~/data/exemplar-001  --probability-maps cypository --cypository-opts '--channel 10 --scalingFactor 2' --s3seg-opts '--logSigma 45 300'
-          ls ~/data/exemplar-001/*
-
-  # One-shot test of exemplar-001 using Ilastik
-  ex001-ilastik:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install Nextflow
-        run: curl -fsSL get.nextflow.io | bash
-      - name: Restore exemplar-001 cache
-        uses: actions/cache@v2
-        with:
-          path: ~/data/exemplar-001
-          key: ex001-2022-02-24
-      - name: Test exemplar-001 with Ilastik
-        run: |
-          docker rmi -f $(docker images -a -q)
-          ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps ilastik
-          ls ~/data/exemplar-001/*
-
-  # One-shot test of exemplar-001 using Mesmer
-  ex001-mesmer:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install Nextflow
-        run: curl -fsSL get.nextflow.io | bash
-      - name: Restore exemplar-001 cache
-        uses: actions/cache@v2
-        with:
-          path: ~/data/exemplar-001
-          key: ex001-2022-02-24
-      - name: Test exemplar-001 with Mesmer
-        run: |
-          docker rmi -f $(docker images -a -q)
-          ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps mesmer
-          ls ~/data/exemplar-001/*
-
+      
+  
   # Step-by-step test of exemplar-001
   ex001-by-step:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install Nextflow
         run: curl -fsSL get.nextflow.io | bash
       - name: Restore exemplar-001 cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/data/exemplar-001
           key: ex001-2022-02-24
@@ -169,18 +126,18 @@ jobs:
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at cell-states --stop-at cell-states --cell-states fastpg
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at cell-states --stop-at cell-states --cell-states scanpy
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at cell-states --stop-at cell-states --cell-states flowsom
-          ls ~/data/exemplar-001/*
+          ls -R ~/data/exemplar-001
 
   # One-shot test of exemplar-002
   ex002:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install Nextflow
         run: curl -fsSL get.nextflow.io | bash
       - name: Restore exemplar-002 cache
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/data/exemplar-002
           key: ex002-2022-02-24
@@ -190,25 +147,4 @@ jobs:
           ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at registration --stop-at segmentation
           docker rmi -f $(docker images -a -q)
           ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at quantification
-          ls ~/data/exemplar-002/*
-
-  # Running containers with singularity
-  ex001-singularity:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: eWaterCycle/setup-singularity@v6
-        with:
-          singularity-version: 3.6.4
-      - name: Install Nextflow
-        run: curl -fsSL get.nextflow.io | bash
-      - name: Restore exemplar-001 cache
-        uses: actions/cache@v2
-        with:
-          path: ~/data/exemplar-001
-          key: ex001-2022-02-24
-      - name: Test exemplar-001
-        run: |
-          ./nextflow main.nf --in ~/data/exemplar-001 -profile singularity
-          ls ~/data/exemplar-001/*
+          ls -R ~/data/exemplar-001
