@@ -84,7 +84,7 @@ jobs:
       - name: Test exemplar-001 with additional parameters
         run: |
           docker rmi -f $(docker images -a -q)
-          ./nextflow main.nf --in ~/data/exemplar-001 ${{ matrix.mcopts }}
+          ./nextflow main.nf --in ~/data/exemplar-001 ${{ matrix.params }}
           ls -R ~/data/exemplar-001
       - name: Upload processed result
         uses: actions/upload-artifact@v2
