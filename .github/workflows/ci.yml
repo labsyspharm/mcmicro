@@ -147,4 +147,4 @@ jobs:
           ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at registration --stop-at segmentation
           docker rmi -f $(docker images -a -q)
           ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at quantification
-          ls -R ~/data/exemplar-001
+          ls -R ~/data/exemplar-002
