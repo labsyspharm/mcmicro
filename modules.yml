@@ -6,7 +6,7 @@ registration:
   name: ashlar
   container: labsyspharm/ashlar
   version: 1.15.3
-  defaults: -m 30
+  opts: -m 30
 dearray:
   name: coreograph
   container: labsyspharm/unetcoreograph
@@ -26,7 +26,7 @@ segmentation:
     cmd: python /app/deployMaskRCNN.py --stackOutput --outputPath .
     input: ''
     watershed: bypass
-    defaults: --model zeisscyto
+    opts: --model zeisscyto
   -
     name: ilastik
     container: labsyspharm/mcmicro-ilastik
@@ -35,7 +35,7 @@ segmentation:
     input: --input
     model: --model
     watershed: 'yes'
-    defaults: --num_channels 1
+    opts: --num_channels 1
   -
     name: mesmer
     container: vanvalenlab/deepcell-applications
@@ -51,7 +51,7 @@ quantification:
   name: mcquant
   container: labsyspharm/quantification
   version: 1.5.2
-  defaults: --masks cell*.tif
+  opts: --masks cell*.tif
 downstream:
   -
     name: naivestates
@@ -60,7 +60,7 @@ downstream:
     cmd: /app/main.R -o .
     input: -i
     model: --mct
-    defaults: -p png
+    opts: -p png
   -
     name: scimap
     container: labsyspharm/scimap
