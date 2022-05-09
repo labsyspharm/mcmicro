@@ -1,8 +1,11 @@
+include {getImageID} from "$projectDir/lib/util"
+include {moduleOpts} from "$projectDir/lib/params"
+
 process mcquant {
     container "${params.contPfx}${module.container}:${module.version}"
 
     // Output
-    publishDir params.pubDir, mode: 'copy', pattern: '*.csv'
+    publishDir "${params.in}/quantification", mode: 'copy', pattern: '*.csv'
 
     // Provenance
     publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
@@ -11,22 +14,21 @@ process mcquant {
       saveAs: {fn -> "${task.name}.log"}
     
     input:
-	val module
-	tuple val(tag), path("$tag"), path(masks), path(ch)
+      val module
+      tuple val(tag), path("$tag"), path(masks), path(ch)
+    
     output:
-	path '*.csv', emit: tables
-        tuple path('.command.sh'), path('.command.log')
+      path '*.csv', emit: tables
+      tuple path('.command.sh'), path('.command.log')
 
     when: params.idxStart <= 6 && params.idxStop >= 6
 
     """
     python /app/CommandSingleCellExtraction.py --image $tag \
-    ${params.quantOpts} --output . --channel_names $ch
+    ${moduleOpts(module)} --output . --channel_names $ch
     """
 }
 
-include {getImageID} from "$projectDir/lib/util"
-    
 workflow quantification {
     take:
       module

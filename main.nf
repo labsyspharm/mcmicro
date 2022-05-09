@@ -44,7 +44,9 @@ if( params.containsKey('maskSpatial') )
 if( params.containsKey('maskAdd') )
     error "--maskAdd is deprecated; please use --quant-opts '--masks ...'"
 if( params.containsKey('nstatesOpts') )
-    error "--nstatesOpts is deprecated; please use --naivestatesOpts"
+    error "--nstatesOpts is deprecated; please use --naivestates-opts"
+if( params.containsKey('quantOpts') )
+    error "--quantOpts is deprecated; please use --mcquant-opts"
 if( params.probabilityMaps == 'all' )
     error "--probability-maps all is deprecated; please be explicit, e.g., --probability-maps unmicst,ilastik"
 
@@ -132,9 +134,6 @@ pre_qty    = findFiles(idxStart == 7,
 include {parseModuleSpecs; moduleOpts} from "$projectDir/lib/params"
 modules = parseModuleSpecs("$projectDir/modules.yml")
 
-modCS = Channel.of( params.modulesCS ).flatten()
-    .filter{ params.cellStates.contains(it.name) }
-
 // The following parameters are shared by all modules
 params.idxStart  = idxStart
 params.idxStop   = idxStop
@@ -146,8 +145,8 @@ include {illumination}   from './modules/illumination'
 include {registration}   from './modules/registration'
 include {dearray}        from './modules/dearray'          addParams(pubDir: paths[3])
 include {segmentation}   from './modules/segmentation'
-include {quantification} from './modules/quantification'   addParams(pubDir: paths[6])
-include {cellstates}     from './modules/cell-states'      addParams(pubDir: paths[7])
+include {quantification} from './modules/quantification'
+include {cellstates}     from './modules/cell-states'
 include {roadie}         from './roadie/roadie'
 
 // Define the primary mcmicro workflow
@@ -179,11 +178,11 @@ workflow {
 
     // Merge segmentation masks against precomputed ones and append markers.csv
     segMsk = segmentation.out.mix(pre_segMsk)
-    quantification(params.moduleQuant, allimg, segMsk, chMrk)
+    quantification(modules['quantification'], allimg, segMsk, chMrk)
 
     // Spatial feature tables -> cell state calling
     sft = quantification.out.mix(pre_qty)
-    cellstates(sft, modCS)
+    cellstates(sft, modules['downstream'])
 
     // Run miscellaneous tasks
     roadie(allimg)
