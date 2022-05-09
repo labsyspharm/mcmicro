@@ -20,6 +20,8 @@ segmentation:
     version: 2.7.4
     cmd: python /app/unmicstWrapper.py --stackOutput --outputPath .
     input: ''
+    channel: --channel
+    idx: 1
     watershed: 'yes'
   -
     name: cypository
@@ -27,6 +29,8 @@ segmentation:
     version: 1.1.5
     cmd: python /app/deployMaskRCNN.py --stackOutput --outputPath .
     input: ''
+    channel: --channel
+    idx: 1
     watershed: bypass
     opts: --model zeisscyto
   -
@@ -36,6 +40,8 @@ segmentation:
     cmd: python /app/mc-ilastik.py --output .
     input: --input
     model: --model
+    channel: --channelIDs
+    idx: 1
     watershed: 'yes'
     opts: --num_channels 1
   -
@@ -44,11 +50,15 @@ segmentation:
     version: 0.3.0
     cmd: python /usr/src/app/run_app.py mesmer --squeeze --output-directory . --output-name cell.tif
     input: --nuclear-image
+    channel: --nuclear-channel
+    idx: 0
     watershed: 'no'
 watershed:
   name: s3seg
   container: labsyspharm/s3segmenter
   version: 1.3.18
+  channel: --probMapChan
+  idx: 1
 quantification:
   name: mcquant
   container: labsyspharm/quantification

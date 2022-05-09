@@ -200,7 +200,8 @@ workflow.onComplete {
 	out.println "githubTag: $workflow.revision";
 	out.println "githubCommit: $workflow.commitId";
 	params.each{ key, val ->
-	    if( key.indexOf('-') == -1 )
+        if( key == 'contPfx' ) return
+	    if( key.indexOf('-') != -1 ) return
 	    out.println "$key: $val"
 	}
     }
