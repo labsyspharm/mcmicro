@@ -144,7 +144,7 @@ params.path_qc   = path_qc
 params.path_prov = "${path_qc}/provenance"
 
 // Import individual modules
-include {illumination}   from './modules/illumination'     addParams(pubDir: paths[1])
+include {illumination}   from './modules/illumination'
 include {registration}   from './modules/registration'
 include {dearray}        from './modules/dearray'          addParams(pubDir: paths[3])
 include {segmentation}   from './modules/segmentation'
@@ -154,7 +154,7 @@ include {roadie}         from './roadie/roadie'
 
 // Define the primary mcmicro workflow
 workflow {
-    illumination(params.moduleIllum, raw)
+    illumination(modules['illumination'], raw)
     registration(modules['registration'], raw,
 		 illumination.out.ffp.mix( pre_ffp ),
 		 illumination.out.dfp.mix( pre_dfp ))
