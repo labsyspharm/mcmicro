@@ -48,20 +48,23 @@ include { getFileID; getImageID }  from "$projectDir/lib/util"
 workflow segmentation {
     take:
 
-    modulePM		// Probability map and instance segmentation modules
-    moduleWS		// Watershed module (e.g., S3Segmenter)
-    imgs		// Input images
-    tmamasks		// TMA masks (if any)
-    prepmaps		// Pre-computed probability maps
+    modSeg      // Probability map and instance segmentation modules
+    modWS       // Watershed module (e.g., S3Segmenter)
+    imgs        // Input images
+    tmamasks    // TMA masks (if any)
+    prepmaps    // Pre-computed probability maps
 
     main:
+
+    // A channel iterating over the segmentation modules
+    moduleSeg = Channel.of( modSeg ).flatten()
 
     // Define relevant paths
     pathPM  = "${params.in}/probability-maps"
     pathSeg = "${params.in}/segmentation"
 
     // Compose a mapping for which modules need watershed
-    needWS  = modulePM.map{ it -> tuple(it.watershed, it.name) }
+    needWS  = moduleSeg.map{ it -> tuple(it.watershed, it.name) }
     
     // Determine IDs of images
     id_imgs  = imgs.map{ f -> tuple(getImageID(f), f) }
@@ -69,7 +72,7 @@ workflow segmentation {
     // Determine if there are any custom models for each module
     // Overwrite output filenames with <image>-pmap.tif for pmap generators
     // Publish instance segmentation outputs directly to segmentation/
-    inpPM = modulePM.map{ it -> String m = "${it.name}Model";
+    inpPM = moduleSeg.map{ it -> String m = "${it.name}Model";
 		         tuple(it, params.containsKey(m) ?
 		               file(params."$m") : 'built-in') }
         .combine(id_imgs)
@@ -110,7 +113,7 @@ workflow segmentation {
 	        tuple("${mtd}-${tag}", img, msk, pm, bypass) }
 
     // Apply s3seg to probability-maps only
-    s3seg(moduleWS, inputs, pathSeg)
+    s3seg(modWS, inputs, pathSeg)
 
     // Merge against instance segmentation outputs
     instSeg = allpmaps.filter{ _1, _2, _3, ws -> ws == 'no' }

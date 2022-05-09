@@ -132,8 +132,6 @@ pre_qty    = findFiles(idxStart == 7,
 include {parseModuleSpecs; moduleOpts} from "$projectDir/lib/params"
 modules = parseModuleSpecs("$projectDir/modules.yml")
 
-modPM = Channel.of( params.modulesPM ).flatten()
-    .filter{ params.probabilityMaps.contains(it.name) }
 modCS = Channel.of( params.modulesCS ).flatten()
     .filter{ params.cellStates.contains(it.name) }
 
@@ -176,8 +174,8 @@ workflow {
 
     // Reconcile WSI and TMA processing for downstream segmentation
     allimg = img.wsi.mix(tmacores)
-    segmentation(modPM, params.moduleSeg,
-                 allimg, tmamasks, pre_pmap)
+    segmentation(modules['segmentation'], modules['watershed'],
+        allimg, tmamasks, pre_pmap)
 
     // Merge segmentation masks against precomputed ones and append markers.csv
     segMsk = segmentation.out.mix(pre_segMsk)
