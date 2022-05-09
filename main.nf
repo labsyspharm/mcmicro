@@ -129,6 +129,9 @@ pre_qty    = findFiles(idxStart == 7,
 		       {error "No quantification tables in ${paths[6]}"})
 
 // Load module specs
+include {parseModuleSpecs; moduleOpts} from "$projectDir/lib/params"
+modules = parseModuleSpecs("$projectDir/modules.yml")
+
 modPM = Channel.of( params.modulesPM ).flatten()
     .filter{ params.probabilityMaps.contains(it.name) }
 modCS = Channel.of( params.modulesCS ).flatten()
@@ -142,7 +145,7 @@ params.path_prov = "${path_qc}/provenance"
 
 // Import individual modules
 include {illumination}   from './modules/illumination'     addParams(pubDir: paths[1])
-include {registration}   from './modules/registration'     addParams(pubDir: paths[2])
+include {registration}   from './modules/registration'
 include {dearray}        from './modules/dearray'          addParams(pubDir: paths[3])
 include {segmentation}   from './modules/segmentation'
 include {quantification} from './modules/quantification'   addParams(pubDir: paths[6])
@@ -152,7 +155,7 @@ include {roadie}         from './roadie/roadie'
 // Define the primary mcmicro workflow
 workflow {
     illumination(params.moduleIllum, raw)
-    registration(params.moduleRegistr, raw,
+    registration(modules['registration'], raw,
 		 illumination.out.ffp.mix( pre_ffp ),
 		 illumination.out.dfp.mix( pre_dfp ))
 

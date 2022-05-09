@@ -1,8 +1,9 @@
 include { escapeForShell } from "$projectDir/lib/util"
+include { moduleOpts }     from "$projectDir/lib/params"
 
 process ashlar {
     container "${params.contPfx}${module.container}:${module.version}"
-    publishDir params.pubDir, mode: 'copy', pattern: '*.tif'
+    publishDir "${params.in}/registration", mode: 'copy', pattern: '*.tif'
     
     // Provenance
     publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
@@ -18,8 +19,8 @@ process ashlar {
       path ldfp
 
     output:
-	path "${params.sampleName}.ome.tif", emit: img
-        tuple path('.command.sh'), path('.command.log')
+      path "${params.sampleName}.ome.tif", emit: img
+      tuple path('.command.sh'), path('.command.log')
 
     when: params.idxStart <= 2 && params.idxStop >= 2
     
@@ -27,7 +28,7 @@ process ashlar {
     def imgs = lrelPath.collect{ escapeForShell(it) }.join(" ")
     def ilp = "--ffp $lffp --dfp $ldfp"
     if (ilp == '--ffp  --dfp ') ilp = ''  // Don't supply empty --ffp --dfp
-    "ashlar $imgs ${params.ashlarOpts} $ilp -o ${params.sampleName}.ome.tif"
+    "ashlar $imgs ${moduleOpts(module)} $ilp -o ${params.sampleName}.ome.tif"
 }
 
 workflow registration {
