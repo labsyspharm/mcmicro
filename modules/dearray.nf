@@ -1,8 +1,10 @@
+include { moduleOpts } from "$projectDir/lib/params"
+
 process coreograph {
     container "${params.contPfx}${module.container}:${module.version}"
     
     // Output
-    publishDir params.pubDir, mode: 'copy', pattern: '**{[0-9],mask}.tif'
+    publishDir "${params.in}/dearray", mode: 'copy', pattern: '**{[0-9],mask}.tif'
 
     // QC
     publishDir "${params.path_qc}/coreo", mode: "${params.qcFiles}",
@@ -30,20 +32,19 @@ process coreograph {
     when: params.idxStart <= 3 && params.idxStop >= 3 && params.tma
 
     """
-    python /app/UNetCoreograph.py ${params.coreOpts}\
-      --imagePath $s --outputPath .
+    ${module.cmd} ${module.input} $s ${moduleOpts(module)}
     """
 }
 
 workflow dearray {
-    take:
-	module
-	tma
+  take:
+    module
+    tma
 
-    main:
-	coreograph(module, tma)
+  main:
+    coreograph(module, tma)
 
-    emit:
-        cores = coreograph.out.cores.flatten()
-        masks = coreograph.out.masks.flatten()
+  emit:
+    cores = coreograph.out.cores.flatten()
+    masks = coreograph.out.masks.flatten()
 }

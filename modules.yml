@@ -11,6 +11,8 @@ dearray:
   name: coreograph
   container: labsyspharm/unetcoreograph
   version: 2.2.8
+  cmd: python /app/UNetCoreograph.py --outputPath .
+  input: --imagePath
 segmentation:
   -
     name: unmicst

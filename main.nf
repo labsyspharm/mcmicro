@@ -39,6 +39,8 @@ if( params.containsKey('quantificationMask') )
     error "--quantification-mask is deprecated; please use --quant-opts '--masks ...'"
 if( params.containsKey('illum') )
     error "--illum is deprecated; please use --start-at illumination"
+if( params.containsKey('coreOpts') )
+    error "--coreOpts is deprecated; please use --coreograph-opts"
 if( params.containsKey('maskSpatial') )
     error "--maskSpatial is deprecated; please use --quant-opts '--masks ...'"
 if( params.containsKey('maskAdd') )
@@ -131,7 +133,7 @@ pre_qty    = findFiles(idxStart == 7,
 		       {error "No quantification tables in ${paths[6]}"})
 
 // Load module specs
-include {parseModuleSpecs; moduleOpts} from "$projectDir/lib/params"
+include {parseModuleSpecs} from "$projectDir/lib/params"
 modules = parseModuleSpecs("$projectDir/modules.yml")
 
 // The following parameters are shared by all modules
@@ -143,7 +145,7 @@ params.path_prov = "${path_qc}/provenance"
 // Import individual modules
 include {illumination}   from './modules/illumination'
 include {registration}   from './modules/registration'
-include {dearray}        from './modules/dearray'          addParams(pubDir: paths[3])
+include {dearray}        from './modules/dearray'
 include {segmentation}   from './modules/segmentation'
 include {quantification} from './modules/quantification'
 include {cellstates}     from './modules/cell-states'
@@ -165,7 +167,7 @@ workflow {
         }
 
     // Apply dearray to TMAs only
-    dearray(params.moduleDearray, img.tma)
+    dearray(modules['dearray'], img.tma)
 
     // Merge against precomputed intermediates
     tmacores = dearray.out.cores.mix(pre_cores)
