@@ -1,3 +1,5 @@
+include { moduleOpts }     from "$projectDir/lib/params"
+
 // General worker process
 //
 // Inputs:
@@ -72,8 +74,7 @@ process worker {
     script:
 
     // Find module specific parameters and compose a command
-    def mparam = params."${module.name}Opts"
-    def cmd = "${module.cmd} ${module.input} $inp $mparam"
+    def cmd = "${module.cmd} ${module.input} $inp ${moduleOpts(module)}"
     String m = "${module.name}Model"
 
     if( params.containsKey(m) ) {
