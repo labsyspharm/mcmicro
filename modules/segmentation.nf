@@ -38,12 +38,13 @@ process s3seg {
     """
     python /app/S3segmenter.py $crop \
        --imagePath $core --stackProbPath $probs \
-       $bypass ${params.s3segOpts} --outputPath .
+       $bypass ${moduleOpts(module)} --outputPath .
     """
 }
 
 include { worker }                 from "$projectDir/lib/worker"
 include { getFileID; getImageID }  from "$projectDir/lib/util"
+include { moduleOpts }             from "$projectDir/lib/params"
 
 workflow segmentation {
     take:
