@@ -19,13 +19,34 @@ def parseModuleSpecs(filename) {
 
 // Determines modules options
 def moduleOpts(module) {
-    // Check for --module-opts
+
+    // Check for pipeline-level segmentation channel(s)
+    if(params.containsKey('segmentationChannel') &&
+        module.containsKey('channel')) {
+
+        // Account for 0-based indexing
+        if(!module.containsKey('idxbase'))
+            error module.name + " spec in modules.yml is missing idxbase key"
+        if(module.idxbase == 0)
+            idx = params.segmentationChannel.toString().tokenize()
+                .collect{"${(it as int)-1}"}.join(' ')
+        else
+            idx = params.segmentationChannel
+
+        copts = module.channel + " '" + idx + "'"
+      }
+    else copts = ''
+    
+    // Identify all remaining module options by checking for
+    //   --module-opts on the command line, or
+    //   the existence of opts: in the modules.yml file
     String s = "${module.name}Opts"
-    if( params.containsKey(s) ) return params."$s"
+    if(params.containsKey(s)) mopts = params."$s"
+    else if(module.containsKey('opts')) mopts = module.opts
+    else mopts = ''
 
-    // Check for defaults opts in the module specs
-    if( module.containsKey('opts') ) return module.opts
+    res = copts + ' ' + mopts
+    println module.name + ': ' + res
 
-    // No options provided
-    ''
+    return res
 }
