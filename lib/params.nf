@@ -21,6 +21,7 @@ def parseModuleSpecs(filename) {
 def moduleOpts(module) {
 
     // Check for pipeline-level segmentation channel(s)
+    String copts = ''
     if(params.containsKey('segmentationChannel') &&
         module.containsKey('channel')) {
 
@@ -33,20 +34,16 @@ def moduleOpts(module) {
         else
             idx = params.segmentationChannel
 
-        copts = module.channel + " '" + idx + "'"
+        copts = module.channel + ' ' + idx
       }
-    else copts = ''
     
     // Identify all remaining module options by checking for
     //   --module-opts on the command line, or
     //   the existence of opts: in the modules.yml file
     String s = "${module.name}Opts"
+    String mopts = ''
     if(params.containsKey(s)) mopts = params."$s"
     else if(module.containsKey('opts')) mopts = module.opts
-    else mopts = ''
 
-    res = copts + ' ' + mopts
-    println module.name + ': ' + res
-
-    return res
+    copts + ' ' + mopts
 }
