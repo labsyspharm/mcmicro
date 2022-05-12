@@ -26,7 +26,7 @@ process s3seg {
         tuple val(tag), path("*/*.ome.tif"), emit: segmasks
 
         // qc and provenance
-        path('*/qc/**')
+        path('*/qc/**') optional true
         tuple path('.command.sh'), path('.command.log')
 
     when: params.idxStart <= 5 && params.idxStop >= 5
