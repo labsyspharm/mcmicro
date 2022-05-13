@@ -25,7 +25,7 @@ process mcquant {
 
     """
     python /app/CommandSingleCellExtraction.py --image $tag \
-    ${moduleOpts(module)} --output . --channel_names $ch
+    ${moduleOpts(module, params)} --output . --channel_names $ch
     """
 }
 

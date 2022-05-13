@@ -18,11 +18,13 @@ def parseModuleSpecs(filename) {
 }
 
 // Determines modules options
-def moduleOpts(module) {
+// module - module spec, as parsed by parseModuleSpecs()
+// gp - global parameters (usually params in the NF space)
+def moduleOpts(module, gp) {
 
     // Check for pipeline-level segmentation channel(s)
     String copts = ''
-    if(params.containsKey('segmentationChannel') &&
+    if(gp.containsKey('segmentationChannel') &&
         module.containsKey('channel')) {
 
         // Module spec must specify whether indexing is 0-based or 1-based
@@ -30,7 +32,7 @@ def moduleOpts(module) {
             error module.name + " spec in modules.yml is missing idxbase key"
 
         // Identify the list of indices
-        List idx = params.segmentationChannel.toString().tokenize()
+        List idx = gp.segmentationChannel.toString().tokenize()
 
         // Account for 0-based indexing
         if(module.idxbase == 0)
@@ -48,7 +50,7 @@ def moduleOpts(module) {
     //   the existence of opts: in the modules.yml file
     String s = "${module.name}Opts"
     String mopts = ''
-    if(params.containsKey(s)) mopts = params."$s"
+    if(gp.containsKey(s)) mopts = gp."$s"
     else if(module.containsKey('opts')) mopts = module.opts
 
     copts + ' ' + mopts

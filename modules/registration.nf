@@ -29,7 +29,7 @@ process ashlar {
     def imgs = lrelPath.collect{ Util.escapeForShell(it) }.join(" ")
     def ilp = "--ffp $lffp --dfp $ldfp"
     if (ilp == '--ffp  --dfp ') ilp = ''  // Don't supply empty --ffp --dfp
-    "ashlar $imgs ${moduleOpts(module)} $ilp -o ${params.sampleName}.ome.tif"
+    "ashlar $imgs ${moduleOpts(module, params)} $ilp -o ${params.sampleName}.ome.tif"
 }
 
 workflow registration {

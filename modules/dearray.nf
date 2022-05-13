@@ -32,7 +32,7 @@ process coreograph {
     when: params.idxStart <= 3 && params.idxStop >= 3 && params.tma
 
     """
-    ${module.cmd} ${module.input} $s ${moduleOpts(module)}
+    ${module.cmd} ${module.input} $s ${moduleOpts(module, params)}
     """
 }
 
