@@ -200,9 +200,15 @@ workflow.onComplete {
 	out.println "githubTag: $workflow.revision";
 	out.println "githubCommit: $workflow.commitId";
 	params.each{ key, val ->
-        if( key == 'contPfx' ) return
 	    if( key.indexOf('-') != -1 ) return
-	    out.println "$key: $val"
-	}
+        if( [
+            'githubTag', 'githubCommit', 'contPfx', 'paramsFile',
+            'idxStart', 'idxStop', 'path_qc', 'path_prov'
+            ].contains(key) ) return
+        if( ['multiFormats', 'singleFormats'].contains(key) )
+            out.println "$key: '$val'"
+        else
+	        out.println "$key: $val"
+	  }
     }
 }
