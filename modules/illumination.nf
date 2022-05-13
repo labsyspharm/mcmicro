@@ -1,4 +1,4 @@
-include { escapeForShell } from "$projectDir/lib/util"
+import mcmicro.Util
 
 def escapeForImagej(s) {
     // When passing an arbitrary string as an ImageJ macro parameter value, we
@@ -32,7 +32,7 @@ process illumination {
     script:
     def fn = escapeForImagej(relPath)
     def xpn = escapeForImagej(relPath.subpath(0, 1).toString().tokenize(".")[0])
-    def macroParams = escapeForShell(
+    def macroParams = Util.escapeForShell(
         """filename=$fn,output_dir=".",experiment_name=$xpn"""
     )
     """

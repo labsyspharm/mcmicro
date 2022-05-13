@@ -1,3 +1,5 @@
+import mcmicro.Util
+
 process s3seg {
     container "${params.contPfx}${module.container}:${module.version}"
 
@@ -43,7 +45,6 @@ process s3seg {
 }
 
 include { worker }                 from "$projectDir/lib/worker"
-include { getFileID; getImageID }  from "$projectDir/lib/util"
 include { moduleOpts }             from "$projectDir/lib/params"
 
 workflow segmentation {
@@ -68,7 +69,7 @@ workflow segmentation {
     needWS  = moduleSeg.map{ it -> tuple(it.watershed, it.name) }
     
     // Determine IDs of images
-    id_imgs  = imgs.map{ f -> tuple(getImageID(f), f) }
+    id_imgs  = imgs.map{ f -> tuple(Util.getImageID(f), f) }
     
     // Determine if there are any custom models for each module
     // Overwrite output filenames with <image>-pmap.tif for pmap generators
@@ -89,7 +90,7 @@ workflow segmentation {
     // Merge against precomputed probability maps
     //  and information about whether the module needs watershed
     allpmaps = prepmaps.map{ mtd, f ->
-        tuple(getFileID(f, '-pmap'), mtd, f) }
+        tuple(Util.getFileID(f, '-pmap'), mtd, f) }
         .mix(worker.out.res)
         .combine( needWS, by:1 )   // changes order to (mtd, tag, f, ws)
     
@@ -103,9 +104,9 @@ workflow segmentation {
 
     // Determine IDs of TMA masks
     // Whole-slide images have no TMA masks
-    id_wsi = imgs.map{ f -> tuple(getImageID(f), 'NO_MASK') }
+    id_wsi = imgs.map{ f -> tuple(Util.getImageID(f), 'NO_MASK') }
         .filter{ !params.tma }
-    id_masks = tmamasks.map{ f -> tuple(getFileID(f,'_mask'), f) }
+    id_masks = tmamasks.map{ f -> tuple(Util.getFileID(f,'_mask'), f) }
         .mix(id_wsi)
 
     // Combine everything based on IDs

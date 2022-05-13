@@ -1,4 +1,4 @@
-include {getImageID} from "$projectDir/lib/util"
+import mcmicro.Util
 include {moduleOpts} from "$projectDir/lib/params"
 
 process mcquant {
@@ -39,7 +39,7 @@ workflow quantification {
     main:
 
     // Determine IDs of images
-    id_imgs = imgs.map{ f -> tuple(getImageID(f), f) }
+    id_imgs = imgs.map{ f -> tuple(Util.getImageID(f), f) }
 
     // Determine IDs of segmentation masks
     id_msks = segmasks.map{ id, msk -> x = id.split('-',2); tuple(x[1], x[0], msk) }

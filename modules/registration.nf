@@ -1,4 +1,5 @@
-include { escapeForShell } from "$projectDir/lib/util"
+import mcmicro.Util
+
 include { moduleOpts }     from "$projectDir/lib/params"
 
 process ashlar {
@@ -25,7 +26,7 @@ process ashlar {
     when: params.idxStart <= 2 && params.idxStop >= 2
     
     script:
-    def imgs = lrelPath.collect{ escapeForShell(it) }.join(" ")
+    def imgs = lrelPath.collect{ Util.escapeForShell(it) }.join(" ")
     def ilp = "--ffp $lffp --dfp $ldfp"
     if (ilp == '--ffp  --dfp ') ilp = ''  // Don't supply empty --ffp --dfp
     "ashlar $imgs ${moduleOpts(module)} $ilp -o ${params.sampleName}.ome.tif"

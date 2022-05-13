@@ -1,14 +1,16 @@
+package mcmicro
+
 // Extracts a file ID as the first token before delim in the filename.
-def getFileID(f, delim) {
+static def getFileID(f, delim) {
     f.getName().toString().split(delim).head()
 }
 
 // Extracts an image ID from a filename by dropping extension
-def getImageID(f) {
-    tokens = f.getBaseName().toString().replaceFirst(/\.ome$/, "")
+static def getImageID(f) {
+    f.getBaseName().toString().replaceFirst(/\.ome$/, "")
 }
 
-def escapeForShell(p) {
+static def escapeForShell(p) {
     /**
      * Apply escaping to make an arbitrary string usable as a shell argument.
      */
