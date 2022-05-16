@@ -1,5 +1,5 @@
 import mcmicro.Util
-
+import mcmicro.Params
 include { moduleOpts }     from "$projectDir/lib/params"
 
 process ashlar {
