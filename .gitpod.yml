@@ -1,4 +1,12 @@
 tasks:
+  - name: Download default containers
+    init: |
+      python -c "import yaml;\
+        mods = yaml.safe_load(open('modules.yml'));\
+        [print(m['container'] + ':' + m['version']) for m in \
+          [mods['registration'], mods['segmentation'][0],\
+           mods['watershed'], mods['quantification']]]"\
+      | while read line ; do docker pull $line ; done
   - name: Install Nextflow and download exemplar
     init: |
       cd /workspace; curl -s https://get.nextflow.io | bash
