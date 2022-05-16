@@ -1,5 +1,4 @@
-import mcmicro.Util
-include {moduleOpts} from "$projectDir/lib/params"
+import mcmicro.*
 
 process mcquant {
     container "${params.contPfx}${module.container}:${module.version}"
@@ -25,7 +24,7 @@ process mcquant {
 
     """
     python /app/CommandSingleCellExtraction.py --image $tag \
-    ${moduleOpts(module, params)} --output . --channel_names $ch
+    ${Opts.moduleOpts(module, params)} --output . --channel_names $ch
     """
 }
 

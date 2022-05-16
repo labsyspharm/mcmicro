@@ -1,4 +1,4 @@
-import mcmicro.Util
+import mcmicro.*
 
 process s3seg {
     container "${params.contPfx}${module.container}:${module.version}"
@@ -40,7 +40,7 @@ process s3seg {
     """
     python /app/S3segmenter.py $crop \
        --imagePath $core --stackProbPath $probs \
-       $bypass ${moduleOpts(module, params)} --outputPath .
+       $bypass ${Opts.moduleOpts(module, params)} --outputPath .
     """
 }
 

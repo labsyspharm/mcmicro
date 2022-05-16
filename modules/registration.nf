@@ -1,6 +1,4 @@
-import mcmicro.Util
-import mcmicro.Params
-include { moduleOpts }     from "$projectDir/lib/params"
+import mcmicro.*
 
 process ashlar {
     container "${params.contPfx}${module.container}:${module.version}"
@@ -29,7 +27,10 @@ process ashlar {
     def imgs = lrelPath.collect{ Util.escapeForShell(it) }.join(" ")
     def ilp = "--ffp $lffp --dfp $ldfp"
     if (ilp == '--ffp  --dfp ') ilp = ''  // Don't supply empty --ffp --dfp
-    "ashlar $imgs ${moduleOpts(module, params)} $ilp -o ${params.sampleName}.ome.tif"
+    """
+    ashlar $imgs ${Opts.moduleOpts(module, params)} $ilp \
+      -o ${params.sampleName}.ome.tif
+    """
 }
 
 workflow registration {

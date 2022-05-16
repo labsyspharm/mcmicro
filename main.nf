@@ -8,6 +8,8 @@ if( !(nextflow.version >= '20.07') ) {
 
 nextflow.enable.dsl=2
 
+import mcmicro.Opts
+
 // Expecting --in parameter
 if( !params.containsKey('in') )
     error "Please specify the project directory with --in"
@@ -133,8 +135,7 @@ pre_qty    = findFiles(idxStart == 7,
 		       {error "No quantification tables in ${paths[6]}"})
 
 // Load module specs
-include {parseModuleSpecs} from "$projectDir/lib/params"
-modules = parseModuleSpecs("$projectDir/modules.yml")
+modules = Opts.parseModuleSpecs("$projectDir/modules.yml", params)
 
 // The following parameters are shared by all modules
 params.idxStart  = idxStart

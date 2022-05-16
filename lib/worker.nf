@@ -1,4 +1,4 @@
-include { moduleOpts }     from "$projectDir/lib/params"
+import mcmicro.Opts
 
 // General worker process
 //
@@ -74,7 +74,7 @@ process worker {
     script:
 
     // Find module specific parameters and compose a command
-    def cmd = "${module.cmd} ${module.input} $inp ${moduleOpts(module, params)}"
+    def cmd = "${module.cmd} ${module.input} $inp ${Opts.moduleOpts(module, params)}"
     String m = "${module.name}Model"
 
     if( params.containsKey(m) ) {

@@ -1,17 +1,21 @@
+package mcmicro
+
 import org.yaml.snakeyaml.Yaml
 
 // Parses module specifications
-def parseModuleSpecs(filename) {
-    mods = new Yaml().load(file(filename))
+// module - module spec, as parsed by parseModuleSpecs()
+// gp - global parameters (usually params in the NF space)
+static def parseModuleSpecs(filename, gp) {
+    Map mods = new Yaml().load(new File(filename))
 
     // Filter segmentation modules based on --probability-maps
     mods['segmentation'] = mods['segmentation'].findAll{
-        params.probabilityMaps.contains(it.name)
+        gp.probabilityMaps.contains(it.name)
     }
 
     // Filter downstream modules based on --cell-states
     mods['downstream'] = mods['downstream'].findAll{
-        params.cellStates.contains(it.name)
+        gp.cellStates.contains(it.name)
     }
 
     mods
@@ -20,7 +24,7 @@ def parseModuleSpecs(filename) {
 // Determines modules options
 // module - module spec, as parsed by parseModuleSpecs()
 // gp - global parameters (usually params in the NF space)
-def moduleOpts(module, gp) {
+static def moduleOpts(module, gp) {
 
     // Check for pipeline-level segmentation channel(s)
     String copts = ''

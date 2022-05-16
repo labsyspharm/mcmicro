@@ -1,4 +1,4 @@
-include { moduleOpts } from "$projectDir/lib/params"
+import mcmicro.Opts
 
 process coreograph {
     container "${params.contPfx}${module.container}:${module.version}"
@@ -32,7 +32,7 @@ process coreograph {
     when: params.idxStart <= 3 && params.idxStop >= 3 && params.tma
 
     """
-    ${module.cmd} ${module.input} $s ${moduleOpts(module, params)}
+    ${module.cmd} ${module.input} $s ${Opts.moduleOpts(module, params)}
     """
 }
 
