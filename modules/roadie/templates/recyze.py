@@ -220,8 +220,8 @@ if __name__ == '__main__':
     # E.G. 25482x1065+0+0
     parser.add_argument('--crop', type=str, required=False, help="Crop coordinates in form {width}x{height}+{x}+{y}",
                         default=None)
-    parser.add_argument('--in_path', type=str, required=True, help="Input Image Path")
-    parser.add_argument('--out_path', type=str, required=True, help="Output Image Path")
+    parser.add_argument('--in-path', type=str, required=True, help="Input Image Path")
+    parser.add_argument('--out-path', type=str, required=True, help="Output Image Path")
     parser.add_argument('--channels', type=str, required=False,
                         help="Channels as comma separated list of indices e.g. 1,4,5")
 
@@ -229,3 +229,4 @@ if __name__ == '__main__':
 
     writer = PyramidWriter(argument.in_path, argument.out_path, argument.channels, argument.crop)
     writer.run()
+
