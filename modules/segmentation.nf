@@ -45,7 +45,6 @@ process s3seg {
 }
 
 include { worker }                 from "$projectDir/lib/worker"
-include { moduleOpts }             from "$projectDir/lib/params"
 
 workflow segmentation {
     take:

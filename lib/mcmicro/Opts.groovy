@@ -2,6 +2,23 @@ package mcmicro
 
 import org.yaml.snakeyaml.Yaml
 
+// Recursively updates a spec/opts tree with new values
+// orig - original Map
+// repl - replacement Map containing new values
+static def updateSpecs(orig, repl) {
+    Map res = orig
+
+    repl.each{ key, val ->
+        // Recurse on Maps
+        if(res.contains(key) && (res[key] instanceof Map)) {
+            res[key] = updateSpecs(res[key], val)
+        }
+        else res[key] = val
+    }
+
+    res
+}
+
 // Parses module specifications
 // module - module spec, as parsed by parseModuleSpecs()
 // gp - global parameters (usually params in the NF space)
