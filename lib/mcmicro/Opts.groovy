@@ -6,17 +6,17 @@ import org.yaml.snakeyaml.Yaml
 // orig - original Map
 // repl - replacement Map containing new values
 static def updateSpecs(orig, repl) {
-    Map res = orig
-
     repl.each{ key, val ->
         // Recurse on Maps
-        if(res.contains(key) && (res[key] instanceof Map)) {
-            res[key] = updateSpecs(res[key], val)
+        if(orig.containsKey(key) && 
+          (orig[key] instanceof Map) &&
+          (val instanceof Map)) {
+            orig[key] = updateSpecs(orig[key], val)
         }
-        else res[key] = val
+        else orig[key] = val
     }
 
-    res
+    orig
 }
 
 // Parses module specifications
