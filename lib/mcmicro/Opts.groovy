@@ -6,15 +6,30 @@ import org.yaml.snakeyaml.Yaml
 // orig - original Map
 // repl - replacement Map containing new values
 static def updateSpecs(orig, repl) {
-    repl.each{ key, val ->
-        // Recurse on Maps
-        if(orig.containsKey(key) && 
-          (orig[key] instanceof Map) &&
-          (val instanceof Map)) {
-            orig[key] = updateSpecs(orig[key], val)
+
+    // Recurse on Maps
+    if((repl instanceof Map) && (orig instanceof Map)) {
+        repl.each{ key, val ->
+            if( orig.containsKey(key) && 
+              ((orig[key] instanceof Map) && (val instanceof Map)) ||
+              ((orig[key] instanceof List) && (val instanceof List)) ) {
+                orig[key] = updateSpecs(orig[key], val)
+            }
+            else orig[key] = val
         }
-        else orig[key] = val
     }
+
+    // Match List items by the name field
+    else if((repl instanceof List) && (orig instanceof List)) {
+        repl.each{ repli ->
+            def i = orig.findIndexOf{it.name == repli.name}
+            println repli.name + ": " + i
+            if(i > -1) orig[i] = updateSpecs(orig[i], repli)
+            else orig << repli
+        }
+    }
+
+    else throw new Exception("New spec format doesn't match the original")
 
     orig
 }
