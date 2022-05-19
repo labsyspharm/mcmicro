@@ -13,66 +13,62 @@ import argparse
 class PyramidWriter:
 
     def __init__(
-            self, in_path, out_path, channel_list, crop=None, scale=2, tile_size=1024, peak_size=1024, verbose=False
+            self, _in_path, _out_path, _channels, _x, _y, _x2, _y2, _w, _h, scale=2, tile_size=1024, peak_size=1024,
+            verbose=False
     ):
         if tile_size % 16 != 0:
             raise ValueError("tile_size must be a multiple of 16")
-        self.in_path = Path(in_path)
-        self.in_data = zarr.open(tifffile.TiffFile(self.in_path, is_ome=False).series[0].aszarr())
-        self.out_path = Path(out_path)
+        self.in_path = Path(_in_path)
+        self.in_tiff = tifffile.TiffFile(self.in_path, is_ome=False)
+        self.in_data = zarr.open(self.in_tiff.series[0].aszarr())
+        self.out_path = Path(_out_path)
         self.metadata = from_tiff(self.in_path)
-        # Parse channel list, if none given, add every channel to list
-        if channel_list is None:
-            if self.in_data[0].ndim == 3:
-                self.channel_list = np.arange(self.in_data[0].shape[0], dtype=int).tolist()
-            elif self.in_data[0].ndim == 2:  # One channel image
-                self.channel_list = [0]
-        else:
-            self.channel_list = [int(e.strip()) for e in channel_list.split(',')]
-        self.scale = scale
-        if crop is None:
-            self.crop = [self.in_data[0].shape[-1], self.in_data[0].shape[-2], 0, 0]
-        else:
-            self.crop = [int(e) for e in re.match(r"(\d+)x(\d+)\+(\d+)\+(\d)", crop).groups()]
-        self.orig_shape = [self.crop[1], self.crop[0]]
         self.tile_size = tile_size
         self.peak_size = peak_size
+        self.scale = scale
+        if self.in_data[0].ndim == 3:  # Multi-channel image
+            if _channels:
+                if max(_channels) > self.in_data[0].shape[0]:
+                    print("Channel out of range", file=sys.stderr)
+                    sys.exit(1)
+                else:
+                    self.channels = _channels
+            else:
+                self.channels = np.arange(self.in_data[0].shape[0], dtype=int).tolist()
+        else:  # Single Channel image
+            if _channels and max(_channels) > 0:
+                print("Channel out of range", file=sys.stderr)
+                sys.exit(1)
+            self.channels = [0]
+
+        if _x and _y:
+            if _x2 is not None and _y2 is not None:
+                _w = _x2 - _x
+                _h = _y2 - _y
+            elif _w is None and _h is None:
+                print("Please specify either x2/y2 or w/h", file=sys.stderr)
+                sys.exit(1)
+        else:
+            _w = self.in_data[0].shape[-1]
+            _h = self.in_data[0].shape[-2]
+            _x = _y = 0
+        self.num_levels = math.ceil(math.log((max([_h, _w]) / self.peak_size), self.scale)) + 1
+
+        rounded_x = np.floor(_x / (self.scale ** (self.num_levels - 1))).astype(int) * (2 ** (self.num_levels - 1))
+        self.x = max([rounded_x, 0])
+
+        rounded_y = np.floor(_y / (self.scale ** (self.num_levels - 1))).astype(int) * (2 ** (self.num_levels - 1))
+        self.y = max([rounded_y, 0])
+
+        rounded_width = np.ceil((_w + self.x) / (self.scale ** (self.num_levels - 1))).astype(int) * \
+                        (2 ** (self.num_levels - 1)) - self.x
+        self.width = min([rounded_width, self.in_data[0].shape[-1]])
+
+        rounded_height = np.ceil((_h + self.y) / (self.scale ** (self.num_levels - 1))).astype(
+            int) * (2 ** (self.num_levels - 1)) - self.y
+        self.height = min([rounded_height, self.in_data[0].shape[-2]])
+
         self.verbose = verbose
-
-    @property
-    def num_levels(self):
-        "Number of levels."
-        factor = max(self.orig_shape) / self.peak_size
-        return math.ceil(math.log(factor, self.scale)) + 1
-
-    @property
-    def width(self):
-        rounded_width = np.ceil((self.orig_shape[1] + self.x) / (self.scale ** (self.num_levels - 1))).astype(int) * \
-                        (2 ** (self.num_levels - 1))
-        # ensure cropping dimensions are within original image
-        return min([rounded_width, self.in_data[0].shape[-1]])
-
-    @property
-    def height(self):
-        rounded_height = np.ceil((self.orig_shape[0] + self.x) / (self.scale ** (self.num_levels - 1))).astype(
-            int) * \
-                         (2 ** (self.num_levels - 1))
-        # ensure cropping dimensions are within original image
-        return min([rounded_height, self.in_data[0].shape[-2]])
-
-    @property
-    def x(self):
-        rounded_x = np.floor(self.crop[2] / (self.scale ** (self.num_levels - 1))).astype(int) * \
-                    (2 ** (self.num_levels - 1))
-        # ensure x is in bounds
-        return max([rounded_x, 0])
-
-    @property
-    def y(self):
-        rounded_y = np.floor(self.crop[3] / (self.scale ** (self.num_levels - 1))).astype(int) * \
-                    (2 ** (self.num_levels - 1))
-        # ensure y is in bounds
-        return max([rounded_y, 0])
 
     @property
     def base_shape(self):
@@ -81,7 +77,7 @@ class PyramidWriter:
 
     @property
     def num_channels(self):
-        return len(self.channel_list)
+        return len(self.channels)
 
     @property
     def level_shapes(self):
@@ -113,7 +109,7 @@ class PyramidWriter:
         h, w = self.base_shape
         th, tw = self.tile_shapes[0]
 
-        for ci in self.channel_list:
+        for ci in self.channels:
             if self.verbose:
                 print(f"    Channel {ci}:")
             img = self.in_data[0][ci, self.y:self.y + self.height, self.x:self.x + self.width]
@@ -143,7 +139,7 @@ class PyramidWriter:
         num_channels, h, w = self.level_full_shapes[level]
         tshape = self.tile_shapes[level] or (h, w)
 
-        for c in self.channel_list:
+        for c in self.channels:
             base_img = self.in_data[level][c]
             img = self.cropped_subres_image(base_img, level)
             if self.verbose:
@@ -161,28 +157,19 @@ class PyramidWriter:
 
     def run(self):
         dtype = self.in_data[0].dtype
-        pixel_size = self.metadata.images[0].pixels.physical_size_x
-        resolution_cm = 10000 / pixel_size
-        software = f"Ashlar v"  # TODO
-        metadata = {
-            "Creator": software,
-            "Pixels": {
-                "PhysicalSizeX": pixel_size, "PhysicalSizeXUnit": "\u00b5m",
-                "PhysicalSizeY": pixel_size, "PhysicalSizeYUnit": "\u00b5m"
-            },
-        }
         with tifffile.TiffWriter(self.out_path, ome=True, bigtiff=True) as tiff:
             tiff.write(
                 data=self.base_tiles(),
-                metadata=metadata,
-                software=software.encode("utf-8"),
+                software=self.in_tiff.pages[0].software,
                 shape=self.level_full_shapes[0],
                 subifds=int(self.num_levels - 1),
-                dtype=dtype,
+                dtype=self.in_tiff.pages[0].dtype,
+                resolution=(
+                self.in_tiff.pages[0].tags["XResolution"].value,
+                self.in_tiff.pages[0].tags["YResolution"].value,
+                self.in_tiff.pages[0].tags["ResolutionUnit"].value),
                 tile=self.tile_shapes[0],
-                resolution=(resolution_cm, resolution_cm, "centimeter"),
-                # FIXME Propagate this from input files (especially RGB).
-                photometric="minisblack",
+                photometric=self.in_tiff.pages[0].photometric,
             )
             if self.verbose:
                 print("Generating pyramid")
@@ -201,16 +188,16 @@ class PyramidWriter:
                 if self.verbose:
                     print()
             # Update Metadata
-            # TODO: Is this the correct way to update channels or should i just overwrite names with indices still in order?
             self.metadata.images[0].pixels.channels = [self.metadata.images[0].pixels.channels[i] for i in
-                                                       self.channel_list]
+                                                       self.channels]
             self.metadata.images[0].pixels.size_c = self.num_channels
             self.metadata.images[0].pixels.size_x = self.width
             self.metadata.images[0].pixels.size_y = self.height
 
-            # Plane TBD
-            self.metadata.images[0].pixels.planes = self.metadata.images[0].pixels.planes[0:self.num_channels]
+            self.metadata.images[0].pixels.planes = [self.metadata.images[0].pixels.planes[i] for i in
+                                                     self.channels]
             self.metadata.images[0].pixels.tiff_data_blocks[0].plane_count = self.num_channels
+
             # Write
             tifffile.tiffcomment(self.out_path, to_xml(self.metadata))
 
@@ -218,15 +205,23 @@ class PyramidWriter:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     # E.G. 25482x1065+0+0
-    parser.add_argument('--crop', type=str, required=False, help="Crop coordinates in form {width}x{height}+{x}+{y}",
-                        default=None)
+    # parser.add_argument('--crop', type=str, required=False, help="Crop coordinates in form {width}x{height}+{x}+{y}",
+    #                     default=None)
+
     parser.add_argument('--in-path', type=str, required=True, help="Input Image Path")
     parser.add_argument('--out-path', type=str, required=True, help="Output Image Path")
-    parser.add_argument('--channels', type=str, required=False,
-                        help="Channels as comma separated list of indices e.g. 1,4,5")
-
+    parser.add_argument('--x', type=int, required=False, default=None, help="Crop X1")
+    parser.add_argument('--x2', type=int, required=False, default=None, help="Crop X2")
+    parser.add_argument('--y', type=int, required=False, default=None, help="Crop Y1")
+    parser.add_argument('--y2', type=int, required=False, default=None, help="Crop Y2")
+    parser.add_argument('--w', type=int, required=False, default=None, help="Crop Width")
+    parser.add_argument('--h', type=int, required=False, default=None, help="Crop Height")
+    parser.add_argument('--channels', type=int, nargs="+", required=False, default=None, help="Channels")
     argument = parser.parse_args()
-
-    writer = PyramidWriter(argument.in_path, argument.out_path, argument.channels, argument.crop)
+    writer = PyramidWriter(argument.in_path, argument.out_path, argument.channels,
+                           argument.x, argument.y, argument.x2, argument.y2, argument.w, argument.h)
     writer.run()
 
+    test = from_tiff(argument.out_path)
+    out_tiff = tifffile.TiffFile(argument.out_path, is_ome=False)
+    blah = ''
