@@ -194,13 +194,14 @@ class PyramidWriter:
             self.metadata.images[0].pixels.size_c = self.num_channels
             self.metadata.images[0].pixels.size_x = self.width
             self.metadata.images[0].pixels.size_y = self.height
-            temp_planes = []
-            for i, channel_id in enumerate(self.channels):
-                temp_plane = self.metadata.images[0].pixels.planes[channel_id]
-                temp_plane.the_c = i
-                temp_planes.append(temp_plane)
-            self.metadata.images[0].pixels.planes = temp_planes
-            self.metadata.images[0].pixels.tiff_data_blocks[0].plane_count = self.num_channels
+            if self.metadata.images[0].pixels.planes:
+                temp_planes = []
+                for i, channel_id in enumerate(self.channels):
+                    temp_plane = self.metadata.images[0].pixels.planes[channel_id]
+                    temp_plane.the_c = i
+                    temp_planes.append(temp_plane)
+                self.metadata.images[0].pixels.planes = temp_planes
+                self.metadata.images[0].pixels.tiff_data_blocks[0].plane_count = self.num_channels
 
             # Write
         tifffile.tiffcomment(self.out_path, to_xml(self.metadata))
@@ -225,4 +226,3 @@ if __name__ == '__main__':
     writer = PyramidWriter(argument.in_path, argument.out_path, argument.channels,
                            argument.x, argument.y, argument.x2, argument.y2, argument.w, argument.h)
     writer.run()
-
