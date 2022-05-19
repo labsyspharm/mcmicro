@@ -222,6 +222,5 @@ if __name__ == '__main__':
                            argument.x, argument.y, argument.x2, argument.y2, argument.w, argument.h)
     writer.run()
 
-    test = from_tiff(argument.out_path)
-    out_tiff = tifffile.TiffFile(argument.out_path, is_ome=False)
-    blah = ''
+    # test_xml = from_tiff(argument.out_path)
+    # test_tiff = tifffile.TiffFile(argument.out_path, is_ome=False)
