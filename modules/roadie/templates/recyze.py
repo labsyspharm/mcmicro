@@ -24,7 +24,6 @@ class PyramidWriter:
         self.out_path = Path(_out_path)
         self.metadata = from_tiff(self.in_path)
 
-
         self.tile_size = tile_size
         self.peak_size = peak_size
         self.scale = scale
@@ -43,17 +42,18 @@ class PyramidWriter:
                 sys.exit(1)
             self.channels = [0]
 
-        if _x and _y:
+        if _x is not None and _y is not None:
             if _x2 is not None and _y2 is not None:
                 _w = _x2 - _x
                 _h = _y2 - _y
-            elif _w is None and _h is None:
+            elif _w is None or _h is None:
                 print("Please specify either x2/y2 or w/h", file=sys.stderr)
                 sys.exit(1)
         else:
             _w = self.in_data[0].shape[-1]
             _h = self.in_data[0].shape[-2]
             _x = _y = 0
+
         self.num_levels = math.ceil(math.log((max([_h, _w]) / self.peak_size), self.scale)) + 1
 
         rounded_x = np.floor(_x / (self.scale ** (self.num_levels - 1))).astype(int) * (2 ** (self.num_levels - 1))
@@ -189,7 +189,6 @@ class PyramidWriter:
                 )
                 if self.verbose:
                     print()
-            # Update Metadata
             self.metadata.images[0].pixels.channels = [self.metadata.images[0].pixels.channels[i] for i in
                                                        self.channels]
             self.metadata.images[0].pixels.size_c = self.num_channels
@@ -204,7 +203,7 @@ class PyramidWriter:
             self.metadata.images[0].pixels.tiff_data_blocks[0].plane_count = self.num_channels
 
             # Write
-            tifffile.tiffcomment(self.out_path, to_xml(self.metadata))
+        tifffile.tiffcomment(self.out_path, to_xml(self.metadata))
 
 
 if __name__ == '__main__':
