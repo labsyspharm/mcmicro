@@ -23,6 +23,8 @@ class PyramidWriter:
         self.in_data = zarr.open(self.in_tiff.series[0].aszarr())
         self.out_path = Path(_out_path)
         self.metadata = from_tiff(self.in_path)
+
+
         self.tile_size = tile_size
         self.peak_size = peak_size
         self.scale = scale
@@ -165,9 +167,9 @@ class PyramidWriter:
                 subifds=int(self.num_levels - 1),
                 dtype=self.in_tiff.pages[0].dtype,
                 resolution=(
-                self.in_tiff.pages[0].tags["XResolution"].value,
-                self.in_tiff.pages[0].tags["YResolution"].value,
-                self.in_tiff.pages[0].tags["ResolutionUnit"].value),
+                    self.in_tiff.pages[0].tags["XResolution"].value,
+                    self.in_tiff.pages[0].tags["YResolution"].value,
+                    self.in_tiff.pages[0].tags["ResolutionUnit"].value),
                 tile=self.tile_shapes[0],
                 photometric=self.in_tiff.pages[0].photometric,
             )
@@ -193,9 +195,12 @@ class PyramidWriter:
             self.metadata.images[0].pixels.size_c = self.num_channels
             self.metadata.images[0].pixels.size_x = self.width
             self.metadata.images[0].pixels.size_y = self.height
-
-            self.metadata.images[0].pixels.planes = [self.metadata.images[0].pixels.planes[i] for i in
-                                                     self.channels]
+            temp_planes = []
+            for i, channel_id in enumerate(self.channels):
+                temp_plane = self.metadata.images[0].pixels.planes[channel_id]
+                temp_plane.the_c = i
+                temp_planes.append(temp_plane)
+            self.metadata.images[0].pixels.planes = temp_planes
             self.metadata.images[0].pixels.tiff_data_blocks[0].plane_count = self.num_channels
 
             # Write
@@ -224,3 +229,4 @@ if __name__ == '__main__':
 
     # test_xml = from_tiff(argument.out_path)
     # test_tiff = tifffile.TiffFile(argument.out_path, is_ome=False)
+    # test = ''
