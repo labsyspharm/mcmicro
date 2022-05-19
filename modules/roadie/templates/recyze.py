@@ -42,17 +42,19 @@ class PyramidWriter:
                 sys.exit(1)
             self.channels = [0]
 
-        if _x is not None and _y is not None:
-            if _x2 is not None and _y2 is not None:
-                _w = _x2 - _x
-                _h = _y2 - _y
-            elif _w is None or _h is None:
-                print("Please specify either x2/y2 or w/h", file=sys.stderr)
-                sys.exit(1)
-        else:
+        xy = _x is not None and _y is not None
+        xy2 = _x2 is not None and _y2 is not None
+        wh = _w is not None and _h is not None
+        if all(v is None for v in (_x, _y, _x2, _y2, _w, _h)):
             _w = self.in_data[0].shape[-1]
             _h = self.in_data[0].shape[-2]
             _x = _y = 0
+        elif not xy or not (wh ^ xy2):
+            print("Please specify x/y and either x2/y2 or w/h", file=sys.stderr)
+            sys.exit(1)
+        elif xy2:
+            _w = _x2 - _x
+            _h = _y2 - _y
 
         self.num_levels = math.ceil(math.log((max([_h, _w]) / self.peak_size), self.scale)) + 1
 
@@ -226,6 +228,3 @@ if __name__ == '__main__':
                            argument.x, argument.y, argument.x2, argument.y2, argument.w, argument.h)
     writer.run()
 
-    # test_xml = from_tiff(argument.out_path)
-    # test_tiff = tifffile.TiffFile(argument.out_path, is_ome=False)
-    # test = ''
