@@ -5,8 +5,6 @@ import zarr
 import numpy as np
 from ome_types import from_tiff, to_xml
 from pathlib import Path
-import re
-import time
 import argparse
 
 
