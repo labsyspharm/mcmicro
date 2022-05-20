@@ -209,10 +209,6 @@ class PyramidWriter:
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    # E.G. 25482x1065+0+0
-    # parser.add_argument('--crop', type=str, required=False, help="Crop coordinates in form {width}x{height}+{x}+{y}",
-    #                     default=None)
-
     parser.add_argument('--in-path', type=str, required=True, help="Input Image Path")
     parser.add_argument('--out-path', type=str, required=True, help="Output Image Path")
     parser.add_argument('--x', type=int, required=False, default=None, help="Crop X1")
