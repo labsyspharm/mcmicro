@@ -10,7 +10,7 @@ process autothreshold {
     script: template 'autothresh.py'
 }
 
-include {getImageID} from '../lib/util'
+include {getImageID} from "$projectDir/modules/lib/util"
 
 workflow roadie {
     take: imgs
