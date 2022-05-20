@@ -33,12 +33,44 @@ if((params.containsKey('help') && (params.help instanceof Boolean)) ||
 // Task specs (TODO: Move to an external YAML)
 def tasks = [
     'recyze': [
-        'input'  : '--in-path',
-        'output' : '--out-path',
-        'params' : ['--x', '--x2', '--y', '--y2', '--w', '--h'],
+        'input'  : 'in-path',
+        'output' : 'out-path',
+        'params' : ['x', 'x2', 'y', 'y2', 'w', 'h', 'channels'],
         'help'   : '-h'
     ]
 ]
+
+process showHelp {
+    container params.roadie
+
+    when: params.containsKey('help')
+    input: path(code); val(specs)
+    output: stdout
+
+    """
+    echo ''
+    python $code ${specs.help}
+    """
+}
+
+process runTask {
+    container params.roadie
+    publishDir "${file(params[specs.output]).getParent()}"
+
+    when: params.containsKey('do')
+    input: path(code); path(input); val(specs)
+    output: path("$out")
+    
+    script:
+        def opts = params.inject('') {
+            prev, key, val -> specs.params.indexOf(key) > -1 ?
+                prev + " --" + key + " " + val : prev + ''
+        }
+        out = file(params[specs.output]).getName()
+    """
+    python $code --${specs.input} $input --${specs.output} $out $opts
+    """
+}
 
 workflow {
     // List available tasks
@@ -54,4 +86,17 @@ workflow {
 
     // Identify the script
     code = Channel.fromPath("$projectDir/templates/${task}.py")
+
+    // Display task help, if requested
+    showHelp(code, specs).view()
+
+    // Verify the presence of input/output parameters
+    if(params.containsKey('do')) {
+        if(!params.containsKey(specs.input))  error "Please provide input via --" + specs.input
+        if(!params.containsKey(specs.output)) error "Please specify output via --" + specs.output
+    }
+
+    // Identify the input file and execute the task
+    inp = Channel.fromPath(params[specs.input])
+    runTask(code, inp, specs)
 }
