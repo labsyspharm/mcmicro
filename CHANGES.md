@@ -1,3 +1,15 @@
+### 2022-05-20
+
+* Adding channel and pixel cropping tool `recyze` to `roadie`.
+View instructions with:
+```
+nextflow run labsyspharm/mcmicro/roadie.nf --help
+```
+Example:
+```
+nextflow run labsyspharm/mcmicro/roadie.nf --do recyze --in-path exemplar-001.ome.tif --x 0 --y 0 --w 1024 --h 1024 --channels 1 2 4
+```
+
 ### 2022-05-07
 
 * Docker containers are now always executed as root, which solves the permission problem for BaSiC illumination
@@ -80,12 +92,3 @@ nextflow run labsyspharm/mcmicro/exemplar.nf --help
 ```
 nextflow run labsyspharm/mcmicro --in /my/project --tma --core-opts '--tissue --downsampleFactor 6'
 ```
-### 2022-01-04
-
-* Adding channel and pixel cropping tool `recyze` to `roadie`
-* Can be run on docker as follows:
-```
-docker run --rm -v "$PWD":/recyze labsyspharm/roadie:2022-03-14 bin/bash -c "cd /recyze; python recyze.py --in-path exemplar-001.ome.tif --out-path crop.ome.tif --x 0 --y 0 --w 1024 --h 1024 --channels 1 2 4" 
-```
-
-

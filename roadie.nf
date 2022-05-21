@@ -1,5 +1,10 @@
 nextflow.enable.dsl=2
 
+import org.yaml.snakeyaml.Yaml
+
+// By default, write all output to the current directory
+params.outputTo = '.'
+
 if((params.containsKey('help') && (params.help instanceof Boolean)) ||
    (!params.containsKey('help') && 
     !params.containsKey('do') && 
@@ -32,19 +37,6 @@ if((params.containsKey('help') && (params.help instanceof Boolean)) ||
     exit 0
 }
 
-// By default, write all output to the current directory
-params.outputTo = '.'
-
-// Task specs (TODO: Move to an external YAML)
-def tasks = [
-    'recyze': [
-        'input'  : 'in-path',
-        'output' : '*.ome.tif*',
-        'params' : ['x', 'x2', 'y', 'y2', 'w', 'h', 'channels', 'out-path'],
-        'help'   : '-h'
-    ]
-]
-
 process showHelp {
     container params.roadie
 
@@ -60,7 +52,7 @@ process showHelp {
 
 process runTask {
     container "${params.contPfx}${params.roadie}"
-    publishDir "${params.outputTo}"
+    publishDir "${params.outputTo}", mode: 'move'
 
     when: params.containsKey('do')
     input: path(code); path(input); val(specs)
@@ -77,6 +69,9 @@ process runTask {
 }
 
 workflow {
+    // Parse task specs
+    tasks = new Yaml().load(file("$projectDir/roadie/tasks.yml"))
+
     // List available tasks
     if(params.containsKey('list-tasks')) {
         println "Available tasks:"
