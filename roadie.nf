@@ -10,32 +10,37 @@ if((params.containsKey('help') && (params.help instanceof Boolean)) ||
     
   Usage:
     To run a task,
-      nextflow run labsyspharm/mcmicro/roadie --do <task> <options>
+      nextflow run labsyspharm/mcmicro/roadie.nf --do <task> <options>
 
     To list available tasks,
-      nextflow run labsyspharm/mcmicro/roadie --list-tasks
+      nextflow run labsyspharm/mcmicro/roadie.nf --list-tasks
 
     To get help about individual tasks,
-      nextflow run labsyspharm/mcmicro/roadie --help <task>
+      nextflow run labsyspharm/mcmicro/roadie.nf --help <task>
 
   Examples:
-      
-    nextflow run labsyspharm/mcmicro/roadie --help recyze
 
-    nextflow run labsyspharm/mcmicro/roadie --do recyze \\
-      --in-path myimage.ome.tif \\
-      --out-path crop.ome.tif \\
-      --x 0 --y 0 --w 1024 --h 1024
+    Show help for the recyze task:
+      nextflow run labsyspharm/mcmicro/roadie.nf --help recyze
+
+    Make a 1024x1024 crop from myimage.ome.tif and write output to result/:
+      nextflow run labsyspharm/mcmicro/roadie.nf --do recyze \\
+        --in-path myimage.ome.tif \\
+        --x 0 --y 0 --w 1024 --h 1024 \\
+        --output-to result/
     """
     exit 0
 }
+
+// By default, write all output to the current directory
+params.outputTo = '.'
 
 // Task specs (TODO: Move to an external YAML)
 def tasks = [
     'recyze': [
         'input'  : 'in-path',
-        'output' : 'out-path',
-        'params' : ['x', 'x2', 'y', 'y2', 'w', 'h', 'channels'],
+        'output' : '*.ome.tif*',
+        'params' : ['x', 'x2', 'y', 'y2', 'w', 'h', 'channels', 'out-path'],
         'help'   : '-h'
     ]
 ]
@@ -54,21 +59,20 @@ process showHelp {
 }
 
 process runTask {
-    container params.roadie
-    publishDir "${file(params[specs.output]).getParent()}"
+    container "${params.contPfx}${params.roadie}"
+    publishDir "${params.outputTo}"
 
     when: params.containsKey('do')
     input: path(code); path(input); val(specs)
-    output: path("$out")
+    output: path("${specs.output}")
     
     script:
         def opts = params.inject('') {
             prev, key, val -> specs.params.indexOf(key) > -1 ?
-                prev + " --" + key + " " + val : prev + ''
+                prev + ' --' + key + ' ' + val : prev + ''
         }
-        out = file(params[specs.output]).getName()
     """
-    python $code --${specs.input} $input --${specs.output} $out $opts
+    python $code --${specs.input} $input $opts
     """
 }
 
@@ -85,18 +89,17 @@ workflow {
     specs = tasks.containsKey(task) ? tasks[task] : (error "Unknown task.")
 
     // Identify the script
-    code = Channel.fromPath("$projectDir/templates/${task}.py")
+    code = Channel.fromPath("$projectDir/roadie/templates/${task}.py")
 
     // Display task help, if requested
     showHelp(code, specs).view()
 
-    // Verify the presence of input/output parameters
-    if(params.containsKey('do')) {
-        if(!params.containsKey(specs.input))  error "Please provide input via --" + specs.input
-        if(!params.containsKey(specs.output)) error "Please specify output via --" + specs.output
-    }
+    // Verify the presence of input parameters
+    if(params.containsKey('do') && !params.containsKey(specs.input))
+      error "Please provide input via --" + specs.input
 
     // Identify the input file and execute the task
-    inp = Channel.fromPath(params[specs.input])
+    inp = params.containsKey(specs.input) ? 
+      Channel.fromPath(params[specs.input]) : Channel.empty()
     runTask(code, inp, specs)
 }
