@@ -6,7 +6,7 @@ import numpy as np
 from ome_types import from_tiff, to_xml
 from pathlib import Path
 import argparse
-
+import os
 
 class PyramidWriter:
 
@@ -210,7 +210,7 @@ class PyramidWriter:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--in-path', type=str, required=True, help="Input Image Path")
-    parser.add_argument('--out-path', type=str, required=True, help="Output Image Path")
+    parser.add_argument('--out-path', type=str, required=False, help="Output Image Path")
     parser.add_argument('--x', type=int, required=False, default=None, help="Crop X1")
     parser.add_argument('--x2', type=int, required=False, default=None, help="Crop X2")
     parser.add_argument('--y', type=int, required=False, default=None, help="Crop Y1")
@@ -219,6 +219,24 @@ if __name__ == '__main__':
     parser.add_argument('--h', type=int, required=False, default=None, help="Crop Height")
     parser.add_argument('--channels', type=int, nargs="+", required=False, default=None, help="Channels")
     argument = parser.parse_args()
-    writer = PyramidWriter(argument.in_path, argument.out_path, argument.channels,
+
+    # Automatically infer the output filename, if not specified
+    out_path = argument.out_path
+    if out_path is None:
+
+        # Tokenize the input filename and insert "_crop"
+        #   at the appropriate location
+        in_path = os.path.basename(argument.in_path)
+        tokens = in_path.split(os.extsep)
+        if len(tokens) < 2:
+            out_path = in_path + "_crop"
+        elif tokens[-2] == "ome":
+            stem = os.extsep.join(tokens[0:-2]) + "_crop"
+            out_path = os.extsep.join([stem] + tokens[-2:])
+        else:
+            stem = os.extsep.join(tokens[0:-1]) + "_crop"
+            out_path = os.extsep.join([stem, tokens[-1]])
+
+    writer = PyramidWriter(argument.in_path, out_path, argument.channels,
                            argument.x, argument.y, argument.x2, argument.y2, argument.w, argument.h)
     writer.run()
