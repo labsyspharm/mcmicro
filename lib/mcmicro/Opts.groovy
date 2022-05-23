@@ -1,11 +1,12 @@
 package mcmicro
 
 import org.yaml.snakeyaml.Yaml
+import org.yaml.snakeyaml.DumperOptions
 
 // Recursively updates a spec/opts tree with new values
 // orig - original Map
 // repl - replacement Map containing new values
-static def updateSpecs(orig, repl) {
+static def updateModuleSpecs(orig, repl) {
 
     // Recurse on Maps
     if((repl instanceof Map) && (orig instanceof Map)) {
@@ -13,7 +14,7 @@ static def updateSpecs(orig, repl) {
             if( orig.containsKey(key) && 
               ((orig[key] instanceof Map) && (val instanceof Map)) ||
               ((orig[key] instanceof List) && (val instanceof List)) ) {
-                orig[key] = updateSpecs(orig[key], val)
+                orig[key] = updateModuleSpecs(orig[key], val)
             }
             else orig[key] = val
         }
@@ -24,7 +25,7 @@ static def updateSpecs(orig, repl) {
         repl.each{ repli ->
             def i = orig.findIndexOf{it.name == repli.name}
             println repli.name + ": " + i
-            if(i > -1) orig[i] = updateSpecs(orig[i], repli)
+            if(i > -1) orig[i] = updateModuleSpecs(orig[i], repli)
             else orig << repli
         }
     }
@@ -40,6 +41,12 @@ static def updateSpecs(orig, repl) {
 static def parseModuleSpecs(filename, gp) {
     Map mods = new Yaml().load(new File(filename))
 
+    // Process manual overrides
+    if(gp.containsKey('modules')) {
+        Map umods = new Yaml().load(new File(gp.modules))
+        updateModuleSpecs(mods, umods)
+    }
+
     // Filter segmentation modules based on --probability-maps
     mods['segmentation'] = mods['segmentation'].findAll{
         gp.probabilityMaps.contains(it.name)
@@ -51,6 +58,16 @@ static def parseModuleSpecs(filename, gp) {
     }
 
     mods
+}
+
+// Write module specifications to filename in YAML format
+static def writeModuleSpecs(specs, filename) {
+    DumperOptions style = new DumperOptions();
+    style.setPrettyFlow(true);
+    style.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+    new File(filename).withWriter{ out -> 
+        new Yaml(style).dump(specs, out) 
+    }
 }
 
 // Determines modules options

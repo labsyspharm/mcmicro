@@ -196,6 +196,9 @@ workflow.onComplete {
     // Create a provenance directory
     file(path_qc).mkdirs()
     
+    // Write out module specs
+    Opts.writeModuleSpecs(modules, "${params.in}/qc/modules.yml")
+
     // Store parameters used
     file("${path_qc}/params.yml").withWriter{ out ->
 	out.println "githubTag: $workflow.revision";
