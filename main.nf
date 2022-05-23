@@ -153,7 +153,7 @@ include {dearray}        from './modules/dearray'          addParams(pubDir: pat
 include {segmentation}   from './modules/segmentation'
 include {quantification} from './modules/quantification'   addParams(pubDir: paths[6])
 include {cellstates}     from './modules/cell-states'      addParams(pubDir: paths[7])
-include {roadie}         from './modules/roadie/roadie'
+include {roadie}         from './roadie/roadie'
 
 // Define the primary mcmicro workflow
 workflow {

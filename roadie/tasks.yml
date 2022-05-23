@@ -1,0 +1,6 @@
+recyze:
+  description: channel and pixel cropping
+  input: in-path
+  output: '*.ome.tif*'
+  params: ['x', 'x2', 'y', 'y2', 'w', 'h', 'channels', 'out-path']
+  help: -h
