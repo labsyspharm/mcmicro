@@ -24,7 +24,6 @@ static def updateModuleSpecs(orig, repl) {
     else if((repl instanceof List) && (orig instanceof List)) {
         repl.each{ repli ->
             def i = orig.findIndexOf{it.name == repli.name}
-            println repli.name + ": " + i
             if(i > -1) orig[i] = updateModuleSpecs(orig[i], repli)
             else orig << repli
         }

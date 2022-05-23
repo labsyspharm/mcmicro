@@ -1,3 +1,13 @@
+### 2022-05-23
+
+* Module specs have been migrated to a stand-alone file in standard YAML format.
+  * Default specs can be overwritten with the new `--module myspecs.yml` parameter. In this example, `myspecs.yml` only needs to specify the fields being overwritten; all other values will stay at default.
+  * MCMICRO will output the module specs used during a run to a new `qc/modules.yml` file to maintain provenance. The file can be fed back to the pipeline with `--module`, closing the reproducibility loop.
+* Introduced a new `--segmentation-channel` parameter, which provides synchronized `--channel` control over all segmentation modules
+  * MCMICRO will forward the value to every segmentation module, properly accounting for 0-based and 1-based indexing.
+  * When supplying multiple channels, enclose them with single quotes (e.g., `--segmentation-channel '1 5'`). Only the first value will be passed to s3seg.
+* Cleaned up what gets written to `qc/params.yml`, ensuring that the file can be reused with MCMICRO via `-params-file`.
+
 ### 2022-05-20
 
 * Added channel and pixel cropping tool `recyze` to `roadie`.
