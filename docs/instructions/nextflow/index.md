@@ -237,6 +237,7 @@ The following parameters control the pipeline as a whole. These can be specified
 | `--start-at <step>` | `registration` | Name of the first step to be executed by the pipeline. Must be one of `illumination`, `registration`, `dearray` (TMA only), `probability-maps`, `segmentation`, `quantification`, `cell-states` |
 | `--stop-at <step>` | `quantification` | Name of the final step to be executed by the pipeline. Spans the same vocabulary as `--start-at`. |
 | `--tma` | Omitted | If specified, MCMICRO treats input data as a TMA. If omitted, the input is assumed to be a whole-slide image. |
+| `--segmentation-channel <index>` | `1` | One or more channels to use for segmentation, specified using 1-based indexing. These will be forwarded to all segmentation modules. When providing multiple values, ensure they are enclosed with single quotes (e.g., `'1 5'`). |
 | `--ilastik-model <model.ilp>` | None | A custom `.ilp` file to be used as the classifier model for ilastik. |
 | `--probability-maps <choice>` | `unmicst` | Which module(s) to use for probability map computation. Module names should be delimited with a comma without spaces, e.g., `--probability-maps unmicst,ilastik` |
 | `--qc-files <op>` | `copy` | Must be one of `copy`, `move` or `symlink`, controlling whether QC files should be copied, moved or symbolically linked from work directories to the project directory |
