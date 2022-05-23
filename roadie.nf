@@ -56,7 +56,7 @@ process runTask {
     publishDir "${params.outputTo}", mode: 'move'
 
     when: params.containsKey('do')
-    input: path(code); path(input); val(specs)
+    input: each path(code); path(input); val(specs)
     output: path("${specs.output}")
     
     script:

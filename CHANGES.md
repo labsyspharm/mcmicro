@@ -10,6 +10,11 @@ Example:
 nextflow run labsyspharm/mcmicro/roadie.nf --do recyze --in-path exemplar-001.ome.tif --x 0 --y 0 --w 1024 --h 1024 --channels 1 2 4
 ```
 
+To process multiple files in parallel, file masks have to be enclosed by single quotes:
+```
+nextflow run labsyspharm/mcmicro/roadie.nf --do recyze --in-path '*.ome.tif' --x 0 --y 0 --w 1024 --h 1024 --channels 1 2 4
+```
+
 ### 2022-05-07
 
 * Docker containers are now always executed as root, which solves the permission problem for BaSiC illumination
