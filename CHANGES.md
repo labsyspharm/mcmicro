@@ -1,6 +1,6 @@
 ### 2022-05-20
 
-* Adding channel and pixel cropping tool `recyze` to `roadie`.
+* Added channel and pixel cropping tool `recyze` to `roadie`.
 View instructions with:
 ```
 nextflow run labsyspharm/mcmicro/roadie.nf --help

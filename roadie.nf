@@ -38,7 +38,8 @@ if((params.containsKey('help') && (params.help instanceof Boolean)) ||
 }
 
 process showHelp {
-    container params.roadie
+    executor 'local'
+    container "${params.contPfx}${params.roadie}"
 
     when: params.containsKey('help')
     input: path(code); val(specs)
@@ -75,7 +76,7 @@ workflow {
     // List available tasks
     if(params.containsKey('list-tasks')) {
         println "Available tasks:"
-        tasks.each{ key, val -> println "  " + key}
+        tasks.each{ key, val -> println "  " + key + "  - " + val.description}
         exit 0
     }
 
