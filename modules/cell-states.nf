@@ -1,4 +1,4 @@
-include {worker} from './lib/worker'
+include {worker} from "$projectDir/lib/worker"
 
 workflow cellstates {
     take:
@@ -9,12 +9,14 @@ workflow cellstates {
     main:
 
     // Determine if there are any custom models specified
-    inp = modules.map{ it -> String m = "${it.name}Model";
+    inp = Channel.of( modules )
+        .flatten()
+        .map{ it -> String m = "${it.name}Model";
 		      tuple(it, params.containsKey(m) ?
 		            file(params."$m") : 'built-in') }
-	.combine(input)
+        .combine(input)
         .map{ mod, _2, _3 ->
-        tuple( '', mod, _2, _3, "${params.pubDir}/${mod.name}", '') }
+        tuple( '', mod, _2, _3, "${params.in}/cell-states/${mod.name}", '') }
     worker( inp, '*.{csv,h5ad}', 7 )
 
     emit:

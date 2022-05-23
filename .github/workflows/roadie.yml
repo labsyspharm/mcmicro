@@ -6,7 +6,7 @@ on:
     branches:
       - master
     paths:
-      - 'modules/roadie/Dockerfile'
+      - 'roadie/Dockerfile'
 
 jobs:
   docker:
@@ -36,7 +36,7 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          context: modules/roadie
+          context: roadie
           push: true
           tags: labsyspharm/roadie:${{ steps.date.outputs.date }}
       -

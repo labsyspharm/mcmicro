@@ -8,8 +8,11 @@ if( !(nextflow.version >= '20.07') ) {
 
 nextflow.enable.dsl=2
 
-// Expecting params
-// .in - location of the data
+import mcmicro.Opts
+
+// Expecting --in parameter
+if( !params.containsKey('in') )
+    error "Please specify the project directory with --in"
 
 // Default parameters for the pipeline as a whole
 params.sampleName  = file(params.in).name
@@ -33,26 +36,23 @@ params.singleFormats = '{.ome.tiff,.ome.tif,.rcpnl,.btf,.nd2,.tif,.czi}'
 params.probabilityMaps = 'unmicst'
 params.cellStates      = 'scimap'
 
-// Legacy parameters (to be deprecated in future versions)
-params.illum              = false
-params.quantificationMask = ''
-params.maskSpatial        = ''
-params.maskAdd            = ''
-params.nstatesOpts        = ''
-
 // Deprecation messages
-if( params.quantificationMask != '' )
+if( params.containsKey('quantificationMask') )
     error "--quantification-mask is deprecated; please use --quant-opts '--masks ...'"
-if( params.illum )
+if( params.containsKey('illum') )
     error "--illum is deprecated; please use --start-at illumination"
-if( params.maskSpatial != '' )
+if( params.containsKey('coreOpts') )
+    error "--coreOpts is deprecated; please use --coreograph-opts"
+if( params.containsKey('maskSpatial') )
     error "--maskSpatial is deprecated; please use --quant-opts '--masks ...'"
-if( params.maskAdd != '' )
+if( params.containsKey('maskAdd') )
     error "--maskAdd is deprecated; please use --quant-opts '--masks ...'"
+if( params.containsKey('nstatesOpts') )
+    error "--nstatesOpts is deprecated; please use --naivestates-opts"
+if( params.containsKey('quantOpts') )
+    error "--quantOpts is deprecated; please use --mcquant-opts"
 if( params.probabilityMaps == 'all' )
     error "--probability-maps all is deprecated; please be explicit, e.g., --probability-maps unmicst,ilastik"
-if( params.nstatesOpts != '' )
-    error "--nstatesOpts is deprecated; please use --naivestatesOpts"
 
 // Steps in the mcmicro pipeline
 mcmsteps = ["raw",		// Step 0
@@ -135,10 +135,7 @@ pre_qty    = findFiles(idxStart == 7,
 		       {error "No quantification tables in ${paths[6]}"})
 
 // Load module specs
-modPM = Channel.of( params.modulesPM ).flatten()
-    .filter{ params.probabilityMaps.contains(it.name) }
-modCS = Channel.of( params.modulesCS ).flatten()
-    .filter{ params.cellStates.contains(it.name) }
+modules = Opts.parseModuleSpecs("$projectDir/modules.yml", params)
 
 // The following parameters are shared by all modules
 params.idxStart  = idxStart
@@ -147,18 +144,18 @@ params.path_qc   = path_qc
 params.path_prov = "${path_qc}/provenance"
 
 // Import individual modules
-include {illumination}   from './modules/illumination'     addParams(pubDir: paths[1])
-include {registration}   from './modules/registration'     addParams(pubDir: paths[2])
-include {dearray}        from './modules/dearray'          addParams(pubDir: paths[3])
+include {illumination}   from './modules/illumination'
+include {registration}   from './modules/registration'
+include {dearray}        from './modules/dearray'
 include {segmentation}   from './modules/segmentation'
-include {quantification} from './modules/quantification'   addParams(pubDir: paths[6])
-include {cellstates}     from './modules/cell-states'      addParams(pubDir: paths[7])
+include {quantification} from './modules/quantification'
+include {cellstates}     from './modules/cell-states'
 include {roadie}         from './roadie/roadie'
 
 // Define the primary mcmicro workflow
 workflow {
-    illumination(params.moduleIllum, raw)
-    registration(params.moduleRegistr, raw,
+    illumination(modules['illumination'], raw)
+    registration(modules['registration'], raw,
 		 illumination.out.ffp.mix( pre_ffp ),
 		 illumination.out.dfp.mix( pre_dfp ))
 
@@ -171,7 +168,7 @@ workflow {
         }
 
     // Apply dearray to TMAs only
-    dearray(params.moduleDearray, img.tma)
+    dearray(modules['dearray'], img.tma)
 
     // Merge against precomputed intermediates
     tmacores = dearray.out.cores.mix(pre_cores)
@@ -179,16 +176,16 @@ workflow {
 
     // Reconcile WSI and TMA processing for downstream segmentation
     allimg = img.wsi.mix(tmacores)
-    segmentation(modPM, params.moduleSeg,
-                 allimg, tmamasks, pre_pmap)
+    segmentation(modules['segmentation'], modules['watershed'],
+        allimg, tmamasks, pre_pmap)
 
     // Merge segmentation masks against precomputed ones and append markers.csv
     segMsk = segmentation.out.mix(pre_segMsk)
-    quantification(params.moduleQuant, allimg, segMsk, chMrk)
+    quantification(modules['quantification'], allimg, segMsk, chMrk)
 
     // Spatial feature tables -> cell state calling
     sft = quantification.out.mix(pre_qty)
-    cellstates(sft, modCS)
+    cellstates(sft, modules['downstream'])
 
     // Run miscellaneous tasks
     roadie(allimg)
@@ -199,13 +196,23 @@ workflow.onComplete {
     // Create a provenance directory
     file(path_qc).mkdirs()
     
+    // Write out module specs
+    Opts.writeModuleSpecs(modules, "${params.in}/qc/modules.yml")
+
     // Store parameters used
     file("${path_qc}/params.yml").withWriter{ out ->
 	out.println "githubTag: $workflow.revision";
 	out.println "githubCommit: $workflow.commitId";
 	params.each{ key, val ->
-	    if( key.indexOf('-') == -1 )
-	    out.println "$key: $val"
-	}
+	    if( key.indexOf('-') != -1 ) return
+        if( [
+            'githubTag', 'githubCommit', 'contPfx', 'paramsFile',
+            'idxStart', 'idxStop', 'path_qc', 'path_prov'
+            ].contains(key) ) return
+        if( ['multiFormats', 'singleFormats'].contains(key) )
+            out.println "$key: '$val'"
+        else
+	        out.println "$key: $val"
+	  }
     }
 }

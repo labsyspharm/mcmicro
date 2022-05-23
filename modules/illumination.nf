@@ -11,7 +11,7 @@ process illumination {
     container "${params.contPfx}${module.container}:${module.version}"
 
     // Output profiles
-    publishDir params.pubDir, mode: 'copy', pattern: '*.tif'
+    publishDir "${params.in}/illumination", mode: 'copy', pattern: '*.tif'
 
     // Provenance
     publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',

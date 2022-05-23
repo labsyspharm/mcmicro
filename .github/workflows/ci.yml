@@ -119,7 +119,7 @@ jobs:
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at probability-maps --stop-at probability-maps
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at segmentation --stop-at segmentation
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at quantification --stop-at quantification
-          ./nextflow main.nf --in ~/data/exemplar-001 --start-at quantification --quant-opts '--masks nuclei.ome.tif cell.ome.tif'
+          ./nextflow main.nf --in ~/data/exemplar-001 --start-at quantification --mcquant-opts '--masks nuclei.ome.tif cell.ome.tif'
           docker rmi -f $(docker images -a -q)
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at cell-states --stop-at cell-states --cell-states scimap
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at cell-states --stop-at cell-states --cell-states naivestates

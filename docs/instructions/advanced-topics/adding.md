@@ -18,21 +18,15 @@ parent: Advanced Topics
 {:toc}
 </details>
 
-MCMICRO allows segmentation and cell state caller modules to be specified dynamically. Adding new modules requires nothing more than editing a simple configuration file. No changes to the Nextflow codebase necessary!
+MCMICRO allows all modules to be specified dynamically. Adding new modules requires nothing more than editing a simple configuration file in YAML format. No changes to the Nextflow codebase necessary!
 
 ## Quick start
 
-**Step 1.** Navigate to [https://github.com/labsyspharm/mcmicro/blob/master/config/modules.config](https://github.com/labsyspharm/mcmicro/blob/master/config/modules.config). Press the pencil in the top-right corner. This will fork the project to your own GitHub account and allow you to modify the file in your fork.
+**Step 1.** Examine [the current specifications](https://github.com/labsyspharm/mcmicro/blob/master/modules.yml) and make note of the different fields provided for each pipeline step.
 
-<img src="{{ site.baseurl }}/images/addmod/Step1.png"/>
+**Step 2.** Create a new `specs.yml` file and define specs for your new module. Test your new file in MCMICRO with `--modules specs.yml` to verify that everything is working as expected.
 
-**Step 2.** Add a new module by specifying all relevant fields (see below).
-
-<img src="{{ site.baseurl }}/images/addmod/Step2.png"/>
-
-**Step 3.** Briefly describe your new module. Provide a reference to the method and the codebase.
-
-<img src="{{ site.baseurl }}/images/addmod/Step3.png"/>
+**Step 3.** If you believe your module will be of general utility to MCMICRO users, update `modules.yml` in the repository root and submit a pull request.
 
 **Step 4.** After MCMICRO developers review and test your proposed module, the changes will be merged into the main project branch.
 
@@ -68,18 +62,19 @@ MCMICRO assumes that CLI conforms to the following input-output specifications.
 
 # Configuration
 
-Adding a new MCMICRO module involves specifying simple key-value pairs in `config/modules.config`. For example, consider the following configuration for ilastik:
+Adding a new MCMICRO module involves specifying simple key-value pairs in `modules.yml`. For example, consider the following configuration for ilastik:
 
 ```
-[
-  name      : 'ilastik',
-  container : 'labsyspharm/mcmicro-ilastik',
-  version   : '1.4.3',
-  cmd       : 'python /app/mc-ilastik.py --output .',
-  input     : '--input',
-  model     : '--model',
-  watershed : 'yes'
-]
+  name: ilastik
+  container: labsyspharm/mcmicro-ilastik
+  version: 1.4.5
+  cmd: python /app/mc-ilastik.py --output .
+  input: --input
+  model: --model
+  channel: --channelIDs
+  idxbase: 1
+  watershed: 'yes'
+  opts: --num_channels 1
 ```
 
 ## Name
@@ -98,7 +93,7 @@ The `cmd` field must contain a command that, when executed inside the container,
 
 ## Input
 
-The `input` field determines how the pipeline will supply inputs to the module. Some examples in the context of [exemplar-001]({{ site.baseurl }}/datasets/datasets.html) may look as follows:
+The `input` field determines how the pipeline will supply inputs to the module. Some examples in the context of [exemplar-001]({{ site.baseurl }}/datasets/) may look as follows:
 
 | Configuration | What MCMICRO will execute |
 | :-- | :-- |
@@ -108,11 +103,19 @@ The `input` field determines how the pipeline will supply inputs to the module. 
 
 ## (Optional) Model
 
-The `model` field functions similarly to `input` and specifies how the pipeline will supply a custom model to the tool.
+The `model` field functions similarly to `input` and specifies how the pipeline will supply a custom model to the tool. In this example, MCMICRO will check whether the user specified `--ilastik-model` in the calling arguments, and pass the corresponding value to ilastik via `--model`.
+
+## (Optional) Channel and indexing base
+
+The `channel` field indicates how MCMICRO should pass `--segmentation-channel` value(s) specified by the user to the module. The `idxbase` field specifies whether the module assumes 0-based or 1-based indexing. All channel indexing in MCMICRO starts with 1, and the pipeline will correctly account for 0-based indexing, if it used by the module.
 
 ## Watershed
 
 The `watershed` field specifies whether the module requires a subsequent watershed step. Set it to `'yes'` for modules that produce probability maps and `'no'` for instance segmenters. Alternatively, you can specify `'bypass'` to have the output still go through S3Segmenter with the `--nucleiRegion bypass` flag. This will skip watershed but still allow you to filter nuclei by size with `--logSigma`.
+
+## Options
+
+The `opts` field specifies additional default parameters that MCMICRO should pass to the module by default. Unlike `cmd`, users can override the default `opts` values by specifying `--<module name>-opts` on the command line (`--ilastik-opts` in this case.)
 
 ## Putting it all together
 
@@ -121,38 +124,13 @@ Given the above configuration for ilastik, users of MCMICRO can begin using the 
 ```
 nextflow run labsyspharm/mcmicro --in path/to/exemplar-001 \
   --probability-maps ilastik \
-  --ilastik-opts '--num_channels 1' \
+  --segmentation-channels '1 5'\
+  --ilastik-opts '--num_channels 2' \
   --ilastik-model myawesomemodel.ilp
 ```
 
 As exemplar-001 makes its way through the pipeline, it will eventually encounter the [probability map generation and segmentation step]({{ site.baseurl }}instructions/nextflow/#segmentation). The pipeline will then identify ilastik as the module to be executed from the `--probability-maps` flag. The actual command that MCMICRO runs will then be composed using all the above fields together:
 
 ```
-python /app/mc-ilastik.py --output . --input exemplar-001.ome.tif --model myawesomemodel.ilp --num_channels 1
+python /app/mc-ilastik.py --output . --input exemplar-001.ome.tif --model myawesomemodel.ilp --channelIDs 1 5 --num_channels 2
 ```
-
-# (Advanced) Automated tests
-
-MCMICRO uses [GitHub Actions](https://docs.github.com/en/actions) to execute a set of automated tests on the [two exemplar images]({{ site.baseurl }}/datasets/datasets.html). The tests ensure that modifications to the pipeline don't break existing module functionality. When contributing a new module to MCMICRO, consider composing a new test that ensures your module runs on the exemplar data without any issues.
-
-Automated tests are specified in [`ci.yml`](https://github.com/labsyspharm/mcmicro/blob/master/.github/workflows/ci.yml). The exemplar data is [cached](https://github.com/labsyspharm/mcmicro/blob/master/.github/workflows/ci.yml#L24-L34) and can be easily restored via `actions/cache@v2`. For example, consider the following minimal test that contrasts unmicst and ilastik on exemplar-001:
-
-```
-test-ex001:
-    needs: setup
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install Nextflow
-        run: curl -fsSL get.nextflow.io | bash
-      - name: Restore exemplar-001 cache
-        uses: actions/cache@v2
-        with:
-          path: ~/data/exemplar-001
-          key: ex001-2022-02-24
-      - name: Test exemplar-001
-        run: ./nextflow main.nf --in ~/data/exemplar-001 --probability-maps unmicst,ilastik --s3seg-opts '--probMapChan 0'
-```
-
-The test, named `test-ex001`, consists of three steps: 1) Installing Nextflow, 2) Restoring exemplar-001 data from a cache, and 3) Running the pipeline on the exemplar-001. The `needs:` field specifies that the test should be executed after `setup` (which verifies the existence of cached data and performs caching if it's missing).
-

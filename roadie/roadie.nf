@@ -1,3 +1,5 @@
+import mcmicro.Util
+
 process autothreshold {
     container "${params.contPfx}${params.roadie}"
 
@@ -10,9 +12,7 @@ process autothreshold {
     script: template 'autothresh.py'
 }
 
-include {getImageID} from "$projectDir/modules/lib/util"
-
 workflow roadie {
     take: imgs
-    main: imgs.map{ f -> tuple(getImageID(f), f) } | autothreshold
+    main: imgs.map{ f -> tuple(Util.getImageID(f), f) } | autothreshold
 }
