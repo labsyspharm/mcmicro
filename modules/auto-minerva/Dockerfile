@@ -1,4 +1,4 @@
-FROM labsyspharm/roadie:2022-03-14
+FROM labsyspharm/roadie:2022-05-24
 
 RUN apt-get update && \
     apt-get install -y openslide-tools
