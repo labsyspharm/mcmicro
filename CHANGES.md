@@ -1,3 +1,5 @@
+### 2022-05-24
+* Adding single channel image support and improving logging in recyze
 ### 2022-05-23
 
 * Module specs have been migrated to a stand-alone file in standard YAML format.

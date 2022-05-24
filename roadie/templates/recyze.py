@@ -8,6 +8,7 @@ from pathlib import Path
 import argparse
 import os
 
+
 class PyramidWriter:
 
     def __init__(
@@ -26,6 +27,7 @@ class PyramidWriter:
         self.peak_size = peak_size
         self.scale = scale
         if self.in_data[0].ndim == 3:  # Multi-channel image
+            self.single_channel = False
             if _channels:
                 if max(_channels) > self.in_data[0].shape[0]:
                     print("Channel out of range", file=sys.stderr)
@@ -35,6 +37,7 @@ class PyramidWriter:
             else:
                 self.channels = np.arange(self.in_data[0].shape[0], dtype=int).tolist()
         else:  # Single Channel image
+            self.single_channel = True
             if _channels and max(_channels) > 0:
                 print("Channel out of range", file=sys.stderr)
                 sys.exit(1)
@@ -69,6 +72,9 @@ class PyramidWriter:
         rounded_height = np.ceil((_h + self.y) / (self.scale ** (self.num_levels - 1))).astype(
             int) * (2 ** (self.num_levels - 1)) - self.y
         self.height = min([rounded_height, self.in_data[0].shape[-2]])
+
+        print('Params:', 'x', self.x, 'y', self.y, 'height', self.height, 'width', self.width, 'levels', self.num_levels,
+              'channels', self.channels)
 
         self.verbose = verbose
 
@@ -114,7 +120,10 @@ class PyramidWriter:
         for ci in self.channels:
             if self.verbose:
                 print(f"    Channel {ci}:")
-            img = self.in_data[0][ci, self.y:self.y + self.height, self.x:self.x + self.width]
+            if self.single_channel:
+                img = self.in_data[0][self.y:self.y + self.height, self.x:self.x + self.width]
+            else:
+                img = self.in_data[0][ci, self.y:self.y + self.height, self.x:self.x + self.width]
             print('Shape', img.shape)
             for y in range(0, h, th):
                 for x in range(0, w, tw):
@@ -142,7 +151,10 @@ class PyramidWriter:
         tshape = self.tile_shapes[level] or (h, w)
 
         for c in self.channels:
-            base_img = self.in_data[level][c]
+            if self.single_channel:
+                base_img = self.in_data[level]
+            else:
+                base_img = self.in_data[level][c]
             img = self.cropped_subres_image(base_img, level)
             if self.verbose:
                 sys.stdout.write(
