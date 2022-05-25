@@ -18,3 +18,19 @@ static def escapeForShell(p) {
     // Escape embedded single-quotes and wrap in single-quotes.
     "'" + p.toString().replace("'", "'\\''") + "'"
 }
+
+// Extracts marker names from markers.csv
+static def getMarkerNames(mcsv) {
+    List raw = mcsv.readLines()
+    if(raw.size() < 2)
+        throw new Exception(mcsv.getName() + " is not in correct format")
+
+    // Find the marker_name column
+    List cols = raw[0].split(',')
+    int j = cols.indexOf('marker_name')
+    if(j < 0)
+        throw new Exception(mcsv.getName() + " missing marker_name column")
+
+    // Extract the markers
+    raw[1..-1].collect{line -> line.split(',')[j]}
+}
