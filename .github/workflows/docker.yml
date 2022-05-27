@@ -1,4 +1,4 @@
-name: roadie
+name: docker
 
 on:
   workflow_dispatch:
@@ -6,10 +6,28 @@ on:
     branches:
       - master
     paths:
-      - 'roadie/Dockerfile'
+      - roadie/Dockerfile
+      - modules/auto-minerva/Dockerfile
 
 jobs:
+  # Identify which path triggered the workflow
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      # Expose matched filters as job 'packages' output variable
+      changes: ${{ steps.filter.outputs.changes }}
+    steps:
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          roadie: roadie/Dockerfile
+          auto-minerva: modules/auto-minerva/Dockerfile
+
   docker:
+    strategy:
+      matrix:
+        name: ${{ fromJSON(needs.changes.outputs.changes) }}
     runs-on: ubuntu-latest
     steps:
       - 
@@ -38,7 +56,7 @@ jobs:
         with:
           context: roadie
           push: true
-          tags: labsyspharm/roadie:${{ steps.date.outputs.date }}
+          tags: labsyspharm/${{ matrix.name }}:${{ steps.date.outputs.date }}
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
