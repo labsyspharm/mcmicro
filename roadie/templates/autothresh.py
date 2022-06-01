@@ -60,7 +60,7 @@ signed = not np.issubdtype(zarray.dtype, np.unsignedinteger)
 
 # Auto-threshold channel by channel
 out = open("output.csv", "w")
-out.write("Channel,vmin,vmax\\n")
+out.write("Channel,vmin,vmax\n")
 for ci in range(zarray.shape[0]):
     print(f"Analyzing channel {ci + 1}")
     img = zarray[ci]
@@ -69,4 +69,4 @@ for ci in range(zarray.shape[0]):
     vmin, vmax = auto_threshold(img)
     vmin /= scale
     vmax /= scale
-    out.write(f"{ci+1},{vmin},{vmax}\\n")
+    out.write(f"{ci+1},{vmin},{vmax}\n")
