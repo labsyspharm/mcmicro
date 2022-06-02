@@ -141,7 +141,7 @@ if __name__ == "__main__":
     out_path = args.out
     if out_path is None:
         tokens = os.path.basename(in_path).split(os.extsep)
-        if len(tokens) < 2:       out_path = in_path
+        if len(tokens) < 2:       stem = in_path
         elif tokens[-2] == "ome": stem = os.extsep.join(tokens[0:-2])
         else:                     stem = os.extsep.join(tokens[0:-1])
         out_path = stem + ".json"

@@ -2,17 +2,44 @@ nextflow.enable.dsl=2
 
 import org.yaml.snakeyaml.Yaml
 
+def roadieHelp() {
+  println """
+  Roadie: miscellaneous MCMICRO-related tasks
+    
+  Usage:
+    To run a task,
+      nextflow run labsyspharm/mcmicro/roadie.nf --do <task> <options>
+
+    To list available tasks,
+      nextflow run labsyspharm/mcmicro/roadie.nf --list-tasks
+
+    To get help about individual tasks,
+      nextflow run labsyspharm/mcmicro/roadie.nf --help <task>
+
+  Examples:
+
+    Show help for the recyze task:
+      nextflow run labsyspharm/mcmicro/roadie.nf --help recyze
+
+    Make a 1024x1024 crop from myimage.ome.tif and write output to result/:
+      nextflow run labsyspharm/mcmicro/roadie.nf --do recyze \\
+        --in-path myimage.ome.tif \\
+        --x 0 --y 0 --w 1024 --h 1024 \\
+        --output-to result/
+    """
+}
+
 process showHelp {
     executor 'local'
     container "${params.contPfx}${params.roadie}"
 
-    input: path(code); val(specs)
+    input: path(code)
     output: stdout
     when: params.containsKey('help')
 
     """
     echo ''
-    python $code ${specs.help}
+    python $code --help
     """
 }
 
@@ -25,7 +52,7 @@ process runTask {
     
     script:
     """
-    python $code --${specs.input} $input $opts
+    python $code --in $input $opts
     """
 }
 
@@ -66,30 +93,7 @@ workflow {
       !params.containsKey('do') && 
       !params.containsKey('list-tasks')
      )) {
-      println """
-  Roadie: miscellaneous MCMICRO-related tasks
-    
-  Usage:
-    To run a task,
-      nextflow run labsyspharm/mcmicro/roadie.nf --do <task> <options>
-
-    To list available tasks,
-      nextflow run labsyspharm/mcmicro/roadie.nf --list-tasks
-
-    To get help about individual tasks,
-      nextflow run labsyspharm/mcmicro/roadie.nf --help <task>
-
-  Examples:
-
-    Show help for the recyze task:
-      nextflow run labsyspharm/mcmicro/roadie.nf --help recyze
-
-    Make a 1024x1024 crop from myimage.ome.tif and write output to result/:
-      nextflow run labsyspharm/mcmicro/roadie.nf --do recyze \\
-        --in-path myimage.ome.tif \\
-        --x 0 --y 0 --w 1024 --h 1024 \\
-        --output-to result/
-    """
+      roadieHelp()
       exit 0
     }
 
@@ -113,12 +117,12 @@ workflow {
     code = Channel.fromPath("$projectDir/roadie/scripts/${task}.py")
 
     // Display task help, if requested
-    showHelp(code, specs).view()
+    showHelp(code).view()
 
     // Verify the presence of input parameters
     if(params.containsKey('do')) {
-      if(!params.containsKey(specs.input))
-        error "Please provide input via --" + specs.input
+      if(!params.containsKey('in'))
+        error "Please provide input via --in"
 
       // Forward the appropriate parameters to the task script
       opts = params.inject('') {
@@ -127,8 +131,7 @@ workflow {
       }
 
       // Identify the input file and execute the task
-      inp = params.containsKey(specs.input) ? 
-        Channel.fromPath(params[specs.input]) : Channel.empty()
+      inp = Channel.fromPath(params.in)
       roadie(task, inp, opts, params.outputTo, 'move')
     }
 }
