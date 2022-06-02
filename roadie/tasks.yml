@@ -4,3 +4,9 @@ recyze:
   output: '*.ome.tif*'
   params: ['x', 'x2', 'y', 'y2', 'w', 'h', 'channels', 'out-path']
   help: -h
+story:
+  description: prepare image for auto-minerva
+  input: in
+  output: '*.json'
+  params: ['out']
+  help: -h

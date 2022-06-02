@@ -85,7 +85,7 @@ workflow {
     specs = tasks.containsKey(task) ? tasks[task] : (error "Unknown task.")
 
     // Identify the script
-    code = Channel.fromPath("$projectDir/roadie/templates/${task}.py")
+    code = Channel.fromPath("$projectDir/roadie/scripts/${task}.py")
 
     // Display task help, if requested
     showHelp(code, specs).view()
