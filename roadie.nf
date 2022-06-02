@@ -41,9 +41,9 @@ process showHelp {
     executor 'local'
     container "${params.contPfx}${params.roadie}"
 
-    when: params.containsKey('help')
     input: path(code); val(specs)
     output: stdout
+    when: params.containsKey('help')
 
     """
     echo ''
@@ -55,29 +55,47 @@ process runTask {
     container "${params.contPfx}${params.roadie}"
     publishDir "${params.outputTo}", mode: 'move'
 
-    when: params.containsKey('do')
-    input: each path(code); path(input); val(specs)
+    input: each path(code); path(input); val(opts); val(specs)
     output: path("${specs.output}")
     
     script:
-        def opts = params.inject('') {
-            prev, key, val -> specs.params.indexOf(key) > -1 ?
-                prev + ' --' + key + ' ' + val : prev + ''
-        }
     """
     python $code --${specs.input} $input $opts
     """
 }
 
+// Internal interface to be used by MCMICRO
+workflow roadie {
+  take:
+    task
+    input
+    opts
+
+  main:
+    // Parse task specs
+    tasks = new Yaml().load(file("$projectDir/roadie/tasks.yml"))
+    specs = tasks.containsKey(task) ? tasks[task] : (error "Unknown task.")
+
+    // Identify and execute the script
+    code = Channel.fromPath("$projectDir/roadie/scripts/${task}.py")
+    runTask(code, input, opts, specs)
+
+  emit:
+    runTask.out
+}
+
+// Command-line interface
 workflow {
     // Parse task specs
     tasks = new Yaml().load(file("$projectDir/roadie/tasks.yml"))
 
     // List available tasks
     if(params.containsKey('list-tasks')) {
-        println "Available tasks:"
-        tasks.each{ key, val -> println "  " + key + "  - " + val.description}
-        exit 0
+      println "Available tasks:"
+      tasks.each{ key, val -> 
+        println "  " + key.padRight(12, ' ') + "- " + val.description
+      }
+      exit 0
     }
 
     // Retrieve the appropriate specs
@@ -91,11 +109,19 @@ workflow {
     showHelp(code, specs).view()
 
     // Verify the presence of input parameters
-    if(params.containsKey('do') && !params.containsKey(specs.input))
-      error "Please provide input via --" + specs.input
+    if(params.containsKey('do')) {
+      if(!params.containsKey(specs.input))
+        error "Please provide input via --" + specs.input
 
-    // Identify the input file and execute the task
-    inp = params.containsKey(specs.input) ? 
-      Channel.fromPath(params[specs.input]) : Channel.empty()
-    runTask(code, inp, specs)
+      // Forward the appropriate parameters to the task script
+      opts = params.inject('') {
+        prev, key, val -> specs.params.indexOf(key) > -1 ?
+        prev + ' --' + key + ' ' + val : prev + ''
+      }
+
+      // Identify the input file and execute the task
+      inp = params.containsKey(specs.input) ? 
+        Channel.fromPath(params[specs.input]) : Channel.empty()
+      roadie(task, inp, opts)
+    }
 }
