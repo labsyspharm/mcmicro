@@ -21,11 +21,13 @@ def roadieHelp() {
     Show help for the recyze task:
       nextflow run labsyspharm/mcmicro/roadie.nf --help recyze
 
-    Make a 1024x1024 crop from myimage.ome.tif and write output to result/:
+    Make a 1024x1024 crop from myimage.ome.tif:
       nextflow run labsyspharm/mcmicro/roadie.nf --do recyze \\
-        --in-path myimage.ome.tif \\
-        --x 0 --y 0 --w 1024 --h 1024 \\
-        --output-to result/
+        --in myimage.ome.tif --x 0 --y 0 --w 1024 --h 1024
+
+    Derive an auto-minerva story and write the output to result/:
+      nextflow run labsyspharm/mcmicro/roadie.nf --do story \\
+        --in myimage.ome.tif --out result/
     """
 }
 
@@ -33,9 +35,9 @@ process showHelp {
     executor 'local'
     container "${params.contPfx}${params.roadie}"
 
+    when: params.containsKey('help')
     input: path(code)
     output: stdout
-    when: params.containsKey('help')
 
     """
     echo ''
@@ -50,7 +52,6 @@ process runTask {
     input: each path(code); path(input); val(opts); val(specs)
     output: path("${specs.output}")
     
-    script:
     """
     python $code --in $input $opts
     """
@@ -86,7 +87,7 @@ workflow roadie {
 // Command-line interface
 workflow {
     // By default, write all output to the current directory
-    params.outputTo = '.'
+    params.out = '.'
 
     if((params.containsKey('help') && (params.help instanceof Boolean)) ||
      (!params.containsKey('help') && 
@@ -130,8 +131,16 @@ workflow {
         prev + ' --' + key + ' ' + val : prev + ''
       }
 
+      // Split up the out argument into its directory/file components
+      // Directory will be passed to the publishDir directive
+      // Filename will be passed to the tool
+      out = file(params.out)
+      (outd, outf) = out.isDirectory() ? [params.out, ''] : 
+        [out.getParent(), out.getName()]
+      opts = (outf == '') ? outf : "--out " + outf
+
       // Identify the input file and execute the task
       inp = Channel.fromPath(params.in)
-      roadie(task, inp, opts, params.outputTo, 'move')
+      roadie(task, inp, opts, outd, 'move')
     }
 }

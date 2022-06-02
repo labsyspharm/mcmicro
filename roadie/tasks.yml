@@ -1,8 +1,8 @@
 recyze:
   description: channel and pixel cropping
   output: '*.ome.tif*'
-  params: ['x', 'x2', 'y', 'y2', 'w', 'h', 'channels', 'out-path']
+  params: ['x', 'x2', 'y', 'y2', 'w', 'h', 'channels']
 story:
   description: prepare image for auto-minerva
   output: '*.json'
-  params: ['out']
+  params: []
