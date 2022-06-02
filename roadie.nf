@@ -2,15 +2,71 @@ nextflow.enable.dsl=2
 
 import org.yaml.snakeyaml.Yaml
 
-// By default, write all output to the current directory
-params.outputTo = '.'
+process showHelp {
+    executor 'local'
+    container "${params.contPfx}${params.roadie}"
 
-if((params.containsKey('help') && (params.help instanceof Boolean)) ||
-   (!params.containsKey('help') && 
-    !params.containsKey('do') && 
-    !params.containsKey('list-tasks')
-   )) {
-    println """
+    input: path(code); val(specs)
+    output: stdout
+    when: params.containsKey('help')
+
+    """
+    echo ''
+    python $code ${specs.help}
+    """
+}
+
+process runTask {
+    container "${params.contPfx}${params.roadie}"
+    publishDir "${specs.pubDir}", mode: "${specs.pubMode}"
+
+    input: each path(code); path(input); val(opts); val(specs)
+    output: path("${specs.output}")
+    
+    script:
+    """
+    python $code --${specs.input} $input $opts
+    """
+}
+
+// Internal interface to be used by MCMICRO
+workflow roadie {
+  take:
+    task
+    input
+    opts
+
+    pubDir    // Where to publish results to
+    pubMode   // What type of publishing (copy, move, symlink)
+
+  main:
+    // Parse task specs
+    tasks = new Yaml().load(file("$projectDir/roadie/tasks.yml"))
+    specs = tasks.containsKey(task) ? tasks[task] : (error "Unknown task.")
+
+    // Pad specs with the publication strategy
+    specs.pubDir  = pubDir
+    specs.pubMode = pubMode  
+
+    // Identify and execute the script
+    code = Channel.fromPath("$projectDir/roadie/scripts/${task}.py")
+    runTask(code, input, opts, specs)
+
+  emit:
+    runTask.out
+}
+
+// Command-line interface
+workflow {
+    // By default, write all output to the current directory
+    params.outputTo = '.'
+
+    if((params.containsKey('help') && (params.help instanceof Boolean)) ||
+     (!params.containsKey('help') && 
+      !params.containsKey('do') && 
+      !params.containsKey('list-tasks')
+     )) {
+      println """
   Roadie: miscellaneous MCMICRO-related tasks
     
   Usage:
@@ -34,58 +90,9 @@ if((params.containsKey('help') && (params.help instanceof Boolean)) ||
         --x 0 --y 0 --w 1024 --h 1024 \\
         --output-to result/
     """
-    exit 0
-}
+      exit 0
+    }
 
-process showHelp {
-    executor 'local'
-    container "${params.contPfx}${params.roadie}"
-
-    input: path(code); val(specs)
-    output: stdout
-    when: params.containsKey('help')
-
-    """
-    echo ''
-    python $code ${specs.help}
-    """
-}
-
-process runTask {
-    container "${params.contPfx}${params.roadie}"
-    publishDir "${params.outputTo}", mode: 'move'
-
-    input: each path(code); path(input); val(opts); val(specs)
-    output: path("${specs.output}")
-    
-    script:
-    """
-    python $code --${specs.input} $input $opts
-    """
-}
-
-// Internal interface to be used by MCMICRO
-workflow roadie {
-  take:
-    task
-    input
-    opts
-
-  main:
-    // Parse task specs
-    tasks = new Yaml().load(file("$projectDir/roadie/tasks.yml"))
-    specs = tasks.containsKey(task) ? tasks[task] : (error "Unknown task.")
-
-    // Identify and execute the script
-    code = Channel.fromPath("$projectDir/roadie/scripts/${task}.py")
-    runTask(code, input, opts, specs)
-
-  emit:
-    runTask.out
-}
-
-// Command-line interface
-workflow {
     // Parse task specs
     tasks = new Yaml().load(file("$projectDir/roadie/tasks.yml"))
 
@@ -122,6 +129,6 @@ workflow {
       // Identify the input file and execute the task
       inp = params.containsKey(specs.input) ? 
         Channel.fromPath(params[specs.input]) : Channel.empty()
-      roadie(task, inp, opts)
+      roadie(task, inp, opts, params.outputTo, 'move')
     }
 }
