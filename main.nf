@@ -20,7 +20,7 @@ params.startAt     = 'registration'
 params.stopAt      = 'quantification'
 params.qcFiles     = 'copy'   // what to do with qc/ files when publishing them
 params.tma         = false    // whether working with a TMA (true) or whole-slide image (false)
-params.dynrange    = false    // misc: autothresholding of channels
+params.viz         = false    // generate an auto-minerva visualization
 
 // Some image formats store multiple fields of view in a single file. Other
 // formats store each field separately, typically in .tif files, with a separate
@@ -144,13 +144,13 @@ params.path_qc   = path_qc
 params.path_prov = "${path_qc}/provenance"
 
 // Import individual modules
-include {illumination}   from './modules/illumination'
-include {registration}   from './modules/registration'
-include {dearray}        from './modules/dearray'
-include {segmentation}   from './modules/segmentation'
-include {quantification} from './modules/quantification'
-include {cellstates}     from './modules/cell-states'
-include {roadie}         from './roadie'
+include {illumination}   from "$projectDir/modules/illumination"
+include {registration}   from "$projectDir/modules/registration"
+include {dearray}        from "$projectDir/modules/dearray"
+include {segmentation}   from "$projectDir/modules/segmentation"
+include {quantification} from "$projectDir/modules/quantification"
+include {cellstates}     from "$projectDir/modules/cell-states"
+include {viz}            from "$projectDir/modules/viz"
 
 // Define the primary mcmicro workflow
 workflow {
@@ -165,7 +165,7 @@ workflow {
 	.branch {
 	  wsi: !params.tma
 	  tma: params.tma
-        }
+    }
 
     // Apply dearray to TMAs only
     dearray(modules['dearray'], img.tma)
@@ -187,10 +187,8 @@ workflow {
     sft = quantification.out.mix(pre_qty)
     cellstates(sft, modules['downstream'])
 
-    // Run miscellaneous tasks
-    if(params.story) {
-        roadie('story', allimg, '', "${params.in}/qc/story", 'copy')
-    }
+    // Vizualization
+    viz(modules['viz'], allimg)
 }
 
 // Write out parameters used

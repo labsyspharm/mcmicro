@@ -97,3 +97,7 @@ downstream:
     version: 1.0.2
     cmd: python3 /app/cluster.py -c
     input: -i
+viz:
+  name: autominerva
+  container: labsyspharm/auto-minerva
+  version: '2022-06-06'
