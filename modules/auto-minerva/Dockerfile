@@ -13,5 +13,4 @@ RUN python -m pip install \
     flask_cors \
     scikit-image
 
-RUN git clone https://github.com/jmuhlich/auto-minerva.git /app/auto-minerva
 RUN git clone https://github.com/labsyspharm/minerva-author.git /app/minerva-author
