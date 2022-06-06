@@ -1,5 +1,21 @@
+### 2022-06-02
+
+* Consolidated Roadie scripts
+* Dynamic range calculation is now folded inside Auto-minerva story generation and can be executed both inside MCMICRO with
+
+```
+nextflow run labsyspharm/mcmicro --in exemplar-001/ --stop-at registration --story
+```
+
+and as a standalone Roadie script with
+
+```
+nextflow run labsyspharm/mcmicro/roadie.nf --do story --in exemplar-001.ome.tif
+```
+
 ### 2022-05-24
 * Adding single channel image support and improving logging in recyze
+
 ### 2022-05-23
 
 * Module specs have been migrated to a stand-alone file in standard YAML format.

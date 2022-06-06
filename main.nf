@@ -150,7 +150,7 @@ include {dearray}        from './modules/dearray'
 include {segmentation}   from './modules/segmentation'
 include {quantification} from './modules/quantification'
 include {cellstates}     from './modules/cell-states'
-include {roadie}         from './roadie/roadie'
+include {roadie}         from './roadie'
 
 // Define the primary mcmicro workflow
 workflow {
@@ -188,7 +188,9 @@ workflow {
     cellstates(sft, modules['downstream'])
 
     // Run miscellaneous tasks
-    roadie(allimg)
+    if(params.story) {
+        roadie('story', allimg, '', "${params.in}/qc/story", 'copy')
+    }
 }
 
 // Write out parameters used
