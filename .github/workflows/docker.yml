@@ -1,4 +1,4 @@
-name: roadie
+name: docker
 
 on:
   workflow_dispatch:
@@ -6,10 +6,18 @@ on:
     branches:
       - master
     paths:
-      - 'roadie/Dockerfile'
+      - roadie/Dockerfile
+      - modules/auto-minerva/Dockerfile
 
 jobs:
   docker:
+    strategy:
+      matrix:
+        include:
+          - name: roadie
+            context: roadie
+          - name: auto-minerva
+            context: modules/auto-minerva
     runs-on: ubuntu-latest
     steps:
       - 
@@ -36,9 +44,9 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v2
         with:
-          context: roadie
+          context: ${{ matrix.context }}
           push: true
-          tags: labsyspharm/roadie:${{ steps.date.outputs.date }}
+          tags: labsyspharm/${{ matrix.name }}:${{ steps.date.outputs.date }}
       -
         name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
