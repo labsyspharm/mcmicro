@@ -1,5 +1,6 @@
-### 2022-06-07
+### 2022-06-06
 
+* Cleaned up provenance filenames, making their more robust across operating systems
 * Added Auto-Minerva for automatic visualuzation generation. Run with the new `--viz` flag:
 
 ```
