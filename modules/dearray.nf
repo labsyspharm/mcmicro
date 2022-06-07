@@ -1,4 +1,5 @@
 import mcmicro.Opts
+import mcmicro.Util
 
 process coreograph {
     container "${params.contPfx}${module.container}:${module.version}"
@@ -14,9 +15,9 @@ process coreograph {
     
     // Provenance
     publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
-      saveAs: {fn -> "${task.name}.sh"}
+      saveAs: {fn -> Util.cleanFilename("${task.name}.sh")}
     publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
-      saveAs: {fn -> "${task.name}.log"}
+      saveAs: {fn -> Util.cleanFilename("${task.name}.log")}
     
     input:
       val module
