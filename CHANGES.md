@@ -1,3 +1,14 @@
+### 2022-06-06
+
+* Cleaned up provenance filenames, making their more robust across operating systems
+* Added Auto-Minerva for automatic visualuzation generation. Run with the new `--viz` flag:
+
+```
+nextflow run labsyspharm/mcmicro --in exemplar-001/ --stop-at registration --viz
+```
+
+Visualization is written to `exemplar-001/viz`. A separate subdirectory will be created for each OME-TIFF in the `registration/` folder.
+
 ### 2022-06-02
 
 * Consolidated Roadie scripts

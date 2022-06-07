@@ -61,7 +61,7 @@ jobs:
       matrix:
         params:
           - ''
-          - --start-at illumination --stop-at registration --dynrange
+          - --start-at illumination --stop-at registration --viz
           - --probability-maps cypository --cypository-opts '--channel 10 --scalingFactor 2' --s3seg-opts '--logSigma 45 300'
           - --probability-maps ilastik,mesmer
           - -profile singularity
@@ -95,8 +95,6 @@ jobs:
             ~/data/exemplar-001
             !~/data/exemplar-001/raw
             !~/data/exemplar-001/illumination
-            !~/data/exemplar-001/qc/provenance
-      
   
   # Step-by-step test of exemplar-001
   ex001-by-step:
