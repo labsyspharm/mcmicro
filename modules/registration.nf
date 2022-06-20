@@ -7,7 +7,7 @@ process ashlar {
     // Provenance
     publishDir "${Paths.QC(params.in, 'provenance')}", mode: 'copy', 
       pattern: '.command.{sh,log}',
-      saveAs: {fn -> Util.cleanFilename(fn.replace('.command', task.name))}
+      saveAs: {fn -> fn.replace('.command', "${module.name}")}
     
     input:
       val module

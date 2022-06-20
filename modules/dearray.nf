@@ -13,7 +13,7 @@ process coreograph {
     // Provenance
    publishDir "${Paths.QC(params.in, 'provenance')}", mode: 'copy', 
       pattern: '.command.{sh,log}',
-      saveAs: {fn -> Util.cleanFilename(fn.replace('.command', task.name))}
+      saveAs: {fn -> fn.replace('.command', "${module.name}-${task.index}")}
     
     input:
       val module
