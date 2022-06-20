@@ -7,10 +7,9 @@ process mcquant {
     publishDir "${params.in}/quantification", mode: 'copy', pattern: '*.csv'
 
     // Provenance
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
-      saveAs: {fn -> Util.cleanFilename("${task.name}.sh")}
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
-      saveAs: {fn -> Util.cleanFilename("${task.name}.log")}
+    publishDir "${Paths.QC(params.in, 'provenance')}", mode: 'copy', 
+      pattern: '.command.{sh,log}',
+      saveAs: {fn -> fn.replace('.command', "${module.name}-${task.index}")}
     
     input:
       val module

@@ -1,4 +1,4 @@
-import mcmicro.Util
+import mcmicro.*
 
 def escapeForImagej(s) {
     // When passing an arbitrary string as an ImageJ macro parameter value, we
@@ -14,10 +14,9 @@ process illumination {
     publishDir "${params.in}/illumination", mode: 'copy', pattern: '*.tif'
 
     // Provenance
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
-      saveAs: {fn -> Util.cleanFilename("${task.name}.sh")}
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
-      saveAs: {fn -> Util.cleanFilename("${task.name}.log")}
+    publishDir "${Paths.QC(params.in, 'provenance')}", mode: 'copy', 
+      pattern: '.command.{sh,log}',
+      saveAs: {fn -> fn.replace('.command', "${module.name}-${task.index}")}
     
     input:
       val module

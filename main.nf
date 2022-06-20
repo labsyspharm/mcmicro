@@ -140,8 +140,6 @@ modules = Opts.parseModuleSpecs("$projectDir/modules.yml", params)
 // The following parameters are shared by all modules
 params.idxStart  = idxStart
 params.idxStop   = idxStop
-params.path_qc   = path_qc
-params.path_prov = "${path_qc}/provenance"
 
 // Import individual modules
 include {illumination}   from "$projectDir/modules/illumination"
