@@ -43,7 +43,7 @@ process worker {
     // Provenance
     publishDir "${Paths.QC(params.in, 'provenance')}", mode: 'copy', 
       pattern: '.command.{sh,log}',
-      saveAs: {fn -> Util.cleanFilename(fn.replace('.command', task.name))}
+      saveAs: {fn -> fn.replace('.command', "${module.name}-${task.index}")}
 
     input:
         tuple val(tag), val(module), file(model), path(inp), val(pubDir), val(fnOut)

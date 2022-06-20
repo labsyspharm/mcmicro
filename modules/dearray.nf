@@ -1,5 +1,4 @@
-import mcmicro.Opts
-import mcmicro.Util
+import mcmicro.*
 
 process coreograph {
     container "${params.contPfx}${module.container}:${module.version}"
@@ -8,16 +7,13 @@ process coreograph {
     publishDir "${params.in}/dearray", mode: 'copy', pattern: '**{[0-9],mask}.tif'
 
     // QC
-    publishDir "${params.path_qc}/coreo", mode: "${params.qcFiles}",
-      pattern: 'TMA_MAP.tif'
-    publishDir "${params.path_qc}/coreo", mode: "${params.qcFiles}",
-      pattern: 'centroidsY-X.txt'
+    publishDir "${Paths.QC(params.in, module.name)}", mode: "${params.qcFiles}", 
+      pattern: '{TMA_MAP.tif,centroidsY-X.txt}'
     
     // Provenance
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
-      saveAs: {fn -> Util.cleanFilename("${task.name}.sh")}
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
-      saveAs: {fn -> Util.cleanFilename("${task.name}.log")}
+   publishDir "${Paths.QC(params.in, 'provenance')}", mode: 'copy', 
+      pattern: '.command.{sh,log}',
+      saveAs: {fn -> Util.cleanFilename(fn.replace('.command', task.name))}
     
     input:
       val module
