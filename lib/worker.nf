@@ -1,5 +1,4 @@
-import mcmicro.Opts
-import mcmicro.Util
+import mcmicro.*
 
 // General worker process
 //
@@ -38,14 +37,13 @@ process worker {
     publishDir "${pubDir}", mode: 'copy', pattern: 'plots/**'
 
     // QC
-    publishDir "${params.path_qc}/${module.name}", mode: "${params.qcFiles}",
+    publishDir "${Paths.QC(params.in, module.name)}", mode: "${params.qcFiles}",
       pattern: 'qc/**', saveAs: { fn -> fn.replaceFirst("qc/","") }
     
     // Provenance
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
-      saveAs: {fn -> Util.cleanFilename("${task.name}.sh")}
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
-      saveAs: {fn -> Util.cleanFilename("${task.name}.log")}
+    publishDir "${Paths.QC(params.in, 'provenance')}", mode: 'copy', 
+      pattern: '.command.{sh,log}',
+      saveAs: {fn -> Util.cleanFilename(fn.replace('.command', task.name))}
 
     input:
         tuple val(tag), val(module), file(model), path(inp), val(pubDir), val(fnOut)

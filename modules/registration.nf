@@ -5,10 +5,9 @@ process ashlar {
     publishDir "${params.in}/registration", mode: 'copy', pattern: '*.tif'
     
     // Provenance
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
-      saveAs: {fn -> Util.cleanFilename("${task.name}.sh")}
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
-      saveAs: {fn -> Util.cleanFilename("${task.name}.log")}
+    publishDir "${Paths.QC(params.in, 'provenance')}", mode: 'copy', 
+      pattern: '.command.{sh,log}',
+      saveAs: {fn -> Util.cleanFilename(fn.replace('.command', task.name))}
     
     input:
       val module
