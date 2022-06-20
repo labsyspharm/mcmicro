@@ -37,22 +37,7 @@ params.probabilityMaps = 'unmicst'
 params.cellStates      = 'scimap'
 
 // Deprecation messages
-if( params.containsKey('quantificationMask') )
-    error "--quantification-mask is deprecated; please use --quant-opts '--masks ...'"
-if( params.containsKey('illum') )
-    error "--illum is deprecated; please use --start-at illumination"
-if( params.containsKey('coreOpts') )
-    error "--coreOpts is deprecated; please use --coreograph-opts"
-if( params.containsKey('maskSpatial') )
-    error "--maskSpatial is deprecated; please use --quant-opts '--masks ...'"
-if( params.containsKey('maskAdd') )
-    error "--maskAdd is deprecated; please use --quant-opts '--masks ...'"
-if( params.containsKey('nstatesOpts') )
-    error "--nstatesOpts is deprecated; please use --naivestates-opts"
-if( params.containsKey('quantOpts') )
-    error "--quantOpts is deprecated; please use --mcquant-opts"
-if( params.probabilityMaps == 'all' )
-    error "--probability-maps all is deprecated; please be explicit, e.g., --probability-maps unmicst,ilastik"
+Opts.deprecateParams(params)
 
 // Steps in the mcmicro pipeline
 mcmsteps = ["raw",		// Step 0

@@ -107,3 +107,42 @@ static def moduleOpts(module, gp) {
 
     copts + ' ' + mopts
 }
+
+/**
+ * Checks for the existence of parameter key in wfp and, if it exists,
+ * constructs a deprecation message of the form
+ * "--$key is deprecated; please use $alt"
+ */
+static def deprCheckEx(wfp, key, alt) {
+    if(wfp.containsKey(key))
+        throw new Exception("--" + key + " is deprecated; please use " + alt)
+}
+
+/**
+ * Checks if key equals to val in wfp and, if so,
+ * constructs a deprecation message of the form
+ * "--$key is deprecated; please use $alt"
+ */
+static def deprCheckEq(wfp, key, val, alt) {
+    if(wfp[key] == val) {
+        String msg = "--" + key + " " + val + " is deprecated; please use " + alt
+        throw new Exception(msg)
+    }
+}
+
+/**
+ * Checks for deprecated parameters and displays error messages
+ *
+ * @param wfp workflow parameters
+ */
+static def deprecateParams(wfp) {
+    deprCheckEx(wfp, 'quantificationMask', "--quant-opts '--masks ...'")
+    deprCheckEx(wfp, 'illum', '--start-at illumination')
+    deprCheckEx(wfp, 'coreOpts', '--coreograph-opts')
+    deprCheckEx(wfp, 'maskSpatial', "--quant-opts '--masks ...'")
+    deprCheckEx(wfp, 'maskAdd', "--quant-opts '--masks ...'")
+    deprCheckEx(wfp, 'nstatesOpts', "--naivestates-opts")
+    deprCheckEx(wfp, 'quantOpts', "--mcquant-opts")
+
+    deprCheckEq(wfp, 'probabilityMaps', 'all', 'e.g., --probability-maps unmicst,ilastik')
+}
