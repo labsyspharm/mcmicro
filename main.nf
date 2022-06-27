@@ -34,7 +34,7 @@ params.singleFormats = '{.ome.tiff,.ome.tif,.rcpnl,.btf,.nd2,.tif,.czi}'
 
 // Default selection of methods for each step
 params.probabilityMaps = 'unmicst'
-params.cellStates      = 'scimap'
+params.downstream      = 'scimap'
 
 // Deprecation messages
 Opts.deprecateParams(params)

@@ -3,9 +3,12 @@ package mcmicro
 import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.DumperOptions
 
-// Recursively updates a spec/opts tree with new values
-// orig - original Map
-// repl - replacement Map containing new values
+/**
+ * Recursively updates a module spec tree with new values
+ *
+ * @param orig original Map
+ * @param repl replacement Map containing new values
+ */
 static def updateModuleSpecs(orig, repl) {
 
     // Recurse on Maps
@@ -34,26 +37,29 @@ static def updateModuleSpecs(orig, repl) {
     orig
 }
 
-// Parses module specifications
-// module - module spec, as parsed by parseModuleSpecs()
-// gp - global parameters (usually params in the NF space)
-static def parseModuleSpecs(filename, gp) {
+/**
+ * Parses workflow parameters
+ *
+ * @param filename file that contains module specifications
+ * @param wfp workflow parameters
+ */
+static def parseModuleSpecs(filename, wfp) {
     Map mods = new Yaml().load(new File(filename))
 
     // Process manual overrides
-    if(gp.containsKey('modules')) {
-        Map umods = new Yaml().load(new File(gp.modules))
+    if(wfp.containsKey('modules')) {
+        Map umods = new Yaml().load(new File(wfp.modules))
         updateModuleSpecs(mods, umods)
     }
 
     // Filter segmentation modules based on --probability-maps
     mods['segmentation'] = mods['segmentation'].findAll{
-        gp.probabilityMaps.contains(it.name)
+        wfp.probabilityMaps.contains(it.name)
     }
 
     // Filter downstream modules based on --cell-states
     mods['downstream'] = mods['downstream'].findAll{
-        gp.cellStates.contains(it.name)
+        wfp.downstream.contains(it.name)
     }
 
     mods
@@ -69,14 +75,17 @@ static def writeModuleSpecs(specs, filename) {
     }
 }
 
-// Determines modules options
-// module - module spec, as parsed by parseModuleSpecs()
-// gp - global parameters (usually params in the NF space)
-static def moduleOpts(module, gp) {
+/**
+ * Determines modules options
+ *
+ * @param module module spec, as parsed by parseModuleSpecs()
+ * @param wfp workflow parameters
+ */
+static def moduleOpts(module, wfp) {
 
     // Check for pipeline-level segmentation channel(s)
     String copts = ''
-    if(gp.containsKey('segmentationChannel') &&
+    if(wfp.containsKey('segmentationChannel') &&
         module.containsKey('channel')) {
 
         // Module spec must specify whether indexing is 0-based or 1-based
@@ -84,7 +93,7 @@ static def moduleOpts(module, gp) {
             error module.name + " spec in modules.yml is missing idxbase key"
 
         // Identify the list of indices
-        List idx = gp.segmentationChannel.toString().tokenize()
+        List idx = wfp.segmentationChannel.toString().tokenize()
 
         // Account for 0-based indexing
         if(module.idxbase == 0)
@@ -102,7 +111,7 @@ static def moduleOpts(module, gp) {
     //   the existence of opts: in the modules.yml file
     String s = "${module.name}Opts"
     String mopts = ''
-    if(gp.containsKey(s)) mopts = gp."$s"
+    if(wfp.containsKey(s)) mopts = wfp."$s"
     else if(module.containsKey('opts')) mopts = module.opts
 
     copts + ' ' + mopts
@@ -138,11 +147,12 @@ static def deprCheckEq(wfp, key, val, alt) {
 static def deprecateParams(wfp) {
     deprCheckEx(wfp, 'quantificationMask', "--quant-opts '--masks ...'")
     deprCheckEx(wfp, 'illum', '--start-at illumination')
-    deprCheckEx(wfp, 'coreOpts', '--coreograph-opts')
-    deprCheckEx(wfp, 'maskSpatial', "--quant-opts '--masks ...'")
-    deprCheckEx(wfp, 'maskAdd', "--quant-opts '--masks ...'")
-    deprCheckEx(wfp, 'nstatesOpts', "--naivestates-opts")
-    deprCheckEx(wfp, 'quantOpts', "--mcquant-opts")
+    deprCheckEx(wfp, 'core-opts', '--coreograph-opts')
+    deprCheckEx(wfp, 'mask-spatial', "--quant-opts '--masks ...'")
+    deprCheckEx(wfp, 'mask-add', "--quant-opts '--masks ...'")
+    deprCheckEx(wfp, 'nstates-opts', "--naivestates-opts")
+    deprCheckEx(wfp, 'quant-opts', "--mcquant-opts")
+    deprCheckEx(wfp, 'cell-states', "--downstream")
 
     deprCheckEq(wfp, 'probabilityMaps', 'all', 'e.g., --probability-maps unmicst,ilastik')
 }
