@@ -73,7 +73,8 @@ class PyramidWriter:
             int) * (2 ** (self.num_levels - 1)) - self.y
         self.height = min([rounded_height, self.in_data[0].shape[-2]])
 
-        print('Params:', 'x', self.x, 'y', self.y, 'height', self.height, 'width', self.width, 'levels', self.num_levels,
+        print('Params:', 'x', self.x, 'y', self.y, 'height', self.height, 'width', self.width, 'levels',
+              self.num_levels,
               'channels', self.channels)
 
         self.verbose = verbose
@@ -213,6 +214,8 @@ class PyramidWriter:
                     temp_plane.the_c = i
                     temp_planes.append(temp_plane)
                 self.metadata.images[0].pixels.planes = temp_planes
+            if self.metadata.images[0].pixels.tiff_data_blocks and len(
+                    self.metadata.images[0].pixels.tiff_data_blocks) > 0:
                 self.metadata.images[0].pixels.tiff_data_blocks[0].plane_count = self.num_channels
 
             # Write
