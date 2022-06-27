@@ -2,15 +2,8 @@ nextflow.enable.dsl=2
 
 import org.yaml.snakeyaml.Yaml
 
-// By default, write all output to the current directory
-params.outputTo = '.'
-
-if((params.containsKey('help') && (params.help instanceof Boolean)) ||
-   (!params.containsKey('help') && 
-    !params.containsKey('do') && 
-    !params.containsKey('list-tasks')
-   )) {
-    println """
+def roadieHelp() {
+  println """
   Roadie: miscellaneous MCMICRO-related tasks
     
   Usage:
@@ -28,13 +21,14 @@ if((params.containsKey('help') && (params.help instanceof Boolean)) ||
     Show help for the recyze task:
       nextflow run labsyspharm/mcmicro/roadie.nf --help recyze
 
-    Make a 1024x1024 crop from myimage.ome.tif and write output to result/:
+    Make a 1024x1024 crop from myimage.ome.tif:
       nextflow run labsyspharm/mcmicro/roadie.nf --do recyze \\
-        --in-path myimage.ome.tif \\
-        --x 0 --y 0 --w 1024 --h 1024 \\
-        --output-to result/
+        --in myimage.ome.tif --x 0 --y 0 --w 1024 --h 1024
+
+    Derive an auto-minerva story and write the output to result/:
+      nextflow run labsyspharm/mcmicro/roadie.nf --do story \\
+        --in myimage.ome.tif --out result/
     """
-    exit 0
 }
 
 process showHelp {
@@ -42,42 +36,78 @@ process showHelp {
     container "${params.contPfx}${params.roadie}"
 
     when: params.containsKey('help')
-    input: path(code); val(specs)
+    input: path(code)
     output: stdout
 
     """
     echo ''
-    python $code ${specs.help}
+    python $code --help
     """
 }
 
 process runTask {
     container "${params.contPfx}${params.roadie}"
-    publishDir "${params.outputTo}", mode: 'move'
+    publishDir "${specs.pubDir}", mode: "${specs.pubMode}"
 
-    when: params.containsKey('do')
-    input: each path(code); path(input); val(specs)
+    input: each path(code); path(input); val(opts); val(specs)
     output: path("${specs.output}")
     
-    script:
-        def opts = params.inject('') {
-            prev, key, val -> specs.params.indexOf(key) > -1 ?
-                prev + ' --' + key + ' ' + val : prev + ''
-        }
     """
-    python $code --${specs.input} $input $opts
+    python $code --in $input $opts
     """
 }
 
+// Internal interface to be used by MCMICRO
+workflow roadie {
+  take:
+    task
+    input
+    opts
+
+    pubDir    // Where to publish results to
+    pubMode   // What type of publishing (copy, move, symlink)
+
+  main:
+    // Parse task specs
+    tasks = new Yaml().load(file("$projectDir/roadie/tasks.yml"))
+    specs = tasks.containsKey(task) ? tasks[task] : (error "Unknown task.")
+
+    // Pad specs with the publication strategy
+    specs.pubDir  = pubDir
+    specs.pubMode = pubMode  
+
+    // Identify and execute the script
+    code = Channel.fromPath("$projectDir/roadie/scripts/${task}.py")
+    runTask(code, input, opts, specs)
+
+  emit:
+    runTask.out
+}
+
+// Command-line interface
 workflow {
+    // By default, write all output to the current directory
+    params.out = '.'
+
+    if((params.containsKey('help') && (params.help instanceof Boolean)) ||
+     (!params.containsKey('help') && 
+      !params.containsKey('do') && 
+      !params.containsKey('list-tasks')
+     )) {
+      roadieHelp()
+      exit 0
+    }
+
     // Parse task specs
     tasks = new Yaml().load(file("$projectDir/roadie/tasks.yml"))
 
     // List available tasks
     if(params.containsKey('list-tasks')) {
-        println "Available tasks:"
-        tasks.each{ key, val -> println "  " + key + "  - " + val.description}
-        exit 0
+      println "Available tasks:"
+      tasks.each{ key, val -> 
+        println "  " + key.padRight(12, ' ') + "- " + val.description
+      }
+      exit 0
     }
 
     // Retrieve the appropriate specs
@@ -85,17 +115,32 @@ workflow {
     specs = tasks.containsKey(task) ? tasks[task] : (error "Unknown task.")
 
     // Identify the script
-    code = Channel.fromPath("$projectDir/roadie/templates/${task}.py")
+    code = Channel.fromPath("$projectDir/roadie/scripts/${task}.py")
 
     // Display task help, if requested
-    showHelp(code, specs).view()
+    showHelp(code).view()
 
     // Verify the presence of input parameters
-    if(params.containsKey('do') && !params.containsKey(specs.input))
-      error "Please provide input via --" + specs.input
+    if(params.containsKey('do')) {
+      if(!params.containsKey('in'))
+        error "Please provide input via --in"
 
-    // Identify the input file and execute the task
-    inp = params.containsKey(specs.input) ? 
-      Channel.fromPath(params[specs.input]) : Channel.empty()
-    runTask(code, inp, specs)
+      // Forward the appropriate parameters to the task script
+      opts = params.inject('') {
+        prev, key, val -> specs.params.indexOf(key) > -1 ?
+        prev + ' --' + key + ' ' + val : prev + ''
+      }
+
+      // Split up the out argument into its directory/file components
+      // Directory will be passed to the publishDir directive
+      // Filename will be passed to the tool
+      out = file(params.out)
+      (outd, outf) = out.isDirectory() ? [params.out, ''] : 
+        [out.getParent(), out.getName()]
+      opts = (outf == '') ? outf : "--out " + outf
+
+      // Identify the input file and execute the task
+      inp = Channel.fromPath(params.in)
+      roadie(task, inp, opts, outd, 'move')
+    }
 }

@@ -1,4 +1,5 @@
 import mcmicro.Opts
+import mcmicro.Util
 
 // General worker process
 //
@@ -42,9 +43,9 @@ process worker {
     
     // Provenance
     publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
-      saveAs: {fn -> "${task.name}.sh"}
+      saveAs: {fn -> Util.cleanFilename("${task.name}.sh")}
     publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
-      saveAs: {fn -> "${task.name}.log"}
+      saveAs: {fn -> Util.cleanFilename("${task.name}.log")}
 
     input:
         tuple val(tag), val(module), file(model), path(inp), val(pubDir), val(fnOut)
