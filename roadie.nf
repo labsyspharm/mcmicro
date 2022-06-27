@@ -137,7 +137,7 @@ workflow {
       out = file(params.out)
       (outd, outf) = out.isDirectory() ? [params.out, ''] : 
         [out.getParent(), out.getName()]
-      opts = (outf == '') ? outf : "--out " + outf
+      opts = opts + ' ' + ((outf == '') ? outf : "--out " + outf)
 
       // Identify the input file and execute the task
       inp = Channel.fromPath(params.in)
