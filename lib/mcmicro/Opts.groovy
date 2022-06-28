@@ -16,7 +16,7 @@ static def camel2snake(s) {
  * @param orig original Map
  * @param repl replacement Map containing new values
  */
-static def updateYAML(orig, repl) {
+static def updateMap(orig, repl) {
 
     // Recurse on Maps
     if((repl instanceof Map) && (orig instanceof Map)) {
@@ -24,7 +24,7 @@ static def updateYAML(orig, repl) {
             if( orig.containsKey(key) && 
               ((orig[key] instanceof Map) && (val instanceof Map)) ||
               ((orig[key] instanceof List) && (val instanceof List)) ) {
-                orig[key] = updateYAML(orig[key], val)
+                orig[key] = updateMap(orig[key], val)
             }
             else orig[key] = val
         }
@@ -34,14 +34,72 @@ static def updateYAML(orig, repl) {
     else if((repl instanceof List) && (orig instanceof List)) {
         repl.each{ repli ->
             def i = orig.findIndexOf{it.name == repli.name}
-            if(i > -1) orig[i] = updateYAML(orig[i], repli)
+            if(i > -1) orig[i] = updateMap(orig[i], repli)
             else orig << repli
         }
     }
 
-    else throw new Exception("New spec format doesn't match the original")
+    else throw new Exception("New parameter format doesn't match the original")
 
     orig
+}
+
+/**
+ * Writes a Map to filename in YAML format
+ */
+static def writeMap(m, filename) {
+    DumperOptions style = new DumperOptions();
+    style.setPrettyFlow(true);
+    style.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+    new File(filename).withWriter{ out -> 
+        new Yaml(style).dump(m, out) 
+    }
+}
+
+/**
+ * Recursively identifies all named terminal leafs in a Map
+ */
+static def collectNames(m) {
+    // Recurse on Maps and lists
+    if(m instanceof Map) {
+        if(m.containsKey('name')) return m.name
+        return m.collect{key, val -> collectNames(val)}.flatten()
+    }
+    else if(m instanceof List)
+        return m.collect(it -> collectNames(it)).flatten()
+    
+    else return null
+}
+
+/**
+ * Cleans up a list of parameters by removing
+ *   camelCase versions and predefined keywords, and by sorting the remaining
+ *   parameters into workflow: and options: buckets
+ *
+ * @param pars a Map of parameters
+ * @param mspecs a Map of module specifications
+ */
+static def cleanParams(pars, mspecs) {
+    Map workflow = [:]
+    Map options = [:]
+
+    // Identify all module names
+    def names = collectNames(mspecs)
+
+    // Clean up the parameter list
+    // Separate workflow parameters from module options
+    pars.findAll{ key, val ->
+        Opts.camel2snake(key) == key &&
+        !['in', 'cont-pfx', 'roadie', 'modules', 'params'].contains(key)
+    }.each{ key, val ->
+        String keyc = key.replaceAll( /-opts$/, '' )
+        if(names.contains(keyc))
+            options[keyc] = val
+        else
+            workflow[key] = val
+    }
+
+    ['workflow':workflow, 'options':options]
 }
 
 /** 
@@ -50,7 +108,7 @@ static def updateYAML(orig, repl) {
  * @param wfp workflow parameters
  * @param fns filename of the schema
  */
- static def validateWFParams(wfp, fns) {
+static def validateWFParams(wfp, fns) {
     // Parse the schema
     Map schema = new Yaml().load(new File(fns))
 
@@ -78,29 +136,6 @@ static def updateYAML(orig, repl) {
 }
 
 /**
- * Establishes module specifications from defaults + manual overrides
- *
- * @param fndef filename of the default module specs
- * @param specs a map (or a YAML filename) containing overrides
- */
-static def loadModuleSpecs(fndef, specs) {
-    // Parse the defaults
-    Map defs = new Yaml().load(new File(fndef))
-
-    // If provided with a filename, parse the specs
-    if(specs instanceof String) {
-        File f = new File(specs)
-        specs = new Yaml().load(f)
-    }
-
-    // Update defaults with manual overrides
-    if(specs != null)
-        updateYAML(defs, specs)
-
-    defs
-}
-
-/**
  * Parses workflow parameters
  *
  * @param gp global parameters (usually params in NF space)
@@ -109,34 +144,29 @@ static def loadModuleSpecs(fndef, specs) {
  * @param fnm filename of the default module specs
  */
 static def parseWFParams(gp, fns, fnw, fnm) {
+
     // Load default MCMICRO parameters (mcp)
     Map mcp = new Yaml().load(new File(fnw))
     mcp.modules = new Yaml().load(new File(fnm))
+    mcp.options = [:]
 
-/*
-    if(gp.containsKey('params'))
-        mcp = new Yaml().load(new File(gp.params))
+    // Overwrite the parameters from a user-provided file
+    if(gp.containsKey('params')) {
+        Map mp = new Yaml().load(new File(gp.params))
+        updateMap(mcp, mp)
+    }
 
     // Override the module spec source, if specified
-    if(gp.containsKey('modules'))
-        mcp.modules = gp.modules
+    if(gp.containsKey('modules')) {
+        Map mm = new Yaml().load(new File(gp.modules))
+        updateMap(mcp.modules, mm)
+    }
 
-    // Construct module specs from defaults + overrides
-    mcp.modules = loadModuleSpecs(fnm, mcp.modules)
-
-    // Clean up the remaining command-line parameters and use them
-    //   to override workflow parameters specified in the gp.params file
-    gp.findAll{ key, val ->
-        Opts.camel2snake(key) == key &&
-        !['in', 'cont-pfx', 'roadie', 'modules', 'params'].contains(key)
-    }.each{ key, val -> mcp.workflow[key] = val }
-
-    println mcp.workflow
+    // Override workflow parameters and module options with
+    //   command-line arguments, as appropriate
+    Map cli = cleanParams(gp, mcp.modules)
+    updateMap(mcp, cli)
     validateWFParams(mcp.workflow, fns)
-*/
-
-    println mcp
-
 
     // Filter segmentation modules based on --probability-maps
     mcp.modules['segmentation'] = mcp.modules['segmentation'].findAll{
@@ -149,16 +179,6 @@ static def parseWFParams(gp, fns, fnw, fnm) {
     }
 
     mcp
-}
-
-// Write module specifications to filename in YAML format
-static def writeModuleSpecs(specs, filename) {
-    DumperOptions style = new DumperOptions();
-    style.setPrettyFlow(true);
-    style.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
-    new File(filename).withWriter{ out -> 
-        new Yaml(style).dump(specs, out) 
-    }
 }
 
 /**
