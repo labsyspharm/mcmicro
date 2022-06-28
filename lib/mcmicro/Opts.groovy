@@ -4,12 +4,19 @@ import org.yaml.snakeyaml.Yaml
 import org.yaml.snakeyaml.DumperOptions
 
 /**
- * Recursively updates a module spec tree with new values
+ * Converts a camelCase parameter name to snake_case
+ */
+static def camel2snake(s) {
+    s.replaceAll( /([A-Z])/, /-$1/ ).toLowerCase()
+}
+
+/**
+ * Recursively updates a YAML tree with new values
  *
  * @param orig original Map
  * @param repl replacement Map containing new values
  */
-static def updateModuleSpecs(orig, repl) {
+static def updateYAML(orig, repl) {
 
     // Recurse on Maps
     if((repl instanceof Map) && (orig instanceof Map)) {
@@ -17,7 +24,7 @@ static def updateModuleSpecs(orig, repl) {
             if( orig.containsKey(key) && 
               ((orig[key] instanceof Map) && (val instanceof Map)) ||
               ((orig[key] instanceof List) && (val instanceof List)) ) {
-                orig[key] = updateModuleSpecs(orig[key], val)
+                orig[key] = updateYAML(orig[key], val)
             }
             else orig[key] = val
         }
@@ -27,7 +34,7 @@ static def updateModuleSpecs(orig, repl) {
     else if((repl instanceof List) && (orig instanceof List)) {
         repl.each{ repli ->
             def i = orig.findIndexOf{it.name == repli.name}
-            if(i > -1) orig[i] = updateModuleSpecs(orig[i], repli)
+            if(i > -1) orig[i] = updateYAML(orig[i], repli)
             else orig << repli
         }
     }
@@ -37,32 +44,111 @@ static def updateModuleSpecs(orig, repl) {
     orig
 }
 
+/** 
+ * Validates workflow parameters against a schema
+ *
+ * @param wfp workflow parameters
+ * @param fns filename of the schema
+ */
+ static def validateWFParams(wfp, fns) {
+    // Parse the schema
+    Map schema = new Yaml().load(new File(fns))
+
+    // Validate workflow parameters against the schema
+    wfp.each{ key, val ->
+        // Check for deprecated parameters
+        if(schema.deprecated.containsKey(key)) {
+            String msg = "Parameter " + key + " is deprecated; " +
+                "please use " + schema.deprecated[key]
+            throw new Exception(msg)
+        }
+
+        // Check for unrecognized parameters
+        if(!schema.workflow.contains(key)) {
+            throw new Exception("Unrecognized parameter " + key)
+        }
+    }
+
+    // Additional custom deprecation checks
+    if(wfp['start-at'] == 'probability-maps' ||
+        wfp['stop-at'] == 'probability-maps') {
+        String msg = "probability-maps is deprecated; please use " +
+            "--start-at segmentation and --stop-at segmentation"
+    }
+}
+
+/**
+ * Establishes module specifications from defaults + manual overrides
+ *
+ * @param fndef filename of the default module specs
+ * @param specs a map (or a YAML filename) containing overrides
+ */
+static def loadModuleSpecs(fndef, specs) {
+    // Parse the defaults
+    Map defs = new Yaml().load(new File(fndef))
+
+    // If provided with a filename, parse the specs
+    if(specs instanceof String) {
+        File f = new File(specs)
+        specs = new Yaml().load(f)
+    }
+
+    // Update defaults with manual overrides
+    if(specs != null)
+        updateYAML(defs, specs)
+
+    defs
+}
+
 /**
  * Parses workflow parameters
  *
- * @param filename file that contains module specifications
- * @param wfp workflow parameters
+ * @param gp global parameters (usually params in NF space)
+ * @param fns filename of the schema
+ * @param fnw filename of the default workflow parameters
+ * @param fnm filename of the default module specs
  */
-static def parseModuleSpecs(filename, wfp) {
-    Map mods = new Yaml().load(new File(filename))
+static def parseWFParams(gp, fns, fnw, fnm) {
+    // Load default MCMICRO parameters (mcp)
+    Map mcp = new Yaml().load(new File(fnw))
+    mcp.modules = new Yaml().load(new File(fnm))
 
-    // Process manual overrides
-    if(wfp.containsKey('modules')) {
-        Map umods = new Yaml().load(new File(wfp.modules))
-        updateModuleSpecs(mods, umods)
-    }
+/*
+    if(gp.containsKey('params'))
+        mcp = new Yaml().load(new File(gp.params))
+
+    // Override the module spec source, if specified
+    if(gp.containsKey('modules'))
+        mcp.modules = gp.modules
+
+    // Construct module specs from defaults + overrides
+    mcp.modules = loadModuleSpecs(fnm, mcp.modules)
+
+    // Clean up the remaining command-line parameters and use them
+    //   to override workflow parameters specified in the gp.params file
+    gp.findAll{ key, val ->
+        Opts.camel2snake(key) == key &&
+        !['in', 'cont-pfx', 'roadie', 'modules', 'params'].contains(key)
+    }.each{ key, val -> mcp.workflow[key] = val }
+
+    println mcp.workflow
+    validateWFParams(mcp.workflow, fns)
+*/
+
+    println mcp
+
 
     // Filter segmentation modules based on --probability-maps
-    mods['segmentation'] = mods['segmentation'].findAll{
-        wfp.probabilityMaps.contains(it.name)
+    mcp.modules['segmentation'] = mcp.modules['segmentation'].findAll{
+        mcp.workflow.segmentation.contains(it.name)
     }
 
     // Filter downstream modules based on --cell-states
-    mods['downstream'] = mods['downstream'].findAll{
-        wfp.downstream.contains(it.name)
+    mcp.modules['downstream'] = mcp.modules['downstream'].findAll{
+        mcp.workflow.downstream.contains(it.name)
     }
 
-    mods
+    mcp
 }
 
 // Write module specifications to filename in YAML format
@@ -115,44 +201,4 @@ static def moduleOpts(module, wfp) {
     else if(module.containsKey('opts')) mopts = module.opts
 
     copts + ' ' + mopts
-}
-
-/**
- * Checks for the existence of parameter key in wfp and, if it exists,
- * constructs a deprecation message of the form
- * "--$key is deprecated; please use $alt"
- */
-static def deprCheckEx(wfp, key, alt) {
-    if(wfp.containsKey(key))
-        throw new Exception("--" + key + " is deprecated; please use " + alt)
-}
-
-/**
- * Checks if key equals to val in wfp and, if so,
- * constructs a deprecation message of the form
- * "--$key is deprecated; please use $alt"
- */
-static def deprCheckEq(wfp, key, val, alt) {
-    if(wfp[key] == val) {
-        String msg = "--" + key + " " + val + " is deprecated; please use " + alt
-        throw new Exception(msg)
-    }
-}
-
-/**
- * Checks for deprecated parameters and displays error messages
- *
- * @param wfp workflow parameters
- */
-static def deprecateParams(wfp) {
-    deprCheckEx(wfp, 'quantificationMask', "--quant-opts '--masks ...'")
-    deprCheckEx(wfp, 'illum', '--start-at illumination')
-    deprCheckEx(wfp, 'core-opts', '--coreograph-opts')
-    deprCheckEx(wfp, 'mask-spatial', "--quant-opts '--masks ...'")
-    deprCheckEx(wfp, 'mask-add', "--quant-opts '--masks ...'")
-    deprCheckEx(wfp, 'nstates-opts', "--naivestates-opts")
-    deprCheckEx(wfp, 'quant-opts', "--mcquant-opts")
-    deprCheckEx(wfp, 'cell-states', "--downstream")
-
-    deprCheckEq(wfp, 'probabilityMaps', 'all', 'e.g., --probability-maps unmicst,ilastik')
 }

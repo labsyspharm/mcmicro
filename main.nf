@@ -16,28 +16,17 @@ if( !params.containsKey('in') )
 
 // Default parameters for the pipeline as a whole
 params.sampleName  = file(params.in).name
-params.startAt     = 'registration'
-params.stopAt      = 'quantification'
-params.qcFiles     = 'copy'   // what to do with qc/ files when publishing them
-params.tma         = false    // whether working with a TMA (true) or whole-slide image (false)
-params.viz         = false    // generate an auto-minerva visualization
 
-// Some image formats store multiple fields of view in a single file. Other
-// formats store each field separately, typically in .tif files, with a separate
-// index file to tie them together. We will look for the index files from
-// multiple-file formats in a first, separate pass in order to avoid finding the
-// individual .tif files instead. If no multi-file formats are detected, then we
-// look for the single-file formats. Also, for multi-file formats we need to
-// stage the parent directory and not just the index file.
-params.multiFormats  = '{.xdce,.nd,.scan,.htd}'
-params.singleFormats = '{.ome.tiff,.ome.tif,.rcpnl,.btf,.nd2,.tif,.czi}'
+// Parse MCMICRO parameters (mcp)
+mcp = Opts.parseWFParams(
+    params, 
+    "$projectDir/config/schema.yml",
+    "$projectDir/config/defaults.yml",
+    "$projectDir/config/modules.yml"
+)
+modules = mcp.modules
 
-// Default selection of methods for each step
-params.probabilityMaps = 'unmicst'
-params.downstream      = 'scimap'
-
-// Deprecation messages
-Opts.deprecateParams(params)
+exit 0
 
 // Steps in the mcmicro pipeline
 mcmsteps = ["raw",		// Step 0
@@ -82,6 +71,14 @@ findFiles  = { p, path, ife -> p ?
 rawFiles = findFiles(idxStart <= 2, "${paths[0]}/**${formatPattern}",
 		     {error "No images found in ${paths[0]}"})
 
+// Some image formats store multiple fields of view in a single file. Other
+// formats store each field separately, typically in .tif files, with a separate
+// index file to tie them together. We will look for the index files from
+// multiple-file formats in a first, separate pass in order to avoid finding the
+// individual .tif files instead. If no multi-file formats are detected, then we
+// look for the single-file formats. Also, for multi-file formats we need to
+// stage the parent directory and not just the index file.
+
 // Here we assemble tuples of 1) path to stage for each raw image (might be a
 // directory) and 2) relative path to the main file for each image. Processes
 // must input the first as a path and the second as a val to avoid incorrect or
@@ -118,9 +115,6 @@ pre_segMsk = findFiles(idxStart == 6,
 pre_qty    = findFiles(idxStart == 7,
 		       "${paths[6]}/*.csv",
 		       {error "No quantification tables in ${paths[6]}"})
-
-// Load module specs
-modules = Opts.parseModuleSpecs("$projectDir/modules.yml", params)
 
 // The following parameters are shared by all modules
 params.idxStart  = idxStart
