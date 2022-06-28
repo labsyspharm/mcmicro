@@ -18,13 +18,12 @@ if( !params.containsKey('in') )
 params.sampleName  = file(params.in).name
 
 // Parse MCMICRO parameters (mcp)
-mcp = Opts.parseWFParams(
+mcp = Opts.parseParams(
     params, 
     "$projectDir/config/schema.yml",
     "$projectDir/config/defaults.yml",
     "$projectDir/config/modules.yml"
 )
-modules = mcp.modules
 
 exit 0
 
@@ -47,7 +46,6 @@ if( idxStop < idxStart ) error "Stopping step cannot come before starting step"
 
 // Define all subdirectories
 paths   = mcmsteps.collect{ "${params.in}/$it" }
-path_qc = "${params.in}/qc"
 
 // Check that deprecated locations are empty
 Channel.fromPath( "${params.in}/illumination_profiles/*" )
@@ -64,13 +62,6 @@ findFiles0 = { p, path -> p ?
 findFiles  = { p, path, ife -> p ?
 	      Channel.fromPath(path).ifEmpty(ife) : Channel.empty() }
 
-// Look for multi formats first, then single formats.
-(formatType, formatPattern) =
-    file("${paths[0]}/**${params.multiFormats}") ?
-    ["multi", params.multiFormats] : ["single", params.singleFormats]
-rawFiles = findFiles(idxStart <= 2, "${paths[0]}/**${formatPattern}",
-		     {error "No images found in ${paths[0]}"})
-
 // Some image formats store multiple fields of view in a single file. Other
 // formats store each field separately, typically in .tif files, with a separate
 // index file to tie them together. We will look for the index files from
@@ -78,6 +69,11 @@ rawFiles = findFiles(idxStart <= 2, "${paths[0]}/**${formatPattern}",
 // individual .tif files instead. If no multi-file formats are detected, then we
 // look for the single-file formats. Also, for multi-file formats we need to
 // stage the parent directory and not just the index file.
+(formatType, formatPattern) =
+    file("${paths[0]}/**${params.multiFormats}") ?
+    ["multi", params.multiFormats] : ["single", params.singleFormats]
+rawFiles = findFiles(idxStart <= 2, "${paths[0]}/**${formatPattern}",
+		     {error "No images found in ${paths[0]}"})
 
 // Here we assemble tuples of 1) path to stage for each raw image (might be a
 // directory) and 2) relative path to the main file for each image. Processes
@@ -169,6 +165,7 @@ workflow {
 }
 
 // Write out parameters used
+path_qc = "${params.in}/qc"
 workflow.onComplete {
     // Create a provenance directory
     file(path_qc).mkdirs()
