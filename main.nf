@@ -8,7 +8,7 @@ if( !(nextflow.version >= '22.04.3') ) {
 
 nextflow.enable.dsl=2
 
-import mcmicro.Opts
+import mcmicro.*
 
 // Expecting --in parameter
 if( !params.containsKey('in') )
@@ -24,6 +24,11 @@ mcp = Opts.parseParams(
     "$projectDir/config/defaults.yml",
     "$projectDir/config/modules.yml"
 )
+
+// Identify paths of precomputed intermediates
+paths = Paths.precomputed(params.in, mcp)
+
+println paths
 
 exit 0
 
@@ -45,7 +50,7 @@ if( idxStop < 0 )        error "Unknown stopping step ${params.stopAt}"
 if( idxStop < idxStart ) error "Stopping step cannot come before starting step"
 
 // Define all subdirectories
-paths   = mcmsteps.collect{ "${params.in}/$it" }
+//paths   = mcmsteps.collect{ "${params.in}/$it" }
 
 // Check that deprecated locations are empty
 Channel.fromPath( "${params.in}/illumination_profiles/*" )
