@@ -25,32 +25,10 @@ mcp = Opts.parseParams(
     "$projectDir/config/modules.yml"
 )
 
-// Identify paths of precomputed intermediates
-paths = Paths.precomputed(params.in, mcp)
-
-println paths
-
-exit 0
-
-// Steps in the mcmicro pipeline
-mcmsteps = ["raw",		// Step 0
-	    "illumination",	// Step 1
-	    "registration",	// Step 2
-	    "dearray",		// Step 3
-	    "probability-maps", // Step 4
-	    "segmentation",	// Step 5
-	    "quantification",	// Step 6
-	    "cell-states"]      // Step 7
-
-// Identify starting and stopping index
-idxStart = mcmsteps.indexOf( params.startAt )
-idxStop  = mcmsteps.indexOf( params.stopAt )
-if( idxStart < 0 )       error "Unknown starting step ${params.startAt}"
-if( idxStop < 0 )        error "Unknown stopping step ${params.stopAt}"
-if( idxStop < idxStart ) error "Stopping step cannot come before starting step"
-
-// Define all subdirectories
-//paths   = mcmsteps.collect{ "${params.in}/$it" }
+// Identify relevant precomputed intermediates
+// The actual paths to intermediate files are given by
+//   pre.collect{ "${params.in}/$it" }
+pre = Paths.precomputed(mcp)
 
 // Check that deprecated locations are empty
 Channel.fromPath( "${params.in}/illumination_profiles/*" )
@@ -62,10 +40,12 @@ Channel.fromPath( "${params.in}/illumination_profiles/*" )
 chMrk = Channel.fromPath( "${params.in}/markers.csv", checkIfExists: true )
 
 // Helper functions for finding raw images and precomputed intermediates
-findFiles0 = { p, path -> p ?
-	      Channel.fromPath(path) : Channel.empty() }
-findFiles  = { p, path, ife -> p ?
-	      Channel.fromPath(path).ifEmpty(ife) : Channel.empty() }
+findFiles0 = { key, pattern -> pre[key] ?
+    Channel.fromPath("${params.in}/$key/$pattern") : Channel.empty()
+}
+findFiles = { key, pattern, ife -> pre[key] ?
+    Channel.fromPath("${params.in}/$key/$pattern").ifEmpty(ife) : Channel.empty()
+}
 
 // Some image formats store multiple fields of view in a single file. Other
 // formats store each field separately, typically in .tif files, with a separate
