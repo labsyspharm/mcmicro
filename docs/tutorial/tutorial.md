@@ -22,7 +22,7 @@ You can view an example of how MCMICRO turns image tiles into single-cell segmen
 <br>
 
 {: .fs-6}
- **Step 0:** Be sure to [install](../instructions/nextflow/installation.html) MCMICRO before proceeding through these steps.
+ **Step 0:** Be sure to [install](../instructions/nextflow/installation.html) nextflow and Docker before proceeding through these steps.
  
 Enter the commands `nextflow run hello` and `docker run hello-world` to verify that both Nexflow and Docker* are functional.
 
