@@ -1,0 +1,68 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/./master/nextflow_schema.json",
+    "title": ". pipeline parameters",
+    "description": "",
+    "type": "object",
+    "properties": {
+        "in": {
+            "type": "string",
+            "description": "Location of the data"
+        },
+        "startAt": {
+            "type": "string",
+            "default": "registration",
+            "enum": [
+                "illumination",
+                "registration",
+                "dearray",
+                "probability-maps",
+                "segmentation",
+                "quantification",
+                "cell-states"
+            ]
+        },
+        "stopAt": {
+            "type": "string",
+            "default": "quantification",
+            "enum": [
+                "illumination",
+                "registration",
+                "dearray",
+                "probability-maps",
+                "segmentation",
+                "quantification",
+                "cell-states"
+            ]
+        },
+        "tma": {
+            "type": "string",
+            "default": "false"
+        },
+        "viz": {
+            "type": "string",
+            "default": "false"
+        },
+        "probabilityMaps": {
+            "type": "string",
+            "default": "unmicst",
+            "enum": [
+                "unmicst",
+                "ilastik",
+                "all",
+                "cypository"
+            ]
+        },
+        "cellStates": {
+            "type": "string",
+            "default": null,
+            "enum": [
+                "SCIMAP",
+                "naivestates"
+            ]
+        }
+    },
+    "required": [
+        "in"
+    ]
+}
