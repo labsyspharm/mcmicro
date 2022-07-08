@@ -11,12 +11,11 @@ static def QC(pathIn, modName) {
 }
 
 /**
- * Determines which precomputed intermediates are relevant
+ * Determines indices of the start and stop steps in the pipeline
  *
  * @param mcp MCMICRO parameters, as returned by Opts.parseParams()
  */
-static def precomputed(mcp) {
-
+static def flowSegment(mcp) {
     // Locate workflow parameters (wfp)
     Map wfp = mcp.workflow
 
@@ -29,7 +28,7 @@ static def precomputed(mcp) {
     }
 
     // Valid start/stop steps in the mcmicro pipeline
-    List mcsteps = ["raw",       // Step 0
+    List mcsteps = ["raw",  // Step 0
         "illumination",     // Step 1
         "registration",     // Step 2
         "dearray",          // Step 3
@@ -48,6 +47,21 @@ static def precomputed(mcp) {
 
     // Advance segmentation -> watershed to ensure no dangling probability maps
     if( idxStop == 4 ) idxStop = 5
+
+    return [idxStart, idxStop]
+}
+
+/**
+ * Determines which precomputed intermediates are relevant
+ *
+ * @param mcp MCMICRO parameters, as returned by Opts.parseParams()
+ */
+static def precomputed(mcp) {
+    // Locate workflow parameters (wfp)
+    Map wfp = mcp.workflow
+
+    // Identify what segment of the pipeline to run
+    def (idxStart, idxStop) = flowSegment(mcp)
 
     // Define whether a precomputed intermediate is relevant
     [

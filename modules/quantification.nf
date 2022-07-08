@@ -7,7 +7,7 @@ process mcquant {
     publishDir "${params.in}/quantification", mode: 'copy', pattern: '*.csv'
 
     // Provenance
-    publishDir "${Paths.QC(params.in, 'provenance')}", mode: 'copy', 
+    publishDir "${Flow.QC(params.in, 'provenance')}", mode: 'copy', 
       pattern: '.command.{sh,log}',
       saveAs: {fn -> fn.replace('.command', "${module.name}-${task.index}")}
     

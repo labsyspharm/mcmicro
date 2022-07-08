@@ -24,13 +24,14 @@ mcp = Opts.parseParams(
     "$projectDir/config/defaults.yml"
 )
 
-// Separate out workflow parameters (wfp) to simplify code
+// Separate out workflow parameters (wfp) and module specs to simplify code
 wfp = mcp.workflow
+modules = mcp.modules
 
 // Identify relevant precomputed intermediates
 // The actual paths to intermediate files are given by
 //   pre.collect{ "${params.in}/$it" }
-pre = Paths.precomputed(mcp)
+pre = Flow.precomputed(mcp)
 
 // Check that deprecated locations are empty
 Channel.fromPath( "${params.in}/illumination_profiles/*" )
@@ -93,10 +94,6 @@ pre_seg   = findFiles('segmentation', "**.tif",
 pre_qty   = findFiles('quantification', "*.csv",
     {error "No quantification tables in ${params.in}/quantification"})
 
-// The following parameters are shared by all modules
-params.idxStart  = idxStart
-params.idxStop   = idxStop
-
 // Import individual modules
 include {illumination}   from "$projectDir/modules/illumination"
 include {registration}   from "$projectDir/modules/registration"
@@ -110,7 +107,7 @@ include {viz}            from "$projectDir/modules/viz"
 // Define the primary mcmicro workflow
 workflow {
     illumination(modules['illumination'], raw)
-    registration(modules['registration'], raw,
+/*    registration(modules['registration'], raw,
 		 illumination.out.ffp.mix( pre_ffp ),
 		 illumination.out.dfp.mix( pre_dfp ))
 
@@ -143,9 +140,10 @@ workflow {
     cellstates(sft, modules['downstream'])
 
     // Vizualization
-    viz(modules['viz'], allimg)
-}
+    viz(modules['viz'], allimg)*/
+//}
 
+/*
 // Write out parameters used
 path_qc = "${params.in}/qc"
 workflow.onComplete {

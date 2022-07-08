@@ -8,11 +8,11 @@ process s3seg {
       mode: 'copy', pattern: '*/*.ome.tif', saveAs: {f -> file(f).name}
 
     // QC
-    publishDir "${Paths.QC(params.in, '/s3seg/' + tag)}", mode: "${params.qcFiles}",
+    publishDir "${Flow.QC(params.in, '/s3seg/' + tag)}", mode: "${params.qcFiles}",
       pattern: '*/qc/**', saveAs: {f -> file(f).name}
 
     // Provenance
-    publishDir "${Paths.QC(params.in, 'provenance')}", mode: 'copy',
+    publishDir "${Flow.QC(params.in, 'provenance')}", mode: 'copy',
       pattern: '.command.{sh,log}',
       saveAs: {fn -> fn.replace('.command', "${module.name}-${task.index}")}
     

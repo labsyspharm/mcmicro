@@ -37,11 +37,11 @@ process worker {
     publishDir "${pubDir}", mode: 'copy', pattern: 'plots/**'
 
     // QC
-    publishDir "${Paths.QC(params.in, module.name)}", mode: "${params.qcFiles}",
+    publishDir "${Flow.QC(params.in, module.name)}", mode: "${params.qcFiles}",
       pattern: 'qc/**', saveAs: { fn -> fn.replaceFirst("qc/","") }
     
     // Provenance
-    publishDir "${Paths.QC(params.in, 'provenance')}", mode: 'copy', 
+    publishDir "${Flow.QC(params.in, 'provenance')}", mode: 'copy', 
       pattern: '.command.{sh,log}',
       saveAs: {fn -> fn.replace('.command', "${module.name}-${task.index}")}
 

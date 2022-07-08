@@ -5,7 +5,7 @@ process ashlar {
     publishDir "${params.in}/registration", mode: 'copy', pattern: '*.tif'
     
     // Provenance
-    publishDir "${Paths.QC(params.in, 'provenance')}", mode: 'copy', 
+    publishDir "${Flow.QC(params.in, 'provenance')}", mode: 'copy', 
       pattern: '.command.{sh,log}',
       saveAs: {fn -> fn.replace('.command', "${module.name}")}
     
