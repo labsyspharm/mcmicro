@@ -136,12 +136,10 @@ static def validateWFParams(wfp, fns) {
  * @param fnw filename of the default workflow parameters
  * @param fnm filename of the default module specs
  */
-static def parseParams(gp, fns, fnw, fnm) {
+static def parseParams(gp, fns, fnw) {
 
     // Load default MCMICRO parameters (mcp)
     Map mcp = new Yaml().load(new File(fnw))
-    mcp.options = [:]
-    mcp.modules = new Yaml().load(new File(fnm))
 
     // Overwrite the parameters from a user-provided file
     if(gp.containsKey('params')) {

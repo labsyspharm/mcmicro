@@ -21,8 +21,7 @@ params.sampleName  = file(params.in).name
 mcp = Opts.parseParams(
     params, 
     "$projectDir/config/schema.yml",
-    "$projectDir/config/defaults.yml",
-    "$projectDir/config/modules.yml"
+    "$projectDir/config/defaults.yml"
 )
 
 // Separate out workflow parameters (wfp) to simplify code
