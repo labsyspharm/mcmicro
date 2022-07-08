@@ -25,6 +25,9 @@ mcp = Opts.parseParams(
     "$projectDir/config/modules.yml"
 )
 
+// Separate out workflow parameters (wfp) to simplify code
+wfp = mcp.workflow
+
 // Identify relevant precomputed intermediates
 // The actual paths to intermediate files are given by
 //   pre.collect{ "${params.in}/$it" }
@@ -55,10 +58,10 @@ findFiles = { key, pattern, ife -> pre[key] ?
 // look for the single-file formats. Also, for multi-file formats we need to
 // stage the parent directory and not just the index file.
 (formatType, formatPattern) =
-    file("${paths[0]}/**${params.multiFormats}") ?
-    ["multi", params.multiFormats] : ["single", params.singleFormats]
-rawFiles = findFiles(idxStart <= 2, "${paths[0]}/**${formatPattern}",
-		     {error "No images found in ${paths[0]}"})
+    file("${params.in}/raw/**${wfp['multi-formats']}") ?
+    ["multi", wfp['multi-formats']] : ["single", wfp['single-formats']]
+rawFiles = findFiles('raw', "**${formatPattern}",
+		     {error "No images found in ${params.in}/raw"})
 
 // Here we assemble tuples of 1) path to stage for each raw image (might be a
 // directory) and 2) relative path to the main file for each image. Processes
@@ -73,29 +76,23 @@ raw = rawFiles
     .map{ toStage, relPath -> tuple(toStage, toStage.parent.relativize(relPath)) }
 
 // Find precomputed intermediates
-pre_dfp = findFiles0(idxStart == 2, "${paths[1]}/*-dfp.tif")
-pre_ffp = findFiles0(idxStart == 2, "${paths[1]}/*-ffp.tif")
-pre_img = findFiles(idxStart == 3 || (idxStart > 3 && !params.tma),
-		    "${paths[2]}/*.{ome.tiff,ome.tif,tif,tiff,btf}",
-		    {error "No pre-stitched image in ${paths[2]}"})
-pre_cores = findFiles(idxStart > 3 && params.tma,
-		      "${paths[3]}/*.tif",
-		      {error "No cores in ${paths[3]}"})
-pre_masks = findFiles(idxStart > 3 && params.tma,
-		      "${paths[3]}/masks/*.tif",
-		      {error "No TMA masks in ${paths[3]}/masks"})
-pre_pmap = findFiles(idxStart == 5,
-		     "${paths[4]}/*/*-pmap.tif",
-		     {error "No probability maps found in ${paths[4]}"})
+pre_dfp   = findFiles0('illumination', "*-dfp.tif")
+pre_ffp   = findFiles0('illumination', "*-ffp.tif")
+pre_img   = findFiles('registration', "*.{ome.tiff,ome.tif,tif,tiff,btf}",
+    {error "No pre-stitched image in ${params.in}/registration"})
+pre_cores = findFiles('dearray', "*.tif",
+    {error "No TMA cores in ${params.in}/dearray"})
+pre_masks = findFiles('dearray', "masks/*.tif",
+    {error "No TMA masks in ${params.in}/dearray/masks"})
+pre_pmap  = findFiles('probability-maps', "*/*-pmap.tif",
+    {error "No probability maps found in ${params.in}/probability-maps"})
     .map{ f -> tuple(f.getParent().getName(), f) }
-    .filter{ params.probabilityMaps.contains(it[0]) }
-pre_segMsk = findFiles(idxStart == 6,
-		       "${paths[5]}/**.tif",
-		       {error "No segmentation masks in ${paths[5]}"})
+    .filter{ wfp['segmentation'].contains(it[0]) }
+pre_seg   = findFiles('segmentation', "**.tif",
+    {error "No segmentation masks in ${params.in}/segmentation"})
     .map{ f -> tuple(f.getParent().getName(), f) }.groupTuple()
-pre_qty    = findFiles(idxStart == 7,
-		       "${paths[6]}/*.csv",
-		       {error "No quantification tables in ${paths[6]}"})
+pre_qty   = findFiles('quantification', "*.csv",
+    {error "No quantification tables in ${params.in}/quantification"})
 
 // The following parameters are shared by all modules
 params.idxStart  = idxStart
@@ -110,6 +107,7 @@ include {quantification} from "$projectDir/modules/quantification"
 include {cellstates}     from "$projectDir/modules/cell-states"
 include {viz}            from "$projectDir/modules/viz"
 
+/*
 // Define the primary mcmicro workflow
 workflow {
     illumination(modules['illumination'], raw)
@@ -175,3 +173,4 @@ workflow.onComplete {
 	  }
     }
 }
+*/

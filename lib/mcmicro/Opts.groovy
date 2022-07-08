@@ -126,13 +126,6 @@ static def validateWFParams(wfp, fns) {
             throw new Exception("Unrecognized parameter " + key)
         }
     }
-
-    // Additional custom deprecation checks
-    if(wfp['start-at'] == 'probability-maps' ||
-        wfp['stop-at'] == 'probability-maps') {
-        String msg = "probability-maps is deprecated; please use " +
-            "--start-at segmentation and --stop-at segmentation"
-    }
 }
 
 /**

@@ -20,6 +20,14 @@ static def precomputed(mcp) {
     // Locate workflow parameters (wfp)
     Map wfp = mcp.workflow
 
+    // Deprecation checks
+    if(wfp['start-at'] == 'probability-maps' ||
+        wfp['stop-at'] == 'probability-maps') {
+        String msg = "probability-maps is deprecated; please use " +
+            "--start-at segmentation and --stop-at segmentation"
+        throw new Exception(msg)
+    }
+
     // Valid start/stop steps in the mcmicro pipeline
     List mcsteps = ["raw",       // Step 0
         "illumination",     // Step 1
