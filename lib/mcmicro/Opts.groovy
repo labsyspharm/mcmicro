@@ -140,8 +140,8 @@ static def parseParams(gp, fns, fnw, fnm) {
 
     // Load default MCMICRO parameters (mcp)
     Map mcp = new Yaml().load(new File(fnw))
-    mcp.modules = new Yaml().load(new File(fnm))
     mcp.options = [:]
+    mcp.modules = new Yaml().load(new File(fnm))
 
     // Overwrite the parameters from a user-provided file
     if(gp.containsKey('params')) {
@@ -149,19 +149,19 @@ static def parseParams(gp, fns, fnw, fnm) {
         updateMap(mcp, mp)
     }
 
-    // Override the module spec source, if specified
+    // Override the module specs, if specified
     if(gp.containsKey('modules')) {
         Map mm = new Yaml().load(new File(gp.modules))
         updateMap(mcp.modules, mm)
     }
 
     // Override workflow parameters and module options with
-    //   command-line arguments, as appropriate
-    Map cli = cleanParams(gp, mcp.modules)
-    updateMap(mcp, cli)
+    //   command-line arguments (cla), as appropriate
+    Map cla = cleanParams(gp, mcp.modules)
+    updateMap(mcp, cla)
     validateWFParams(mcp.workflow, fns)
 
-    // Filter segmentation modules based on --probability-maps
+    // Filter segmentation modules based on --segmentation
     mcp.modules['segmentation'] = mcp.modules['segmentation'].findAll{
         mcp.workflow.segmentation.contains(it.name)
     }
