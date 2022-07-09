@@ -31,7 +31,7 @@ modules = mcp.modules
 // Identify relevant precomputed intermediates
 // The actual paths to intermediate files are given by
 //   pre.collect{ "${params.in}/$it" }
-pre = Flow.precomputed(mcp)
+pre = Flow.precomputed(wfp)
 
 // Check that deprecated locations are empty
 Channel.fromPath( "${params.in}/illumination_profiles/*" )
@@ -103,10 +103,10 @@ include {quantification} from "$projectDir/modules/quantification"
 include {cellstates}     from "$projectDir/modules/cell-states"
 include {viz}            from "$projectDir/modules/viz"
 
-/*
+
 // Define the primary mcmicro workflow
 workflow {
-    illumination(modules['illumination'], raw)
+    illumination(wfp, modules['illumination'], raw)
 /*    registration(modules['registration'], raw,
 		 illumination.out.ffp.mix( pre_ffp ),
 		 illumination.out.dfp.mix( pre_dfp ))
@@ -141,7 +141,7 @@ workflow {
 
     // Vizualization
     viz(modules['viz'], allimg)*/
-//}
+}
 
 /*
 // Write out parameters used

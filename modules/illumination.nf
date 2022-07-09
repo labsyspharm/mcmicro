@@ -19,6 +19,7 @@ process illumination {
       saveAs: {fn -> fn.replace('.command', "${module.name}-${task.index}")}
     
     input:
+      val wfp
       val module
       tuple path(raw), val(relPath) // raw is only for staging, use relPath for paths
     output:
@@ -26,7 +27,7 @@ process illumination {
       path '*-ffp.tif', emit: ffp
       tuple path('.command.sh'), path('.command.log')
 
-    when: params.idxStart <= 1 && params.idxStop >= 1
+    when: Flow.doirun('illumination', wfp)
     
     script:
     def fn = escapeForImagej(relPath)

@@ -13,12 +13,9 @@ static def QC(pathIn, modName) {
 /**
  * Determines indices of the start and stop steps in the pipeline
  *
- * @param mcp MCMICRO parameters, as returned by Opts.parseParams()
+ * @param wfp workflow parameters
  */
-static def flowSegment(mcp) {
-    // Locate workflow parameters (wfp)
-    Map wfp = mcp.workflow
-
+static def flowSegment(wfp) {
     // Deprecation checks
     if(wfp['start-at'] == 'probability-maps' ||
         wfp['stop-at'] == 'probability-maps') {
@@ -54,14 +51,11 @@ static def flowSegment(mcp) {
 /**
  * Determines which precomputed intermediates are relevant
  *
- * @param mcp MCMICRO parameters, as returned by Opts.parseParams()
+ * @param wfp workflow parameters
  */
-static def precomputed(mcp) {
-    // Locate workflow parameters (wfp)
-    Map wfp = mcp.workflow
-
+static def precomputed(wfp) {
     // Identify what segment of the pipeline to run
-    def (idxStart, idxStop) = flowSegment(mcp)
+    def (idxStart, idxStop) = flowSegment(wfp)
 
     // Define whether a precomputed intermediate is relevant
     [
@@ -79,14 +73,11 @@ static def precomputed(mcp) {
  * Determines whether to run a given module
  *
  * @param module name of the module/step in the pipeline
- * @param mcp MCMICRO parameters, as returned by Opts.parseParams()
+ * @param wfp workflow parameters
  */
-static def doirun(module, mcp) {
-    // Locate workflow parameters (wfp)
-    Map wfp = mcp.workflow
-
+static def doirun(module, wfp) {
     // Identify what segment of the pipeline to run
-    def (idxStart, idxStop) = flowSegment(mcp)
+    def (idxStart, idxStop) = flowSegment(wfp)
 
     switch(module) {
         case 'illumination': 
