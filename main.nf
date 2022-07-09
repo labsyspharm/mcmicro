@@ -14,9 +14,6 @@ import mcmicro.*
 if( !params.containsKey('in') )
     error "Please specify the project directory with --in"
 
-// Default parameters for the pipeline as a whole
-params.sampleName  = file(params.in).name
-
 // Parse MCMICRO parameters (mcp)
 mcp = Opts.parseParams(
     params, 
@@ -107,11 +104,11 @@ include {viz}            from "$projectDir/modules/viz"
 // Define the primary mcmicro workflow
 workflow {
     illumination(wfp, modules['illumination'], raw)
-/*    registration(modules['registration'], raw,
+    registration(wfp, modules['registration'], raw,
 		 illumination.out.ffp.mix( pre_ffp ),
 		 illumination.out.dfp.mix( pre_dfp ))
 
-    // Are we working with a TMA or a whole-slide image?
+/*    // Are we working with a TMA or a whole-slide image?
     img = registration.out
 	.mix(pre_img)
 	.branch {

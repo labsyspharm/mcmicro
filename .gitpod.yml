@@ -2,7 +2,8 @@ tasks:
   - name: Download default containers
     init: |
       python -c "import yaml;\
-        mods = yaml.safe_load(open('modules.yml'));\
+        mcp = yaml.safe_load(open('config/defaults.yml'));\
+        mods = mcp['modules'];\
         [print(m['container'] + ':' + m['version']) for m in \
           [mods['registration'], mods['segmentation'][0],\
            mods['watershed'], mods['quantification']]]"\

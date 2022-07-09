@@ -10,39 +10,45 @@ process ashlar {
       saveAs: {fn -> fn.replace('.command', "${module.name}")}
     
     input:
+      val wfp
       val module
+      val sampleName
       path lraw    // Only for staging
       val lrelPath // Use this for paths
       path lffp
       path ldfp
 
     output:
-      path "${params.sampleName}.ome.tif", emit: img
+      path "${sampleName}.ome.tif", emit: img
       tuple path('.command.sh'), path('.command.log')
 
-    when: params.idxStart <= 2 && params.idxStop >= 2
+    when: Flow.doirun('registration', wfp)
     
     script:
     def imgs = lrelPath.collect{ Util.escapeForShell(it) }.join(" ")
     def ilp = "--ffp $lffp --dfp $ldfp"
     if (ilp == '--ffp  --dfp ') ilp = ''  // Don't supply empty --ffp --dfp
     """
-    ashlar $imgs ${Opts.moduleOpts(module, params)} $ilp \
-      -o ${params.sampleName}.ome.tif
+    ashlar $imgs ${Opts.moduleOpts(module, params)} $ilp -o ${sampleName}.ome.tif
     """
 }
 
 workflow registration {
     take:
-      module
-      raw
-      ffp
-      dfp
+      wfp     // workflow parameters
+      module  // module specs
+      raw     // raw image tiles
+      ffp     // flat-field profiles
+      dfp     // dark-field profiles
 
     main:
       rawst = raw.toSortedList{a, b -> a[0] <=> b[0]}.transpose()
+      sampleName  = file(params.in).name
+
       ashlar(
-	module,
+        wfp,
+        module,
+        sampleName,
         rawst.first(),
         rawst.last(),
         ffp.toSortedList{a, b -> a.getName() <=> b.getName()},
