@@ -74,3 +74,38 @@ static def precomputed(mcp) {
         quantification:     idxStart == 7
     ]
 }
+
+/**
+ * Determines whether to run a given module
+ *
+ * @param module name of the module/step in the pipeline
+ * @param mcp MCMICRO parameters, as returned by Opts.parseParams()
+ */
+static def doirun(module, mcp) {
+    // Locate workflow parameters (wfp)
+    Map wfp = mcp.workflow
+
+    // Identify what segment of the pipeline to run
+    def (idxStart, idxStop) = flowSegment(mcp)
+
+    switch(module) {
+        case 'illumination': 
+            return(idxStart <= 1 && idxStop >= 1)
+        case 'registration':
+            return(idxStart <= 2 && idxStop >= 2)
+        case 'dearray':
+            return(idxStart <= 3 && idxStop >= 3 && wfp.tma)
+        case 'segmentation':
+            return(idxStart <= 4 && idxStop >= 4)
+        case 'watershed':
+            return(idxStart <= 5 && idxStop >= 5)
+        case 'quantification':
+            return(idxStart <= 6 && idxStop >= 6)
+        case 'downstream':
+            return(idxStart <= 7 && idxStop >= 7)
+        case 'viz':
+            return(wfp.viz)
+        default:
+            throw new Exception("Unknown module name ${module}")
+    }
+}
