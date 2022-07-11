@@ -176,13 +176,16 @@ static def parseParams(gp, fns, fnw) {
  * Determines modules options
  *
  * @param module module spec, as parsed by parseModuleSpecs()
- * @param wfp workflow parameters
+ * @param mcp MCMICRO parameters, as returned by parseParams()
  */
-static def moduleOpts(module, wfp) {
+static def moduleOpts(module, mcp) {
+
+    // Identify workflow parameters (wfp)
+    def wfp = mcp.workflow
 
     // Check for pipeline-level segmentation channel(s)
     String copts = ''
-    if(wfp.containsKey('segmentationChannel') &&
+    if(wfp.containsKey('segmentation-channel') &&
         module.containsKey('channel')) {
 
         // Module spec must specify whether indexing is 0-based or 1-based
@@ -190,7 +193,7 @@ static def moduleOpts(module, wfp) {
             error module.name + " spec in modules.yml is missing idxbase key"
 
         // Identify the list of indices
-        List idx = wfp.segmentationChannel.toString().tokenize()
+        List idx = wfp['segmentation-channel'].toString().tokenize()
 
         // Account for 0-based indexing
         if(module.idxbase == 0)
@@ -203,13 +206,10 @@ static def moduleOpts(module, wfp) {
         copts = module.channel + ' ' + idx.join(' ')
       }
 
-    // Identify all remaining module options by checking for
-    //   --module-opts on the command line, or
-    //   the existence of opts: in the modules.yml file
-    String s = "${module.name}Opts"
+    // Identify all remaining module options
     String mopts = ''
-    if(wfp.containsKey(s)) mopts = wfp."$s"
-    else if(module.containsKey('opts')) mopts = module.opts
+    if(mcp.options.containsKey(module.name))
+        mopts = mcp.options[module.name]
 
     copts + ' ' + mopts
 }
