@@ -127,12 +127,12 @@ workflow {
     allimg = img.wsi.mix(tmacores)
     segmentation(mcp, allimg, tmamasks, pre_pmap)
 
-/*    // Merge segmentation masks against precomputed ones and append markers.csv
-    segMsk = segmentation.out.mix(pre_segMsk)
-    quantification(modules['quantification'], allimg, segMsk, chMrk)
+    // Merge segmentation masks against precomputed ones and append markers.csv
+    segMsk = segmentation.out.mix(pre_seg)
+    quantification(mcp, allimg, segMsk, chMrk)
 
     // Spatial feature tables -> cell state calling
-    sft = quantification.out.mix(pre_qty)
+/*    sft = quantification.out.mix(pre_qty)
     cellstates(sft, modules['downstream'])
 
     // Vizualization

@@ -12,6 +12,7 @@ process mcquant {
       saveAs: {fn -> fn.replace('.command', "${module.name}-${task.index}")}
     
     input:
+      val mcp
       val module
       tuple val(tag), path("$tag"), path(masks), path(ch)
     
@@ -19,17 +20,17 @@ process mcquant {
       path '*.csv', emit: tables
       tuple path('.command.sh'), path('.command.log')
 
-    when: params.idxStart <= 6 && params.idxStop >= 6
+    when: Flow.doirun('quantification', mcp.workflow)
 
     """
     python /app/CommandSingleCellExtraction.py --image $tag \
-    ${Opts.moduleOpts(module, params)} --output . --channel_names $ch
+    ${Opts.moduleOpts(module, mcp)} --output . --channel_names $ch
     """
 }
 
 workflow quantification {
     take:
-      module
+      mcp
       imgs
       segmasks
       markers
@@ -46,7 +47,7 @@ workflow quantification {
     inputs = id_msks.combine(id_imgs, by:0)
       .map{ id, mtd, msk, img -> tuple("${mtd}-${img.getName()}", img, msk) }
       .combine( markers )
-    mcquant(module, inputs)
+    mcquant(mcp, mcp.modules['quantification'], inputs)
     
     emit:
       mcquant.out.tables.flatten()
