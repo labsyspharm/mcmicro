@@ -164,7 +164,7 @@ static def parseParams(gp, fns, fnw) {
         mcp.workflow.segmentation.contains(it.name)
     }
 
-    // Filter downstream modules based on --cell-states
+    // Filter downstream modules based on --downstream
     mcp.modules['downstream'] = mcp.modules['downstream'].findAll{
         mcp.workflow.downstream.contains(it.name)
     }

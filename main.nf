@@ -96,7 +96,7 @@ include {registration}   from "$projectDir/modules/registration"
 include {dearray}        from "$projectDir/modules/dearray"
 include {segmentation}   from "$projectDir/modules/segmentation"
 include {quantification} from "$projectDir/modules/quantification"
-include {cellstates}     from "$projectDir/modules/cell-states"
+include {downstream}     from "$projectDir/modules/downstream"
 include {viz}            from "$projectDir/modules/viz"
 
 
@@ -132,11 +132,11 @@ workflow {
     quantification(mcp, allimg, segMsk, chMrk)
 
     // Spatial feature tables -> cell state calling
-/*    sft = quantification.out.mix(pre_qty)
-    cellstates(sft, modules['downstream'])
+    sft = quantification.out.mix(pre_qty)
+    downstream(mcp, sft)
 
     // Vizualization
-    viz(modules['viz'], allimg)*/
+//    viz(modules['viz'], allimg)*/
 }
 
 /*
