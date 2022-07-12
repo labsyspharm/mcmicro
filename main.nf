@@ -126,10 +126,8 @@ workflow {
     // Reconcile WSI and TMA processing for downstream segmentation
     allimg = img.wsi.mix(tmacores)
     segmentation(mcp, allimg, tmamasks, pre_pmap)
-/*    segmentation(modules['segmentation'], modules['watershed'],
-        allimg, tmamasks, pre_pmap)
 
-    // Merge segmentation masks against precomputed ones and append markers.csv
+/*    // Merge segmentation masks against precomputed ones and append markers.csv
     segMsk = segmentation.out.mix(pre_segMsk)
     quantification(modules['quantification'], allimg, segMsk, chMrk)
 
