@@ -136,7 +136,7 @@ workflow {
     downstream(mcp, sft)
 
     // Vizualization
-//    viz(modules['viz'], allimg)*/
+    viz(mcp, allimg)
 }
 
 /*
