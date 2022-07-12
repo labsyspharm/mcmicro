@@ -70,16 +70,16 @@ static def precomputed(wfp) {
 }
 
 /**
- * Determines whether to run a given module
+ * Determines whether to run a given step
  *
- * @param module name of the module/step in the pipeline
+ * @param step name of the step in the pipeline
  * @param wfp workflow parameters
  */
-static def doirun(module, wfp) {
+static def doirun(step, wfp) {
     // Identify what segment of the pipeline to run
     def (idxStart, idxStop) = flowSegment(wfp)
 
-    switch(module) {
+    switch(step) {
         case 'illumination': 
             return(idxStart <= 1 && idxStop >= 1)
         case 'registration':
@@ -97,6 +97,6 @@ static def doirun(module, wfp) {
         case 'viz':
             return(wfp.viz)
         default:
-            throw new Exception("Unknown module name ${module}")
+            throw new Exception("Unknown step name ${step}")
     }
 }

@@ -23,7 +23,6 @@ mcp = Opts.parseParams(
 
 // Separate out workflow parameters (wfp) and module specs to simplify code
 wfp = mcp.workflow
-modules = mcp.modules
 
 // Identify relevant precomputed intermediates
 // The actual paths to intermediate files are given by
@@ -103,23 +102,23 @@ include {viz}            from "$projectDir/modules/viz"
 
 // Define the primary mcmicro workflow
 workflow {
-    illumination(wfp, modules['illumination'], raw)
-    registration(mcp, modules['registration'], raw,
+    illumination(wfp, mcp.modules['illumination'], raw)
+    registration(mcp, raw,
 		 illumination.out.ffp.mix( pre_ffp ),
 		 illumination.out.dfp.mix( pre_dfp ))
 
-/*    // Are we working with a TMA or a whole-slide image?
+    // Are we working with a TMA or a whole-slide image?
     img = registration.out
-	.mix(pre_img)
-	.branch {
-	  wsi: !params.tma
-	  tma: params.tma
-    }
+        .mix(pre_img)
+        .branch {
+            wsi: !wfp.tma
+            tma: wfp.tma
+        }
 
     // Apply dearray to TMAs only
-    dearray(modules['dearray'], img.tma)
+    dearray(mcp, img.tma)
 
-    // Merge against precomputed intermediates
+/*    // Merge against precomputed intermediates
     tmacores = dearray.out.cores.mix(pre_cores)
     tmamasks = dearray.out.masks.mix(pre_masks)
 

@@ -13,7 +13,7 @@ workflow:
 deprecated:
   quantification-mask: "--quant-opts '--masks ...'"
   illum: --start-at illumination
-  core-opts: --corograph-opts
+  core-opts: --coreograph-opts
   mask-spatial: "--quant-opts '--masks ...'"
   mask-add: "--quant-opts '--masks ...'"
   nstates-opts: --naivestates-opts

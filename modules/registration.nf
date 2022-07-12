@@ -36,7 +36,6 @@ process ashlar {
 workflow registration {
     take:
       mcp     // MCMICRO parameters as read by Opts.parseParams()
-      module  // module specs
       raw     // raw image tiles
       ffp     // flat-field profiles
       dfp     // dark-field profiles
@@ -47,7 +46,7 @@ workflow registration {
 
       ashlar(
         mcp,
-        module,
+        mcp.modules['registration'],
         sampleName,
         rawst.first(),
         rawst.last(),
