@@ -8,7 +8,8 @@ process s3seg {
       mode: 'copy', pattern: '*/*.ome.tif', saveAs: {f -> file(f).name}
 
     // QC
-    publishDir "${Flow.QC(params.in, '/s3seg/' + tag)}", mode: "${params.qcFiles}",
+    publishDir "${Flow.QC(params.in, '/s3seg/' + tag)}",
+      mode: "${mcp.workflow['qc-files']}",
       pattern: '*/qc/**', saveAs: {f -> file(f).name}
 
     // Provenance
@@ -17,29 +18,29 @@ process s3seg {
       saveAs: {fn -> fn.replace('.command', "${module.name}-${task.index}")}
     
     input:
-
-    val module
-    tuple val(tag), path(core), file('mask.tif'), path(probs), val(bypass)
-    val pubDir
+      val mcp
+      val module
+      tuple val(tag), path(core), file('mask.tif'), path(probs), val(bypass)
+      val pubDir
 
     output:
-	// output for quantification
-        tuple val(tag), path("*/*.ome.tif"), emit: segmasks
+      // output for quantification
+      tuple val(tag), path("*/*.ome.tif"), emit: segmasks
 
-        // qc and provenance
-        path('*/qc/**') optional true
-        tuple path('.command.sh'), path('.command.log')
+      // qc and provenance
+      path('*/qc/**') optional true
+      tuple path('.command.sh'), path('.command.log')
 
-    when: params.idxStart <= 5 && params.idxStop >= 5
+    when: Flow.doirun('watershed', mcp.workflow)
     
     script:
-	def crop = params.tma ?
-	'--crop dearray --maskPath mask.tif' :
-	''
+    def crop = mcp.workflow['tma'] ?
+    '--crop dearray --maskPath mask.tif' :
+    ''
     """
     python /app/S3segmenter.py $crop \
        --imagePath $core --stackProbPath $probs \
-       $bypass ${Opts.moduleOpts(module, params)} --outputPath .
+       $bypass ${Opts.moduleOpts(module, mcp)} --outputPath .
     """
 }
 

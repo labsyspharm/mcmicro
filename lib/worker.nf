@@ -6,7 +6,7 @@ import mcmicro.*
 //   tag     - used to match against other files at the pipeline level
 //             the tag is assigned to the outputs without being modified by the worker
 //   module  - a list of module parameters (usually comes from config/modules.config)
-//     .name      - named of the module
+//     .name      - name of the module
 //     .container - associated Docker container image
 //     .version   - Docker container image tag
 //     .cmd       - command to be executed inside the container

@@ -122,9 +122,11 @@ workflow {
     tmacores = dearray.out.cores.mix(pre_cores)
     tmamasks = dearray.out.masks.mix(pre_masks)
 
-/*    // Reconcile WSI and TMA processing for downstream segmentation
+
+    // Reconcile WSI and TMA processing for downstream segmentation
     allimg = img.wsi.mix(tmacores)
-    segmentation(modules['segmentation'], modules['watershed'],
+    segmentation(mcp, allimg, tmamasks, pre_pmap)
+/*    segmentation(modules['segmentation'], modules['watershed'],
         allimg, tmamasks, pre_pmap)
 
     // Merge segmentation masks against precomputed ones and append markers.csv
