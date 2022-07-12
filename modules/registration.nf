@@ -10,11 +10,11 @@ process ashlar {
       saveAs: {fn -> fn.replace('.command', "${module.name}")}
     
     input:
-      val wfp
+      val mcp
       val module
       val sampleName
-      path lraw    // Only for staging
-      val lrelPath // Use this for paths
+      path lraw       // Only for staging
+      val lrelPath    // Use this for paths
       path lffp
       path ldfp
 
@@ -22,20 +22,20 @@ process ashlar {
       path "${sampleName}.ome.tif", emit: img
       tuple path('.command.sh'), path('.command.log')
 
-    when: Flow.doirun('registration', wfp)
+    when: Flow.doirun('registration', mcp.workflow)
     
     script:
     def imgs = lrelPath.collect{ Util.escapeForShell(it) }.join(" ")
     def ilp = "--ffp $lffp --dfp $ldfp"
     if (ilp == '--ffp  --dfp ') ilp = ''  // Don't supply empty --ffp --dfp
     """
-    ashlar $imgs ${Opts.moduleOpts(module, params)} $ilp -o ${sampleName}.ome.tif
+    ashlar $imgs ${Opts.moduleOpts(module, mcp)} $ilp -o ${sampleName}.ome.tif
     """
 }
 
 workflow registration {
     take:
-      wfp     // workflow parameters
+      mcp     // MCMICRO parameters as read by Opts.parseParams()
       module  // module specs
       raw     // raw image tiles
       ffp     // flat-field profiles
@@ -46,7 +46,7 @@ workflow registration {
       sampleName  = file(params.in).name
 
       ashlar(
-        wfp,
+        mcp,
         module,
         sampleName,
         rawst.first(),

@@ -104,7 +104,7 @@ include {viz}            from "$projectDir/modules/viz"
 // Define the primary mcmicro workflow
 workflow {
     illumination(wfp, modules['illumination'], raw)
-    registration(wfp, modules['registration'], raw,
+    registration(mcp, modules['registration'], raw,
 		 illumination.out.ffp.mix( pre_ffp ),
 		 illumination.out.dfp.mix( pre_dfp ))
 
