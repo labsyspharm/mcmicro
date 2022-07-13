@@ -50,7 +50,7 @@ workflow viz {
     images = imgs.map{ it -> tuple(Util.getImageID(it), it) }
 
     inputs = images.combine(stories, by:0)
-    autominerva(mcp.modules['viz'], inputs)
+    autominerva(mcp.workflow, mcp.modules['viz'], inputs)
 
   emit:
     autominerva.out.viz

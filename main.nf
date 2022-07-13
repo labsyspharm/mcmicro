@@ -139,31 +139,19 @@ workflow {
     viz(mcp, allimg)
 }
 
-/*
 // Write out parameters used
 path_qc = "${params.in}/qc"
 workflow.onComplete {
     // Create a provenance directory
     file(path_qc).mkdirs()
     
-    // Write out module specs
-    Opts.writeModuleSpecs(modules, "${params.in}/qc/modules.yml")
+    // Write out MCMICRO parameters
+    Opts.writeMap(mcp, "${params.in}/qc/params.yml")
 
-    // Store parameters used
-    file("${path_qc}/params.yml").withWriter{ out ->
-	out.println "githubTag: $workflow.revision";
-	out.println "githubCommit: $workflow.commitId";
-	params.each{ key, val ->
-	    if( key.indexOf('-') != -1 ) return
-        if( [
-            'githubTag', 'githubCommit', 'contPfx', 'paramsFile',
-            'idxStart', 'idxStop', 'path_qc', 'path_prov'
-            ].contains(key) ) return
-        if( ['multiFormats', 'singleFormats'].contains(key) )
-            out.println "$key: '$val'"
-        else
-	        out.println "$key: $val"
-	  }
+    // Store additional metadata
+    file("${path_qc}/metadata.yml").withWriter{ out ->
+        out.println "githubTag: $workflow.revision";
+        out.println "githubCommit: $workflow.commitId";
+        out.println "roadie: $params.roadie";
     }
 }
-*/
