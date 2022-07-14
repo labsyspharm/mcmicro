@@ -49,7 +49,7 @@ redirect_from: /datasets.html
 >* The four cores are two meningioma tumors, one GI stroma tumor, and one normal colon specimen. 
 >* This data set has ten cycles with 40 total channels and also includes precomputed illumination profiles.
 
-**After [installing Nextflow]({{ site.baseurl }}/instructions/nextflow/installation.html), both exemplars can be downloaded using the following commands:**
+**After [installing Nextflow]({{ site.baseurl }}/tutorial/installation.html), both exemplars can be downloaded using the following commands:**
 ``` bash
 nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-001 --path /local/path/
 nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-002 --path /local/path/

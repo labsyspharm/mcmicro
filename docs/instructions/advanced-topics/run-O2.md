@@ -11,7 +11,7 @@ parent: Advanced Topics
 
 There are several important caveats to run mcmicro on O2.
 
-1. [Installation](../nextflow/installation.html) only requires Nextflow. Docker is not needed, because O2 uses Singularity to execute module containers, and Singularity is already available on O2.
+1. [Installation]({{ site.baseurl }}/tutorial/installation.html) only requires Nextflow. Docker is not needed, because O2 uses Singularity to execute module containers, and Singularity is already available on O2.
 
 1. Please ensure that Java is available by running `module load java`.
 
