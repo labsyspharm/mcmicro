@@ -11,8 +11,6 @@ hero_ctas:
     link: "overview/"
   - label: "TUTORIAL"
     link: "tutorial/tutorial.html"
-  - label: "REFERENCE"
-    link: "instructions/"
   - label: "GITHUB"
     link: "https://github.com/labsyspharm/mcmicro"
 # last_modified_date: 2022-03-28
