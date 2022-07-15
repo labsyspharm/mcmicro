@@ -1,8 +1,8 @@
 ---
 layout: default
 title: FAQ
-nav_order: 30
-parent: Pipeline documentation
+nav_order: 1
+parent: Troubleshooting
 ---
 
 # Frequently Asked Questions
@@ -28,16 +28,16 @@ The intermediate files in the `work/` directory allow you to restart a pipeline 
 # This run will fail because --some-invalid-arg is not a valid argument for UnMicst
 nextflow run labsyspharm/mcmicro --in ~/data/exemplar-001 --unmicst-opts '--some-invalid-arg'
 
-# N E X T F L O W  ~  version 21.10.6
-# Launching `labsyspharm/mcmicro` [wise_pasteur] - revision: bdfd39da0e [master]
-# executor >  local (2)
-# [-        ] process > illumination                    -
-# [64/0cb43c] process > registration:ashlar             [100%] 1 of 1 ✔
-# [-        ] process > dearray:coreograph              -
-# [fe/f60c41] process > segmentation:worker (unmicst-1) [100%] 1 of 1, failed: 1 ✘
-# [-        ] process > segmentation:s3seg              -
-# [-        ] process > quantification:mcquant          -
-# [-        ] process > cellstates:worker               -
+N E X T F L O W  ~  version 21.10.6
+Launching `labsyspharm/mcmicro` [wise_pasteur] - revision: bdfd39da0e [master]
+executor >  local (2)
+[-        ] process > illumination                    -
+[64/0cb43c] process > registration:ashlar             [100%] 1 of 1 ✔
+[-        ] process > dearray:coreograph              -
+[fe/f60c41] process > segmentation:worker (unmicst-1) [100%] 1 of 1, failed: 1 ✘
+[-        ] process > segmentation:s3seg              -
+[-        ] process > quantification:mcquant          -
+[-        ] process > cellstates:worker               -
 
 
 # Address the issue by removing the invalid argument and restart the pipeline with -resume

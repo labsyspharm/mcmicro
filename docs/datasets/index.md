@@ -1,11 +1,11 @@
 ---
 layout: default
-title: Example data sets
+title: Example datasets
 nav_order: 6
 has_children: false
 redirect_from: /datasets.html
 ---
-# Example data sets
+# Example datasets
 {: .no_toc }
 
 <details open markdown="block">
