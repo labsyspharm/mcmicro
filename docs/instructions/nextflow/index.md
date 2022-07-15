@@ -19,24 +19,6 @@ parent: Pipeline documentation
 {:toc}
 </details>
 
-
-## Usage
-Once [installed](./installation.html), the basic pipeline execution consists of:  
-1. Ensuring you have the latest version of the pipeline  
-2. Using `--in` to point the pipeline at the data
-
-``` bash
-# Get the latest version of the pipeline
-nextflow pull labsyspharm/mcmicro
-
-# Run the pipeline on data (starting from the registration step through quantification, by default)
-nextflow run labsyspharm/mcmicro --in path/to/my/data
-```
->(Where `path/to/my/data` is replaced with your specific path.)
-{: .fs-3}
-
-[Back to top](./){: .btn .btn-outline} 
-
 ---
 
 ## Input
