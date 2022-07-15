@@ -61,11 +61,13 @@ nextflow run labsyspharm/mcmicro --in path/to/my/data --params myparams.yml
 
 ### Workflow parameters
 
-* `start-at` - Name of the first to be exeucted by the pipeline
-  * Valid values: `illumination`, `registration`, `dearray` (TMA only), `segmentation`, `watershed`, `quantification`, `downstream`
-  * Default: `registration`
-  * Example: `start-at: segmentation`
-* `stop-at` - Name of the final step to be executed by the pipeline
+* `start-at` 
+  * **Description:** Name of the first to be exeucted by the pipeline
+  * **Valid values:** `illumination`, `registration`, `dearray` (TMA only), `segmentation`, `watershed`, `quantification`, `downstream`
+  * **Default:** `registration`
+  * **Example:** `start-at: segmentation`
+* `stop-at`
+  * Name of the final step to be executed by the pipeline
   * Valid values: `illumination`, `registration`, `dearray` (TMA only), `segmentation`, `quantification`, `downstream`
   * Default: `quantification`
   * Example: `stop-at: downstream`
