@@ -3,6 +3,7 @@ layout: default
 title: Example data sets
 nav_order: 6
 has_children: false
+redirect_from: /datasets.html
 ---
 # Example data sets
 {: .no_toc }
