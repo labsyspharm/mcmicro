@@ -66,6 +66,7 @@ plugins:
   - jekyll-seo-tag
   - jekyll-remote-theme
   - jekyll-include-cache
+  - jekyll-redirect-from
 
 repository: labsyspharm/mcmicro
 
