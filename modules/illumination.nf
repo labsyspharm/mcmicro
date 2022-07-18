@@ -1,4 +1,4 @@
-import mcmicro.Util
+import mcmicro.*
 
 def escapeForImagej(s) {
     // When passing an arbitrary string as an ImageJ macro parameter value, we
@@ -14,12 +14,12 @@ process illumination {
     publishDir "${params.in}/illumination", mode: 'copy', pattern: '*.tif'
 
     // Provenance
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
-      saveAs: {fn -> Util.cleanFilename("${task.name}.sh")}
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
-      saveAs: {fn -> Util.cleanFilename("${task.name}.log")}
+    publishDir "${Flow.QC(params.in, 'provenance')}", mode: 'copy', 
+      pattern: '.command.{sh,log}',
+      saveAs: {fn -> fn.replace('.command', "${module.name}-${task.index}")}
     
     input:
+      val wfp
       val module
       tuple path(raw), val(relPath) // raw is only for staging, use relPath for paths
     output:
@@ -27,7 +27,7 @@ process illumination {
       path '*-ffp.tif', emit: ffp
       tuple path('.command.sh'), path('.command.log')
 
-    when: params.idxStart <= 1 && params.idxStop >= 1
+    when: Flow.doirun('illumination', wfp)
     
     script:
     def fn = escapeForImagej(relPath)

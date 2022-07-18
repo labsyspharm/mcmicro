@@ -62,8 +62,8 @@ jobs:
         params:
           - --viz
           - --start-at illumination --stop-at registration
-          - --probability-maps cypository --cypository-opts '--channel 10 --scalingFactor 2' --s3seg-opts '--logSigma 45 300'
-          - --probability-maps ilastik,mesmer
+          - --segmentation cypository --cypository-opts '--channel 10 --scalingFactor 2' --s3seg-opts '--logSigma 45 300'
+          - --segmentation ilastik,mesmer
           - -profile singularity
     needs: setup
     runs-on: ubuntu-latest
@@ -114,16 +114,15 @@ jobs:
           docker rmi -f $(docker images -a -q)
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at registration --stop-at registration
           ./nextflow clean -f last
-          ./nextflow main.nf --in ~/data/exemplar-001 --start-at probability-maps --stop-at probability-maps
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at segmentation --stop-at segmentation
+          ./nextflow main.nf --in ~/data/exemplar-001 --start-at watershed --stop-at watershed
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at quantification --stop-at quantification
-          ./nextflow main.nf --in ~/data/exemplar-001 --start-at quantification --mcquant-opts '--masks nuclei.ome.tif cell.ome.tif'
           docker rmi -f $(docker images -a -q)
-          ./nextflow main.nf --in ~/data/exemplar-001 --start-at cell-states --stop-at cell-states --cell-states scimap
-          ./nextflow main.nf --in ~/data/exemplar-001 --start-at cell-states --stop-at cell-states --cell-states naivestates
-          ./nextflow main.nf --in ~/data/exemplar-001 --start-at cell-states --stop-at cell-states --cell-states fastpg
-          ./nextflow main.nf --in ~/data/exemplar-001 --start-at cell-states --stop-at cell-states --cell-states scanpy
-          ./nextflow main.nf --in ~/data/exemplar-001 --start-at cell-states --stop-at cell-states --cell-states flowsom
+          ./nextflow main.nf --in ~/data/exemplar-001 --start-at downstream --stop-at downstream --downstream scimap
+          ./nextflow main.nf --in ~/data/exemplar-001 --start-at downstream --stop-at downstream --downstream naivestates
+          ./nextflow main.nf --in ~/data/exemplar-001 --start-at downstream --stop-at downstream --downstream fastpg
+          ./nextflow main.nf --in ~/data/exemplar-001 --start-at downstream --stop-at downstream --downstream scanpy
+          ./nextflow main.nf --in ~/data/exemplar-001 --start-at downstream --stop-at downstream --downstream flowsom
           ls -R ~/data/exemplar-001
 
   # One-shot test of exemplar-002

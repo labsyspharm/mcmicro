@@ -1,3 +1,42 @@
+### 2022-07-12
+
+* Introduced a YAML pattern for parameters with three top-level namespaces:
+  * `workspace` - pipeline-level parameters controlling overall behavior of MCMICRO
+  * `options` - module-level parameters that will be forwarded to individual tools; the entries are matched against `name` fields in `modules`
+  * `modules` - module specifications, such as container name and version, whether the module uses 0-based or 1-based indexing, and whether the module requires watershed.
+
+An example `params.yml` may look
+
+``` yaml
+workflow:
+  start-at: registration
+  stop-at: quantification
+  viz: true
+  segmentation-channel: 5
+options:
+  ashlar: -m 15
+  s3seg: --logSigma 45 300
+modules:
+  watershed:
+    version: 1.4.0-large
+```
+
+which a user would supply to the pipeline with
+
+```
+nextflow run labsyspharm/mcmicro --in exemplar-001 --params params.yml
+```
+
+* The new YAML pattern is backwards-compatible
+  * Users can still overwrite individual `workflow` parameters on the command-line (e.g., `--start-at segmentation`)
+  * Users can also overwrite module-specific options with `--[module name]-opts`, as before
+* Default values for all namespaces can be found in `config/defaults.yml`
+* Pipeline will now verify all parameters and throw an error when encountering an unrecognized parameters
+* Introduced the following name changes to reduce confusion:
+  * `probability-maps` is now `segmentation` (e.g., `--start-at segmentation --segmentation mesmer,unmicst`)
+  * `segmentation` is now `watershed` (e.g., `--stop-at watershed`)
+  * `cell-states` is now `downstream` (e.g., `--start-at downstream --downstream scimap`)
+
 ### 2022-06-06
 
 * Cleaned up provenance filenames, making their more robust across operating systems

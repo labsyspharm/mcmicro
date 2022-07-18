@@ -1,5 +1,4 @@
-import mcmicro.Opts
-import mcmicro.Util
+import mcmicro.*
 
 // General worker process
 //
@@ -7,7 +6,7 @@ import mcmicro.Util
 //   tag     - used to match against other files at the pipeline level
 //             the tag is assigned to the outputs without being modified by the worker
 //   module  - a list of module parameters (usually comes from config/modules.config)
-//     .name      - named of the module
+//     .name      - name of the module
 //     .container - associated Docker container image
 //     .version   - Docker container image tag
 //     .cmd       - command to be executed inside the container
@@ -17,17 +16,13 @@ import mcmicro.Util
 //   inp     - input file to process (e.g., .ome.tif for probability-map generation)
 //   fnOut   - (optional) if not '', outputs will be renamed to this upon publication
 //   outfmt  - a regular expression defining the outputs to capture
-//   idxStep - index of the processing step associated with the module
+//   step    - name of the pipeline step that is running the worker(s)
 //   pubDir  - directory to publish outputs to
 //
 // Outputs:
 //   The process captures files matching outfmt and publishes them to pubDir
 //   It also captures and publishes all files in the plots/ subdirectory
 //   Lastly, it captures all files in the qc/ subdirectory and publishes them to project/qc/
-//
-// Relevant params:
-//   .contPfx - container prefix ('' for Docker, 'docker://' for Singularity)
-//   .${module.name}Opts - custom module parameters specified via --${module.name}-opts
 process worker {
     container "${params.contPfx}${module.container}:${module.version}"
     tag "${module.name}-${task.index}"
@@ -38,19 +33,19 @@ process worker {
     publishDir "${pubDir}", mode: 'copy', pattern: 'plots/**'
 
     // QC
-    publishDir "${params.path_qc}/${module.name}", mode: "${params.qcFiles}",
+    publishDir "${Flow.QC(params.in, module.name)}", mode: "${mcp.workflow['qc-files']}",
       pattern: 'qc/**', saveAs: { fn -> fn.replaceFirst("qc/","") }
     
     // Provenance
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
-      saveAs: {fn -> Util.cleanFilename("${task.name}.sh")}
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
-      saveAs: {fn -> Util.cleanFilename("${task.name}.log")}
+    publishDir "${Flow.QC(params.in, 'provenance')}", mode: 'copy', 
+      pattern: '.command.{sh,log}',
+      saveAs: {fn -> fn.replace('.command', "${module.name}-${task.index}")}
 
     input:
+        val(mcp)
         tuple val(tag), val(module), file(model), path(inp), val(pubDir), val(fnOut)
         val(outfmt)
-        val(idxStep)
+        val(step)
 
     output:
 
@@ -66,8 +61,7 @@ process worker {
     // Provenance
     tuple path('.command.sh'), path('.command.log')
 
-    when:
-	params.idxStart <= idxStep && params.idxStop >= idxStep
+    when: Flow.doirun(step, mcp.workflow)
     
     // We are creating a copy of the model file to deal with some tools locking files
     // Without this copying, the lock prevents parallel execution of multiple processes
@@ -75,18 +69,18 @@ process worker {
     script:
 
     // Find module specific parameters and compose a command
-    def cmd = "${module.cmd} ${module.input} $inp ${Opts.moduleOpts(module, params)}"
-    String m = "${module.name}Model"
+    def cmd = "${module.cmd} ${module.input} $inp ${Opts.moduleOpts(module, mcp)}"
+    String m = "${module.name}-model"
 
-    if( params.containsKey(m) ) {
-	def mdlcp = "cp-${model.name}"
-        """
-        cp $model $mdlcp
-        $cmd ${module.model} $mdlcp    
-        """
+    if( mcp.workflow.containsKey(m) ) {
+      def mdlcp = "cp-${model.name}"
+      """
+      cp $model $mdlcp
+      $cmd ${module.model} $mdlcp    
+      """
     } else {
-        """
-        $cmd
-        """
+      """
+      $cmd
+      """
     }
 }

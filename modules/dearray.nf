@@ -1,5 +1,4 @@
-import mcmicro.Opts
-import mcmicro.Util
+import mcmicro.*
 
 process coreograph {
     container "${params.contPfx}${module.container}:${module.version}"
@@ -8,18 +7,16 @@ process coreograph {
     publishDir "${params.in}/dearray", mode: 'copy', pattern: '**{[0-9],mask}.tif'
 
     // QC
-    publishDir "${params.path_qc}/coreo", mode: "${params.qcFiles}",
-      pattern: 'TMA_MAP.tif'
-    publishDir "${params.path_qc}/coreo", mode: "${params.qcFiles}",
-      pattern: 'centroidsY-X.txt'
+    publishDir "${Flow.QC(params.in, module.name)}",
+      mode: "${mcp.workflow['qc-files']}", pattern: '{TMA_MAP.tif,centroidsY-X.txt}'
     
     // Provenance
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
-      saveAs: {fn -> Util.cleanFilename("${task.name}.sh")}
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
-      saveAs: {fn -> Util.cleanFilename("${task.name}.log")}
+   publishDir "${Flow.QC(params.in, 'provenance')}", mode: 'copy', 
+      pattern: '.command.{sh,log}',
+      saveAs: {fn -> fn.replace('.command', "${module.name}")}
     
     input:
+      val mcp
       val module
       path s
     
@@ -30,20 +27,20 @@ process coreograph {
       path "centroidsY-X.txt"
       tuple path('.command.sh'), path('.command.log')    
 
-    when: params.idxStart <= 3 && params.idxStop >= 3 && params.tma
+    when: Flow.doirun('dearray', mcp.workflow)
 
     """
-    ${module.cmd} ${module.input} $s ${Opts.moduleOpts(module, params)}
+    ${module.cmd} ${module.input} $s ${Opts.moduleOpts(module, mcp)}
     """
 }
 
 workflow dearray {
   take:
-    module
-    tma
+    mcp     // MCMICRO parameters (as returned by Opts.parseParams())
+    tma     // Image of the entire TMA
 
   main:
-    coreograph(module, tma)
+    coreograph(mcp, mcp.modules['dearray'], tma)
 
   emit:
     cores = coreograph.out.cores.flatten()

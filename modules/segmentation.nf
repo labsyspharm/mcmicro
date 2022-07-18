@@ -8,57 +8,54 @@ process s3seg {
       mode: 'copy', pattern: '*/*.ome.tif', saveAs: {f -> file(f).name}
 
     // QC
-    publishDir "${params.path_qc}/s3seg/$tag", mode: "${params.qcFiles}",
+    publishDir "${Flow.QC(params.in, '/s3seg/' + tag)}",
+      mode: "${mcp.workflow['qc-files']}",
       pattern: '*/qc/**', saveAs: {f -> file(f).name}
 
     // Provenance
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
-      saveAs: {fn -> Util.cleanFilename("${task.name}.sh")}
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
-      saveAs: {fn -> Util.cleanFilename("${task.name}.log")}
+    publishDir "${Flow.QC(params.in, 'provenance')}", mode: 'copy',
+      pattern: '.command.{sh,log}',
+      saveAs: {fn -> fn.replace('.command', "${module.name}-${task.index}")}
     
     input:
-
-    val module
-    tuple val(tag), path(core), file('mask.tif'), path(probs), val(bypass)
-    val pubDir
+      val mcp
+      val module
+      tuple val(tag), path(core), file('mask.tif'), path(probs), val(bypass)
+      val pubDir
 
     output:
-	// output for quantification
-        tuple val(tag), path("*/*.ome.tif"), emit: segmasks
+      // output for quantification
+      tuple val(tag), path("*/*.ome.tif"), emit: segmasks
 
-        // qc and provenance
-        path('*/qc/**') optional true
-        tuple path('.command.sh'), path('.command.log')
+      // qc and provenance
+      path('*/qc/**') optional true
+      tuple path('.command.sh'), path('.command.log')
 
-    when: params.idxStart <= 5 && params.idxStop >= 5
+    when: Flow.doirun('watershed', mcp.workflow)
     
     script:
-	def crop = params.tma ?
-	'--crop dearray --maskPath mask.tif' :
-	''
+    def crop = mcp.workflow['tma'] ?
+    '--crop dearray --maskPath mask.tif' :
+    ''
     """
     python /app/S3segmenter.py $crop \
        --imagePath $core --stackProbPath $probs \
-       $bypass ${Opts.moduleOpts(module, params)} --outputPath .
+       $bypass ${Opts.moduleOpts(module, mcp)} --outputPath .
     """
 }
 
 include { worker }                 from "$projectDir/lib/worker"
 
 workflow segmentation {
-    take:
-
-    modSeg      // Probability map and instance segmentation modules
-    modWS       // Watershed module (e.g., S3Segmenter)
+  take:
+    mcp         // MCMICRO parameters (as returned by Opts.parseParams())
     imgs        // Input images
     tmamasks    // TMA masks (if any)
     prepmaps    // Pre-computed probability maps
 
-    main:
-
+  main:
     // A channel iterating over the segmentation modules
-    moduleSeg = Channel.of( modSeg ).flatten()
+    moduleSeg = Channel.of( mcp.modules['segmentation'] ).flatten()
 
     // Define relevant paths
     pathPM  = "${params.in}/probability-maps"
@@ -74,8 +71,8 @@ workflow segmentation {
     // Overwrite output filenames with <image>-pmap.tif for pmap generators
     // Publish instance segmentation outputs directly to segmentation/
     inpPM = moduleSeg.map{ it -> String m = "${it.name}Model";
-		         tuple(it, params.containsKey(m) ?
-		               file(params."$m") : 'built-in') }
+		         tuple(it, mcp.workflow.containsKey(m) ?
+		               file(mcp.workflow[m]) : 'built-in') }
         .combine(id_imgs)
         .map{ mod, _2, tag, f -> 
              mod.watershed == 'no' ?
@@ -84,7 +81,7 @@ workflow segmentation {
 
     // Run probability map generators and instance segmenters
     // All outputs will be published to probability-maps/
-    worker( inpPM, '*.tif', 4 )
+    worker( mcp, inpPM, '*.tif', 'segmentation' )
 
     // Merge against precomputed probability maps
     //  and information about whether the module needs watershed
@@ -104,7 +101,7 @@ workflow segmentation {
     // Determine IDs of TMA masks
     // Whole-slide images have no TMA masks
     id_wsi = imgs.map{ f -> tuple(Util.getImageID(f), 'NO_MASK') }
-        .filter{ !params.tma }
+        .filter{ !mcp.workflow['tma'] }
     id_masks = tmamasks.map{ f -> tuple(Util.getFileID(f,'_mask'), f) }
         .mix(id_wsi)
 
@@ -114,13 +111,12 @@ workflow segmentation {
 	        tuple("${mtd}-${tag}", img, msk, pm, bypass) }
 
     // Apply s3seg to probability-maps only
-    s3seg(modWS, inputs, pathSeg)
+    s3seg( mcp, mcp.modules['watershed'], inputs, pathSeg )
 
     // Merge against instance segmentation outputs
     instSeg = allpmaps.filter{ _1, _2, _3, ws -> ws == 'no' }
         .map{ mtd, tag, _3, _4 -> tuple("${mtd}-${tag}", _3) }.groupTuple()
     
-    emit:
-
+  emit:
     s3seg.out.segmasks.mix(instSeg)
 }
