@@ -2,7 +2,7 @@
 layout: default
 title: Other modules
 nav_order: 40
-parent: Modules
+parent: Parameters
 ---
 
 # Other Modules

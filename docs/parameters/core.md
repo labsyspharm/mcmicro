@@ -1,8 +1,8 @@
 ---
 layout: default
-title: Modules
+title: Core Modules
+parent: Parameters
 nav_order: 5
-has_children: true
 ---
 {: .text-center }
 # The MCMICRO pipeline
