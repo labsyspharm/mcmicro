@@ -3,6 +3,7 @@ layout: default
 title: Adding a module
 nav_order: 10
 parent: Advanced Topics
+nav_exclude: true
 ---
 
 # Adding a module

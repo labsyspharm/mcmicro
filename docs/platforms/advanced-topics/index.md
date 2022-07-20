@@ -4,6 +4,7 @@ title: Advanced Topics
 nav_order: 32
 has_children: true
 parent: Platforms
+nav_exclude: true
 ---
 
 # Advanced topics

@@ -2,7 +2,7 @@
 layout: default
 title: AWS configuration
 nav_order: 12
-parent: Advanced Topics
+parent: Galaxy
 ---
 
 # AWS configuration

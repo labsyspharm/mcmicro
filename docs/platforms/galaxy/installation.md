@@ -2,7 +2,7 @@
 layout: default
 title: Installation
 nav_order: 10
-parent: Galaxy workflow
+parent: Galaxy
 ---
 
 # Installation

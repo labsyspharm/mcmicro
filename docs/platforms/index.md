@@ -8,17 +8,8 @@ has_children: true
 
 # Deploying MCMICRO
 
-{: .fs-5}
-{: .fw-500}
-MCMICRO can be deploying in two ways:
+Docker containers allow for uniform pipeline execution across many compute environments. However, some environments require additional steps. Instructions for systems using Galaxy, AWS or the (HMS-specific) O2 Compute Cluster are detailed in the sub-pages. 
 
-1. **Nextflow** (a command line interface)  
-		- *Compatible with Mac, Linux, or [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/about)*  
-2. **Galaxy** (a web-based interface)  
-		- *Compatible with Mac, Linux, or Windows*  
-
-Details for running Nextflow or Galaxy can be found on the sub-pages:  
-[Nextflow Workflow](./nextflow/){: .btn .btn-green .btn-outline } [Galaxy Workflow](./galaxy/){: .btn .btn-green .btn-outline}
-
-For experienced developers, instructions for using Amazon Web Services, the HMS O2 Compute Cluster, and how to add a module within the [advanced topics](./advanced-topics/).
-
+1. Instructions for deploying MCMICRO in a [Galaxy environment](./galaxy/)
+1. Instructions for deploying MCMICRO on [Amazon Web Services](./run-AWS.html)
+1. Instructions for deploying MCMICRO on the [O2 Compute Cluster](./run-O2.html) (for users at **Harvard Medical School only**) 
