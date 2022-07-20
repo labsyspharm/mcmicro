@@ -54,7 +54,7 @@ nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-001 --path /my/path
 nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-002 --path /my/path
 ```
 
-Both exemplar datasets have the [directory structure]({{ site.baseurl }}/instructions/nextflow/#input) of
+Both exemplar datasets have the [directory structure]({{ site.baseurl }}/io.html#input) of
 
 ``` bash
 exemplar-001 or exemplar-002
