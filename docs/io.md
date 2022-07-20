@@ -1,7 +1,7 @@
 ---
 layout: default
-title: Nextflow workflow
-nav_order: 20
+title: Inputs/Outputs
+nav_order: 4
 parent: Pipeline documentation
 
 ---

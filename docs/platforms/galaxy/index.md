@@ -3,7 +3,7 @@ layout: default
 title: Galaxy workflow
 nav_order: 24
 has_children: true
-parent: Pipeline documentation
+parent: Platforms
 ---
 
 # MCMICRO Galaxy Workflow

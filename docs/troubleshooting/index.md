@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Troubleshooting
-nav_order: 7
+nav_order: 8
 ---
 
 **Commonly-encountered issues** are described in [Frequently Asked Questions](faq.md)
