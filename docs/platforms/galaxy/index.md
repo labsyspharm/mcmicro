@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Galaxy
-nav_order: 24
+nav_order: 1
 has_children: true
 parent: Platforms
 ---

@@ -2,8 +2,6 @@
 layout: default
 title: Inputs/Outputs
 nav_order: 4
-parent: Pipeline documentation
-
 ---
 
 # Running the MCMICRO Pipeline

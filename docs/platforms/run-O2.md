@@ -2,7 +2,7 @@
 layout: default
 title: O2 cluster (HMS only)
 nav_order: 14
-parent: Galaxy
+parent: Platforms
 ---
 
 # Running mcmicro on the O2 compute cluster
