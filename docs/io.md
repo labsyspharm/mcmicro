@@ -4,8 +4,6 @@ title: Inputs/Outputs
 nav_order: 4
 ---
 
-# Running the MCMICRO Pipeline
-
 {: .no_toc }
 
 <details open markdown="block">
@@ -22,9 +20,9 @@ nav_order: 4
 ## Input
 
 **At the minimum, the pipeline expects two inputs with an optional third one:**
-1. `markers.csv` in the parent directory (containing [metadata with markers](./#markers))
+1. `markers.csv` in the parent directory (containing [metadata with markers](./io.html#markers))
 2. [Raw images](./#raw-images) in the `raw/` subdirectory
-3. (Optional) [Illumination profiles](./#optional-illumination-corrected-images) in the `illumination/` subdirectory.
+3. (Optional) [Illumination profiles](./io.html#optional-illumination-corrected-images) in the `illumination/` subdirectory.
 
 {: .fs-3}
 Example input directory:
@@ -64,7 +62,7 @@ cycle,marker_name
 <br>
 
 ### Raw images
-The exemplar `raw/` files are in the open standard OME-TIFF format, but in practice your input files will be in whatever format your microscope produces. The pipeline supports all [Bio-Formats-compatible](https://docs.openmicroscopy.org/bio-formats/6.0.1/supported-formats.html){:target="_blank"} image formats, but [additional parameters may be required]({{site.baseurl}}/instructions/faq.html#q-mcmicro-doesnt-seem-to-recognize-my-file-format-how-do-i-tell-it-what-files-to-look-for).
+The exemplar `raw/` files are in the open standard OME-TIFF format, but in practice your input files will be in whatever format your microscope produces. The pipeline supports all [Bio-Formats-compatible](https://docs.openmicroscopy.org/bio-formats/6.0.1/supported-formats.html){:target="_blank"} image formats, but [additional parameters may be required]({{site.baseurl}}/troubleshooting/faq.html#q-mcmicro-doesnt-seem-to-recognize-my-file-format-how-do-i-tell-it-what-files-to-look-for).
 
 <br>
 
@@ -200,37 +198,6 @@ exemplar-002
 
 ---
 
-## Parameters
-The following parameters control the pipeline as a whole. These can be specified on the command line using the double-dash format (e.g., `--in`), or inside a [YAML file](./#using-yaml-parameter-files) as key-value pairs. 
-
-### Required arguments:
-
-| Parameter | Description |
-| --- | --- |
-| `--in /local/path` | Location of the data |
-
-### Optional arguments:
-
-| Parameter | Default | Description |
-| --- | --- | --- |
-| `--sample-name <myname>` | Directory name supplied to `--in` | The name of the experiment/specimen |
-| `--start-at <step>` | `registration` | Name of the first step to be executed by the pipeline. Must be one of `illumination`, `registration`, `dearray` (TMA only), `probability-maps`, `segmentation`, `quantification`, `cell-states` |
-| `--stop-at <step>` | `quantification` | Name of the final step to be executed by the pipeline. Spans the same vocabulary as `--start-at`. |
-| `--tma` | Omitted | If specified, MCMICRO treats input data as a TMA. If omitted, the input is assumed to be a whole-slide image. |
-| `--segmentation-channel <index>` | `1` | One or more channels to use for segmentation, specified using 1-based indexing. These will be forwarded to all segmentation modules. When providing multiple values, ensure they are enclosed with single quotes (e.g., `'1 5'`). |
-| `--ilastik-model <model.ilp>` | None | A custom `.ilp` file to be used as the classifier model for ilastik. |
-| `--probability-maps <choice>` | `unmicst` | Which module(s) to use for probability map computation. Module names should be delimited with a comma without spaces, e.g., `--probability-maps unmicst,ilastik` |
-| `--qc-files <op>` | `copy` | Must be one of `copy`, `move` or `symlink`, controlling whether QC files should be copied, moved or symbolically linked from work directories to the project directory |
-
-<br>
-
-### Specifying path for intermediate files
-By default Nextflow writes intermediate files to a `work/` directory inside whatever location you initiate a pipeline run from. Use `-w` flag to provide a different location. 
-
-``` bash
-nextflow run labsyspharm/mcmicro --in /path/to/my-data -w /path/to/work/
-```
-
 <br>
 
 ### Specifying start and stop modules
@@ -259,39 +226,6 @@ For example: ```nextflow run labsyspharm/mcmicro --in /path/to/my-data --ashlar-
 *Go to [modules]({{site.baseurl}}/modules/) for a list of options available for each module.*
 
 <br>
-
-### Using YAML parameter files
-As the number of custom flags grows, providing them all on the command line can become unwieldy. Instead, parameter values can be stored in a YAML file, which is then provided to Nextflow using `-params-file`. 
-
-*The general rules of thumb for composing YAML files:*
-1. Anything that would appear as `--param value` on the command line should be `param: value` in the YAML file.
-1. Anything that would appear as `--flag` on the command line should be `flag: true` in the YAML file.
-
-**Note:** The above only applies to double-dashed arguments (which are passed to the pipeline). The single-dash arguments (like `-profile`) cannot be moved to YAML, because they are given to nextflow; the pipeline never sees them.
-{: .fs-3}
-
-**For example, consider the following command:**
-``` bash
-nextflow run labsyspharm/mcmicro --in /data/exemplar-002 --tma --start-at dearray --ashlar-opts '-m 35 --pyramid'
-```
-
-All double-dashed arguments can be moved to a YAML file (e.g., **myexperiment.yml**) using the rules above:
-``` yaml
-in: /data/exemplar-002
-tma: true
-start-at: dearray
-ashlar-opts: -m 35 --pyramid
-```
-
-The YAML file can then be fed to the pipeline via
-``` bash
-nextflow run labsyspharm/mcmicro -params-file myexperiment.yml
-```
-
-
-[Find more information about the YAML syntax here.](https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html){:target="_blank"}
-
-[Back to top](./){: .btn .btn-outline} 
 
 ---
 

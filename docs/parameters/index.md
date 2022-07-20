@@ -8,14 +8,14 @@ nav_order: 5
 
 The basic pipeline execution consists of:
 1. Ensuring you have the latest version of the pipeline  
-2. Creating a parameters file
-2. Using `--in` and `--params` to point the pipeline at the data and the parameter file, respectively
+1. Creating a (parameter file)(./#parameter-file)
+1. Using --in to point the pipeline at the data
 
 ``` bash
 # Get the latest version of the pipeline
 nextflow pull labsyspharm/mcmicro
 
-# To run the pipeline with default parameter values, omit --params
+# Run the pipeline on data (starting from the registration step through quantification, by default)
 nextflow run labsyspharm/mcmicro --in path/to/my/data
 ```
 >(Where `path/to/my/data` is replaced with your specific path.)
