@@ -141,6 +141,13 @@ static def parseParams(gp, fns, fnw) {
     // Load default MCMICRO parameters (mcp)
     Map mcp = new Yaml().load(new File(fnw))
 
+    // Check for the presence of a parameter file in the project directory
+    File pproj = new File("${gp.in}/params.yml")
+    if(pproj.exists()) {
+        Map mproj = new Yaml().load(pproj)
+        updateMap(mcp, mproj)
+    }
+
     // Overwrite the parameters from a user-provided file
     if(gp.containsKey('params')) {
         Map mp = new Yaml().load(new File(gp.params))
