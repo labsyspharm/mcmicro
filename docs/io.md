@@ -71,12 +71,14 @@ The exemplar `raw/` files are in the open standard OME-TIFF format, but in pract
 <br>
 
 ### (Optional) Illumination corrected images
-Pre-computed flat-field and dark-field illumination profiles can be placed in the `illumination/` directory. If no pre-computed profiles are available, MCMICRO can compute these using [BaSiC]({{site.baseurl}}/modules/#basic). This step is not executed by default, because proper illumination correction requires careful curation and visual inspection of the profiles produced by computational tools. After familiarizing yourself with the [general concepts] (https://en.wikipedia.org/wiki/Flat-field_correction){:target="_blank"}, the profiles can be computed by [specifying](#specifying-start-and-stop-modules) `--start-at illumination`.
+Pre-computed flat-field and dark-field illumination profiles can be placed in the `illumination/` directory. If no pre-computed profiles are available, MCMICRO can compute these using [BaSiC]({{site.baseurl}}/modules/#basic). This step is not executed by default, because proper illumination correction requires careful curation and visual inspection of the profiles produced by computational tools. After familiarizing yourself with the [general concepts](https://en.wikipedia.org/wiki/Flat-field_correction){:target="_blank"}, the profiles can be computed by [specifying](#specifying-start-and-stop-modules) `--start-at illumination`.
 
-[Back to top](./){: .btn .btn-outline} 
+<br>
 
 ### (Optional) Parameter file
 The parameter file must be named `params.yml` and placed in the project directory, alongside `markers.csv`. Parameter values must be specified using standard YAML format. Please see the [detailed parameter descriptions]({{site.baseurl}}/parameters/) for more information.
+
+[Back to top](./){: .btn .btn-outline} 
 
 ---
 
@@ -100,7 +102,7 @@ The output filename will be generated based on the name of the project directory
 <br>
 
 ### (Optional) TMA dearray
-When working with Tissue Microarrays (TMA), [Coreograph]({{site.baseurl}}/modules/#coreograph) is used for TMA dearraying. The `registration/` folder will contain an image of the entire TMA. Use the `--tma` flag during [pipeline execution](./#parameters) to have MCMICRO identify and isolate individual cores. 
+When working with Tissue Microarrays (TMA), [Coreograph]({{site.baseurl}}/parameters/core.html#coreograph) is used for TMA dearraying. The `registration/` folder will contain an image of the entire TMA. Turn on the `tma` setting in [workflow parameters]({{site.baseurl}}/parameters/workflow.html#tma) to have MCMICRO identify and isolate individual cores. 
 
 Each core will be written out into a standalone file in the `dearray/` subdirectory along with the mask specifying where in the original image the core appeared:
 ```
@@ -124,7 +126,7 @@ All cores will then be processed in parallel by all subsequent steps.
 <br>
 
 ### Segmentation
-Cell segmentation is carried out in two steps. First, the pipeline generates probability maps that annotate each pixel with the probability that it belongs to a given subcellular component (nucleus, cytoplasm, cell boundary) using [UnMICST]({{site.baseurl}}/modules/#unmicst) (default) or [Ilastik]({{site.baseurl}}/modules/other.html#ilastik). The second step applies standard watershed segmentation to produce the final cell/nucleus/cytoplasm/etc. masks using [S3segmenter]({{site.baseurl}}/modules/#s3segmenter). 
+Cell segmentation is carried out in two steps. First, the pipeline generates probability maps that annotate each pixel with the probability that it belongs to a given subcellular component (nucleus, cytoplasm, cell boundary) using [UnMICST]({{site.baseurl}}/parameters/core.html#unmicst) (default) or [Ilastik]({{site.baseurl}}/parameters/core.html#ilastik). The second step applies standard watershed segmentation to produce the final cell/nucleus/cytoplasm/etc. masks using [S3segmenter]({{site.baseurl}}/parameters/core.html#s3segmenter). 
 
 The two steps will appear in `probability-maps/` and `segmentation` directories, respectively. When there are multiple modules for a given pipeline step, their results will be subdivided into additional subdirectories:
 ```
@@ -147,7 +149,7 @@ exemplar-001
 <br>
 
 ### Quantification
-The final step, [MCQuant]({{site.baseurl}}/modules/#mcquant), combines information in segmentation masks, the original stitched image and `markers.csv` to produce *Spatial Feature Tables* that summarize the expression of every marker on a per-cell basis, alongside additional morphological features (cell shape, size, etc.). 
+The final step, [MCQuant]({{site.baseurl}}/parameters/core.html#mcquant), combines information in segmentation masks, the original stitched image and `markers.csv` to produce *Spatial Feature Tables* that summarize the expression of every marker on a per-cell basis, alongside additional morphological features (cell shape, size, etc.). 
 
 Spatial Feature Tables will be published to the `quantification/` directory:
 ```
@@ -161,6 +163,10 @@ exemplar-001
 
 There is a direct correspondence between the `.csv` filenames and the filenames of segmentation masks. For example, `quantification/unmicst-exemplar-001_cell.csv` quantifies `segmentation/unmicst-exemplar-001/cell.ome.tif`.
 
+Each `.csv` file will contain the following columns:
+* `CellID` - cell index that is extracted from the segmentation mask
+* All columns with names matching those in `markers.csv` - average intensity of that channel in the cell/nuclei area
+* All other columns will contain [morphological features](https://scikit-image.org/docs/dev/api/skimage.measure.html#regionprops)
 
 <br>
 
@@ -202,37 +208,6 @@ exemplar-002
 1. After segmentation, two-channel tif files containing DAPI and nuclei/cell/cytoplasm outlines will reside in `s3seg/`, allowing for a visual inspection of segmentation quality.
  
 [Back to top](./){: .btn .btn-outline} 
-
----
-
-<br>
-
-### Specifying start and stop modules
-By default, the pipeline starts from the registration step ([ASHLAR]({{site.baseurl}}/modules/#ashlar)), proceeds through [UnMICST]({{site.baseurl}}/modules/#unmicst), [S3segmenter]({{site.baseurl}}/modules/#s3segmenter), and stops after executing the quantification [MCQuant]({{site.baseurl}}/modules/#mcquant) step. 
-
-Use `--start-at` and `--stop-at` flags to execute any contiguous section of the pipeline instead. Any subdirectory name listed in the [directory structure](./#directory-structure) is a valid starting and stopping point.  
-
-
-``` bash
-# If you already have a pre-stitched TMA image, start at the dearray step
-nextflow run labsyspharm/mcmicro --in path/to/exemplar-002 --tma --start-at dearray
-
-# If you want to run the illumination profile computation and registration only
-nextflow run labsyspharm/mcmicro --in path/to/exemplar-001 --start-at illumination --stop-at registration
-```
-**Note:** Starting at any step beyond registration requires pre-computed output of the previous steps placed at the correct location in the project directory.
-{: .fs-3}
-
-<br>
-
-### Specifying module-specific parameters
-The pipeline provides a sensible set of [default parameters for individual modules]({{site.baseurl}}/modules/). To change these use <br> `--ashlar-opts`, `--unmicst-opts`, `--s3seg-opts` and `--quant-opts`. 
-
-For example: ```nextflow run labsyspharm/mcmicro --in /path/to/my-data --ashlar-opts '-m 35 --pyramid' ``` will provide `-m 35 --pyramid` as additional command line arguments to ASHLAR.
-
-*Go to [modules]({{site.baseurl}}/modules/) for a list of options available for each module.*
-
-<br>
 
 ---
 
