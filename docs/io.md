@@ -21,7 +21,7 @@ nav_order: 4
 
 **At the minimum, the pipeline expects two inputs**
 1. `markers.csv` in the parent directory (containing [metadata with markers](./io.html#markers))
-1. [Raw images](./#raw-images) in the `raw/` subdirectory
+1. [Raw images](./io.html#raw-images) in the `raw/` subdirectory
 
 **Two other inputs are optional**
 1. (Optional) Precomputed [Illumination profiles](./io.html#optional-illumination-corrected-images) in the `illumination/` subdirectory.
@@ -74,6 +74,9 @@ The exemplar `raw/` files are in the open standard OME-TIFF format, but in pract
 Pre-computed flat-field and dark-field illumination profiles can be placed in the `illumination/` directory. If no pre-computed profiles are available, MCMICRO can compute these using [BaSiC]({{site.baseurl}}/modules/#basic). This step is not executed by default, because proper illumination correction requires careful curation and visual inspection of the profiles produced by computational tools. After familiarizing yourself with the [general concepts] (https://en.wikipedia.org/wiki/Flat-field_correction){:target="_blank"}, the profiles can be computed by [specifying](#specifying-start-and-stop-modules) `--start-at illumination`.
 
 [Back to top](./){: .btn .btn-outline} 
+
+### (Optional) Parameter file
+The parameter file must be named `params.yml` and placed in the project directory, alongside `markers.csv`. Parameter values must be specified using standard YAML format. Please see the [detailed parameter descriptions]({{site.baseurl}}/parameters/) for more information.
 
 ---
 
