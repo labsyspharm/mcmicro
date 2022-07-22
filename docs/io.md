@@ -19,16 +19,20 @@ nav_order: 4
 
 ## Input
 
-**At the minimum, the pipeline expects two inputs with an optional third one:**
+**At the minimum, the pipeline expects two inputs**
 1. `markers.csv` in the parent directory (containing [metadata with markers](./io.html#markers))
-2. [Raw images](./#raw-images) in the `raw/` subdirectory
-3. (Optional) [Illumination profiles](./io.html#optional-illumination-corrected-images) in the `illumination/` subdirectory.
+1. [Raw images](./#raw-images) in the `raw/` subdirectory
+
+**Two other inputs are optional**
+1. (Optional) Precomputed [Illumination profiles](./io.html#optional-illumination-corrected-images) in the `illumination/` subdirectory.
+1. (Optional) A `params.yml` file specifying [parameters]({{site.baseurl}}/parameters/). If not provided, MCMICRO will use [default values](https://github.com/labsyspharm/mcmicro/blob/master/config/defaults.yml){:target="_blank"}.
 
 {: .fs-3}
-Example input directory:
+An example input directory may look like
 ```
-exemplar-001
+myproject
 ├── markers.csv
+├── params.yml
 ├── raw/
 └── illumination/
 ```
