@@ -80,7 +80,7 @@ By default, Nextflow writes intermediate files to a `work/` directory inside wha
 nextflow run labsyspharm/mcmicro --in /path/to/my-data -w /path/to/work/
 ```
 
-### Specifying start and stop modules
+## Specifying start and stop modules
 By default, the pipeline starts from the registration step ([ASHLAR]({{site.baseurl}}/parameters/core.html#ashlar)), proceeds through [UnMICST]({{site.baseurl}}/parameters/core.html#unmicst), [S3segmenter]({{site.baseurl}}/parameters/core.html#s3segmenter), and stops after executing the quantification [MCQuant]({{site.baseurl}}/parameters/core.html#mcquant) step.
 
 Use `start-at` and `stop-at` workflow parameters to execute any contiguous section of the pipeline instead.

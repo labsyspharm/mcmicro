@@ -86,7 +86,7 @@ The exemplar `raw/` files are in the open standard OME-TIFF format, but in pract
 <br>
 
 ### (Optional) Illumination corrected images
-Pre-computed flat-field and dark-field illumination profiles can be placed in the `illumination/` directory. If no pre-computed profiles are available, MCMICRO can compute these using [BaSiC]({{site.baseurl}}/parameters/core.html#basic). This step is not executed by default, because proper illumination correction requires careful curation and visual inspection of the profiles produced by computational tools. After familiarizing yourself with the [general concepts](https://en.wikipedia.org/wiki/Flat-field_correction){:target="_blank"}, the profiles can be computed by [specifying](#specifying-start-and-stop-modules) `--start-at illumination`.
+Pre-computed flat-field and dark-field illumination profiles can be placed in the `illumination/` directory. If no pre-computed profiles are available, MCMICRO can compute these using [BaSiC]({{site.baseurl}}/parameters/core.html#basic). This step is not executed by default, because proper illumination correction requires careful curation and visual inspection of the profiles produced by computational tools. After familiarizing yourself with the [general concepts](https://en.wikipedia.org/wiki/Flat-field_correction){:target="_blank"}, the profiles can be computed by [specifying a different starting point]({{site.baseurl}}/parameters/#specifying-start-and-stop-modules).
 
 <br>
 
@@ -141,7 +141,7 @@ All cores will then be processed in parallel by all subsequent steps.
 <br>
 
 ### Segmentation
-Cell segmentation is carried out in two steps. First, the pipeline generates probability maps that annotate each pixel with the probability that it belongs to a given subcellular component (nucleus, cytoplasm, cell boundary) using [UnMICST]({{site.baseurl}}/parameters/core.html#unmicst) (default) or [Ilastik]({{site.baseurl}}/parameters/core.html#ilastik). The second step applies standard watershed segmentation to produce the final cell/nucleus/cytoplasm/etc. masks using [S3segmenter]({{site.baseurl}}/parameters/core.html#s3segmenter). 
+Cell segmentation is carried out in two steps. First, the pipeline generates probability maps that annotate each pixel with the probability that it belongs to a given subcellular component (nucleus, cytoplasm, cell boundary) using [UnMICST]({{site.baseurl}}/parameters/core.html#unmicst) (default) or [Ilastik]({{site.baseurl}}/parameters/other.html#ilastik). The second step applies standard watershed segmentation to produce the final cell/nucleus/cytoplasm/etc. masks using [S3segmenter]({{site.baseurl}}/parameters/core.html#s3segmenter). 
 
 The two steps will appear in `probability-maps/` and `segmentation` directories, respectively. When there are multiple modules for a given pipeline step, their results will be subdivided into additional subdirectories:
 ```
@@ -181,7 +181,7 @@ There is a direct correspondence between the `.csv` filenames and the filenames 
 Each `.csv` file will contain the following columns:
 * `CellID` - cell index that is extracted from the segmentation mask
 * All columns with names matching those in `markers.csv` - average intensity of that channel in the cell/nuclei area
-* All other columns will contain [morphological features](https://scikit-image.org/docs/dev/api/skimage.measure.html#regionprops)
+* All other columns will contain [morphological features](https://scikit-image.org/docs/dev/api/skimage.measure.html#regionprops){:target="_blank"}.
 
 <br>
 
@@ -241,7 +241,7 @@ Upon the full successful completion of a pipeline run, the directory structure w
 The name of the parent directory (e.g., `exemplar-002`) is assumed by the pipeline to be the sample name.
 
 
-Visual inspection of [quality control](./#quality-control) (`qc/`) files is recommended after completing the run. Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may contain `.tif` images for inspection. 
+Visual inspection of [quality control](./io.html#quality-control) (`qc/`) files is recommended after completing the run. Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may contain `.tif` images for inspection. 
 
 [Back to top](./){: .btn .btn-outline} 
 
