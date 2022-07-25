@@ -226,7 +226,7 @@ A fluorescence image of a tissue microarray where at least one channel is of DNA
  | `--tissue` | | Coreograph will assume that its input is a whole-slide image and will work to isolate individual tissue chunks into separate files |
 
 ### Troubleshooting
-A troubleshooting guide can be found within [Coreograph parameter tuning](./coreograph.html).
+A troubleshooting guide can be found within [Coreograph parameter tuning](./tuning/coreograph.html).
 
 [Back to top](./){: .btn .btn-outline} 
 
@@ -242,9 +242,15 @@ A troubleshooting guide can be found within [Coreograph parameter tuning](./core
 UnMICST uses a convolutional neural network to annotate each pixel with the probability that it belongs to a given subcellular component (nucleus, cytoplasm, cell boundary). Check the [UnMICST website](https://labsyspharm.github.io/UnMICST-info/){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
-MCMICRO applies UnMicst to all input images by default. Use `--unmicst-opts` to provide optional parameters to the module.
+MCMICRO applies UnMicst to all input images by default. Add `unmicst:` to [module options]({{site.baseurl}}/parameters/) to control its behavior.
 
-* Example: `nextflow run labsyspharm/mcmicro --in /my/project --unmicst-opts '--scalingFactor 0.5'`
+* Example `params.yml`:
+
+``` yaml
+options:
+  unmicst: --scalingFactor 0.5
+```
+
 * Running outside of MCMICRO: [Instructions](https://github.com/HMS-IDAC/UnMicst){:target="_blank"}.
 
 ### Input
@@ -272,7 +278,7 @@ An ``.ome.tif``, preferably flat field corrected. The model is trained on images
 | `--GPU <index>` | Automatic | Explicitly specify which GPU (1-based indexing) you want to use. Useful for running on local workstations with multiple GPUs. |
 
 ### Troubleshooting
-A troubleshooting guide can be found within [UnMICST parameter tuning](./unmicst.html) - additional information is also available on the [UnMICST website](https://labsyspharm.github.io/UnMICST-info/){:target="_blank"} .
+A troubleshooting guide can be found within [UnMICST parameter tuning](./tuning/unmicst.html) - additional information is also available on the [UnMICST website](https://labsyspharm.github.io/UnMICST-info/){:target="_blank"} .
 
 [Back to top](./){: .btn .btn-outline} 
 
