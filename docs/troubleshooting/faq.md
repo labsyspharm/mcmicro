@@ -68,14 +68,14 @@ nextflow clean -f -but last
 ```
 ### Q: My computer has an Apple M1 chip and the pipeline is failing at the Segmentation step. What can I do?
 
-A: You can use ilastik for probability map generation instead. To do so, specify `--probability-maps ilastik` in your command to run MCMICRO
+A: You can use ilastik for probability map generation instead. To do so, specify `--segmentation ilastik` in your command to run MCMICRO
 
 ```
-nextflow run labsyspharm/mcmicro --in /my/path/exemplar-001 --probability-maps ilastik
+nextflow run labsyspharm/mcmicro --in /my/path/exemplar-001 --segmentation ilastik
 ```
 or 
 ```
-nextflow run labsyspharm/mcmicro --in /my/path/exemplar-002 --tma --probability-maps ilastik
+nextflow run labsyspharm/mcmicro --in /my/path/exemplar-002 --tma --segmentation ilastik
 ```
 
 This is because UnMICST (`segmentation:worker (unmicst-1)`) currently does not work on the M1 architecture. Fortunately, ilastik is supported by M1. See [GitHub Issue #353](https://github.com/labsyspharm/mcmicro/issues/353) for more details.
@@ -139,20 +139,20 @@ nextflow run labsyspharm/mcmicro --in /path/to/unbinned/data --unmicst-opts '--s
 
 ### Q: How do I quantify multiple masks?
 
-A: Use `--quant-opts` to specify the `--masks` parameter for quantification. Any file found in the corresponding `segmentation/` folder can be provided here. For example,
+A: Use `--mcquant-opts` to specify the `--masks` parameter for quantification. Any file found in the corresponding `segmentation/` folder can be provided here. For example,
 
 ```
-nextflow run labsyspharm/mcmicro --in /path/to/exemplar-001 --quant-opts '--masks cell.ome.tif nuclei.ome.tif'
+nextflow run labsyspharm/mcmicro --in /path/to/exemplar-001 --mcquant-opts '--masks cell.ome.tif nuclei.ome.tif'
 ```
 
 will quantify cell and nuclei masks. The corresponding spatial feature tables can then be found in `quantification/unmicst-exemplar-001_cell.csv` and `quantification/unmicst-exemplar-001_nuclei.csv`, respectively.
 
 ### Q: How do I compute the median expression of each channel?
 
-A: Use `--quant-opts` to specify the corresponding `--intensity_props` parameter for quantification:
+A: Use `--mcquant-opts` to specify the corresponding `--intensity_props` parameter for quantification:
 
 ```
-nextflow run labsyspharm/mcmicro --in /path/to/exemplar-001 --quant-opts '--intensity_props median_intensity'
+nextflow run labsyspharm/mcmicro --in /path/to/exemplar-001 --mcquant-opts '--intensity_props median_intensity'
 ```
 
 ### Q: What are the units of the MCMICRO `Area` outputs?
