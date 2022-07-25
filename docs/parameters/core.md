@@ -23,52 +23,52 @@ svg {
 </style>
 </defs>
 
-<a xlink:href="./#basic">
+<a xlink:href="./core.html#basic">
 <title>BaSic</title>
 <path d="M1 161h63l-1 52-63 1Z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="./#ashlar">
+<a xlink:href="./core.html#ashlar">
 <title>ASHLAR</title>
 <path d="m73 160 65 1-2 50H73z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="./#coreograph">
+<a xlink:href="./core.html#coreograph">
 <title>Coreograph</title>
 <path d="M107 245h63v52h-62z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="./#unmicst">
+<a xlink:href="./core.html#unmicst">
 <title>UNMICST</title>
 <path d="m198 161 64-1v46l-64-2z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="./#s3segmenter">
+<a xlink:href="./core.html#s3segmenter">
 <title>S3Segmenter</title>
 <path d="m200 206 63 1-1 32-63-3z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="./#mcquant">
+<a xlink:href="./core.html#mcquant">
 <title>MCQuant</title>
 <path d="M271 160h63l1 52h-63z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="./#cylinter">
+<a xlink:href="./core.html#cylinter">
 <title>CyLinter</title>
 <path d="m271 245 62-1 2 52-63-1z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="./#scimap">
+<a xlink:href="./core.html#scimap">
 <title>SCIMAP</title>
 <path d="m344 159 42 1v56l-41-1z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="./#minerva">
+<a xlink:href="./core.html#minerva">
 <title>Minerva</title>
 <path d="M396 160h42l-1 57-41-1z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="./#other-modules">
+<a xlink:href="./core.html#other-modules">
 <title>Other Modules</title>
 <path d="m394 242 44 1 1 54h-46z"  inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
