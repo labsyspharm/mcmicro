@@ -134,7 +134,7 @@ The module performs simultaneous stiching of tiles and registration across chann
 
 ### Usage
 
-MCMICRO runs ASHLAR by default. Use `ashlar:` in the [module options]({{site.baseurl}}/parameters/) to control its behavior.
+MCMICRO runs ASHLAR by default. Add `ashlar:` to [module options]({{site.baseurl}}/parameters/) to control its behavior.
 
 * Example `params.yml`:
 
@@ -187,9 +187,17 @@ The modules uses the popular UNet deep learning architecture to identify cores w
 
 ### Usage
 
-By default, MCMICRO assumes that the input is a whole-slide image. Use `--tma` to indicate that the input is a TMA instead. Use `--core-opts` to provide additional module-specific parameters.
+By default, MCMICRO assumes that the input is a whole-slide image. Add `tma: true` to [workflow parameters]([module options]({{site.baseurl}}/parameters/)) to indicate that the input is a TMA instead. Add `coreograph:` to [module options]({{site.baseurl}}/parameters/) to control the module behavior.
 
-* Example: `nextflow run labsyspharm/mcmicro --in /my/project --tma --core-opts '--channel 3'`
+* Example `params.yml`:
+
+``` yaml
+workflow:
+  tma: true
+options:
+  coreograph: --channel 3
+```
+
 * Running outside of MCMICRO: [Instructions](https://github.com/HMS-IDAC/UNetCoreograph){:target="_blank"}.
 
 ### Input
