@@ -378,7 +378,7 @@ ___
 The modules uses one or more segmentation masks against the original image to quantify the expression of every channel on a per-cell basis. Check the [MCQuant README](https://github.com/labsyspharm/quantification#single-cell-quantification){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
-By default, MCMICRO runs MCQuant on all cell segmentation masks. Use the `--quant-opts` flag to specify a different mask or to provide additional module-specific arguments to MCMICRO.
+By default, MCMICRO runs MCQuant on all cell segmentation masks. Add `mcquant:` to [module options]({{site.baseurl}}/parameters/) to specify a different mask or to provide additional module-specific arguments to MCMICRO.
 
 * Example: `nextflow run labsyspharm/mcmicro --in /my/project --quant-opts '--masks cytoMask.tif nucleiMask.tif'`
 * Default: `--quant-opts '--masks cell*.tif'`
@@ -439,7 +439,18 @@ SCIMAP is a suite of tools that enables spatial single-cell analyses. Check the 
 ### Usage
 MCMICRO allows users to automatically apply SCIMAP's clustering algorithms to the cell-by-feature table produced by MCQuant. The clustering results can be subsequently used for manual assignment of cell states. Since MCMICRO stops at MCQuant by default, users will need to explicitly request that the pipeline continues to the clustering step. MCMICRO's usage of SCIMAP doesn't have any parameters, and users are encouraged to check the [SCIMAP website](https://scimap.xyz){:target="_blank"} for more sophisticated human-in-the-loop analyses.
 
-* Example: `nextflow run labsyspharm/mcmicro --in /my/project --stop-at cell-states`
+Add `downstream: scimap` and `stop-at: downstream` to [workflow parameters]({{site.baseurl}}/parameters/) to enable SCIMAP. Add `mcquant:` to [module options]({{site.baseurl}}/parameters/) to control its behavior.
+
+* Example `params.yml`:
+
+``` yaml
+workflow:
+  stop-at: downstream
+  downstream: scimap
+options:
+  scimap: --csv
+```
+
 * Running outside of MCMICRO: [Instructions](https://scimap.xyz){:target="_blank"}.
 
 ### Input
