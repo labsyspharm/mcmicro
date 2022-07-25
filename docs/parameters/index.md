@@ -44,7 +44,34 @@ nextflow run labsyspharm/mcmicro --in /path/to/project1 --params /path/to/mypara
 nextflow run labsyspharm/mcmicro --in /path/to/project2 --params /path/to/myparams.yml
 ```
 
-Values specified in the external `myparams.yml` will overwrite any values specified in `params.yml` of individual project directories.
+Values specified in the external `myparams.yml` will overwrite any values found in `params.yml` files of individual project directories.
+
+## Overwriting individual parameters
+
+Individual parameters can be overwritten directly on the command line. This provides an opportunity for "one-off" runs without the need to modify existing parameter files.
+
+``` bash
+## Most workflow parameters can be specified as is
+nextflow run labsyspharm/mcmicro --in /path/to/project --start-at segmentation
+
+## There is no need to explicitly specify "true" for binary parameters
+nextflow run labsyspharm/mcmicro --in /path/to/project --tma --viz
+
+## Enclose multiple values inside single quotes
+nextflow run labsyspharm/mcmicro --in /path/to/project --segmentation-channel '1 5'
+
+## Add -opts suffix for module specific options
+nextflow run labsyspharm/mcmicro --in /path/to/project --ashlar-opts '-m 50'
+```
+
+## Parameter value prioritization
+
+Given the many ways to specify parameters, conflicting values will be resolved according to the following prioritization:
+
+* (Lowest) Parameter values in [config/defaults.yml](https://github.com/labsyspharm/mcmicro/blob/master/config/defaults.yml).
+* Parameter values in `params.yml`, if one found in the directory supplied via `--in`.
+* Parameter values in a YAML file provided via `--params`.
+* (Highest) Values for individual parameters provided as double-dashed command-line arguments (e.g., `--start-at`)
 
 ## Specifying path for intermediate files
 By default, Nextflow writes intermediate files to a `work/` directory inside whatever location you initiate a pipeline run from. Use `-w` flag to provide a different location. 
@@ -53,33 +80,26 @@ By default, Nextflow writes intermediate files to a `work/` directory inside wha
 nextflow run labsyspharm/mcmicro --in /path/to/my-data -w /path/to/work/
 ```
 
----
-
-<br>
-
 ### Specifying start and stop modules
-By default, the pipeline starts from the registration step ([ASHLAR]({{site.baseurl}}/modules/#ashlar)), proceeds through [UnMICST]({{site.baseurl}}/modules/#unmicst), [S3segmenter]({{site.baseurl}}/modules/#s3segmenter), and stops after executing the quantification [MCQuant]({{site.baseurl}}/modules/#mcquant) step. 
+By default, the pipeline starts from the registration step ([ASHLAR]({{site.baseurl}}/parameters/core.html#ashlar)), proceeds through [UnMICST]({{site.baseurl}}/parameters/core.html#unmicst), [S3segmenter]({{site.baseurl}}/parameters/core.html#s3segmenter), and stops after executing the quantification [MCQuant]({{site.baseurl}}/parameters/core.html#mcquant) step.
 
-Use `--start-at` and `--stop-at` flags to execute any contiguous section of the pipeline instead. Any subdirectory name listed in the [directory structure](./#directory-structure) is a valid starting and stopping point.  
+Use `start-at` and `stop-at` workflow parameters to execute any contiguous section of the pipeline instead.
 
+**Example 1: Running illumination correction and registration only**
 
-``` bash
-# If you already have a pre-stitched TMA image, start at the dearray step
-nextflow run labsyspharm/mcmicro --in path/to/exemplar-002 --tma --start-at dearray
-
-# If you want to run the illumination profile computation and registration only
-nextflow run labsyspharm/mcmicro --in path/to/exemplar-001 --start-at illumination --stop-at registration
+``` yaml
+workflow:
+  start-at: illumination
+  stop-at: registration
 ```
+
+**Example 2: Start by dearraying an already-registered TMA image**
+
+``` yaml
+workflow:
+  tma: true
+  start-at: dearray
+```
+
 **Note:** Starting at any step beyond registration requires pre-computed output of the previous steps placed at the correct location in the project directory.
 {: .fs-3}
-
-<br>
-
-### Specifying module-specific parameters
-The pipeline provides a sensible set of [default parameters for individual modules]({{site.baseurl}}/modules/). To change these use <br> `--ashlar-opts`, `--unmicst-opts`, `--s3seg-opts` and `--quant-opts`. 
-
-For example: ```nextflow run labsyspharm/mcmicro --in /path/to/my-data --ashlar-opts '-m 35 --pyramid' ``` will provide `-m 35 --pyramid` as additional command line arguments to ASHLAR.
-
-*Go to [modules]({{site.baseurl}}/modules/) for a list of options available for each module.*
-
-<br>
