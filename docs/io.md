@@ -17,6 +17,21 @@ nav_order: 4
 
 ---
 
+## General pipeline usage
+
+After composing a [project directory]({{site.baseurl}}/io.html#input) with raw data, marker specification, and parameters, provide the entire directory to the pipeline via `--in`:
+
+``` bash
+# Get the latest version of the pipeline
+nextflow pull labsyspharm/mcmicro
+
+# Run the pipeline on data
+nextflow run labsyspharm/mcmicro --in path/to/my/project/
+```
+>(Where `path/to/my/project/` is replaced with your specific path.)
+
+{: .fs-3}
+
 ## Input
 
 **At the minimum, the pipeline expects two inputs**

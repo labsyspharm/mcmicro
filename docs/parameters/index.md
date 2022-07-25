@@ -4,26 +4,50 @@ title: Parameters
 nav_order: 5
 ---
 
-## General pipeline usage
+## Parameter files
 
-The basic pipeline execution consists of:
-1. Ensuring you have the latest version of the pipeline  
-1. Creating a [parameter file](./#parameter-file)
-1. Using --in to point the pipeline at the data
+Parameter files must be specified in standard YAML format using the following three namespaces:
+
+* `workflow` - pipeline-level parameters controlling overall behavior of MCMICRO
+* `options` - module-level parameters that will be forwarded to individual tools; the entries are matched against `name` fields in `modules`
+* `modules` - module specifications, such as container name and version, whether the module uses 0-based or 1-based indexing, etc.
+
+An example `params.yml` may look as follows:
+
+``` yaml
+workflow:
+  start-at: registration
+  stop-at: quantification
+  viz: true
+  segmentation-channel: 1 5
+options:
+  ashlar: -m 15
+  s3seg: --maxima-footprint-size 5
+modules:
+  watershed:
+    version: 1.4.0-large
+```
+
+MCMICRO will fall back on [default values](https://github.com/labsyspharm/mcmicro/blob/master/config/defaults.yml){:target="_blank"} for any setting not specified in a parameter file.
+
+Please see the subpages for more information about [workflow](./workflow.html), [options](./core.html), and [modules](./REPLACEME.html) namespaces.
+
+## Specifying an external parameter file
+
+By default, MCMICRO will look for `params.yml` in the [project directory]({{site.baseurl}}/io.html#input). This can create unnecessary duplication of parameter files, if multiple project directories share the same set of parameter values. To avoid such duplication, create a single `myparams.yml` and supply it to the pipeline with `--params`:
 
 ``` bash
-# Get the latest version of the pipeline
-nextflow pull labsyspharm/mcmicro
+## External parameter files can be supplied with --params
+nextflow run labsyspharm/mcmicro --in /path/to/project1 --params /path/to/myparams.yml
 
-# Run the pipeline on data (starting from the registration step through quantification, by default)
-nextflow run labsyspharm/mcmicro --in path/to/my/data
+## The same parameter file can then be used in multiple projects
+nextflow run labsyspharm/mcmicro --in /path/to/project2 --params /path/to/myparams.yml
 ```
->(Where `path/to/my/data` is replaced with your specific path.)
 
-{: .fs-3}
+Values specified in the external `myparams.yml` will overwrite any values specified in `params.yml` of individual project directories.
 
 ## Specifying path for intermediate files
-By default Nextflow writes intermediate files to a `work/` directory inside whatever location you initiate a pipeline run from. Use `-w` flag to provide a different location. 
+By default, Nextflow writes intermediate files to a `work/` directory inside whatever location you initiate a pipeline run from. Use `-w` flag to provide a different location. 
 
 ``` bash
 nextflow run labsyspharm/mcmicro --in /path/to/my-data -w /path/to/work/
@@ -59,34 +83,3 @@ For example: ```nextflow run labsyspharm/mcmicro --in /path/to/my-data --ashlar-
 *Go to [modules]({{site.baseurl}}/modules/) for a list of options available for each module.*
 
 <br>
-
-## Parameter file
-
-The parameter file must be specified in standard YAML format using the following three namespaces:
-
-* `workflow` - pipeline-level parameters controlling overall behavior of MCMICRO
-* `options` - module-level parameters that will be forwarded to individual tools; the entries are matched against `name` fields in `modules`
-* `modules` - module specifications, such as container name and version, whether the module uses 0-based or 1-based indexing, etc.
-
-An example `params.yml` may look as follows:
-
-``` yaml
-workflow:
-  start-at: registration
-  stop-at: quantification
-  viz: true
-  segmentation-channel: 1 5
-options:
-  ashlar: -m 15
-  s3seg: --maxima-footprint-size 5
-modules:
-  watershed:
-    version: 1.4.0-large
-```
-
-and can be supplied to the pipeline with
-
-```
-nextflow run labsyspharm/mcmicro --in path/to/my/data --params myparams.yml
-```
-
