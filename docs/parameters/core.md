@@ -294,18 +294,23 @@ ___
 The modules applies standard watershed segmentation to probability maps to produce the final cell/nucleus/cytoplasm/etc. masks.
 
 ### Usage
-By default, MCMICRO applies S3segmenter to the output of all modules that produce probability maps. Additional arguments should be provided to MCMICRO with the `--s3seg-opts` flag.
+By default, MCMICRO applies S3segmenter to the output of all modules that produce probability maps. Add `s3seg:` to [module options]({{site.baseurl}}/parameters/) to control its behavior..
 
-* Example: ``nextflow run labsyspharm/mcmicro --in /my/project --s3seg-opts '--logSigma 2 10'``
+* Example `params.yml`:
+
+``` yaml
+options:
+  s3seg: --logSigma 2 10
+```
 
 ### Inputs
 1.  A fully-stitched and registered ``.ome.tif``, preferably flat field corrected. Nextflow will take these from the `registration/` and `dearray/` subdirectories, as approrpriate.
-2.  A 3-class probability map, as derived by modules such as [UnMICST](./unmicst.html) or [Ilastik](./other.html#ilastik).
+2.  A 3-class probability map, as derived by modules such as [UnMICST](./core.html#unmicst) or [Ilastik](./other.html#ilastik).
 
 [S3segmenter](https://github.com/HMS-IDAC/S3segmenter){:target="_blank"} assumes that you have:
 1. Acquired images of your sample with optimal acquisition settings.
 2. Stitched and registered the tiles and channels respectively (if working with a large piece of tissue) and saved it as a Bioformats compatible tiff file.
-3. Processed your image in some way so as to increase contrast between individual nuclei using classical or machine learning methods such as [Ilastik](./other.html#ilastik) (a random forest model) or [UnMICST](./unmicst.html) (a deep learning semantic segmentation model based on the UNet architecture). MCMICRO supports both.
+3. Processed your image in some way so as to increase contrast between individual nuclei using classical or machine learning methods such as [Ilastik](./other.html#ilastik) (a random forest model) or [UnMICST](./core.html#unmicst) (a deep learning semantic segmentation model based on the UNet architecture). MCMICRO supports both.
 {: .fs-3}
 
 ### Output
@@ -357,7 +362,7 @@ Nextflow saves these files to the `qc/s3seg/` subfolder within your project.
 | `--TissueMaskChan <index>` | Union of `probMapChan` and `CytoMaskChan` | One or more channels to use for identifying the general tissue area for masking purposes. |
 
 ### Troubleshooting
-A troubleshooting guide can be found within [S3segmenter parameter tuning](./s3seg.html).
+A troubleshooting guide can be found within [S3segmenter parameter tuning](./tuning/s3seg.html).
 
 [Back to top](./){: .btn .btn-outline} 
 
