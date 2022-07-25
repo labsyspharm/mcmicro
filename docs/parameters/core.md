@@ -102,9 +102,15 @@ The module implements the BaSiC method for correcting uneven illumination, devel
 
 ### Usage
 
-By default, MCMICRO skips this step as it requires manual inspection of the outputs to ensure that illumination correction does not introduce artifacts for downstream processing.  Use `--start-at illumination` to request that MCMICRO runs the module.
+By default, MCMICRO skips this step as it requires manual inspection of the outputs to ensure that illumination correction does not introduce artifacts for downstream processing.  Add `start-at: illumination` to [workflow parameters]({{site.baseurl}}/parameters/) to request that MCMICRO runs the module.
 
-* Example: `nextflow run labsyspharm/mcmicro --in /my/project --start-at illumination`
+* Example `params.yml`:
+
+``` yaml
+workflow:
+  start-at: illumination
+```
+
 * Running outside of MCMICRO: [Instructions](https://github.com/labsyspharm/basic-illumination#running-as-a-docker-container){:target="_blank"}.
 
 ### Input
@@ -128,10 +134,16 @@ The module performs simultaneous stiching of tiles and registration across chann
 
 ### Usage
 
-MCMICRO runs ASHLAR by default. Use `--ashlar-opts` to provide additional arguments to the module.
+MCMICRO runs ASHLAR by default. Use `ashlar:` in the [module options]({{site.baseurl}}/parameters/) to control its behavior.
 
-* Example: `nextflow run labsyspharm/mcmicro --in /my/project --ashlar-opts '--flip-y -c 5'`
-* Default: `--ashlar-opts '-m 30'`
+* Example `params.yml`:
+
+``` yaml
+options:
+  ashlar: --flip-y -c 5
+```
+
+* Default: `ashlar: -m 30`
 * Running outside of MCMICRO: [ASHLAR website](https://labsyspharm.github.io/ashlar){:target="_blank"}.
 
 ### Input
