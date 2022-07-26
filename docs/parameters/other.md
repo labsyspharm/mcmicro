@@ -216,12 +216,18 @@ All methods output a `.csv` file annotating individual cells with their cluster 
 `naivestates` is a label-free, cluster-free tool for inferring cell types from quantified marker expression data, based on known marker <-> cell type associations. Check the [GitHub repository](https://github.com/labsyspharm/naivestates){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
-Use the `--cell-states` flag to select naivestates. When running alongside other cell state inference methods, such as SCIMAP, method names should be delimited with a comma and no space. Custom marker to cell type (mct) mapping can be provided to naivestates via `--naivestates-model`. Arguments should be provided to MCMICRO with the `--naivestates-opts` flag.
+Add a `downstream:` field to [workflow parameters]({{site.baseurl}}/parameters/) to select naivestates. When running alongside other cell state inference methods, such as SCIMAP, method names should be provided as a list enclosed in square brackets. Custom marker to cell type (mct) mapping can be provided to naivestates via the `naivestates-model:` workflow parameters, while additional arguments should be specified by including a `naivestates:` field in the module options section.
 
-* Examples:
-  * `nextflow run labsyspharm/mcmicro --in /my/project --stop-at cell-states --cell-states naivestates --naivestates-opts '--log no'`
-  * `nextflow run labsyspharm/mcmicro --in /my/project --stop-at cell-states --cell-states naivestates,scimap --naivestates-model map.csv`
-* Default: `--naivestates--opts '-p png'`
+* Example `params.yml`:
+``` yaml
+workflow:
+  stop-at: downstream
+  downstream: naivestates
+  naivestates-model: /full/path/to/mct.csv
+options:
+  naivestates: --log no
+```
+* Default naivestates options: `-p png`
 * Running outside of MCMICRO: [Instructions](https://github.com/labsyspharm/mcmicro-ilastik){:target="_blank"}.
 
 ### Inputs
