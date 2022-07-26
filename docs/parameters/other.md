@@ -149,11 +149,17 @@ A segmentation mask, similar to the ones produced by S3segmenter. Nextflow will 
 MCMICRO integrates three methods for clustering single-cell data. These are [FastPG](https://www.biorxiv.org/content/10.1101/2020.06.19.159749v2){:target="_blank"} (Fast C++ implementation of the popular Phenograph method), Leiden community detection via [scanpy](https://scanpy.readthedocs.io/en/stable/){:target="_blank"}, and [FlowSOM](https://bioconductor.org/packages/release/bioc/html/FlowSOM.html){:target="_blank"}.
 
 ### Usage
-Use the `--cell-states` flag to select one or more methods. Method names should be delimited with a comma and no space. Additional method parameters should be provided to MCMICRO with the following flags: `--fastpg-opts`, `--scanpy-opts`, `--flowsom-opts`.
+Add a `downstream:` field to [workflow parameters]({{site.baseurl}}/parameters/) to select one or more methods. Method names should be provided as a comma-delimited list enclosed in square brackets. Additional method parameters should be provided to MCMICRO by adding `fastpg:`, `scanpy:` and `flowsom:` fields to the module options section.
 
-* Examples:
-  * `nextflow run labsyspharm/mcmicro --in /my/project --stop-at cell-states --cell-states fastpg,flowsom --fastpg-opts '-k 10'`
-  * `nextflow run labsyspharm/mcmicro --in /my/project --stop-at cell-states --cell-states scanpy --scanpy-opts '-k 10'`
+* Example `params.yml`:
+``` yaml
+workflow:
+  stop-at: downstream
+  downstream: [fastpg, flowsom, scanpy]
+options:
+  fastpg: -k 10
+  scanpy: -k 10
+```
 * Running outside of MCMICRO:
   * [Instructions for FastPG](https://github.com/labsyspharm/mcmicro-fastpg){:target="_blank"}
   * [Instructions for scanpy](https://github.com/labsyspharm/mcmicro-scanpy){:target="_blank"}
