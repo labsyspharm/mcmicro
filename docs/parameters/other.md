@@ -30,12 +30,18 @@ Clsutering and cell type inference
 The module provides a command-line interface to the popular [ilastik](https://www.ilastik.org/) toolkit and serves as another method for generating probability maps that can be used as an alternative to UnMICST. Check the [GitHub](https://github.com/labsyspharm/mcmicro-ilastik){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
-By default, MCMICRO runs UnMicst for probability map generation. To run Ilastik instead of or in addition to UnMicst, use the `--probability-maps` flag. When specifying multiple methods, note that the method names must be delimited by a comma with no space. Arguments should be passed to Ilastik with the `--ilastik-opts` flag. Custom models can be provided to Ilastik via `--ilastik-model`.
+By default, MCMICRO runs UnMicst for probability map generation. To run Ilastik instead of or in addition to UnMicst, add `segmentation: ilastik` to [workflow parameters]({{site.baseurl}}/parameters/). When specifying multiple methods, the method names should be provided as a list enclosed in square brackets. Arguments should be passed to Ilastik via `ilastik:` in the module options section, while custom models can be provided to Ilastik via `ilastik-model:` workflow parameter.
 
-* Examples:
-  * `nextflow run labsyspharm/mcmicro --in /my/project --probability-maps ilastik --ilastik-opts '--crop'`
-  * `nextflow run labsyspharm/mcmicro --in /my/project --probability-maps ilastik,unmicst --ilastik-model mymodel.ilp`
-* Default: `--ilastik-opts '--num_channels 1'`
+* Example `params.yml`:
+
+``` yaml
+workflow:
+  segmentation: [ilastik, unmicst]
+  ilastik-model: /full/path/to/mymodel.ilp
+options:
+  ilastik: --nonzero_fraction 0.5 --num_channels 1
+```
+* Default ilastik options: `--num_channels 1`
 * Running outside of MCMICRO: [Instructions](https://github.com/labsyspharm/mcmicro-ilastik){:target="_blank"}.
 
 ### Input
@@ -50,7 +56,6 @@ The output is similar to that produced by UnMicst, namely a ```.tif``` stack whe
 | --- | --- | --- |
 | `--nonzero_fraction <value>` |`None` | Indicates fraction of pixels per crop above global threshold to ensure tissue and not only background is selected |
 | `--nuclei_index <index>` |`1` | Index of nuclei channel to use for nonzero_fraction argument |
-| `--crop` | Omitted | If specified, crop regions for ilastik training |
 | `--num_channels <value>` | `None`| Number of channels to export per image (Ex: 40 corresponds to a 40 channel ome.tif image) |
 | `--channelIDs <indices>` |`None` | Integer indices specifying which channels to export (Ex: 1 2 4). **NOTE: You must specify a channel to use for filtering in S3segmenter as --probMapChan in --s3seg-opts**|
 | `--ring_mask`| Omitted | Specify if you have a ring mask in the same directory to use for reducing size of hdf5 image |
