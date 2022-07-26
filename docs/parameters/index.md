@@ -30,7 +30,7 @@ modules:
 
 MCMICRO will fall back on [default values](https://github.com/labsyspharm/mcmicro/blob/master/config/defaults.yml){:target="_blank"} for any setting not specified in a parameter file.
 
-Please see the subpages for more information about [workflow](./workflow.html), [options](./core.html), and [modules](./REPLACEME.html) namespaces.
+Please see the subpages for more information about [workflow](./workflow.html), [options](./core.html), and [modules](./specs.html) namespaces.
 
 ## Specifying an external parameter file
 

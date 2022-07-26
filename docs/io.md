@@ -30,7 +30,7 @@ nextflow run labsyspharm/mcmicro --in path/to/my/project/
 ```
 >(Where `path/to/my/project/` is replaced with your specific path.)
 
-{: .fs-3}
+---
 
 ## Input
 

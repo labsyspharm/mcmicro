@@ -12,4 +12,4 @@ The MCMICRO pipeline is actively being developed to improve functionality. To se
 
 # Website Updates
 
-This website was last updated in March 2022.
+This website was last updated on {{ site.time | date: "%Y-%m-%d" }}.
