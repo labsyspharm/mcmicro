@@ -38,6 +38,8 @@ modules:
       version: 1.6.2
 ```
 
+When in doubt, follow the same structure as the one represented by the [default values](https://github.com/labsyspharm/mcmicro/blob/master/config/defaults.yml){:target="_blank"}.
+
 ## Adding a module
 
 Adding a new module specification is currently only possible for `segmentation` and `downstream` processing steps.
