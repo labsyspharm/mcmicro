@@ -364,7 +364,7 @@ Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may
   {: .fw-200}
   `cellOutlines.ome.tif` Cell outlines overlaid with raw image, zoomed in on an arbitrary area. *(This example shows the first available cycle (Cycle 6) in the default exemplar-001 data set .)*
 
-  >Read [Parameter Tuning for S3Segmenter](../modules/s3seg.md) for common troubleshooting scenarios.
+  >Read [Parameter Tuning for S3Segmenter](../parameters/tuning/s3seg.md) for common troubleshooting scenarios.
 
 <br>
 
@@ -379,7 +379,7 @@ Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may
   {: .fw-200}
   `TMA_MAP.tif` exemplar-002
 
-  >Read [Parameter Tuning for Coreograph](../modules/coreograph.md) for common troubleshooting scenarios.
+  >Read [Parameter Tuning for Coreograph](../parameters/tuning/coreograph.md) for common troubleshooting scenarios.
   
 <br>
 
@@ -390,8 +390,8 @@ Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may
 
 * However, if segmentation results found in `qc/s3seg/` are not desirable, UnMICST `qc` files can provide a clue for what went wrong. 
 
-  >Read [Parameter Tuning for UnMICST](../modules/unmicst.md) for common troubleshooting scenarios.
+  >Read [Parameter Tuning for UnMICST](../parameters/tuning/unmicst.md) for common troubleshooting scenarios.
 
 <br>
 
-*More details on output files and quality control can be found in [Directory Structure]({{site.baseurl}}/instructions/nextflow/#directory-structure).*
+*More details on output files and quality control can be found in [Inputs/Outputs]({{site.baseurl}}/io.html#output).*
