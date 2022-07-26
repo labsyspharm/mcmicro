@@ -72,10 +72,17 @@ The output is similar to that produced by UnMicst, namely a ```.tif``` stack whe
 Cypository is used to segment the cytoplasm of cells. Check the [GitHub repository](https://github.com/HMS-IDAC/Cypository#cypository---pytorch-mask-rcnn-for-cell-segmentation){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
-Use `--probability-maps` to enable Cypository. In general, it would be uncommon to run Cypository alongside probability map generators for nuclei, but it can be done by specifying method names delimited with a comma and no space, e.g., `--probability-maps cypository,unmicst`. Additional Cypository parameters should be provided to MCMICRO with the `--cypository-opts` flag.
+Add `segmentation: cypository` to [workflow parameters]({{site.baseurl}}/parameters/) to enable Cypository. In general, it would be uncommon to run Cypository alongside probability map generators for nuclei, but it can be done by specifying method names as a list enclosed in square brackets, e.g., `segmentation: [cypository, unmicst]`. Additional Cypository parameters should be provided to MCMICRO by including a `cypository:` field in the module options section.
 
-* Example: `nextflow run labsyspharm/mcmicro --in /my/project --probability-maps cypository --cypository-opts '--channel 5'`
-* Default: `--cypository-opts '--model zeisscyto'`
+* Example `params.yml`:
+``` yaml
+workflow:
+  segmentation: cypository
+options:
+  cypository: --channel 5
+```
+
+* Default cypository options: `--model zeisscyto`
 
 ### Input
 A stitched and registered ``.ome.tif``, preferably flat field corrected. Nextflow will use as input files from the `registration/` subdirectory for whole-slide images and from the `dearray/` subdirectory for tissue microarrays.
@@ -106,11 +113,15 @@ The [Mesmer](https://doi.org/10.1038/s41587-021-01094-0){:target="_blank"} modul
 
 ### Usage
 
-Use `--probability-maps` to select mesmer. When running together with UnMicst and/or ilastik, method names must be separated by a comma without spaces. Additional Mesmer parameters can be provided to MCMICRO via the `--mesmer-opts` flag.
+Add `segmentation: mesmer` to [workflow parameters]({{site.baseurl}}/parameters/) to enable Mesmer. When running together with UnMicst and/or ilastik, method names must be provided as a list enclosed in square brackets. Additional Mesmer parameters can be provided to MCMICRO by including a `mesmer:` field in the module options section.
 
-* Examples:
-  * `nextflow run labsyspharm/mcmicro --in /my/project --probability-maps mesmer --mesmer-opts '--image-mpp 0.25'`
-  * `nextflow run labsyspharm/mcmicro --in /my/project --probability-maps mesmer,ilastik,unmicst`
+* Example `params.yml`:
+``` yaml
+workflow:
+  segmentation: mesmer
+options:
+  mesmer: --image-mpp 0.25
+```
 * Running outside of MCMICRO: [Instructions](https://github.com/vanvalenlab/deepcell-applications){:target="_blank"}.
 
 ### Input
