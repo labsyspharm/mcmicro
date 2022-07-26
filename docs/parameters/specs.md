@@ -40,6 +40,8 @@ modules:
 
 ## Adding a module
 
+Adding a new module specification is currently only possible for `segmentation` and `downstream` processing steps.
+
 ### Input and output specs
 
 Every module must have a command-line interface (CLI) that has been encapsulated inside a Docker container. 
@@ -72,19 +74,21 @@ MCMICRO assumes that CLI conforms to the following input-output specifications.
 
 # Configuration
 
-Adding a new MCMICRO module involves specifying simple key-value pairs in `modules.yml`. For example, consider the following configuration for ilastik:
+Adding a new MCMICRO module involves specifying simple key-value pairs in the `modules:` section of `params.yml`. For example, consider the following configuration for ilastik:
 
-```
-  name: ilastik
-  container: labsyspharm/mcmicro-ilastik
-  version: 1.4.5
-  cmd: python /app/mc-ilastik.py --output .
-  input: --input
-  model: --model
-  channel: --channelIDs
-  idxbase: 1
-  watershed: 'yes'
-  opts: --num_channels 1
+``` yaml
+modules:
+  segmentation:
+    -
+      name: ilastik
+      container: labsyspharm/mcmicro-ilastik
+      version: 1.4.5
+      cmd: python /app/mc-ilastik.py --output .
+      input: --input
+      model: --model
+      channel: --channelIDs
+      idxbase: 1
+      watershed: 'yes'
 ```
 
 ## Name
@@ -123,23 +127,20 @@ The `channel` field indicates how MCMICRO should pass `--segmentation-channel` v
 
 The `watershed` field specifies whether the module requires a subsequent watershed step. Set it to `'yes'` for modules that produce probability maps and `'no'` for instance segmenters. Alternatively, you can specify `'bypass'` to have the output still go through S3Segmenter with the `--nucleiRegion bypass` flag. This will skip watershed but still allow you to filter nuclei by size with `--logSigma`.
 
-## Options
-
-The `opts` field specifies additional default parameters that MCMICRO should pass to the module by default. Unlike `cmd`, users can override the default `opts` values by specifying `--<module name>-opts` on the command line (`--ilastik-opts` in this case.)
-
 ## Putting it all together
 
-Given the above configuration for ilastik, users of MCMICRO can begin using the module by typing the following command:
+Given the above configuration for ilastik, users of MCMICRO can begin using the module by including the following inside their `params.yml`:
 
-```
-nextflow run labsyspharm/mcmicro --in path/to/exemplar-001 \
-  --probability-maps ilastik \
-  --segmentation-channels '1 5'\
-  --ilastik-opts '--num_channels 2' \
-  --ilastik-model myawesomemodel.ilp
+``` yaml
+workflow:
+  segmentation: ilastik
+  segmentation-channel: 1 5
+  ilastik-model: myawesomemodel.ilp
+options:
+  ilastik: --num_channels 2
 ```
 
-As exemplar-001 makes its way through the pipeline, it will eventually encounter the [probability map generation and segmentation step]({{ site.baseurl }}instructions/nextflow/#segmentation). The pipeline will then identify ilastik as the module to be executed from the `--probability-maps` flag. The actual command that MCMICRO runs will then be composed using all the above fields together:
+As exemplar-001 makes its way through the pipeline, it will eventually encounter the [segmentation step]({{ site.baseurl }}/io.html#segmentation). The pipeline will then identify ilastik as the module to be executed from the `--segmentation` flag. The actual command that MCMICRO runs will then be composed using all the above fields together:
 
 ```
 python /app/mc-ilastik.py --output . --input exemplar-001.ome.tif --model myawesomemodel.ilp --channelIDs 1 5 --num_channels 2
