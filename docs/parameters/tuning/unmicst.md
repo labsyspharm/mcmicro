@@ -39,21 +39,25 @@ UnMICST also trained on **real augmentations** - such as intentionally de-focuse
 
 ## Troubleshooting Scenarios
 **1. I just wanted to get started.** <br>
-Set `--tool unmicst-solo` in the `unmicst` field of module options, and choose a channel that has your DNA stain. If this is in the first channel, use `--channel 1`. An example `params.yml` may look as follows:
+Set `--tool unmicst-solo` in the `unmicst` field of module options, and choose a channel that has your DNA stain in the `segmentation-channel` field of workflow parameters. Channel specification uses 1-based indexing. An example `params.yml` may look as follows:
 
 ``` yaml
+workflow:
+  segmentation-channel: 1
 options:
-  unmicst: --tool unmicst-solo --channel 1
+  unmicst: --tool unmicst-solo
 ```
 ![]({{ site.baseurl }}/images/unmicst3.png) <br>
 
 **2. My tissue images have very packed nuclei. What do I do??**<br>
 unmicst-solo uses a single DNA channel whereas unmicst-duo uses a DNA channel and a nuclear envelope stain, which can help the model discriminate between tightly-packed nuclei. This additional stain can come from markers such as lamin B1, B2, nucleoporin 98 or some additive combination. 
-Set `--tool unmicst-duo` and choose channels that have your DNA and nuclear envelope stains. If your DNA and envelope stains are in the 1st and 5th channel respectively, use `--channel 1 5`. The corresponding `params.yml` may look as follows:
+Set `--tool unmicst-duo` and choose channels that have your DNA and nuclear envelope stains. If your DNA and envelope stains are in the 1st and 5th channel respectively, the corresponding `params.yml` may look as follows:
 
 ```yaml
+workflow:
+  segmentation-channel: 1 5
 options:
-  unmicst: --tool unmicst-duo --channel 1 5
+  unmicst: --tool unmicst-duo
 ```
 
 ![]({{ site.baseurl }}/images/unmicst4.png) <br>
