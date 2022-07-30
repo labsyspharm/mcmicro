@@ -37,18 +37,21 @@ params.path = '.'
 switch( params.name ) {
     case "exemplar-001":
 	url = 'https://mcmicro.s3.amazonaws.com/exemplars/001/exemplar-001'
+    hasParams         = false
     registered        = false
 	params.fromCycle  = 6
 	params.toCycle    = 8
 	break
     case "exemplar-002":
 	url = 'https://mcmicro.s3.amazonaws.com/exemplars/002/exemplar-002'
+    hasParams         = true
     registered        = false
 	params.fromCycle  = 1
     params.toCycle    = 10
 	break
     case "exemplar-003":
     url = 'https://mcmicro.s3.amazonaws.com/exemplars/003/exemplar-003'
+    hasParams         = true
     registered        = true
     break
     default:
@@ -99,6 +102,17 @@ process getMarkers {
     """
 }
 
+process getParams {
+    publishDir "${params.path}/${params.name}", mode: 'move'
+
+    output: file 'params.yml'
+    when: hasParams
+
+    """
+    curl -f -o params.yml "${url}/params.yml"
+    """
+}
+
 workflow {
 
     // Is the exemplar pre-registered?
@@ -134,4 +148,6 @@ workflow {
         // Cut the appropriate rows from markers.csv
         getMarkers("| sed -n \"1p;${mFrom},${mTo}p\"")
     }
+
+    getParams()
 }
