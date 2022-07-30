@@ -100,7 +100,7 @@ The parameter file must be named `params.yml` and placed in the project director
 ## Output
 
 ### Stitching and registration
-[ASHLAR]({{site.baseurl}}/modules/#ashlar) is the default first step of the pipeline. ASHLAR will aggregate individual image tiles from `raw/` along with the corresponding illumination profiles to produce a stitched and registered mosaic image. 
+[ASHLAR]({{site.baseurl}}/parameters/core.html#ashlar) is the default first step of the pipeline. ASHLAR will aggregate individual image tiles from `raw/` along with the corresponding illumination profiles to produce a stitched and registered mosaic image. 
 
 This mosaic image will be published to the `registration/` subdirectory:
 ```

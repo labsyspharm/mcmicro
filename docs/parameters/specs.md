@@ -59,20 +59,20 @@ MCMICRO assumes that CLI conforms to the following input-output specifications.
 **Output:**
 
 * An image file in `.tif` format, written to `.` (i.e., the "current working directory"). The file can be either a probability map or a segmentation mask. The image channels in probability maps annotate each pixel with probabilities that it belongs to the background or different parts of the cell such as the nucleus, cytoplasm, cell membrane or the intercellular region. Similarly, segmentation masks annotate each pixel with an integer index of the cell it belongs to, or 0 if none.
-* (Optional) One or more files written to `./qc/` (i.e., `qc/` subdirectory within the "current working directory"). These will be copied by the pipeline to the corresponding location in the [project's `qc/` directory]({{ site.baseurl }}/instructions/nextflow/#quality-control).
+* (Optional) One or more files written to `./qc/` (i.e., `qc/` subdirectory within the "current working directory"). These will be copied by the pipeline to the corresponding location in the [project's `qc/` directory]({{ site.baseurl }}/io.html#quality-control).
 
 ### Downstream modules
 
 **Input:**
 
-* A file in `.csv` format containing a [spatial feature table]({{ site.baseurl }}/instructions/nextflow/#quantification). Each row in a table corresponds to a cell, while columns contain features characterizing marker expression or morphological properties.
+* A file in `.csv` format containing a [spatial feature table]({{ site.baseurl }}/io.html#quantification). Each row in a table corresponds to a cell, while columns contain features characterizing marker expression or morphological properties.
 * (Optional) A file containing a custom model for the algorithm. The file can be in any format, and it is up to the module developer to decide what formats they allow from users.
 
 **Output:**
 
 * One or more files in `.csv` or `.hdf5` format, written to `.` (i.e., the "current working directory"). Each file should annotate individual cells with the corresponding inferred cell state.
 * (Optional) One or more files written to `./plots/` (i.e., `plots/` subdirectory within the "current working directory"). Each file can be in any format and contain any information that the module developer thinks will be useful to the user (e.g., UMAP plots showing how cells cluster together).
-* (Optional) One or more files written to `./qc/` (i.e., `qc/` subdirectory within the "current working directory"). These will be copied by the pipeline to the corresponding location in the [project's `qc/` directory]({{ site.baseurl }}/instructions/nextflow/#quality-control).
+* (Optional) One or more files written to `./qc/` (i.e., `qc/` subdirectory within the "current working directory"). These will be copied by the pipeline to the corresponding location in the [project's `qc/` directory]({{ site.baseurl }}/io.html#quality-control).
 
 # Configuration
 

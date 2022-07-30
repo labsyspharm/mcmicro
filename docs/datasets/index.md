@@ -71,7 +71,7 @@ nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-002 --path /local/p
 <br>
 
 ### Visual Guide: Processing Exemplar-002 with MCMICRO 
-This detailed [visual guide]({{ site.baseurl }}/tutorial/pipeline-visual-guide.html){:target="_blank"}  walks you through the MCMICRO pipeline steps as it processes `exemplar-002`. This guide was generated using the [Minerva]({{base.siteurl}}/modules/#minerva) software package.
+This detailed [visual guide]({{ site.baseurl }}/tutorial/pipeline-visual-guide.html){:target="_blank"}  walks you through the MCMICRO pipeline steps as it processes `exemplar-002`. This guide was generated using the [Minerva]({{base.siteurl}}/parameters/core.html#minerva) software package.
 
 [View the visual guide]({{ site.baseurl }}/tutorial/pipeline-visual-guide.html){: .btn .btn-green .btn-outline .btn-arrow }
 

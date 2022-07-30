@@ -15,9 +15,9 @@ parent: Home
 4. The [tutorial](./tutorial/tutorial.html)\* provides a step-by-step example workflow that allows beginners to process two example sample data sets into mosaic images. 
  >\* *First time users should start here to verify that MCMICRO is working with their system*
 
-5. [Pipeline documentation](./instructions/) section provides detailed documentation on how to use MCMICRO and how to adjust pipeline parameters. 
->\*View the [frequently asked questions](./instructions/faq.html) for step-by-step troubleshooting guides.
+5. [Inputs/Outputs](./io.html) sections provide detailed documentation on how the inputs and outputs expected by MCMICRO.
+>\*View the [troubleshooting](./troubleshooting/) section when running into problems.
 
-6. Go to [modules](./modules/) for reference information on the usage, parameters, and parameter tuning for the the various MCMICRO modules.
+6. Go to [Parameters](./parameters/) for reference information on the usage, parameters, and parameter tuning for the the various MCMICRO modules.
 
-7. Visit [community](./community/) to learn more about the cross-institutional effort that has culminated in MCMICRO, to get [help](./community/help.html), and to get involved!
+7. Visit [community](./community/) to learn more about the cross-institutional effort that has culminated in MCMICRO and to get involved!

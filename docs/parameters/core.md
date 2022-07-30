@@ -500,10 +500,6 @@ At the moment, MCMICRO does not automatically generate Minerva stories of the in
 
 Module suggestions can be made by posting to [https://forum.image.sc/](https://forum.image.sc/){:target="_blank"} and tagging your post with the `mcmicro` tag.
 
-# Add a module
-
-MCMICRO allows for certain module types to be specified dynamically through a configuration file. If you already have a containerized method with a command-line interface, follow [our instructions]({{ site.baseurl }}/instructions/advanced-topics/adding.html) to incorporate your module into the pipeline.
-
 [Back to top](./){: .btn .btn-outline} 
 
 {: .no_toc }
