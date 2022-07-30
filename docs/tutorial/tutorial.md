@@ -132,8 +132,9 @@ In the commands below, `/my/path` should match what was used to download exempla
 # Run the pipeline on exemplar data (starting from the registration step, by default)
 nextflow run labsyspharm/mcmicro --in /my/path/exemplar-001
 
-# Use --tma to dearray a tissue microarray and process each core in parallel
-nextflow run labsyspharm/mcmicro --in /my/path/exemplar-002 --tma
+# params.yml in exemplar-002 will tell MCMICRO to dearray a 
+#  tissue microarray and process each core in parallel
+nextflow run labsyspharm/mcmicro --in /my/path/exemplar-002
 ```
 
 *If your computer has an **Apple M1 chip**, you may need to specify ilastik for probability maps at this step. Read more on the [FAQ page](../instructions/faq.md#q-my-computer-has-an-apple-m1-chip-and-the-pipeline-is-failing-at-the-segmentation-step-what-can-i-do).*
@@ -330,7 +331,7 @@ exemplar-002
     ├── unmicst/
     |   └── exemplar-001-Preview_1.tif
     └── params.yml
-# Working with TMA array (using --tma flag) produces the dearray/ directory
+# Working with TMA array (tma:true in params.yml) produces the dearray/ directory
 ```
 </div>
 </div>
