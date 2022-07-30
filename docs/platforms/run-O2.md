@@ -17,7 +17,7 @@ There are several important caveats to run mcmicro on O2.
 
 1. If your account is not in the `lsp` group (type `groups` to check), then please run the following command to prepare your environment: `nextflow run labsyspharm/mcmicro/setup/O2ext.nf`
 
-1. When working with [exemplars]({{ site.baseurl }}/datasets/datasets.html), please download your own copy to `/n/scratch3/users/.../$USER/` (where `$USER` is your eCommons ID and `...` is its first letter).
+1. When working with [exemplars]({{ site.baseurl }}/datasets/), please download your own copy to `/n/scratch3/users/.../$USER/` (where `$USER` is your eCommons ID and `...` is its first letter).
 
 ## O2 execution
 

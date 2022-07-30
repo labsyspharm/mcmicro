@@ -80,7 +80,7 @@ nextflow run labsyspharm/mcmicro --in /my/path/exemplar-002 --tma --segmentation
 
 This is because UnMICST (`segmentation:worker (unmicst-1)`) currently does not work on the M1 architecture. Fortunately, ilastik is supported by M1. See [GitHub Issue #353](https://github.com/labsyspharm/mcmicro/issues/353) for more details.
 
-*If you came here from Step 3 in Tutorials, head back to [Tutorials](../tutorial/tutorial.md) to finish the rest of the steps!*
+*If you came here from Step 3 in Tutorials, head back to [Tutorials](../tutorial/tutorial.html) to finish the rest of the steps!*
 
 ### Q: MCMICRO doesn't seem to recognize my file format. How do I tell it what files to look for?
 

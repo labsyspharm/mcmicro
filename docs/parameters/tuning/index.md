@@ -20,4 +20,4 @@ parent: Parameters
 
 <br>
 
-*Detailed tuning information for other modules can be found on their respective websites, go to the [main module page]({{site.baseurl}}/parameters/modules/) for more information.*
+*Detailed tuning information for other modules can be found on their respective websites, go to the [main module page]({{site.baseurl}}/parameters/core.html) for more information.*

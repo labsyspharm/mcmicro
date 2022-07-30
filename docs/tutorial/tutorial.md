@@ -13,7 +13,7 @@ has_children: true
 Here we show an example of how to execute MCMICRO on two exemplar datasets using the command line (Nextflow) interface.
 
 {: .fs-3}
-**Note:** *Nextflow is compatible with Linux or Mac (through the terminal), but Windows users will need to set up a [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/about){:target="_blank"} or use the [Galaxy workflow]({{site.baseurl}}/instructions/galaxy/).*
+**Note:** *Nextflow is compatible with Linux or Mac (through the terminal), but Windows users will need to set up a [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/about){:target="_blank"} or use the [Galaxy workflow]({{site.baseurl}}/platforms/galaxy/).*
 
 <br>
 
@@ -137,7 +137,7 @@ nextflow run labsyspharm/mcmicro --in /my/path/exemplar-001
 nextflow run labsyspharm/mcmicro --in /my/path/exemplar-002
 ```
 
-*If your computer has an **Apple M1 chip**, you may need to specify ilastik for probability maps at this step. Read more on the [FAQ page](../instructions/faq.md#q-my-computer-has-an-apple-m1-chip-and-the-pipeline-is-failing-at-the-segmentation-step-what-can-i-do).*
+*If your computer has an **Apple M1 chip**, you may need to specify ilastik for probability maps at this step. Read more on the [FAQ page]({{site.baseurl}}/troubleshooting/faq.html#q-my-computer-has-an-apple-m1-chip-and-the-pipeline-is-failing-at-the-segmentation-step-what-can-i-do).*
 
 *On an average workstation, it takes approximately 5-10 minutes to process exemplar-001 from start to finish. Exemplar-002 is substantially larger, and takes 30-40 minutes on an average workstation.
 
@@ -365,7 +365,7 @@ Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may
   {: .fw-200}
   `cellOutlines.ome.tif` Cell outlines overlaid with raw image, zoomed in on an arbitrary area. *(This example shows the first available cycle (Cycle 6) in the default exemplar-001 data set .)*
 
-  >Read [Parameter Tuning for S3Segmenter](../parameters/tuning/s3seg.md) for common troubleshooting scenarios.
+  >Read [Parameter Tuning for S3Segmenter](../parameters/tuning/s3seg.html) for common troubleshooting scenarios.
 
 <br>
 
@@ -380,7 +380,7 @@ Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may
   {: .fw-200}
   `TMA_MAP.tif` exemplar-002
 
-  >Read [Parameter Tuning for Coreograph](../parameters/tuning/coreograph.md) for common troubleshooting scenarios.
+  >Read [Parameter Tuning for Coreograph](../parameters/tuning/coreograph.html) for common troubleshooting scenarios.
   
 <br>
 
@@ -391,7 +391,7 @@ Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may
 
 * However, if segmentation results found in `qc/s3seg/` are not desirable, UnMICST `qc` files can provide a clue for what went wrong. 
 
-  >Read [Parameter Tuning for UnMICST](../parameters/tuning/unmicst.md) for common troubleshooting scenarios.
+  >Read [Parameter Tuning for UnMICST](../parameters/tuning/unmicst.html) for common troubleshooting scenarios.
 
 <br>
 

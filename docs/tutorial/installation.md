@@ -60,7 +60,7 @@ Install [Docker](https://docs.docker.com/install/){:target="_blank"}. Ensure tha
 {: .text-center }
 {: .fs-3 }
 {: .fw-300 }
-\* *Harvard Medical School users using the O2 Compute Cluster should not install Docker - learn more [here](../advanced-topics/run-O2.html).*	
+\* *Harvard Medical School users using the O2 Compute Cluster should not install Docker - learn more [here](../platforms/run-O2.html).*	
 
 <br>
 
@@ -71,4 +71,4 @@ Ready to run??
 
 Beginners, start with the [tutorial]({{site.baseurl}}/tutorial/tutorial.html){: .btn .btn-outline .btn-arrow }
 
-Experienced users can go to the [MCMICRO Reference Sheet](./){: .btn .btn-outline .btn-arrow }
+Experienced users can go to the [Parameter reference]({{site.baseurl}}/parameters/){: .btn .btn-outline .btn-arrow }
