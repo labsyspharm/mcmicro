@@ -34,7 +34,7 @@ Please see the subpages for more information about [workflow](./workflow.html), 
 
 ## Specifying an external parameter file
 
-By default, MCMICRO will look for `params.yml` in the [project directory]({{site.baseurl}}/io.html#input). This can create unnecessary duplication of parameter files, if multiple project directories share the same set of parameter values. To avoid such duplication, create a single `myparams.yml` and supply it to the pipeline with `--params`:
+By default, MCMICRO will look for `params.yml` in the [project directory]({{site.baseurl}}/io.html#input). If you want to use the same parameter values for multiple projects, you can instead create a single `myparams.yml` file (elsewhere) and supply the path to this file to the pipeline with `--params`:
 
 ``` bash
 ## External parameter files can be supplied with --params
