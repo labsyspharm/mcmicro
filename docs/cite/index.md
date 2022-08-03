@@ -1,7 +1,7 @@
 ---
 layout: default
 title: How to cite?
-nav_order: 10
+nav_order: 13
 has_children: true
 
 ---

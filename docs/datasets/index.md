@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Example datasets
-nav_order: 6
+nav_order: 10
 has_children: false
 redirect_from: /datasets.html
 ---

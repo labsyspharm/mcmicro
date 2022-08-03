@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Core Modules
+title: "Options: Core Modules"
 parent: Parameters
 nav_order: 5
 ---

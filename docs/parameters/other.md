@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Other modules
+title: "Options: Other modules"
 nav_order: 40
 parent: Parameters
 ---
