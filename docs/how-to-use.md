@@ -18,7 +18,7 @@ parent: Home
 4. [Inputs/Outputs](./io.html) sections provide detailed documentation on what the inputs and outputs expected by MCMICRO are.
 >\*View the [troubleshooting](./troubleshooting/) section when running into problems.
 
-5. Go to [platforms](https://artemsokolov.github.io/mcmicro/platforms/) to learn how to deploy MCMICRO in your compute environment.
+5. Go to [platforms](./platforms/) to learn how to deploy MCMICRO in your compute environment.
 
 6. Go to [parameters](./parameters/) for reference information on the usage and parameters for the various MCMICRO modules.
 >\* View [parameter tuning](./troubleshooting/tuning/) for in-depth guides on how parameter values affect module output.

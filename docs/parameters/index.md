@@ -4,6 +4,16 @@ title: Parameters
 nav_order: 5
 ---
 
+# Supplying parameters to MCMICRO
+
+Parameters can be supplied in three ways,
+
+1. by [providing `params.yml` as a file](./#parameter-files) in the project [directory]({{site.baseurl}}/io.html#input),
+2. by [pointing to a `params.yml` file in another directory](./#specifying-an-external-parameter-file), or
+3. by [overwriting individual parameters](./#overwriting-individual-parameters) on the command line. If no parameters are supplied, MCMICRO will run with a set of [default parameter values](https://github.com/labsyspharm/mcmicro/blob/master/config/defaults.yml). MCMICRO will resolve conflicting parameter values with a [priority list](./#parameter-value-prioritization).
+
+On this page, you will find more information about how to supply parameters to the pipeline for each of these methods, how to [change where intermediate files are stored](./#specifying-path-for-intermediate-files) and [how to specify start and stop modules](./#specifying-start-and-stop-modules).
+
 ## Parameter files
 
 Parameter files must be specified in standard YAML format using the following three namespaces:
