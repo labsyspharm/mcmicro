@@ -187,7 +187,7 @@ The modules uses the popular UNet deep learning architecture to identify cores w
 
 ### Usage
 
-By default, MCMICRO assumes that the input is a whole-slide image. Add `tma: true` to [workflow parameters]([module options]({{site.baseurl}}/parameters/)) to indicate that the input is a TMA instead. Add `coreograph:` to [module options]({{site.baseurl}}/parameters/) to control the module behavior.
+By default, MCMICRO assumes that the input is a whole-slide image. Add `tma: true` to [module options]({{site.baseurl}}/parameters/) to indicate that the input is a TMA instead. Add `coreograph:` to [module options]({{site.baseurl}}/parameters/) to control the module behavior.
 
 * Example `params.yml`:
 
@@ -226,7 +226,7 @@ A fluorescence image of a tissue microarray where at least one channel is of DNA
  | `--tissue` | | Coreograph will assume that its input is a whole-slide image and will work to isolate individual tissue chunks into separate files |
 
 ### Troubleshooting
-A troubleshooting guide can be found within [Coreograph parameter tuning](./tuning/coreograph.html).
+A troubleshooting guide can be found within [Coreograph parameter tuning]({{site.baseurl}}/troubleshooting/tuning/coreograph.html).
 
 [Back to top](./){: .btn .btn-outline} 
 
@@ -278,7 +278,7 @@ An ``.ome.tif``, preferably flat field corrected. The model is trained on images
 | `--GPU <index>` | Automatic | Explicitly specify which GPU (1-based indexing) you want to use. Useful for running on local workstations with multiple GPUs. |
 
 ### Troubleshooting
-A troubleshooting guide can be found within [UnMICST parameter tuning](./tuning/unmicst.html) - additional information is also available on the [UnMICST website](https://labsyspharm.github.io/UnMICST-info/){:target="_blank"} .
+A troubleshooting guide can be found within [UnMICST parameter tuning]({{site.baseurl}}/troubleshooting/tuning/unmicst.html) - additional information is also available on the [UnMICST website](https://labsyspharm.github.io/UnMICST-info/){:target="_blank"} .
 
 [Back to top](./){: .btn .btn-outline} 
 
@@ -362,7 +362,7 @@ Nextflow saves these files to the `qc/s3seg/` subfolder within your project.
 | `--TissueMaskChan <index>` | Union of `probMapChan` and `CytoMaskChan` | One or more channels to use for identifying the general tissue area for masking purposes. |
 
 ### Troubleshooting
-A troubleshooting guide can be found within [S3segmenter parameter tuning](./tuning/s3seg.html).
+A troubleshooting guide can be found within [S3segmenter parameter tuning]({{site.baseurl}}/troubleshooting/tuning/s3seg.html).
 
 [Back to top](./){: .btn .btn-outline} 
 

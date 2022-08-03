@@ -39,7 +39,7 @@ MCMICRO is implemented in the workflow languages [Nextflow](https://www.nextflow
 </div>
 <div markdown="1">
 ## A growing community 
-Modules are being added to MCMICRO incrementally by a diverse developer community seeded by the NCI [Human Tissue Atlas Network](https://humantumoratlas.org/){:target="_blank"}. See what modules we are currently [using](./modules/), view our growing [community](./community/), or [get help](./troubleshooting).
+Modules are being added to MCMICRO incrementally by a diverse developer community seeded by the NCI [Human Tissue Atlas Network](https://humantumoratlas.org/){:target="_blank"}. See what modules we are currently [using](./parameters/core.html), view our growing [community](./community/), or [get help](./troubleshooting).
 </div>
 <div markdown="1">
 ## Robust test data

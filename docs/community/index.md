@@ -24,7 +24,7 @@ MCMICRO is a multi-institutional effort with contributions by the following deve
 |**University of Macau**|[Yimin Zheng](https://github.com/Mr-Milk)|
 
 # Additional efforts
-Additional development is contributed by researchers in the laboratory of [Peter Sorger](http://orcid.org/0000-0002-3364-1838) and the HMS Laboratory of Systems Pharmacology.
+Additional development is contributed by researchers in the laboratory of [Peter Sorger](https://orcid.org/0000-0002-3364-1838) and the HMS Laboratory of Systems Pharmacology.
 
 ## Website Developers
 * [Juliann Tefft](https://www.linkedin.com/in/juliann-tefft)

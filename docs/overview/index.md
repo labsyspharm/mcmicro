@@ -139,7 +139,7 @@ The tiles must then be combined into a seamlessly aligned mosaic image in a proc
 ### TMA core detection (optional) 
 
 **Coreograph**  
-[Coreograph]({{ site.baseurl }}/parameters/tuning/coreograph.html) identifies complete and partial tissue cores on a tissue microarray and exports these tissue cores as individual images for faster downstream image processing [(Schapiro et al., 2021)](https://doi.org/10.1038/s41592-021-01308-y){:target="_blank"}. Coreograph uses a deep learning model, UNet [(Ronneberger et al., 2015)](https://arxiv.org/abs/1505.04597){:target="_blank"}.
+[Coreograph]({{ site.baseurl }}/troubleshooting/tuning/coreograph.html) identifies complete and partial tissue cores on a tissue microarray and exports these tissue cores as individual images for faster downstream image processing [(Schapiro et al., 2021)](https://doi.org/10.1038/s41592-021-01308-y){:target="_blank"}. Coreograph uses a deep learning model, UNet [(Ronneberger et al., 2015)](https://arxiv.org/abs/1505.04597){:target="_blank"}.
 
 {: .text-center }
 {: .fs-3 }
