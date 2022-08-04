@@ -3,7 +3,7 @@ layout: default
 title: Parameter tuning
 nav_order: 60
 has_children: true
-parent: Parameters
+parent: Troubleshooting
 ---
 
 # Parameter tuning
