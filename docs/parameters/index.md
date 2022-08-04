@@ -79,7 +79,7 @@ nextflow run labsyspharm/mcmicro --in /path/to/project --ashlar-opts '-m 50'
 Given the many ways to specify parameters, conflicting values will be resolved according to the following prioritization:
 
 * (Lowest) Parameter values in [config/defaults.yml](https://github.com/labsyspharm/mcmicro/blob/master/config/defaults.yml).
-* Parameter values in `params.yml`, if one found in the directory supplied via `--in`.
+* Parameter values in `params.yml`, if one found in the directory supplied via `--in`. **(This is recommended.)**
 * Parameter values in a YAML file provided via `--params`.
 * (Highest) Values for individual parameters provided as double-dashed command-line arguments (e.g., `--start-at`)
 

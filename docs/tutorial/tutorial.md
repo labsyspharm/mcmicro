@@ -132,8 +132,7 @@ In the commands below, `/my/path` should match what was used to download exempla
 # Run the pipeline on exemplar data (starting from the registration step, by default)
 nextflow run labsyspharm/mcmicro --in /my/path/exemplar-001
 
-# params.yml in exemplar-002 will tell MCMICRO to dearray a 
-#  tissue microarray and process each core in parallel
+# params.yml in exemplar-002 will tell MCMICRO to treat data as a tissue microarray
 nextflow run labsyspharm/mcmicro --in /my/path/exemplar-002
 ```
 
