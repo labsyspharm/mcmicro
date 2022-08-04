@@ -1,11 +1,11 @@
 ---
 layout: default
-title: Example data sets
-nav_order: 6
+title: Example datasets
+nav_order: 10
 has_children: false
 redirect_from: /datasets.html
 ---
-# Example data sets
+# Example datasets
 {: .no_toc }
 
 <details open markdown="block">
@@ -49,7 +49,7 @@ redirect_from: /datasets.html
 >* The four cores are two meningioma tumors, one GI stroma tumor, and one normal colon specimen. 
 >* This data set has ten cycles with 40 total channels and also includes precomputed illumination profiles.
 
-**After [installing Nextflow]({{ site.baseurl }}/instructions/nextflow/installation.html), both exemplars can be downloaded using the following commands:**
+**After [installing Nextflow]({{ site.baseurl }}/tutorial/installation.html), both exemplars can be downloaded using the following commands:**
 ``` bash
 nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-001 --path /local/path/
 nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-002 --path /local/path/
@@ -71,7 +71,7 @@ nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-002 --path /local/p
 <br>
 
 ### Visual Guide: Processing Exemplar-002 with MCMICRO 
-This detailed [visual guide]({{ site.baseurl }}/tutorial/pipeline-visual-guide.html){:target="_blank"}  walks you through the MCMICRO pipeline steps as it processes `exemplar-002`. This guide was generated using the [Minerva]({{base.siteurl}}/modules/#minerva) software package.
+This detailed [visual guide]({{ site.baseurl }}/tutorial/pipeline-visual-guide.html){:target="_blank"}  walks you through the MCMICRO pipeline steps as it processes `exemplar-002`. This guide was generated using the [Minerva]({{base.siteurl}}/parameters/core.html#minerva) software package.
 
 [View the visual guide]({{ site.baseurl }}/tutorial/pipeline-visual-guide.html){: .btn .btn-green .btn-outline .btn-arrow }
 

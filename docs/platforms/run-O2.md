@@ -2,7 +2,7 @@
 layout: default
 title: O2 cluster (HMS only)
 nav_order: 14
-parent: Advanced Topics
+parent: Platforms
 ---
 
 # Running mcmicro on the O2 compute cluster
@@ -11,13 +11,13 @@ parent: Advanced Topics
 
 There are several important caveats to run mcmicro on O2.
 
-1. [Installation](../nextflow/installation.html) only requires Nextflow. Docker is not needed, because O2 uses Singularity to execute module containers, and Singularity is already available on O2.
+1. [Installation]({{ site.baseurl }}/tutorial/installation.html) only requires Nextflow. Docker is not needed, because O2 uses Singularity to execute module containers, and Singularity is already available on O2.
 
 1. Please ensure that Java is available by running `module load java`.
 
 1. If your account is not in the `lsp` group (type `groups` to check), then please run the following command to prepare your environment: `nextflow run labsyspharm/mcmicro/setup/O2ext.nf`
 
-1. When working with [exemplars]({{ site.baseurl }}/datasets/datasets.html), please download your own copy to `/n/scratch3/users/.../$USER/` (where `$USER` is your eCommons ID and `...` is its first letter).
+1. When working with [exemplars]({{ site.baseurl }}/datasets/), please download your own copy to `/n/scratch3/users/.../$USER/` (where `$USER` is your eCommons ID and `...` is its first letter).
 
 ## O2 execution
 

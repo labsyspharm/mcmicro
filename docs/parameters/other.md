@@ -1,8 +1,8 @@
 ---
 layout: default
-title: Other modules
+title: "Options: Other modules"
 nav_order: 40
-parent: Modules
+parent: Parameters
 ---
 
 # Other Modules
@@ -30,12 +30,18 @@ Clsutering and cell type inference
 The module provides a command-line interface to the popular [ilastik](https://www.ilastik.org/) toolkit and serves as another method for generating probability maps that can be used as an alternative to UnMICST. Check the [GitHub](https://github.com/labsyspharm/mcmicro-ilastik){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
-By default, MCMICRO runs UnMicst for probability map generation. To run Ilastik instead of or in addition to UnMicst, use the `--probability-maps` flag. When specifying multiple methods, note that the method names must be delimited by a comma with no space. Arguments should be passed to Ilastik with the `--ilastik-opts` flag. Custom models can be provided to Ilastik via `--ilastik-model`.
+By default, MCMICRO runs UnMicst for probability map generation. To run Ilastik instead of or in addition to UnMicst, add `segmentation: ilastik` to [workflow parameters]({{site.baseurl}}/parameters/). When specifying multiple methods, the method names should be provided as a list enclosed in square brackets. Arguments should be passed to Ilastik via `ilastik:` in the module options section, while custom models can be provided to Ilastik via `ilastik-model:` workflow parameter.
 
-* Examples:
-  * `nextflow run labsyspharm/mcmicro --in /my/project --probability-maps ilastik --ilastik-opts '--crop'`
-  * `nextflow run labsyspharm/mcmicro --in /my/project --probability-maps ilastik,unmicst --ilastik-model mymodel.ilp`
-* Default: `--ilastik-opts '--num_channels 1'`
+* Example `params.yml`:
+
+``` yaml
+workflow:
+  segmentation: [ilastik, unmicst]
+  ilastik-model: /full/path/to/mymodel.ilp
+options:
+  ilastik: --nonzero_fraction 0.5 --num_channels 1
+```
+* Default ilastik options: `--num_channels 1`
 * Running outside of MCMICRO: [Instructions](https://github.com/labsyspharm/mcmicro-ilastik){:target="_blank"}.
 
 ### Input
@@ -50,7 +56,6 @@ The output is similar to that produced by UnMicst, namely a ```.tif``` stack whe
 | --- | --- | --- |
 | `--nonzero_fraction <value>` |`None` | Indicates fraction of pixels per crop above global threshold to ensure tissue and not only background is selected |
 | `--nuclei_index <index>` |`1` | Index of nuclei channel to use for nonzero_fraction argument |
-| `--crop` | Omitted | If specified, crop regions for ilastik training |
 | `--num_channels <value>` | `None`| Number of channels to export per image (Ex: 40 corresponds to a 40 channel ome.tif image) |
 | `--channelIDs <indices>` |`None` | Integer indices specifying which channels to export (Ex: 1 2 4). **NOTE: You must specify a channel to use for filtering in S3segmenter as --probMapChan in --s3seg-opts**|
 | `--ring_mask`| Omitted | Specify if you have a ring mask in the same directory to use for reducing size of hdf5 image |
@@ -67,10 +72,17 @@ The output is similar to that produced by UnMicst, namely a ```.tif``` stack whe
 Cypository is used to segment the cytoplasm of cells. Check the [GitHub repository](https://github.com/HMS-IDAC/Cypository#cypository---pytorch-mask-rcnn-for-cell-segmentation){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
-Use `--probability-maps` to enable Cypository. In general, it would be uncommon to run Cypository alongside probability map generators for nuclei, but it can be done by specifying method names delimited with a comma and no space, e.g., `--probability-maps cypository,unmicst`. Additional Cypository parameters should be provided to MCMICRO with the `--cypository-opts` flag.
+Add `segmentation: cypository` to [workflow parameters]({{site.baseurl}}/parameters/) to enable Cypository. In general, it would be uncommon to run Cypository alongside probability map generators for nuclei, but it can be done by specifying method names as a list enclosed in square brackets, e.g., `segmentation: [cypository, unmicst]`. Additional Cypository parameters should be provided to MCMICRO by including a `cypository:` field in the module options section.
 
-* Example: `nextflow run labsyspharm/mcmicro --in /my/project --probability-maps cypository --cypository-opts '--channel 5'`
-* Default: `--cypository-opts '--model zeisscyto'`
+* Example `params.yml`:
+``` yaml
+workflow:
+  segmentation: cypository
+options:
+  cypository: --channel 5
+```
+
+* Default cypository options: `--model zeisscyto`
 
 ### Input
 A stitched and registered ``.ome.tif``, preferably flat field corrected. Nextflow will use as input files from the `registration/` subdirectory for whole-slide images and from the `dearray/` subdirectory for tissue microarrays.
@@ -101,11 +113,15 @@ The [Mesmer](https://doi.org/10.1038/s41587-021-01094-0){:target="_blank"} modul
 
 ### Usage
 
-Use `--probability-maps` to select mesmer. When running together with UnMicst and/or ilastik, method names must be separated by a comma without spaces. Additional Mesmer parameters can be provided to MCMICRO via the `--mesmer-opts` flag.
+Add `segmentation: mesmer` to [workflow parameters]({{site.baseurl}}/parameters/) to enable Mesmer. When running together with UnMicst and/or ilastik, method names must be provided as a list enclosed in square brackets. Additional Mesmer parameters can be provided to MCMICRO by including a `mesmer:` field in the module options section.
 
-* Examples:
-  * `nextflow run labsyspharm/mcmicro --in /my/project --probability-maps mesmer --mesmer-opts '--image-mpp 0.25'`
-  * `nextflow run labsyspharm/mcmicro --in /my/project --probability-maps mesmer,ilastik,unmicst`
+* Example `params.yml`:
+``` yaml
+workflow:
+  segmentation: mesmer
+options:
+  mesmer: --image-mpp 0.25
+```
 * Running outside of MCMICRO: [Instructions](https://github.com/vanvalenlab/deepcell-applications){:target="_blank"}.
 
 ### Input
@@ -133,11 +149,17 @@ A segmentation mask, similar to the ones produced by S3segmenter. Nextflow will 
 MCMICRO integrates three methods for clustering single-cell data. These are [FastPG](https://www.biorxiv.org/content/10.1101/2020.06.19.159749v2){:target="_blank"} (Fast C++ implementation of the popular Phenograph method), Leiden community detection via [scanpy](https://scanpy.readthedocs.io/en/stable/){:target="_blank"}, and [FlowSOM](https://bioconductor.org/packages/release/bioc/html/FlowSOM.html){:target="_blank"}.
 
 ### Usage
-Use the `--cell-states` flag to select one or more methods. Method names should be delimited with a comma and no space. Additional method parameters should be provided to MCMICRO with the following flags: `--fastpg-opts`, `--scanpy-opts`, `--flowsom-opts`.
+Add a `downstream:` field to [workflow parameters]({{site.baseurl}}/parameters/) to select one or more methods. Method names should be provided as a comma-delimited list enclosed in square brackets. Additional method parameters should be provided to MCMICRO by adding `fastpg:`, `scanpy:` and `flowsom:` fields to the module options section.
 
-* Examples:
-  * `nextflow run labsyspharm/mcmicro --in /my/project --stop-at cell-states --cell-states fastpg,flowsom --fastpg-opts '-k 10'`
-  * `nextflow run labsyspharm/mcmicro --in /my/project --stop-at cell-states --cell-states scanpy --scanpy-opts '-k 10'`
+* Example `params.yml`:
+``` yaml
+workflow:
+  stop-at: downstream
+  downstream: [fastpg, flowsom, scanpy]
+options:
+  fastpg: -k 10
+  scanpy: -k 10
+```
 * Running outside of MCMICRO:
   * [Instructions for FastPG](https://github.com/labsyspharm/mcmicro-fastpg){:target="_blank"}
   * [Instructions for scanpy](https://github.com/labsyspharm/mcmicro-scanpy){:target="_blank"}
@@ -194,12 +216,18 @@ All methods output a `.csv` file annotating individual cells with their cluster 
 `naivestates` is a label-free, cluster-free tool for inferring cell types from quantified marker expression data, based on known marker <-> cell type associations. Check the [GitHub repository](https://github.com/labsyspharm/naivestates){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
-Use the `--cell-states` flag to select naivestates. When running alongside other cell state inference methods, such as SCIMAP, method names should be delimited with a comma and no space. Custom marker to cell type (mct) mapping can be provided to naivestates via `--naivestates-model`. Arguments should be provided to MCMICRO with the `--naivestates-opts` flag.
+Add a `downstream:` field to [workflow parameters]({{site.baseurl}}/parameters/) to select naivestates. When running alongside other cell state inference methods, such as SCIMAP, method names should be provided as a list enclosed in square brackets. Custom marker to cell type (mct) mapping can be provided to naivestates via the `naivestates-model:` workflow parameters, while additional arguments should be specified by including a `naivestates:` field in the module options section.
 
-* Examples:
-  * `nextflow run labsyspharm/mcmicro --in /my/project --stop-at cell-states --cell-states naivestates --naivestates-opts '--log no'`
-  * `nextflow run labsyspharm/mcmicro --in /my/project --stop-at cell-states --cell-states naivestates,scimap --naivestates-model map.csv`
-* Default: `--naivestates--opts '-p png'`
+* Example `params.yml`:
+``` yaml
+workflow:
+  stop-at: downstream
+  downstream: naivestates
+  naivestates-model: /full/path/to/mct.csv
+options:
+  naivestates: --log no
+```
+* Default naivestates options: `-p png`
 * Running outside of MCMICRO: [Instructions](https://github.com/labsyspharm/mcmicro-ilastik){:target="_blank"}.
 
 ### Inputs

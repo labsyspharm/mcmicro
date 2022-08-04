@@ -2,12 +2,12 @@
 layout: default
 title: Running MCMICRO
 nav_order: 20
-parent: Galaxy workflow
+parent: Galaxy
 ---
 
 # Running MCMICRO in Galaxy
 
-The Galaxy workflow provides a sensible set of [default parameters for individual modules]({{ site.baseurl }}/modules/). These parameters can be modified and saved in the workflow using the Workflow Editor or can be changed at runtime.
+The Galaxy workflow provides a sensible set of [default parameters for individual modules]({{ site.baseurl }}/parameters/core.html). These parameters can be modified and saved in the workflow using the Workflow Editor or can be changed at runtime.
 <img src="{{ site.baseurl }}/images/galaxy-wf.png" />
 
 ## Import input data

@@ -1,41 +1,55 @@
 ---
 layout: default
-title: Adding a module
-nav_order: 10
-parent: Advanced Topics
+title: Module Specifications
+nav_order: 50
+parent: Parameters
 ---
 
-# Adding a module
+# Module specifications
 
-{: .no_toc }
+MCMICRO specifies all modules dynamically. Most of the users will not need to modify the default specifications. Occasionally, a user may need to run a different version of an existing module or add another module. Both of those things can be done by specifying the corresponding fields in the `modules:` namespace of the [parameter file]({{site.baseurl}}/parameters/).
 
-<details open markdown="block">
-  <summary>
-    Table of contents
-  </summary>
-  {: .text-delta }
-1. TOC
-{:toc}
-</details>
+## Modifying a module version
 
-MCMICRO allows all modules to be specified dynamically. Adding new modules requires nothing more than editing a simple configuration file in YAML format. No changes to the Nextflow codebase necessary!
+If a module is specified as the only option for a given processing step (`illumination`, `registration`, `dearray`, `watershed`, `quantification` and `viz`), then the version should be specified directly under the corresponding step using the `version:` field. In this case, an example `params.yml` may look as follows:
 
-## Quick start
+``` yaml
+modules:
+  registration:
+    version: 1.16.0
+  watershed:
+    version: 1.4.0-large
+```
 
-**Step 1.** Examine [the current specifications](https://github.com/labsyspharm/mcmicro/blob/master/modules.yml) and make note of the different fields provided for each pipeline step.
+Alternatively, if a module is one of several options for a given processing step (currently only `segmentation` and `downstream`), then the version specification should also include a `name:` field to allow matching against existing modules. An example `params.yml` in this case may look as following:
 
-**Step 2.** Create a new `specs.yml` file and define specs for your new module. Test your new file in MCMICRO with `--modules specs.yml` to verify that everything is working as expected.
+``` yaml
+modules:
+  segmentation:
+    -
+      name: unmicst
+      version: 2.7.3
+    -
+      name: mesmer
+      version: 0.4.0
+  downstream:
+    -
+      name: naivestates
+      version: 1.6.2
+```
 
-**Step 3.** If you believe your module will be of general utility to MCMICRO users, update `modules.yml` in the repository root and submit a pull request.
+When in doubt, follow the same structure as the one represented by the [default values](https://github.com/labsyspharm/mcmicro/blob/master/config/defaults.yml){:target="_blank"}.
 
-**Step 4.** After MCMICRO developers review and test your proposed module, the changes will be merged into the main project branch.
+## Adding a module
 
-# Input and output specs
+Adding a new module specification is currently only possible for `segmentation` and `downstream` processing steps.
+
+### Input and output specs
 
 Every module must have a command-line interface (CLI) that has been encapsulated inside a Docker container. 
 MCMICRO assumes that CLI conforms to the following input-output specifications.
 
-## Segmentation modules
+### Segmentation modules
 
 **Input:**
 
@@ -45,36 +59,38 @@ MCMICRO assumes that CLI conforms to the following input-output specifications.
 **Output:**
 
 * An image file in `.tif` format, written to `.` (i.e., the "current working directory"). The file can be either a probability map or a segmentation mask. The image channels in probability maps annotate each pixel with probabilities that it belongs to the background or different parts of the cell such as the nucleus, cytoplasm, cell membrane or the intercellular region. Similarly, segmentation masks annotate each pixel with an integer index of the cell it belongs to, or 0 if none.
-* (Optional) One or more files written to `./qc/` (i.e., `qc/` subdirectory within the "current working directory"). These will be copied by the pipeline to the corresponding location in the [project's `qc/` directory]({{ site.baseurl }}/instructions/nextflow/#quality-control).
+* (Optional) One or more files written to `./qc/` (i.e., `qc/` subdirectory within the "current working directory"). These will be copied by the pipeline to the corresponding location in the [project's `qc/` directory]({{ site.baseurl }}/io.html#quality-control).
 
-## Cell state calling modules
+### Downstream modules
 
 **Input:**
 
-* A file in `.csv` format containing a [spatial feature table]({{ site.baseurl }}/instructions/nextflow/#quantification). Each row in a table corresponds to a cell, while columns contain features characterizing marker expression or morphological properties.
+* A file in `.csv` format containing a [spatial feature table]({{ site.baseurl }}/io.html#quantification). Each row in a table corresponds to a cell, while columns contain features characterizing marker expression or morphological properties.
 * (Optional) A file containing a custom model for the algorithm. The file can be in any format, and it is up to the module developer to decide what formats they allow from users.
 
 **Output:**
 
 * One or more files in `.csv` or `.hdf5` format, written to `.` (i.e., the "current working directory"). Each file should annotate individual cells with the corresponding inferred cell state.
 * (Optional) One or more files written to `./plots/` (i.e., `plots/` subdirectory within the "current working directory"). Each file can be in any format and contain any information that the module developer thinks will be useful to the user (e.g., UMAP plots showing how cells cluster together).
-* (Optional) One or more files written to `./qc/` (i.e., `qc/` subdirectory within the "current working directory"). These will be copied by the pipeline to the corresponding location in the [project's `qc/` directory]({{ site.baseurl }}/instructions/nextflow/#quality-control).
+* (Optional) One or more files written to `./qc/` (i.e., `qc/` subdirectory within the "current working directory"). These will be copied by the pipeline to the corresponding location in the [project's `qc/` directory]({{ site.baseurl }}/io.html#quality-control).
 
 # Configuration
 
-Adding a new MCMICRO module involves specifying simple key-value pairs in `modules.yml`. For example, consider the following configuration for ilastik:
+Adding a new MCMICRO module involves specifying simple key-value pairs in the `modules:` section of `params.yml`. For example, consider the following configuration for ilastik:
 
-```
-  name: ilastik
-  container: labsyspharm/mcmicro-ilastik
-  version: 1.4.5
-  cmd: python /app/mc-ilastik.py --output .
-  input: --input
-  model: --model
-  channel: --channelIDs
-  idxbase: 1
-  watershed: 'yes'
-  opts: --num_channels 1
+``` yaml
+modules:
+  segmentation:
+    -
+      name: ilastik
+      container: labsyspharm/mcmicro-ilastik
+      version: 1.4.5
+      cmd: python /app/mc-ilastik.py --output .
+      input: --input
+      model: --model
+      channel: --channelIDs
+      idxbase: 1
+      watershed: 'yes'
 ```
 
 ## Name
@@ -113,23 +129,20 @@ The `channel` field indicates how MCMICRO should pass `--segmentation-channel` v
 
 The `watershed` field specifies whether the module requires a subsequent watershed step. Set it to `'yes'` for modules that produce probability maps and `'no'` for instance segmenters. Alternatively, you can specify `'bypass'` to have the output still go through S3Segmenter with the `--nucleiRegion bypass` flag. This will skip watershed but still allow you to filter nuclei by size with `--logSigma`.
 
-## Options
-
-The `opts` field specifies additional default parameters that MCMICRO should pass to the module by default. Unlike `cmd`, users can override the default `opts` values by specifying `--<module name>-opts` on the command line (`--ilastik-opts` in this case.)
-
 ## Putting it all together
 
-Given the above configuration for ilastik, users of MCMICRO can begin using the module by typing the following command:
+Given the above configuration for ilastik, users of MCMICRO can begin using the module by including the following inside their `params.yml`:
 
-```
-nextflow run labsyspharm/mcmicro --in path/to/exemplar-001 \
-  --probability-maps ilastik \
-  --segmentation-channels '1 5'\
-  --ilastik-opts '--num_channels 2' \
-  --ilastik-model myawesomemodel.ilp
+``` yaml
+workflow:
+  segmentation: ilastik
+  segmentation-channel: 1 5
+  ilastik-model: myawesomemodel.ilp
+options:
+  ilastik: --num_channels 2
 ```
 
-As exemplar-001 makes its way through the pipeline, it will eventually encounter the [probability map generation and segmentation step]({{ site.baseurl }}instructions/nextflow/#segmentation). The pipeline will then identify ilastik as the module to be executed from the `--probability-maps` flag. The actual command that MCMICRO runs will then be composed using all the above fields together:
+As exemplar-001 makes its way through the pipeline, it will eventually encounter the [segmentation step]({{ site.baseurl }}/io.html#segmentation). The pipeline will then identify ilastik as the module to be executed from the `--segmentation` flag. The actual command that MCMICRO runs will then be composed using all the above fields together:
 
 ```
 python /app/mc-ilastik.py --output . --input exemplar-001.ome.tif --model myawesomemodel.ilp --channelIDs 1 5 --num_channels 2
