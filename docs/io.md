@@ -241,7 +241,9 @@ Upon the full successful completion of a pipeline run, the directory structure w
 The name of the parent directory (e.g., `exemplar-002`) is assumed by the pipeline to be the sample name.
 
 
-Visual inspection of [quality control](./io.html#quality-control) (`qc/`) files is recommended after completing the run. Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may contain `.tif` images for inspection. 
+Visual inspection of [quality control](./io.html#quality-control) (`qc/`) files is recommended after completing the run. Depending on the modules used, directories `coreo/`, `unmicst/` and `s3seg/` may contain `.tif` images for inspection.
+
+By default Nextflow writes intermediate files to a `work/` directory inside whatever location you initiate a pipeline run from. You can change that by specifying a different [`-w` parameter](./parameters/#specifying-path-for-intermediate-files).
 
 [Back to top](./){: .btn .btn-outline} 
 
