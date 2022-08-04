@@ -68,14 +68,11 @@ nextflow clean -f -but last
 ```
 ### Q: My computer has an Apple M1 chip and the pipeline is failing at the Segmentation step. What can I do?
 
-A: You can use ilastik for probability map generation instead. To do so, specify `--segmentation ilastik` in your command to run MCMICRO
+A: You can use ilastik for probability map generation instead. To do so, add `segmentation: ilastik` to the [workflow parameters]({{site.baseurl}}/parameters/) in your `params.yml`:
 
-```
-nextflow run labsyspharm/mcmicro --in /my/path/exemplar-001 --segmentation ilastik
-```
-or 
-```
-nextflow run labsyspharm/mcmicro --in /my/path/exemplar-002 --tma --segmentation ilastik
+``` yaml
+workflow:
+  segmentation: ilastik
 ```
 
 This is because UnMICST (`segmentation:worker (unmicst-1)`) currently does not work on the M1 architecture. Fortunately, ilastik is supported by M1. See [GitHub Issue #353](https://github.com/labsyspharm/mcmicro/issues/353) for more details.
@@ -84,16 +81,18 @@ This is because UnMICST (`segmentation:worker (unmicst-1)`) currently does not w
 
 ### Q: MCMICRO doesn't seem to recognize my file format. How do I tell it what files to look for?
 
-A: By default, MCMICRO looks for a small number of image formats that we have verified to work. In principle, MCMICRO can be applied to any [Bio-Formats compatible](https://docs.openmicroscopy.org/bio-formats/6.0.1/supported-formats.html) images. We make a distinction between images stored as single files (e.g., `.png`) and those stored as an index file that points to other files (e.g., `.xdce`, `.ndpis`, etc.). Place all image files into the `raw/` subdirectory and specify the file extension(s) to look for with
+A: By default, MCMICRO looks for a small number of image formats that we have verified to work. In principle, MCMICRO can be applied to any [Bio-Formats compatible](https://docs.openmicroscopy.org/bio-formats/6.0.1/supported-formats.html) images. We make a distinction between images stored as single files (e.g., `.png`) and those stored as an index file that points to other files (e.g., `.xdce`, `.ndpis`, etc.). Place all image files into the `raw/` subdirectory and specify the file extension(s) to look for in [workflow parameters]({{site.baseurl}}/parameters/) of `params.yml`:
 
-```
-nextflow run labsyspharm/mcmicro --in /my/project --single-formats png
+``` yaml
+workflow:
+  single-formats: png
 ```
 
 for single-file image formats and
 
-```
-nextflow run labsyspharm/mcmicro --in /my/project --multi-formats ndpis
+``` yaml
+workflow:
+  multi-formats: ndpis
 ```
 
 for multi-file formats. Note that in the latter case, you need to specify the extension of the index file (`.ndpis` in this case) and not the individual files being indexed (`.ndpi` in this case).
@@ -110,10 +109,12 @@ nextflow run labsyspharm/mcmicro --in /my/project -profile singularity
 
 ### Q: How do I run MCMICRO with my own Ilastik model?
 
-A: Use the `--ilastik-model` parameter. Note that the parameter must be specified *outside* `--ilastik-opts`. For example,
+A: Use the `--ilastik-model` [workflow parameter]({{site.baseurl}}/parameters/). An example `params.yml` may look as follows:
 
-```
-nextflow run labsyspharm/mcmicro --in /my/data --probability-maps ilastik --ilastik-model mymodel.ilp
+``` yaml
+workflow:
+  segmentation: ilastik
+  ilastik-model: mymodel.ilp
 ```
 
 ### Q: How do I check the quality of segmentation?
@@ -129,30 +130,34 @@ A: There are two adjustments to make:
 1. Adjust `--scalingFactor` for UnMicst, which controls the ratio of the current pixel width (W2) to exemplar pixel width (W1) and is not related to area (See schematic).
 1. In S3Segmenter, `--cytoDilation` controls the number of pixels from the edge of the nucleus to expand in creating the cytoplasm mask. Take the value optimized for 2x binned images and multiply it by 2 (i.e., if `--cytoDilation 3` is optimal for 2x binning, then the new value will `--cytoDilation 6`).
 
-Use `--unmicst-opts` and `--s3seg-opts` to pass the new values to UnMicst and S3Segmenter, respectively:
+Use `unmicst` and `s3seg` [module options]({{site.baseurl}}/parameters/) to pass the new values to UnMicst and S3Segmenter, respectively. An example `params.yml` may look as follows:
 
-```
-nextflow run labsyspharm/mcmicro --in /path/to/unbinned/data --unmicst-opts '--scalingFactor 0.5' --s3seg-opts '--cytoDilation 6'
+``` yaml
+options:
+  unmicst: --scalingFactor 0.5
+  s3seg: --cytoDilation 6
 ```
 
 ## Quantification
 
 ### Q: How do I quantify multiple masks?
 
-A: Use `--mcquant-opts` to specify the `--masks` parameter for quantification. Any file found in the corresponding `segmentation/` folder can be provided here. For example,
+A: Use `mcquant` [module options]({{site.baseurl}}/parameters/) to specify the `--masks` parameter for quantification. Any file found in the corresponding `segmentation/` folder can be provided here. For example,
 
-```
-nextflow run labsyspharm/mcmicro --in /path/to/exemplar-001 --mcquant-opts '--masks cell.ome.tif nuclei.ome.tif'
+``` yaml
+options:
+  mcquant: --masks cell.ome.tif nuclei.ome.tif
 ```
 
 will quantify cell and nuclei masks. The corresponding spatial feature tables can then be found in `quantification/unmicst-exemplar-001_cell.csv` and `quantification/unmicst-exemplar-001_nuclei.csv`, respectively.
 
 ### Q: How do I compute the median expression of each channel?
 
-A: Use `--mcquant-opts` to specify the corresponding `--intensity_props` parameter for quantification:
+A: Use `mcquant` [module options]({{site.baseurl}}/parameters/) to specify the corresponding `--intensity_props` parameter for quantification:
 
-```
-nextflow run labsyspharm/mcmicro --in /path/to/exemplar-001 --mcquant-opts '--intensity_props median_intensity'
+``` yaml
+options:
+  mcquant: --intensity_props median_intensity
 ```
 
 ### Q: What are the units of the MCMICRO `Area` outputs?
