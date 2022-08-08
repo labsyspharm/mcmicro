@@ -10,6 +10,8 @@ workflow:
   - segmentation
   - segmentation-channel
   - downstream
+  - ilastik-model
+  - mesmer-model
 deprecated:
   quantification-mask: "--quant-opts '--masks ...'"
   illum: --start-at illumination
