@@ -70,7 +70,7 @@ workflow segmentation {
     // Determine if there are any custom models for each module
     // Overwrite output filenames with <image>-pmap.tif for pmap generators
     // Publish instance segmentation outputs directly to segmentation/
-    inpPM = moduleSeg.map{ it -> String m = "${it.name}Model";
+    inpPM = moduleSeg.map{ it -> String m = "${it.name}-model";
 		         tuple(it, mcp.workflow.containsKey(m) ?
 		               file(mcp.workflow[m]) : 'built-in') }
         .combine(id_imgs)
@@ -81,7 +81,7 @@ workflow segmentation {
 
     // Run probability map generators and instance segmenters
     // All outputs will be published to probability-maps/
-    worker( mcp, inpPM, '*.tif', 'segmentation' )
+    worker( mcp, inpPM, '*.{tif,tiff}', 'segmentation' )
 
     // Merge against precomputed probability maps
     //  and information about whether the module needs watershed
