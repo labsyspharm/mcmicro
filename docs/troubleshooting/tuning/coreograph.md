@@ -75,4 +75,21 @@ options:
   coreograph: --downsampleFactor 4
 ```
 
+### **4. What do the square outlines indicate?**
+
+![squareoutlines]({{ site.baseurl }}/images/squareoutlines.png)<br>
+
+The white square indicate that a core was found but Coreograph could not detect the exact outlines. A possible cause is dim staining. Downsizing 4 times instead of 5(default) can be a potential solution.
+
+Corresponding `params.yml`:
+
+```yaml
+workflow:
+  tma: true
+options:
+  coreograph: --downsampleFactor 4
+```
+
+*Note: The line segments inside the circle outlines are an artefact of how Coreograph draws the outlines. They do not indicate any issues.*
+
 
