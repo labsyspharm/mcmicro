@@ -1,3 +1,9 @@
+### 2022-08-19
+
+* [registration] Updated Ashlar to v1.17.0.
+  * Improve registration accuracy in certain tile layout conditions.
+  * Fix support for --plates option for performing registration on multi-well plate acquisitions. (This option may not work directly with downstream modules yet)
+
 ### 2022-07-12
 
 * Introduced a YAML pattern for parameters with three top-level namespaces:
