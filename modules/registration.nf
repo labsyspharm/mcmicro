@@ -19,7 +19,7 @@ process ashlar {
       path ldfp
 
     output:
-      path "${sampleName}.ome.tif", emit: img
+      path "*.ome.tif", emit: img
       tuple path('.command.sh'), path('.command.log')
 
     when: Flow.doirun('registration', mcp.workflow)
