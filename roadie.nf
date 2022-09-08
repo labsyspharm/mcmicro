@@ -47,7 +47,7 @@ process showHelp {
 
 process runTask {
     container "${params.contPfx}${params.roadie}"
-    publishDir "${specs.pubDir}", mode: "${specs.pubMode}"
+    publishDir "${specs.pubDir}", mode: "${specs.pubMode}", enabled: "${specs.pub}"
 
     input: each path(code); path(input); val(opts); val(specs)
     output: path("${specs.output}")
@@ -64,6 +64,7 @@ workflow roadie {
     input
     opts
 
+    pub       // Whether to publish results
     pubDir    // Where to publish results to
     pubMode   // What type of publishing (copy, move, symlink)
 
@@ -73,6 +74,7 @@ workflow roadie {
     specs = tasks.containsKey(task) ? tasks[task] : (error "Unknown task.")
 
     // Pad specs with the publication strategy
+    specs.pub     = pub
     specs.pubDir  = pubDir
     specs.pubMode = pubMode  
 
