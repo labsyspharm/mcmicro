@@ -71,11 +71,10 @@ workflow segmentation {
       noCut: !mcp.workflow['segmentation-recyze']
     }
 
-    recyzeOut = roadie(
-      'recyze', recyzeIn.toCut,
-      "--channels ${mcp.workflow['segmentation-channel']}",
-      false, '', ''
-    )
+    // Account for 0-based indexing in recyze
+    chan = mcp.workflow['segmentation-channel'].toString()
+      .tokenize().collect{"${(it as int)-1}"}.join(' ')
+    recyzeOut = roadie('recyze', recyzeIn.toCut, "--channels $chan", false, '', '' )
 
     // Determine IDs of images
     id_cut   = recyzeOut.map{ f -> tuple(Util.getFileID(f, '_crop.ome'), f) }

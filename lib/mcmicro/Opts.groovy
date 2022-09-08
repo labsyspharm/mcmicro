@@ -209,6 +209,10 @@ static def moduleOpts(module, mcp) {
         // Identify the list of indices
         List idx = wfp['segmentation-channel'].toString().tokenize()
 
+        // Account for recyze, if appropriate
+        if(wfp['segmentation-recyze'])
+            idx = (1..idx.size()).collect{it}
+
         // Account for 0-based indexing
         if(module.idxbase == 0)
             idx = idx.collect{"${(it as int)-1}"}

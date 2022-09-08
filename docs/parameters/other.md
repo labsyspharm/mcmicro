@@ -116,6 +116,7 @@ The [Mesmer](https://doi.org/10.1038/s41587-021-01094-0){:target="_blank"} modul
 Add `segmentation: mesmer` to [workflow parameters]({{site.baseurl}}/parameters/) to enable Mesmer. When running together with UnMicst and/or ilastik, method names must be provided as a list enclosed in square brackets. Additional Mesmer parameters can be provided to MCMICRO by including a `mesmer:` field in the module options section.
 
 * Example `params.yml`:
+
 ``` yaml
 workflow:
   segmentation: mesmer
@@ -152,6 +153,7 @@ MCMICRO integrates three methods for clustering single-cell data. These are [Fas
 Add a `downstream:` field to [workflow parameters]({{site.baseurl}}/parameters/) to select one or more methods. Method names should be provided as a comma-delimited list enclosed in square brackets. Additional method parameters should be provided to MCMICRO by adding `fastpg:`, `scanpy:` and `flowsom:` fields to the module options section.
 
 * Example `params.yml`:
+
 ``` yaml
 workflow:
   stop-at: downstream
@@ -219,6 +221,7 @@ All methods output a `.csv` file annotating individual cells with their cluster 
 Add a `downstream:` field to [workflow parameters]({{site.baseurl}}/parameters/) to select naivestates. When running alongside other cell state inference methods, such as SCIMAP, method names should be provided as a list enclosed in square brackets. Custom marker to cell type (mct) mapping can be provided to naivestates via the `naivestates-model:` workflow parameters, while additional arguments should be specified by including a `naivestates:` field in the module options section.
 
 * Example `params.yml`:
+
 ``` yaml
 workflow:
   stop-at: downstream
