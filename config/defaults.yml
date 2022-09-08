@@ -7,6 +7,7 @@ workflow:
   multi-formats: '{.xdce,.nd,.scan,.htd}'
   single-formats: '{.ome.tiff,.ome.tif,.rcpnl,.btf,.nd2,.tif,.czi}'
   segmentation: unmicst
+  segmentation-recyze: false
   downstream: scimap
 options:
   ashlar: -m 30

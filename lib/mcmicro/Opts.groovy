@@ -126,6 +126,14 @@ static def validateWFParams(wfp, fns) {
             throw new Exception("Unrecognized parameter " + key)
         }
     }
+
+    // Additional custom validation(s)
+    if(wfp['segmentation-recyze'] && 
+      !wfp.containsKey('segmentation-channel')) {
+        String msg = "Segmentation-recyze requested but no " +
+            "segmentation-channel provided"
+        throw new Exception(msg)
+    }
 }
 
 /**
@@ -134,7 +142,6 @@ static def validateWFParams(wfp, fns) {
  * @param gp global parameters (usually params in NF space)
  * @param fns filename of the schema
  * @param fnw filename of the default workflow parameters
- * @param fnm filename of the default module specs
  */
 static def parseParams(gp, fns, fnw) {
 
