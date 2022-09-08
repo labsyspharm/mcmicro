@@ -72,8 +72,9 @@ workflow segmentation {
     }
 
     // Account for 0-based indexing in recyze
-    chan = mcp.workflow['segmentation-channel'].toString()
-      .tokenize().collect{"${(it as int)-1}"}.join(' ')
+    chan = mcp.workflow.containsKey('segmentation-channel') ?
+      mcp.workflow['segmentation-channel'].toString()
+        .tokenize().collect{"${(it as int)-1}"}.join(' ') : '0'
     recyzeOut = roadie('recyze', recyzeIn.toCut, "--channels $chan", false, '', '' )
 
     // Determine IDs of images
