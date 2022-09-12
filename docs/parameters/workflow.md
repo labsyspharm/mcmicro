@@ -69,6 +69,19 @@ workflow:
   segmentation-channel: 1 5
 ```
 
+### `segmentation-recyze` 
+  Whether the image should be reduced to the channels specified in `segmentation-channel` prior to being provided to the segmentation modules.
+
+  * **Valid values:** `true`, `false`
+  * **Default:** `false`
+  * **Example:**
+
+``` yaml
+workflow:
+  segmentation-channel: 5
+  segmentation-recyze: true
+```
+
 ### `ilastik-model`
 
   A custom `.ilp` file to be used as the classifier model for ilastik

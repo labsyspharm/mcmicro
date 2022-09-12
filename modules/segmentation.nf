@@ -44,7 +44,8 @@ process s3seg {
     """
 }
 
-include { worker }                 from "$projectDir/lib/worker"
+include {worker} from "$projectDir/lib/worker"
+include {roadie} from "$projectDir/roadie"
 
 workflow segmentation {
   take:
@@ -63,10 +64,24 @@ workflow segmentation {
 
     // Compose a mapping for which modules need watershed
     needWS  = moduleSeg.map{ it -> tuple(it.watershed, it.name) }
-    
+
+    // Cut out the segmentation channels if requested
+    recyzeIn = imgs.branch{
+      toCut: mcp.workflow['segmentation-recyze']
+      noCut: !mcp.workflow['segmentation-recyze']
+    }
+
+    // Account for 0-based indexing in recyze
+    chan = mcp.workflow.containsKey('segmentation-channel') ?
+      mcp.workflow['segmentation-channel'].toString()
+        .tokenize().collect{"${(it as int)-1}"}.join(' ') : '0'
+    recyzeOut = roadie('recyze', recyzeIn.toCut, "--channels $chan", false, '', '' )
+
     // Determine IDs of images
-    id_imgs  = imgs.map{ f -> tuple(Util.getImageID(f), f) }
-    
+    id_cut   = recyzeOut.map{ f -> tuple(Util.getFileID(f, '_crop.ome'), f) }
+    id_uncut = recyzeIn.noCut.map{ f -> tuple(Util.getImageID(f), f) }
+    id_imgs = id_cut.mix(id_uncut)
+
     // Determine if there are any custom models for each module
     // Overwrite output filenames with <image>-pmap.tif for pmap generators
     // Publish instance segmentation outputs directly to segmentation/
@@ -100,7 +115,7 @@ workflow segmentation {
 
     // Determine IDs of TMA masks
     // Whole-slide images have no TMA masks
-    id_wsi = imgs.map{ f -> tuple(Util.getImageID(f), 'NO_MASK') }
+    id_wsi = id_imgs.map{ id, _2 -> tuple(id, 'NO_MASK') }
         .filter{ !mcp.workflow['tma'] }
     id_masks = tmamasks.map{ f -> tuple(Util.getFileID(f,'_mask'), f) }
         .mix(id_wsi)

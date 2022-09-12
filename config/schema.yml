@@ -9,6 +9,7 @@ workflow:
   - single-formats
   - segmentation
   - segmentation-channel
+  - segmentation-recyze
   - downstream
   - ilastik-model
   - mesmer-model

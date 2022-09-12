@@ -122,7 +122,6 @@ workflow {
     tmacores = dearray.out.cores.mix(pre_cores)
     tmamasks = dearray.out.masks.mix(pre_masks)
 
-
     // Reconcile WSI and TMA processing for downstream segmentation
     allimg = img.wsi.mix(tmacores)
     segmentation(mcp, allimg, tmamasks, pre_pmap)

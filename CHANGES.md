@@ -1,3 +1,7 @@
+### 2022-09-08
+
+* Added a `segmentation-recyze` parameter to the `workflow:` section. If set to `true`, MCMICRO will reduce the input image to the channels specified in `segmentation-channel` prior to passing it to the segmentation modules. This can be useful for reducing the memory footprint for modules like Mesmer, which read the entire input image into memory.
+
 ### 2022-08-19
 
 * [registration] Updated Ashlar to v1.17.0.

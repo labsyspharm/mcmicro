@@ -126,6 +126,14 @@ static def validateWFParams(wfp, fns) {
             throw new Exception("Unrecognized parameter " + key)
         }
     }
+
+    // Additional custom validation(s)
+    if(wfp['segmentation-recyze'] && 
+      !wfp.containsKey('segmentation-channel')) {
+        String msg = "Segmentation-recyze requested but no " +
+            "segmentation-channel provided"
+        throw new Exception(msg)
+    }
 }
 
 /**
@@ -134,7 +142,6 @@ static def validateWFParams(wfp, fns) {
  * @param gp global parameters (usually params in NF space)
  * @param fns filename of the schema
  * @param fnw filename of the default workflow parameters
- * @param fnm filename of the default module specs
  */
 static def parseParams(gp, fns, fnw) {
 
@@ -201,6 +208,10 @@ static def moduleOpts(module, mcp) {
 
         // Identify the list of indices
         List idx = wfp['segmentation-channel'].toString().tokenize()
+
+        // Account for recyze, if appropriate
+        if(wfp['segmentation-recyze'])
+            idx = (1..idx.size()).collect{it}
 
         // Account for 0-based indexing
         if(module.idxbase == 0)

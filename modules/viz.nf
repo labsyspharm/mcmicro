@@ -45,8 +45,10 @@ workflow viz {
         other: true
     }
 
-    stories = roadie('story', inputs.story, '', "${params.in}/qc/story", 'copy')
-        .map{ it -> tuple(Util.getImageID(it), it) }
+    stories = roadie(
+        'story', inputs.story, '', 
+        true, "${params.in}/qc/story", 'copy'
+      ).map{ it -> tuple(Util.getImageID(it), it) }
     images = imgs.map{ it -> tuple(Util.getImageID(it), it) }
 
     inputs = images.combine(stories, by:0)
