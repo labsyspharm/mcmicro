@@ -8,72 +8,26 @@ if( !(nextflow.version >= '22.04.3') ) {
 
 nextflow.enable.dsl=2
 
-import mcmicro.Opts
+import mcmicro.*
 
 // Expecting --in parameter
 if( !params.containsKey('in') )
     error "Please specify the project directory with --in"
 
-// Default parameters for the pipeline as a whole
-params.sampleName  = file(params.in).name
-params.startAt     = 'registration'
-params.stopAt      = 'quantification'
-params.qcFiles     = 'copy'   // what to do with qc/ files when publishing them
-params.tma         = false    // whether working with a TMA (true) or whole-slide image (false)
-params.viz         = false    // generate an auto-minerva visualization
+// Parse MCMICRO parameters (mcp)
+mcp = Opts.parseParams(
+    params, 
+    "$projectDir/config/schema.yml",
+    "$projectDir/config/defaults.yml"
+)
 
-// Some image formats store multiple fields of view in a single file. Other
-// formats store each field separately, typically in .tif files, with a separate
-// index file to tie them together. We will look for the index files from
-// multiple-file formats in a first, separate pass in order to avoid finding the
-// individual .tif files instead. If no multi-file formats are detected, then we
-// look for the single-file formats. Also, for multi-file formats we need to
-// stage the parent directory and not just the index file.
-params.multiFormats  = '{.xdce,.nd,.scan,.htd}'
-params.singleFormats = '{.ome.tiff,.ome.tif,.rcpnl,.btf,.nd2,.tif,.czi}'
+// Separate out workflow parameters (wfp) and module specs to simplify code
+wfp = mcp.workflow
 
-// Default selection of methods for each step
-params.probabilityMaps = 'unmicst'
-params.cellStates      = 'scimap'
-
-// Deprecation messages
-if( params.containsKey('quantificationMask') )
-    error "--quantification-mask is deprecated; please use --quant-opts '--masks ...'"
-if( params.containsKey('illum') )
-    error "--illum is deprecated; please use --start-at illumination"
-if( params.containsKey('coreOpts') )
-    error "--coreOpts is deprecated; please use --coreograph-opts"
-if( params.containsKey('maskSpatial') )
-    error "--maskSpatial is deprecated; please use --quant-opts '--masks ...'"
-if( params.containsKey('maskAdd') )
-    error "--maskAdd is deprecated; please use --quant-opts '--masks ...'"
-if( params.containsKey('nstatesOpts') )
-    error "--nstatesOpts is deprecated; please use --naivestates-opts"
-if( params.containsKey('quantOpts') )
-    error "--quantOpts is deprecated; please use --mcquant-opts"
-if( params.probabilityMaps == 'all' )
-    error "--probability-maps all is deprecated; please be explicit, e.g., --probability-maps unmicst,ilastik"
-
-// Steps in the mcmicro pipeline
-mcmsteps = ["raw",		// Step 0
-	    "illumination",	// Step 1
-	    "registration",	// Step 2
-	    "dearray",		// Step 3
-	    "probability-maps", // Step 4
-	    "segmentation",	// Step 5
-	    "quantification",	// Step 6
-	    "cell-states"]      // Step 7
-
-// Identify starting and stopping index
-idxStart = mcmsteps.indexOf( params.startAt )
-idxStop  = mcmsteps.indexOf( params.stopAt )
-if( idxStart < 0 )       error "Unknown starting step ${params.startAt}"
-if( idxStop < 0 )        error "Unknown stopping step ${params.stopAt}"
-if( idxStop < idxStart ) error "Stopping step cannot come before starting step"
-
-// Define all subdirectories
-paths   = mcmsteps.collect{ "${params.in}/$it" }
-path_qc = "${params.in}/qc"
+// Identify relevant precomputed intermediates
+// The actual paths to intermediate files are given by
+//   pre.collect{ "${params.in}/$it" }
+pre = Flow.precomputed(wfp)
 
 // Check that deprecated locations are empty
 Channel.fromPath( "${params.in}/illumination_profiles/*" )
@@ -85,17 +39,25 @@ Channel.fromPath( "${params.in}/illumination_profiles/*" )
 chMrk = Channel.fromPath( "${params.in}/markers.csv", checkIfExists: true )
 
 // Helper functions for finding raw images and precomputed intermediates
-findFiles0 = { p, path -> p ?
-	      Channel.fromPath(path) : Channel.empty() }
-findFiles  = { p, path, ife -> p ?
-	      Channel.fromPath(path).ifEmpty(ife) : Channel.empty() }
+findFiles0 = { key, pattern -> pre[key] ?
+    Channel.fromPath("${params.in}/$key/$pattern") : Channel.empty()
+}
+findFiles = { key, pattern, ife -> pre[key] ?
+    Channel.fromPath("${params.in}/$key/$pattern").ifEmpty(ife) : Channel.empty()
+}
 
-// Look for multi formats first, then single formats.
+// Some image formats store multiple fields of view in a single file. Other
+// formats store each field separately, typically in .tif files, with a separate
+// index file to tie them together. We will look for the index files from
+// multiple-file formats in a first, separate pass in order to avoid finding the
+// individual .tif files instead. If no multi-file formats are detected, then we
+// look for the single-file formats. Also, for multi-file formats we need to
+// stage the parent directory and not just the index file.
 (formatType, formatPattern) =
-    file("${paths[0]}/**${params.multiFormats}") ?
-    ["multi", params.multiFormats] : ["single", params.singleFormats]
-rawFiles = findFiles(idxStart <= 2, "${paths[0]}/**${formatPattern}",
-		     {error "No images found in ${paths[0]}"})
+    file("${params.in}/raw/**${wfp['multi-formats']}") ?
+    ["multi", wfp['multi-formats']] : ["single", wfp['single-formats']]
+rawFiles = findFiles('raw', "**${formatPattern}",
+		     {error "No images found in ${params.in}/raw"})
 
 // Here we assemble tuples of 1) path to stage for each raw image (might be a
 // directory) and 2) relative path to the main file for each image. Processes
@@ -110,38 +72,23 @@ raw = rawFiles
     .map{ toStage, relPath -> tuple(toStage, toStage.parent.relativize(relPath)) }
 
 // Find precomputed intermediates
-pre_dfp = findFiles0(idxStart == 2, "${paths[1]}/*-dfp.tif")
-pre_ffp = findFiles0(idxStart == 2, "${paths[1]}/*-ffp.tif")
-pre_img = findFiles(idxStart == 3 || (idxStart > 3 && !params.tma),
-		    "${paths[2]}/*.{ome.tiff,ome.tif,tif,tiff,btf}",
-		    {error "No pre-stitched image in ${paths[2]}"})
-pre_cores = findFiles(idxStart > 3 && params.tma,
-		      "${paths[3]}/*.tif",
-		      {error "No cores in ${paths[3]}"})
-pre_masks = findFiles(idxStart > 3 && params.tma,
-		      "${paths[3]}/masks/*.tif",
-		      {error "No TMA masks in ${paths[3]}/masks"})
-pre_pmap = findFiles(idxStart == 5,
-		     "${paths[4]}/*/*-pmap.tif",
-		     {error "No probability maps found in ${paths[4]}"})
+pre_dfp   = findFiles0('illumination', "*-dfp.tif")
+pre_ffp   = findFiles0('illumination', "*-ffp.tif")
+pre_img   = findFiles('registration', "*.{ome.tiff,ome.tif,tif,tiff,btf}",
+    {error "No pre-stitched image in ${params.in}/registration"})
+pre_cores = findFiles('dearray', "*.tif",
+    {error "No TMA cores in ${params.in}/dearray"})
+pre_masks = findFiles('dearray', "masks/*.tif",
+    {error "No TMA masks in ${params.in}/dearray/masks"})
+pre_pmap  = findFiles('probability-maps', "*/*-pmap.tif",
+    {error "No probability maps found in ${params.in}/probability-maps"})
     .map{ f -> tuple(f.getParent().getName(), f) }
-    .filter{ params.probabilityMaps.contains(it[0]) }
-pre_segMsk = findFiles(idxStart == 6,
-		       "${paths[5]}/**.tif",
-		       {error "No segmentation masks in ${paths[5]}"})
+    .filter{ wfp['segmentation'].contains(it[0]) }
+pre_seg   = findFiles('segmentation', "**.tif",
+    {error "No segmentation masks in ${params.in}/segmentation"})
     .map{ f -> tuple(f.getParent().getName(), f) }.groupTuple()
-pre_qty    = findFiles(idxStart == 7,
-		       "${paths[6]}/*.csv",
-		       {error "No quantification tables in ${paths[6]}"})
-
-// Load module specs
-modules = Opts.parseModuleSpecs("$projectDir/modules.yml", params)
-
-// The following parameters are shared by all modules
-params.idxStart  = idxStart
-params.idxStop   = idxStop
-params.path_qc   = path_qc
-params.path_prov = "${path_qc}/provenance"
+pre_qty   = findFiles('quantification', "*.csv",
+    {error "No quantification tables in ${params.in}/quantification"})
 
 // Import individual modules
 include {illumination}   from "$projectDir/modules/illumination"
@@ -149,26 +96,27 @@ include {registration}   from "$projectDir/modules/registration"
 include {dearray}        from "$projectDir/modules/dearray"
 include {segmentation}   from "$projectDir/modules/segmentation"
 include {quantification} from "$projectDir/modules/quantification"
-include {cellstates}     from "$projectDir/modules/cell-states"
+include {downstream}     from "$projectDir/modules/downstream"
 include {viz}            from "$projectDir/modules/viz"
+
 
 // Define the primary mcmicro workflow
 workflow {
-    illumination(modules['illumination'], raw)
-    registration(modules['registration'], raw,
+    illumination(wfp, mcp.modules['illumination'], raw)
+    registration(mcp, raw,
 		 illumination.out.ffp.mix( pre_ffp ),
 		 illumination.out.dfp.mix( pre_dfp ))
 
     // Are we working with a TMA or a whole-slide image?
     img = registration.out
-	.mix(pre_img)
-	.branch {
-	  wsi: !params.tma
-	  tma: params.tma
-    }
+        .mix(pre_img)
+        .branch {
+            wsi: !wfp.tma
+            tma: wfp.tma
+        }
 
     // Apply dearray to TMAs only
-    dearray(modules['dearray'], img.tma)
+    dearray(mcp, img.tma)
 
     // Merge against precomputed intermediates
     tmacores = dearray.out.cores.mix(pre_cores)
@@ -176,43 +124,33 @@ workflow {
 
     // Reconcile WSI and TMA processing for downstream segmentation
     allimg = img.wsi.mix(tmacores)
-    segmentation(modules['segmentation'], modules['watershed'],
-        allimg, tmamasks, pre_pmap)
+    segmentation(mcp, allimg, tmamasks, pre_pmap)
 
     // Merge segmentation masks against precomputed ones and append markers.csv
-    segMsk = segmentation.out.mix(pre_segMsk)
-    quantification(modules['quantification'], allimg, segMsk, chMrk)
+    segMsk = segmentation.out.mix(pre_seg)
+    quantification(mcp, allimg, segMsk, chMrk)
 
     // Spatial feature tables -> cell state calling
     sft = quantification.out.mix(pre_qty)
-    cellstates(sft, modules['downstream'])
+    downstream(mcp, sft)
 
     // Vizualization
-    viz(modules['viz'], allimg)
+    viz(mcp, allimg)
 }
 
 // Write out parameters used
+path_qc = "${params.in}/qc"
 workflow.onComplete {
     // Create a provenance directory
     file(path_qc).mkdirs()
     
-    // Write out module specs
-    Opts.writeModuleSpecs(modules, "${params.in}/qc/modules.yml")
+    // Write out MCMICRO parameters
+    Opts.writeMap(mcp, "${params.in}/qc/params.yml")
 
-    // Store parameters used
-    file("${path_qc}/params.yml").withWriter{ out ->
-	out.println "githubTag: $workflow.revision";
-	out.println "githubCommit: $workflow.commitId";
-	params.each{ key, val ->
-	    if( key.indexOf('-') != -1 ) return
-        if( [
-            'githubTag', 'githubCommit', 'contPfx', 'paramsFile',
-            'idxStart', 'idxStop', 'path_qc', 'path_prov'
-            ].contains(key) ) return
-        if( ['multiFormats', 'singleFormats'].contains(key) )
-            out.println "$key: '$val'"
-        else
-	        out.println "$key: $val"
-	  }
+    // Store additional metadata
+    file("${path_qc}/metadata.yml").withWriter{ out ->
+        out.println "githubTag: $workflow.revision";
+        out.println "githubCommit: $workflow.commitId";
+        out.println "roadie: $params.roadie";
     }
 }

@@ -1,8 +1,8 @@
 ---
 layout: default
-title: Modules
+title: "Options: Core Modules"
+parent: Parameters
 nav_order: 5
-has_children: true
 ---
 {: .text-center }
 # The MCMICRO pipeline
@@ -23,52 +23,52 @@ svg {
 </style>
 </defs>
 
-<a xlink:href="./#basic">
+<a xlink:href="./core.html#basic">
 <title>BaSic</title>
 <path d="M1 161h63l-1 52-63 1Z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="./#ashlar">
+<a xlink:href="./core.html#ashlar">
 <title>ASHLAR</title>
 <path d="m73 160 65 1-2 50H73z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="./#coreograph">
+<a xlink:href="./core.html#coreograph">
 <title>Coreograph</title>
 <path d="M107 245h63v52h-62z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="./#unmicst">
+<a xlink:href="./core.html#unmicst">
 <title>UNMICST</title>
 <path d="m198 161 64-1v46l-64-2z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="./#s3segmenter">
+<a xlink:href="./core.html#s3segmenter">
 <title>S3Segmenter</title>
 <path d="m200 206 63 1-1 32-63-3z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="./#mcquant">
+<a xlink:href="./core.html#mcquant">
 <title>MCQuant</title>
 <path d="M271 160h63l1 52h-63z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="./#cylinter">
+<a xlink:href="./core.html#cylinter">
 <title>CyLinter</title>
 <path d="m271 245 62-1 2 52-63-1z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="./#scimap">
+<a xlink:href="./core.html#scimap">
 <title>SCIMAP</title>
 <path d="m344 159 42 1v56l-41-1z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="./#minerva">
+<a xlink:href="./core.html#minerva">
 <title>Minerva</title>
 <path d="M396 160h42l-1 57-41-1z" inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
 
-<a xlink:href="./#other-modules">
+<a xlink:href="./core.html#other-modules">
 <title>Other Modules</title>
 <path d="m394 242 44 1 1 54h-46z"  inkscape:connector-curvature="0" transform="translate(0 -131)"/>
 </a>
@@ -102,9 +102,15 @@ The module implements the BaSiC method for correcting uneven illumination, devel
 
 ### Usage
 
-By default, MCMICRO skips this step as it requires manual inspection of the outputs to ensure that illumination correction does not introduce artifacts for downstream processing.  Use `--start-at illumination` to request that MCMICRO runs the module.
+By default, MCMICRO skips this step as it requires manual inspection of the outputs to ensure that illumination correction does not introduce artifacts for downstream processing.  Add `start-at: illumination` to [workflow parameters]({{site.baseurl}}/parameters/) to request that MCMICRO runs the module.
 
-* Example: `nextflow run labsyspharm/mcmicro --in /my/project --start-at illumination`
+* Example `params.yml`:
+
+``` yaml
+workflow:
+  start-at: illumination
+```
+
 * Running outside of MCMICRO: [Instructions](https://github.com/labsyspharm/basic-illumination#running-as-a-docker-container){:target="_blank"}.
 
 ### Input
@@ -128,10 +134,16 @@ The module performs simultaneous stiching of tiles and registration across chann
 
 ### Usage
 
-MCMICRO runs ASHLAR by default. Use `--ashlar-opts` to provide additional arguments to the module.
+MCMICRO runs ASHLAR by default. Add `ashlar:` to [module options]({{site.baseurl}}/parameters/) to control its behavior.
 
-* Example: `nextflow run labsyspharm/mcmicro --in /my/project --ashlar-opts '--flip-y -c 5'`
-* Default: `--ashlar-opts '-m 30'`
+* Example `params.yml`:
+
+``` yaml
+options:
+  ashlar: --flip-y -c 5
+```
+
+* Default: `ashlar: -m 30`
 * Running outside of MCMICRO: [ASHLAR website](https://labsyspharm.github.io/ashlar){:target="_blank"}.
 
 ### Input
@@ -175,9 +187,17 @@ The modules uses the popular UNet deep learning architecture to identify cores w
 
 ### Usage
 
-By default, MCMICRO assumes that the input is a whole-slide image. Use `--tma` to indicate that the input is a TMA instead. Use `--core-opts` to provide additional module-specific parameters.
+By default, MCMICRO assumes that the input is a whole-slide image. Add `tma: true` to [module options]({{site.baseurl}}/parameters/) to indicate that the input is a TMA instead. Add `coreograph:` to [module options]({{site.baseurl}}/parameters/) to control the module behavior.
 
-* Example: `nextflow run labsyspharm/mcmicro --in /my/project --tma --core-opts '--channel 3'`
+* Example `params.yml`:
+
+``` yaml
+workflow:
+  tma: true
+options:
+  coreograph: --channel 3
+```
+
 * Running outside of MCMICRO: [Instructions](https://github.com/HMS-IDAC/UNetCoreograph){:target="_blank"}.
 
 ### Input
@@ -206,7 +226,7 @@ A fluorescence image of a tissue microarray where at least one channel is of DNA
  | `--tissue` | | Coreograph will assume that its input is a whole-slide image and will work to isolate individual tissue chunks into separate files |
 
 ### Troubleshooting
-A troubleshooting guide can be found within [Coreograph parameter tuning](./coreograph.html).
+A troubleshooting guide can be found within [Coreograph parameter tuning]({{site.baseurl}}/troubleshooting/tuning/coreograph.html).
 
 [Back to top](./){: .btn .btn-outline} 
 
@@ -222,9 +242,15 @@ A troubleshooting guide can be found within [Coreograph parameter tuning](./core
 UnMICST uses a convolutional neural network to annotate each pixel with the probability that it belongs to a given subcellular component (nucleus, cytoplasm, cell boundary). Check the [UnMICST website](https://labsyspharm.github.io/UnMICST-info/){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
-MCMICRO applies UnMicst to all input images by default. Use `--unmicst-opts` to provide optional parameters to the module.
+MCMICRO applies UnMicst to all input images by default. Add `unmicst:` to [module options]({{site.baseurl}}/parameters/) to control its behavior.
 
-* Example: `nextflow run labsyspharm/mcmicro --in /my/project --unmicst-opts '--scalingFactor 0.5'`
+* Example `params.yml`:
+
+``` yaml
+options:
+  unmicst: --scalingFactor 0.5
+```
+
 * Running outside of MCMICRO: [Instructions](https://github.com/HMS-IDAC/UnMicst){:target="_blank"}.
 
 ### Input
@@ -252,7 +278,7 @@ An ``.ome.tif``, preferably flat field corrected. The model is trained on images
 | `--GPU <index>` | Automatic | Explicitly specify which GPU (1-based indexing) you want to use. Useful for running on local workstations with multiple GPUs. |
 
 ### Troubleshooting
-A troubleshooting guide can be found within [UnMICST parameter tuning](./unmicst.html) - additional information is also available on the [UnMICST website](https://labsyspharm.github.io/UnMICST-info/){:target="_blank"} .
+A troubleshooting guide can be found within [UnMICST parameter tuning]({{site.baseurl}}/troubleshooting/tuning/unmicst.html) - additional information is also available on the [UnMICST website](https://labsyspharm.github.io/UnMICST-info/){:target="_blank"} .
 
 [Back to top](./){: .btn .btn-outline} 
 
@@ -268,18 +294,23 @@ ___
 The modules applies standard watershed segmentation to probability maps to produce the final cell/nucleus/cytoplasm/etc. masks.
 
 ### Usage
-By default, MCMICRO applies S3segmenter to the output of all modules that produce probability maps. Additional arguments should be provided to MCMICRO with the `--s3seg-opts` flag.
+By default, MCMICRO applies S3segmenter to the output of all modules that produce probability maps. Add `s3seg:` to [module options]({{site.baseurl}}/parameters/) to control its behavior..
 
-* Example: ``nextflow run labsyspharm/mcmicro --in /my/project --s3seg-opts '--logSigma 2 10'``
+* Example `params.yml`:
+
+``` yaml
+options:
+  s3seg: --logSigma 2 10
+```
 
 ### Inputs
 1.  A fully-stitched and registered ``.ome.tif``, preferably flat field corrected. Nextflow will take these from the `registration/` and `dearray/` subdirectories, as approrpriate.
-2.  A 3-class probability map, as derived by modules such as [UnMICST](./unmicst.html) or [Ilastik](./other.html#ilastik).
+2.  A 3-class probability map, as derived by modules such as [UnMICST](./core.html#unmicst) or [Ilastik](./other.html#ilastik).
 
 [S3segmenter](https://github.com/HMS-IDAC/S3segmenter){:target="_blank"} assumes that you have:
 1. Acquired images of your sample with optimal acquisition settings.
 2. Stitched and registered the tiles and channels respectively (if working with a large piece of tissue) and saved it as a Bioformats compatible tiff file.
-3. Processed your image in some way so as to increase contrast between individual nuclei using classical or machine learning methods such as [Ilastik](./other.html#ilastik) (a random forest model) or [UnMICST](./unmicst.html) (a deep learning semantic segmentation model based on the UNet architecture). MCMICRO supports both.
+3. Processed your image in some way so as to increase contrast between individual nuclei using classical or machine learning methods such as [Ilastik](./other.html#ilastik) (a random forest model) or [UnMICST](./core.html#unmicst) (a deep learning semantic segmentation model based on the UNet architecture). MCMICRO supports both.
 {: .fs-3}
 
 ### Output
@@ -331,7 +362,7 @@ Nextflow saves these files to the `qc/s3seg/` subfolder within your project.
 | `--TissueMaskChan <index>` | Union of `probMapChan` and `CytoMaskChan` | One or more channels to use for identifying the general tissue area for masking purposes. |
 
 ### Troubleshooting
-A troubleshooting guide can be found within [S3segmenter parameter tuning](./s3seg.html).
+A troubleshooting guide can be found within [S3segmenter parameter tuning]({{site.baseurl}}/troubleshooting/tuning/s3seg.html).
 
 [Back to top](./){: .btn .btn-outline} 
 
@@ -347,7 +378,7 @@ ___
 The modules uses one or more segmentation masks against the original image to quantify the expression of every channel on a per-cell basis. Check the [MCQuant README](https://github.com/labsyspharm/quantification#single-cell-quantification){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
-By default, MCMICRO runs MCQuant on all cell segmentation masks. Use the `--quant-opts` flag to specify a different mask or to provide additional module-specific arguments to MCMICRO.
+By default, MCMICRO runs MCQuant on all cell segmentation masks. Add `mcquant:` to [module options]({{site.baseurl}}/parameters/) to specify a different mask or to provide additional module-specific arguments to MCMICRO.
 
 * Example: `nextflow run labsyspharm/mcmicro --in /my/project --quant-opts '--masks cytoMask.tif nucleiMask.tif'`
 * Default: `--quant-opts '--masks cell*.tif'`
@@ -408,7 +439,18 @@ SCIMAP is a suite of tools that enables spatial single-cell analyses. Check the 
 ### Usage
 MCMICRO allows users to automatically apply SCIMAP's clustering algorithms to the cell-by-feature table produced by MCQuant. The clustering results can be subsequently used for manual assignment of cell states. Since MCMICRO stops at MCQuant by default, users will need to explicitly request that the pipeline continues to the clustering step. MCMICRO's usage of SCIMAP doesn't have any parameters, and users are encouraged to check the [SCIMAP website](https://scimap.xyz){:target="_blank"} for more sophisticated human-in-the-loop analyses.
 
-* Example: `nextflow run labsyspharm/mcmicro --in /my/project --stop-at cell-states`
+Add `downstream: scimap` and `stop-at: downstream` to [workflow parameters]({{site.baseurl}}/parameters/) to enable SCIMAP. Add `mcquant:` to [module options]({{site.baseurl}}/parameters/) to control its behavior.
+
+* Example `params.yml`:
+
+``` yaml
+workflow:
+  stop-at: downstream
+  downstream: scimap
+options:
+  scimap: --csv
+```
+
 * Running outside of MCMICRO: [Instructions](https://scimap.xyz){:target="_blank"}.
 
 ### Input
@@ -457,10 +499,6 @@ At the moment, MCMICRO does not automatically generate Minerva stories of the in
 # Suggest a module
 
 Module suggestions can be made by posting to [https://forum.image.sc/](https://forum.image.sc/){:target="_blank"} and tagging your post with the `mcmicro` tag.
-
-# Add a module
-
-MCMICRO allows for certain module types to be specified dynamically through a configuration file. If you already have a containerized method with a command-line interface, follow [our instructions]({{ site.baseurl }}/instructions/advanced-topics/adding.html) to incorporate your module into the pipeline.
 
 [Back to top](./){: .btn .btn-outline} 
 

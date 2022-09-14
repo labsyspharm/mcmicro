@@ -9,13 +9,12 @@ process autominerva {
     publishDir "${params.in}/viz", mode: 'copy', pattern: "$tag/**"
 
     // Provenance
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.sh',
-      saveAs: {fn -> Util.cleanFilename("${task.name}.sh")}
-    publishDir "${params.path_prov}", mode: 'copy', pattern: '.command.log',
-      saveAs: {fn -> Util.cleanFilename("${task.name}.log")}
+    publishDir "${Flow.QC(params.in, 'provenance')}", mode: 'copy', 
+      pattern: '.command.{sh,log}',
+      saveAs: {fn -> fn.replace('.command', "${module.name}-${task.index}")}
     
   input:
-
+    val wfp
     val module
     tuple val(tag), path(img), path(story)
 
@@ -26,7 +25,7 @@ process autominerva {
     path('*/qc/**') optional true
     tuple path('.command.sh'), path('.command.log')
 
-  when: params.viz
+  when: Flow.doirun('viz', wfp)
 
     """    
     python /app/minerva-author/src/save_exhibit_pyramid.py $img $story $tag
@@ -35,23 +34,25 @@ process autominerva {
 
 workflow viz {
   take:
-    module
+    mcp
     imgs
 
   main:
     
     // Proceed to generate stories only if visualization is requested
     inputs = imgs.branch {
-        story: params.viz
+        story: mcp.workflow['viz']
         other: true
     }
 
-    stories = roadie('story', inputs.story, '', "${params.in}/qc/story", 'copy')
-        .map{ it -> tuple(Util.getImageID(it), it) }
+    stories = roadie(
+        'story', inputs.story, '', 
+        true, "${params.in}/qc/story", 'copy'
+      ).map{ it -> tuple(Util.getImageID(it), it) }
     images = imgs.map{ it -> tuple(Util.getImageID(it), it) }
 
     inputs = images.combine(stories, by:0)
-    autominerva(module, inputs)
+    autominerva(mcp.workflow, mcp.modules['viz'], inputs)
 
   emit:
     autominerva.out.viz

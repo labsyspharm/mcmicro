@@ -2,7 +2,7 @@
 layout: default
 title: Installation
 nav_order: 10
-parent: Galaxy workflow
+parent: Galaxy
 ---
 
 # Installation
@@ -20,7 +20,7 @@ This command will clone the Galaxy Github repository, install all needed depende
 
 
 ## Install the MCMICRO Tools
-Each of the MCMICRO modules can be installed as a [galaxy tool](https://galaxyproject.org/admin/tools/add-tool-from-toolshed-tutorial/) from the [Main Galaxy Toolshed](http://toolshed.g2.bx.psu.edu/). 
+Each of the MCMICRO modules can be installed as a [galaxy tool](https://galaxyproject.org/admin/tools/add-tool-from-toolshed-tutorial/) from the [Main Galaxy Toolshed](https://toolshed.g2.bx.psu.edu/). 
 - [Basic Illumination](https://toolshed.g2.bx.psu.edu/view/perssond/basic_illumination/fd8dfd64f25e)
 - [ASHLAR](https://toolshed.g2.bx.psu.edu/view/perssond/ashlar/b3054f3d42b2)
 - [Coreograph](https://toolshed.g2.bx.psu.edu/view/perssond/coreograph/99308601eaa6)

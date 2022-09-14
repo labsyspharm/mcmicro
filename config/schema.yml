@@ -1,0 +1,25 @@
+workflow:
+  - sample-name
+  - start-at
+  - stop-at
+  - qc-files
+  - tma
+  - viz
+  - multi-formats
+  - single-formats
+  - segmentation
+  - segmentation-channel
+  - segmentation-recyze
+  - downstream
+  - ilastik-model
+  - mesmer-model
+deprecated:
+  quantification-mask: "--quant-opts '--masks ...'"
+  illum: --start-at illumination
+  core-opts: --coreograph-opts
+  mask-spatial: "--quant-opts '--masks ...'"
+  mask-add: "--quant-opts '--masks ...'"
+  nstates-opts: --naivestates-opts
+  quant-opts: --mcquant-opts
+  cell-states: --downstream
+  probability-maps: --segmentation

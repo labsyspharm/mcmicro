@@ -39,14 +39,27 @@ UnMICST also trained on **real augmentations** - such as intentionally de-focuse
 
 ## Troubleshooting Scenarios
 **1. I just wanted to get started.** <br>
-set `--tool unmicst-solo` and choose a channel that has your DNA stain. If this is in the first channel, use `--channel 1`. <br>
-`unmicst-opts: '--tool unmicst-solo --channel 1'` <br>
+Set `--tool unmicst-solo` in the `unmicst` field of module options, and choose a channel that has your DNA stain in the `segmentation-channel` field of workflow parameters. Channel specification uses 1-based indexing. An example `params.yml` may look as follows:
+
+``` yaml
+workflow:
+  segmentation-channel: 1
+options:
+  unmicst: --tool unmicst-solo
+```
 ![]({{ site.baseurl }}/images/unmicst3.png) <br>
 
 **2. My tissue images have very packed nuclei. What do I do??**<br>
 unmicst-solo uses a single DNA channel whereas unmicst-duo uses a DNA channel and a nuclear envelope stain, which can help the model discriminate between tightly-packed nuclei. This additional stain can come from markers such as lamin B1, B2, nucleoporin 98 or some additive combination. 
-Set `--tool unmicst-duo` and choose channels that have your DNA and nuclear envelope stains. If your DNA and envelope stains are in the 1st and 5th channel respectively, use `--channel 1 5`. <br>
-`unmicst-opts: '--tool unmicst-duo --channel 1 5'` <br>
+Set `--tool unmicst-duo` and choose channels that have your DNA and nuclear envelope stains. If your DNA and envelope stains are in the 1st and 5th channel respectively, the corresponding `params.yml` may look as follows:
+
+```yaml
+workflow:
+  segmentation-channel: 1 5
+options:
+  unmicst: --tool unmicst-duo
+```
+
 ![]({{ site.baseurl }}/images/unmicst4.png) <br>
 
 **3. My tissue images are blurry. What do I do??**<br>
@@ -59,7 +72,12 @@ Again, consider using *unmicst-duo* with a nuclear envelope stain.<br>
 ![]({{ site.baseurl }}/images/unmicst6.png) <br>
 
 **4. You said the training data is sampled at 0.65microns/pixel and acquired with a 20x/0.75NA objective lens. What do I do if my data was acquired with a 40x lens?**<br>
-First of all, check what is your pixel size since that is more relevant. If your pixel size is about half of the training data (ie. 0.325 microns/pixel), use a `--scalingFactor` of 0.5. If your pixel size is double (ie. 1.3 microns/pixel), then set your `--scalingFactor` to 2.
+First of all, check what is your pixel size since that is more relevant. If your pixel size is about half of the training data (ie. 0.325 microns/pixel), use a `--scalingFactor` of 0.5. If your pixel size is double (ie. 1.3 microns/pixel), then set your `--scalingFactor` to 2. For example,
+
+``` yaml
+options:
+  unmicst: --scalingFactor 2
+```
 
 **5. I heard unmicst-legacy is spectacular.**<br>
 You mean spectacularly **bad**. unmicst-legacy is deprecated. Use unmicst-solo or unmicst-duo if you have a nuclear envelope staining.
