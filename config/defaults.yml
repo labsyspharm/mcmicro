@@ -95,7 +95,7 @@ modules:
     -
       name: fastpg
       container: labsyspharm/mc-fastpg
-      version: 1.1.0
+      version: 1.2.3
       cmd: python3 /app/cluster.py -c
       input: -i
     -
