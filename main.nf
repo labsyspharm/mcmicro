@@ -69,7 +69,7 @@ rawFiles = findFiles('raw', "**${formatPattern}",
 // automatically.
 raw = rawFiles
     .map{ tuple(formatType == "single" ? it : it.parent, it) }
-    .map{ toStage, relPath -> tuple(toStage, toStage.parent.relativize(relPath)) }
+    .map{ toStage, relPath -> tuple(toStage, toStage.parent.relativize(relPath).toString()) }
 
 // Find precomputed intermediates
 pre_dfp   = findFiles0('illumination', "*-dfp.tif")
