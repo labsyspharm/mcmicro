@@ -1,4 +1,5 @@
 import mcmicro.*
+import java.nio.file.Paths
 
 def escapeForImagej(s) {
     // When passing an arbitrary string as an ImageJ macro parameter value, we
@@ -30,6 +31,7 @@ process illumination {
     when: Flow.doirun('illumination', wfp)
     
     script:
+    def relPath = Paths.get(relPath)
     def fn = escapeForImagej(relPath)
     def xpn = escapeForImagej(relPath.subpath(0, 1).toString().tokenize(".")[0])
     def macroParams = Util.escapeForShell(
