@@ -98,7 +98,7 @@ include {segmentation}   from "$projectDir/modules/segmentation"
 include {quantification} from "$projectDir/modules/quantification"
 include {downstream}     from "$projectDir/modules/downstream"
 include {viz}            from "$projectDir/modules/viz"
-
+include {provenance}     from "$projectDir/modules/provenance"
 
 // Define the primary mcmicro workflow
 workflow {
@@ -136,21 +136,7 @@ workflow {
 
     // Vizualization
     viz(mcp, allimg)
-}
 
-// Write out parameters used
-path_qc = "${params.in}/qc"
-workflow.onComplete {
-    // Create a provenance directory
-    file(path_qc).mkdirs()
-    
-    // Write out MCMICRO parameters
-    Opts.writeMap(mcp, "${params.in}/qc/params.yml")
-
-    // Store additional metadata
-    file("${path_qc}/metadata.yml").withWriter{ out ->
-        out.println "githubTag: $workflow.revision";
-        out.println "githubCommit: $workflow.commitId";
-        out.println "roadie: $params.roadie";
-    }
+    // Provenance: parameters and metadata
+    provenance(mcp)
 }
