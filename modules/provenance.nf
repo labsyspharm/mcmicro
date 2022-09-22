@@ -13,16 +13,16 @@ process provenance {
     path('metadata.yml')
 
   exec:
-    fnp = task.workDir.resolve('params.yml').toString()
-    fnm = task.workDir.resolve('metadata.yml').toString()
+    fnp = task.workDir.resolve('params.yml').toUri()
+    fnm = task.workDir.resolve('metadata.yml').toUri()
 
     // Write out MCMICRO parameters
     Opts.writeMap(mcp, fnp)
 
     // Store additional metadata
-    file(fnm).withWriter{ out ->
+    new File(fnm).withWriter{ out ->
         out.println "githubTag: $workflow.revision";
         out.println "githubCommit: $workflow.commitId";
         out.println "roadie: $params.roadie";
-    }
+    }    
 }
