@@ -1,6 +1,7 @@
 import mcmicro.*
 
 process provenance {
+  executor 'local'
   publishDir "${Flow.QC(params.in, '')}", mode: 'copy', pattern: '*.yml'
 
   input:
