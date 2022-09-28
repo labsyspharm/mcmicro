@@ -34,7 +34,7 @@ modules:
     -
       name: unmicst
       container: labsyspharm/unmicst
-      version: 2.7.4
+      version: 2.7.5
       cmd: python /app/unmicstWrapper.py --stackOutput --outputPath .
       input: ''
       channel: --channel
