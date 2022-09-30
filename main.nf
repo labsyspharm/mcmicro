@@ -10,6 +10,9 @@ nextflow.enable.dsl=2
 
 import mcmicro.*
 
+import org.yaml.snakeyaml.Yaml
+import org.yaml.snakeyaml.DumperOptions
+
 // Expecting --in parameter
 if( !params.containsKey('in') )
     error "Please specify the project directory with --in"
@@ -136,7 +139,26 @@ workflow {
 
     // Vizualization
     viz(mcp, allimg)
+}
 
-    // Provenance: parameters and metadata
-    provenance(mcp)
+// Write out parameters used
+path_qc = "${params.in}/qc"
+workflow.onComplete {
+    // Create a provenance directory
+    file(path_qc).mkdirs()
+    
+    // Write out MCMICRO parameters
+    DumperOptions style = new DumperOptions();
+    style.setPrettyFlow(true);
+    style.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
+    file("${params.in}/qc/params.yml").withWriter{ out -> 
+        new Yaml(style).dump(mcp, out) 
+    }
+
+    // Store additional metadata
+    file("${path_qc}/metadata.yml").withWriter{ out ->
+        out.println "githubTag: $workflow.revision";
+        out.println "githubCommit: $workflow.commitId";
+        out.println "roadie: $params.roadie";
+    }
 }
