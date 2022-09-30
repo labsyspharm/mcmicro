@@ -31,10 +31,14 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install Nextflow
-        run: curl -fsSL get.nextflow.io | bash
+        run: |
+          module load java
+          curl -fsSL get.nextflow.io | bash
       - name: Test ASHLAR
         run: singularity exec -C /n/groups/lsp/mcmicro/singularity/labsyspharm-ashlar-1.17.0.img ashlar
       - name: Exemplar-001 download
-        run: ./nextflow exemplar.nf --name exemplar-001 --path ~/data
+        run: |
+          module load java
+          ./nextflow exemplar.nf --name exemplar-001 --path ~/scratch/
 
         
