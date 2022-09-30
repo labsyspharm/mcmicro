@@ -34,3 +34,4 @@ jobs:
         run: |
           module load java
           nextflow main.nf --in ~/exemplar-001 -profile O2
+          nextflow main.nf --in ~/exemplar-002 -profile O2
