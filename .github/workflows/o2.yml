@@ -30,15 +30,7 @@ jobs:
     runs-on: O2
     steps:
       - uses: actions/checkout@v3
-      - name: Install Nextflow
+      - name: Test on exemplar-001
         run: |
           module load java
-          curl -fsSL get.nextflow.io | bash
-      - name: Test ASHLAR
-        run: singularity exec -C /n/groups/lsp/mcmicro/singularity/labsyspharm-ashlar-1.17.0.img ashlar
-      - name: Exemplar-001 download
-        run: |
-          module load java
-          ./nextflow exemplar.nf --name exemplar-001 --path ~/scratch/
-
-        
+          nextflow main.nf --in ~/exemplar-001 -profile O2
