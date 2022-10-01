@@ -2,15 +2,6 @@ name: O2-CI
 
 # Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
-  push:
-    branches: [ master ]
-    paths-ignore:
-      - README.md
-      - CHANGES.md
-      - .gitpod.yml
-      - 'docs/**'
-      - 'setup/**'
   pull_request:
     branches: [ master ]
     paths-ignore:
@@ -25,12 +16,11 @@ on:
 
 jobs:
 
-  # Downloads exemplar data from S3 as needed
   test:
     runs-on: O2
     steps:
       - uses: actions/checkout@v3
-      - name: Test on exemplar-001
+      - name: Test on exemplars
         run: |
           module load java
           nextflow main.nf --in ~/exemplar-001 -profile O2
