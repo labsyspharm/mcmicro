@@ -45,7 +45,8 @@ workflow quantification {
 
     // Combine everything based on IDs
     inputs = id_msks.combine(id_imgs, by:0)
-      .map{ id, mtd, msk, img -> tuple("${mtd}-${img.getName()}", img, msk) }
+      .map{ id, mtd, msk, img -> 
+        tuple("${Util.getImageID(img)}--${mtd}.ome.tif", img, msk) }
       .combine( markers )
     mcquant(mcp, mcp.modules['quantification'], inputs)
     

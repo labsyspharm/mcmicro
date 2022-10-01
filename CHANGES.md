@@ -1,3 +1,15 @@
+### 2022-10-01
+
+* Changed the order of tokens in quantification output to make it easier to match filenames against other intermediate.
+
+**Old pattern:** `unmicst-exemplar-001_cell.csv`
+
+**New pattern:** `exemplar-001--unmicst_cell.csv`
+
+The new pattern can now be easily matched against the original `exemplar-001.ome.tif` by cutting the feature table filename at `--`.
+
+* Added `modules/template.nf` documenting how to add new modules to MCMICRO.
+
 ### 2022-09-08
 
 * Added a `segmentation-recyze` parameter to the `workflow:` section. If set to `true`, MCMICRO will reduce the input image to the channels specified in `segmentation-channel` prior to passing it to the segmentation modules. This can be useful for reducing the memory footprint for modules like Mesmer, which read the entire input image into memory.
