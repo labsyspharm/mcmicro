@@ -3,13 +3,46 @@ A template for adding new modules to MCMICRO
 
 Step 1: Add module specs to config/defaults.yml
 
+  a: Add a flag specifying whether the module should be run to workflow:
+  b: Add default module options to options:
+  c: Add module name and container specs to modules:
+
+  For example, support we wanted to add a module that produces a QC report
+    about the signal-to-noise ratio (snr). The three additions to defaults.yml
+    may then look as follows:
+
+  workflow:
+    report: false
+  options:
+    snr: --cool-parameter 42
+  modules:
+    report:
+      name: snr
+      container: myorganization/snr
+      version: 1.0.0
+
 Step 2: Modify the code below as needed
 
 Step 3: Run the module from the main workflow in main.nf
-    a: add an include statement to import the relevant workflow. For example:
-        import {report} from "$projectDir/modules/report"
-    b: add a statement calling the module near the bottom of the main workflow:
-        report(mcp, allimg, sft)
+
+  a: add an include statement to import the relevant workflow. For example:
+
+    ...
+    include {downstream}     from "$projectDir/modules/downstream"
+    include {viz}            from "$projectDir/modules/viz"
+    include {report}         from "$projectDir/modules/report"   // <- importing the new module
+  
+  b: add a statement calling the module near the bottom of the main workflow:
+
+    ...
+    downstream(mcp, sft)
+
+    report(mcp, allimg, sft)     // <- calling the new module
+
+    // Vizualization
+    viz(mcp, allimg)
+    ...
+
 */
 
 // Import utility functions from lib/mcmicro/*.groovy
@@ -59,7 +92,7 @@ process snr {
     // Specifies whether to run the process
     // Here, we simply take the flag from the workflow parameters
     // TODO: change snr to match the true/false workflow parameter in defaults.yml
-  when: mcp.workflow["snr"]
+  when: mcp.workflow["report"]
 
     // The command to be executed inside the tool container
     // The command must write all outputs to the current working directory (.)
