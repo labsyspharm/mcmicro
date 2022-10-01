@@ -83,11 +83,12 @@ workflow report {
   main:
     
     // Match images against feature tables
-    id_mcp = mcp.map{ it -> tuple(Util.getImageID(it), it) }
-
+    id_imgs = imgs.map{ it -> tuple(Util.getImageID(it), it) }
+    id_sfts = sfts.map{ it -> tuple(Util.getFileID(it, '--'), it) }
 
     // Apply the process to each (image, sft) pair
-
+    id_imgs.combine(id_sfts, by:0)
+        .map{ tag, img, sft -> tuple(img, sft) } | snr
 
     // Return the outputs produced by the tool
   emit:
