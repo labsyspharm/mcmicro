@@ -6,4 +6,5 @@ RUN python -m pip install \
   tifffile \
   zarr \
   scikit-image \
-  ome_types
+  ome_types \
+  palom
