@@ -6,3 +6,7 @@ story:
   description: prepare image for auto-minerva
   output: '*.json'
   params: []
+pyramidize:
+  description: generate a pyramid for the input image
+  output: '*.ome.tif'
+  params: []
