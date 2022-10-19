@@ -13,6 +13,7 @@ options:
   ashlar: -m 30
   cypository: --model zeisscyto
   ilastik: --num_channels 1
+  cellpose: ; mv *masks.tif cell.tif
   mcquant: --masks cell*.tif
   naivestates: -p png
 modules:
@@ -66,6 +67,15 @@ modules:
       cmd: python /usr/src/app/run_app.py mesmer --squeeze --output-directory . --output-name cell.tif
       input: --nuclear-image
       channel: --nuclear-channel
+      idxbase: 0
+      watershed: 'no'
+    -
+      name: cellpose
+      container: niksto/cellpose_for_mcmicro
+      version: latest
+      cmd: cellpose --channel_axis 0 --save_tif --savedir .
+      input: --image_path
+      channel: --chan
       idxbase: 0
       watershed: 'no'
   watershed:
