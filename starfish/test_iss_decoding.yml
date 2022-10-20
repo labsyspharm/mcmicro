@@ -1,4 +1,9 @@
 workflow:
-  start-at: iss_decoding
-  stop-at: iss_decoding
+  start-at: registration
+  stop-at: segmentation
   iss_decoding: true
+modules:
+  iss_decoding:
+    name: starfish
+    container: spacetx/starfish
+    version: 0.2.2
