@@ -68,7 +68,7 @@ workflow processing {
     chMrk
   main:
     // find way to write inputs for function
-    backsub(mcp, path(chMrk), mcp.modules['processing'], path(pre_img))
+    backsub(mcp, chMrk, mcp.modules['processing'], pre_img)
 
     // Return the outputs produced by the tool
   emit:
