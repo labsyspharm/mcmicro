@@ -33,8 +33,8 @@ modules:
     input: --imagePath
   processing:
     name: backsub
-    container: ghcr.io/schapirolabor/background_subtraction
-    version: v0.0.1
+    container: kbestak/background_subtraction
+    version: 0.0.1
   segmentation:
     -
       name: unmicst
