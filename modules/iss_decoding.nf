@@ -1,10 +1,59 @@
 // Import utility functions from lib/mcmicro/*.groovy
 import mcmicro.*
 
-// Process name will appear in the the nextflow execution log
-// While not strictly required, it's a good idea to make the 
-//   process name match your tool name to avoid user confusion
-process tile {
+process starfish_tile {
+
+    container "${params.contPfx}${module.container}:${module.version}"
+    publishDir "${params.in}/iss_processing", mode: 'copy', pattern: "*.tif"
+
+    publishDir "${Flow.QC(params.in, 'provenance')}", mode: 'copy', 
+      pattern: '.command.{sh,log}',
+      saveAs: {fn -> fn.replace('.command', "${module.name}-${task.index}")}
+
+  input:
+    val mcp
+    val module
+    path code_tile
+
+  output:
+    path("*.json"), emit: results
+
+    tuple path('.command.sh'), path('.command.log')
+
+  when: mcp.workflow["iss_decoding"]
+
+    """    
+    python $code_tile ${Opts.moduleOpts(module, mcp)}
+    """
+}
+
+process starfish_convert {
+
+    container "${params.contPfx}${module.container}:${module.version}"
+    publishDir "${params.in}/iss_processing", mode: 'copy', pattern: "*.tif"
+
+    publishDir "${Flow.QC(params.in, 'provenance')}", mode: 'copy', 
+      pattern: '.command.{sh,log}',
+      saveAs: {fn -> fn.replace('.command', "${module.name}-${task.index}")}
+
+  input:
+    val mcp
+    val module
+    path code_convert
+
+  output:
+    path("*.json"), emit: results
+
+    tuple path('.command.sh'), path('.command.log')
+
+  when: mcp.workflow["iss_decoding"]
+
+    """    
+    python $code_convert ${Opts.moduleOpts(module, mcp)}
+    """
+}
+
+process starfish_decode {
 
     // Use the container specification from the parameter file
     // No change to this line is required
@@ -30,7 +79,7 @@ process tile {
   input:
     val mcp
     val module
-    path code
+    path code_decode
 
     // Process outputs that should be captured and 
     //  a) returned as results
@@ -51,7 +100,7 @@ process tile {
     // The command must write all outputs to the current working directory (.)
     // Opts.moduleOpts() will identify and return the appropriate module options
     """    
-    python $code ${Opts.moduleOpts(module, mcp)}
+    python $code_decode ${Opts.moduleOpts(module, mcp)}
     """
 }
 
@@ -67,10 +116,13 @@ workflow starfish {
   main:
 
     // Apply the process to each (image, sft) pair
-    code = Channel.fromPath("$projectDir/starfish/bin/decoding.py")
-    tile(mcp,mcp.modules['iss_decoding'],code)
+
+    // code_tile = Channel.fromPath("$projectDir/starfish/bin/decoding.py")
+    ///code_convert = Channel.fromPath("$projectDir/starfish/bin/decoding.py")
+    code_decode = Channel.fromPath("$projectDir/starfish/bin/decoding.py")
+    starfish_decode(mcp,mcp.modules['iss_decoding'],code)
 
     // Return the outputs produced by the tool
   emit:
-    tile.out.results
+    starfish_decode.out.results
 }
