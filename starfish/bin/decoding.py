@@ -67,8 +67,9 @@ def process_experiment(experiment: starfish.Experiment, cb: starfish.Codebook):
 
     return decoded_intensities
 
-experiment = data.ISS(use_test_data=False)
-test = process_experiment(experiment, experiment.codebook)
 print(test)
+experiment = data.ISS(use_test_data=True)
+test = process_experiment(experiment, experiment.codebook)
+
 #viewer = napari.Viewer()
 #viewer.add_layer

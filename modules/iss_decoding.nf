@@ -4,7 +4,7 @@ import mcmicro.*
 // Process name will appear in the the nextflow execution log
 // While not strictly required, it's a good idea to make the 
 //   process name match your tool name to avoid user confusion
-process starfish {
+process tile {
 
     // Use the container specification from the parameter file
     // No change to this line is required
@@ -55,7 +55,7 @@ process starfish {
     """
 }
 
-workflow run_starfish {
+workflow starfish {
 
     // Inputs:
     // mcp - MCMICRO parameters (workflow, options, etc.)
@@ -68,9 +68,9 @@ workflow run_starfish {
 
     // Apply the process to each (image, sft) pair
     code = Channel.fromPath("$projectDir/starfish/bin/decoding.py")
-    starfish(mcp,mcp.modules['iss_decoding'],code)
+    tile(mcp,mcp.modules['iss_decoding'],code)
 
     // Return the outputs produced by the tool
   emit:
-    starfish.out.results
+    tile.out.results
 }

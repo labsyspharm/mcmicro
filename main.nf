@@ -98,7 +98,7 @@ include {illumination}   from "$projectDir/modules/illumination"
 include {registration}   from "$projectDir/modules/registration"
 include {dearray}        from "$projectDir/modules/dearray"
 include {segmentation}   from "$projectDir/modules/segmentation"
-include {run_starfish}   from "$projectDir/modules/iss_decoding"
+include {starfish}       from "$projectDir/modules/iss_decoding"
 include {quantification} from "$projectDir/modules/quantification"
 include {downstream}     from "$projectDir/modules/downstream"
 include {viz}            from "$projectDir/modules/viz"
@@ -126,7 +126,7 @@ workflow {
     tmamasks = dearray.out.masks.mix(pre_masks)
 
     // Is the data type ISS?
-    run_starfish(mcp)
+    starfish(mcp)
 
     // Reconcile WSI and TMA processing for downstream segmentation
     allimg = img.wsi.mix(tmacores)
