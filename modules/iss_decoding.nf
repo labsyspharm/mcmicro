@@ -30,7 +30,6 @@ process tiling {
   input:
     val mcp
     val module
-    tuple path(registration)
 
     // Process outputs that should be captured and 
     //  a) returned as results
@@ -45,13 +44,13 @@ process tiling {
     // Specifies whether to run the process
     // Here, we simply take the flag from the workflow parameters
     // TODO: change snr to match the true/false workflow parameter in defaults.yml
-  when: mcp.workflow["report"]
+  when: mcp.workflow["iss_decoding"]
 
     // The command to be executed inside the tool container
     // The command must write all outputs to the current working directory (.)
     // Opts.moduleOpts() will identify and return the appropriate module options
     """    
-    python /app/mytool.py --image $img --features $sft ${Opts.moduleOpts(module, mcp)}
+    python $projectDir/starfish/bin/decoding.py ${Opts.moduleOpts(module, mcp)}
     """
 }
 
@@ -63,18 +62,14 @@ workflow run_starfish {
     // cbk - Codebook
   take:
     mcp
-    img
-    cbk
 
   main:
 
     // Match images against feature tables
     id_imgs = imgs.map{ it -> tuple(Util.getImageID(it), it) }
-    id_sfts = sfts.map{ it -> tuple(Util.getFileID(it, '--'), it) }
 
     // Apply the process to each (image, sft) pair
-    id_imgs.combine(id_sfts, by:0)
-        .map{ tag, img, sft -> tuple(img, sft) } | snr
+    tiling(mcp,mcp.modules)
 
     // Return the outputs produced by the tool
   emit:

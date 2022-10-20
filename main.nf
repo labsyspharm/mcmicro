@@ -126,7 +126,7 @@ workflow {
     tmamasks = dearray.out.masks.mix(pre_masks)
 
     // Is the data type ISS?
-    tiling(mcp, )
+    run_starfish(mcp)
 
     // Reconcile WSI and TMA processing for downstream segmentation
     allimg = img.wsi.mix(tmacores)

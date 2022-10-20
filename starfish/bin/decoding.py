@@ -2,7 +2,7 @@ import os
 import numpy as np
 import starfish
 from skimage.io import imread
-import napari
+#import napari
 
 from starfish.image import ApplyTransform, LearnTransform, Filter
 from starfish.types import Axes
@@ -67,7 +67,8 @@ def process_experiment(experiment: starfish.Experiment, cb: starfish.Codebook):
 
     return decoded_intensities
 
-#process_experiment(starfish.Experiment.from_json('/Volumes/exchange/SebastianGonzalez/iss_testing/2bCartana_08_Test/SpaceTx/primary/experiment.json'))
-
+experiment = data.ISS(use_test_data=False)
+test = process_experiment(experiment, experiment.codebook)
+print(test)
 #viewer = napari.Viewer()
 #viewer.add_layer
