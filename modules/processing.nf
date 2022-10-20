@@ -64,8 +64,8 @@ workflow processing {
     // sfts - spatial feature tables
   take:
     mcp
-    pre_img
-    chMrk
+    path(pre_img)
+    path(chMrk)
 
   main:
     // find way to write inputs for function
