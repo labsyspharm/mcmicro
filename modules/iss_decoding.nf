@@ -119,8 +119,9 @@ workflow starfish {
 
     // code_tile = Channel.fromPath("$projectDir/starfish/bin/decoding.py")
     ///code_convert = Channel.fromPath("$projectDir/starfish/bin/decoding.py")
+    
     code_decode = Channel.fromPath("$projectDir/starfish/bin/decoding.py")
-    starfish_decode(mcp,mcp.modules['iss_decoding'],code)
+    starfish_decode(mcp,mcp.modules['iss_decoding'],code_decode)
 
     // Return the outputs produced by the tool
   emit:
