@@ -52,7 +52,7 @@ process backsub {
     // The command must write all outputs to the current working directory (.)
     // Opts.moduleOpts() will identify and return the appropriate module options
     """    
-    python /background_sub.py -r $pre_img -o /processing/bsub.ome.tif -m $chMrk -mo /processing/mo_bsub.csv ${Opts.moduleOpts(module, mcp)}
+    -r $pre_img -o /processing/bsub.ome.tif -m $chMrk -mo /processing/mo_bsub.csv ${Opts.moduleOpts(module, mcp)}
     """
 }
 
