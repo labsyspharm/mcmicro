@@ -30,14 +30,14 @@ process tiling {
   input:
     val mcp
     val module
-    tuple path(img), path(sft)
+    tuple path(registration)
 
     // Process outputs that should be captured and 
     //  a) returned as results
     //  b) published to the project directory
     // TODO: replace *.html with the pattern of the tool output files
   output:
-    path("*.html"), emit: results
+    path("*.json"), emit: results
 
     // Provenance files -- no change is needed here
     tuple path('.command.sh'), path('.command.log')
@@ -55,16 +55,16 @@ process tiling {
     """
 }
 
-workflow report {
+workflow run_starfish {
 
     // Inputs:
     // mcp - MCMICRO parameters (workflow, options, etc.)
     // imgs - images
-    // sfts - spatial feature tables
+    // cbk - Codebook
   take:
     mcp
-    imgs
-    sfts
+    img
+    cbk
 
   main:
 
