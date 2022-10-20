@@ -64,12 +64,11 @@ workflow processing {
     // sfts - spatial feature tables
   take:
     mcp
-    path(pre_img)
-    path(chMrk)
-
+    pre_img
+    chMrk
   main:
     // find way to write inputs for function
-    backsub(mcp, chMrk, mcp.modules['processing'], pre_img)
+    backsub(mcp, path(chMrk), mcp.modules['processing'], path(pre_img))
 
     // Return the outputs produced by the tool
   emit:
