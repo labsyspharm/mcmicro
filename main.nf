@@ -101,6 +101,7 @@ include {segmentation}   from "$projectDir/modules/segmentation"
 include {quantification} from "$projectDir/modules/quantification"
 include {downstream}     from "$projectDir/modules/downstream"
 include {viz}            from "$projectDir/modules/viz"
+include {processing}        from "$projectDir/modules/processing"
 
 // Define the primary mcmicro workflow
 workflow {
@@ -108,6 +109,11 @@ workflow {
     registration(mcp, raw,
 		 illumination.out.ffp.mix( pre_ffp ),
 		 illumination.out.dfp.mix( pre_dfp ))
+
+    // Apply background subtraction if specified
+    processing(mcp, pre_img, chMrk)
+    pre_img = background_sub.out.result[0]
+    chMrk = background_sub.out.result[1]
 
     // Are we working with a TMA or a whole-slide image?
     img = registration.out
