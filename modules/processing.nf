@@ -73,5 +73,5 @@ workflow processing {
 
     // Return the outputs produced by the tool
   emit:
-    result = backsub.out.result
+    backsub.out.result
 }
