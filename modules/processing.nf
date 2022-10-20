@@ -40,7 +40,7 @@ process backsub {
     // TODO: replace *.html with the pattern of the tool output files
   output:
     // Output background subtracted image and markers.csv as tuple
-    path("*.ome.tif"), path("*.csv"), emit: result
+    tuple path('*.ome.tif'), path('*.csv'), emit: result
     // Provenance files -- no change is needed here
     tuple path('.command.sh'), path('.command.log')
 
