@@ -19,7 +19,7 @@ modules:
   illumination:
     name: basic
     container: labsyspharm/basic-illumination
-    version: 1.1.0
+    version: 1.1.1
   registration:
     name: ashlar
     container: labsyspharm/ashlar
