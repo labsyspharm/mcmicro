@@ -4,7 +4,7 @@ import mcmicro.*
 // Process name will appear in the the nextflow execution log
 // While not strictly required, it's a good idea to make the 
 //   process name match your tool name to avoid user confusion
-process background_sub {
+process backsub {
 
     // Use the container specification from the parameter file
     // No change to this line is required
@@ -69,9 +69,9 @@ workflow processing {
 
   main:
     // find way to write inputs for function
-    background_sub(mcp, chMrk, pre_img)
+    backsub(mcp, chMrk, pre_img)
 
     // Return the outputs produced by the tool
   emit:
-    background_sub.out.result
+    backsub.out.result
 }
