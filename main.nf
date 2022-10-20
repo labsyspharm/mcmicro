@@ -112,8 +112,8 @@ workflow {
 
     // Apply background subtraction if specified
     processing(mcp, pre_img, chMrk)
-    pre_img = background_sub.out.result[0]
-    chMrk = background_sub.out.result[1]
+    pre_img = backsub.out.result[0]
+    chMrk = backsub.out.result[1]
 
     // Are we working with a TMA or a whole-slide image?
     img = registration.out
