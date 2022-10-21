@@ -13,6 +13,7 @@ workflow:
   - downstream
   - ilastik-model
   - mesmer-model
+  - iss_decoding
 deprecated:
   quantification-mask: "--quant-opts '--masks ...'"
   illum: --start-at illumination

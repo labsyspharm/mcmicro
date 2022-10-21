@@ -2,7 +2,7 @@ import os
 import numpy as np
 import starfish
 from skimage.io import imread
-import napari
+#import napari
 
 from starfish.image import ApplyTransform, LearnTransform, Filter
 from starfish.types import Axes
@@ -68,11 +68,8 @@ def process_experiment(experiment: starfish.Experiment, cb: starfish.Codebook):
 
     return decoded_intensities
 
-# Load minimal example from starfish:
 experiment = data.ISS(use_test_data=True)
-codebook = experiment.codebook
+test = process_experiment(experiment, experiment.codebook)
+print(test)
 
-#if __name__ == '__main__':
-#    process_experiment(experiment = experiment, cb = codebook)
-process_experiment(experiment = experiment, cb = codebook)
 
