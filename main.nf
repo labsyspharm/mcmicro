@@ -101,7 +101,7 @@ include {segmentation}   from "$projectDir/modules/segmentation"
 include {quantification} from "$projectDir/modules/quantification"
 include {downstream}     from "$projectDir/modules/downstream"
 include {viz}            from "$projectDir/modules/viz"
-include {bsub_test}     from "$projectDir/modules/processing"
+include {bsub_test}     from "$projectDir/modules/bsub_test"
 
 // Define the primary mcmicro workflow
 workflow {
@@ -112,8 +112,8 @@ workflow {
 
     // Apply background subtraction if specified
     bsub_test(mcp, pre_img, chMrk)
-    // pre_img = processing.out.result[0]
-    // chMrk = processing.out.result[1]
+    // pre_img = bsub_test.out.result[0]
+    // chMrk = bsub_test.out.result[1]
 
     // Are we working with a TMA or a whole-slide image?
     img = registration.out
