@@ -5,15 +5,19 @@ from skimage.io import imread, imsave
 from collections import namedtuple
 import pandas as pd
 import numpy as np
+import argparse
+from pathlib import Path
 
-input_path = '/Users/segonzal/Documents/Repositories/imbast/data/primary'
-img_input = imread(os.path.join(input_path, os.listdir(input_path)[0]))
-tile_size = 500
-tile_overlap = 0
+# input_path = '/Users/segonzal/Documents/Repositories/imbast/data/primary'
+# img_input = imread(os.path.join(input_path, os.listdir(input_path)[0]))
+# tile_size = 500
+# tile_overlap = 0
 channel_map = {'CH0': '0', 'CH1': '1', 'CH2': '2', 'CH3': '3'}
 
-def get_tile_coordinates(tile_size: int, tile_overlap: int) -> None:
+
+def get_tile_coordinates(img_input, tile_size: int, tile_overlap: int) -> None:
     """Compute tile coordinates."""
+
     tile_coordinates = {}
 
     RoI = namedtuple('RoI', ['row', 'col', 'nrows', 'ncols'])
@@ -39,12 +43,15 @@ def get_tile_coordinates(tile_size: int, tile_overlap: int) -> None:
 
     return tile_coordinates
 
+
 def select_roi(image, roi):
     return image[roi.row:roi.row + roi.nrows,
            roi.col:roi.col + roi.ncols]
 
+
 def needs_padding(image_tile, tile_size):
     return any([image_tile.shape[i] < tile_size for i in [0, 1]])
+
 
 def pad_to_size(
         image,
@@ -64,7 +71,7 @@ def tile_image_set(in_dir, tile_size, tile_overlap, img_type,
                 coordinates, output_dir):
     # File names and coordinates table according to
     # SpaceTx Structured Data
-    tile_coordinates = get_tile_coordinates(tile_size, tile_overlap)
+    tile_coordinates = get_tile_coordinates(imread(Path(in_dir) / os.listdir(in_dir)[0]), tile_size, tile_overlap)
     coordinates = []
     for image_name in os.listdir(in_dir):
         image = imread(os.path.join(in_dir, image_name))
@@ -88,6 +95,7 @@ def tile_image_set(in_dir, tile_size, tile_overlap, img_type,
 
     return coordinates
 
+
 def write_coords_file(coordinates, file_path) -> None:
     coords_df = pd.DataFrame(
         coordinates,
@@ -96,11 +104,37 @@ def write_coords_file(coordinates, file_path) -> None:
                  'xc_max', 'yc_max', 'zc_max'))
     coords_df.to_csv(file_path, index=False)
 
-coords = tile_image_set('/Users/segonzal/Documents/Repositories/imbast/data/primary',
-                        500,
-                        0,
-                        'primary',
-                        get_tile_coordinates(tile_size=500, tile_overlap=0),
-                        '/Users/segonzal/Downloads')
 
-write_coords_file(coords, '/Users/segonzal/Downloads/coordinates.csv')
+def main(input_path, output_path, tile_size=500, tile_overlap=0):
+    input_path = Path(input_path)
+    output_path = Path(output_path)
+    # coords = tile_image_set(
+    #     '/Users/segonzal/Documents/Repositories/imbast/data/primary',
+    #     tile_size,
+    #     tile_overlap,
+    #     'primary',
+    #     get_tile_coordinates(tile_size=tile_size, tile_overlap=tile_overlap),
+    #     '/Users/segonzal/Downloads'
+    # )
+
+    input_path = Path(input_path)
+    output_path = Path(output_path)
+    output_path.mkdir(exist_ok=True)
+
+    coords = tile_image_set(
+        input_path, tile_size, tile_overlap, "primary",
+        get_tile_coordinates(imread(input_path / os.listdir(input_path)[0]), tile_size=tile_size, tile_overlap=tile_overlap), output_path
+    )
+    write_coords_file(coords, output_path / 'coordinates.csv')
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-i", "--input", help="input path for images", type=str)
+    parser.add_argument("-o", "--output", help="output folder for tiled images", type=str)
+
+    parser.add_argument("-ts", "--tile-size", type=int, help="the size of tiles", default=500)
+    parser.add_argument("-to", "--tile-overlap", type=int, help="the overlay for tiles", default=0)
+    args = parser.parse_args()
+
+    main(args.input, args.output, args.tile_size, args.tile_overlap)
