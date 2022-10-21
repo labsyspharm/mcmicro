@@ -2,20 +2,30 @@ import os
 import numpy as np
 import starfish
 from skimage.io import imread
-#import napari
-
+import argparse
 from starfish.image import ApplyTransform, LearnTransform, Filter
 from starfish.types import Axes
 from starfish import data, FieldOfView
 from starfish.spots import FindSpots, DecodeSpots, AssignTargets
 from starfish.util.plot import imshow_plane
 
+codebook = data.ISS(use_test_data=True).codebook
 
+def get_args():
+    """Get command-line arguments"""
 
+    parser = argparse.ArgumentParser(
+        description='Input/output directories for data formatting',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-#fov = experiment.fov()
-#imgs = fov.get_image(FieldOfView.PRIMARY_IMAGES)
-#dots = fov.get_image("dots")
+    parser.add_argument('-i',
+                        '--input_dir',
+                        default='Tiled',
+                        type=str,
+                        help='Input root directory')
+
+    return parser.parse_args()
+
 
 def iss_pipeline(fov, codebook):
     #fov = experiment.fov()
@@ -68,8 +78,17 @@ def process_experiment(experiment: starfish.Experiment, cb: starfish.Codebook):
 
     return decoded_intensities
 
-experiment = data.ISS(use_test_data=True)
-test = process_experiment(experiment, experiment.codebook)
-print(test)
+def save_fov(fov, dataframe):
+    fov_df = dataframe.to_features_dataframe()
+    fov_df.to_csv(f'fov_{fov}.csv', index=False)
+
+def main():
+    args = get_args()
+    exp = starfish.Experiment.from_json(os.path.join(args.input_dir, 'primary', 'experiment.json'))
+    results = process_experiment(exp, codebook)
+    for fov, data in results.items():
+        save_fov(fov, data)
 
 
+if __name__ == '__main__':
+    main()
