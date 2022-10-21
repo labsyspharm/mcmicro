@@ -10,8 +10,9 @@ from starfish import data, FieldOfView
 from starfish.spots import FindSpots, DecodeSpots, AssignTargets
 from starfish.util.plot import imshow_plane
 
-# Load minimal example from starfish:
-#experiment = data.ISS(use_test_data=False)
+
+
+
 #fov = experiment.fov()
 #imgs = fov.get_image(FieldOfView.PRIMARY_IMAGES)
 #dots = fov.get_image("dots")
@@ -67,7 +68,11 @@ def process_experiment(experiment: starfish.Experiment, cb: starfish.Codebook):
 
     return decoded_intensities
 
-#process_experiment(starfish.Experiment.from_json('/Volumes/exchange/SebastianGonzalez/iss_testing/2bCartana_08_Test/SpaceTx/primary/experiment.json'))
+# Load minimal example from starfish:
+experiment = data.ISS(use_test_data=True)
+codebook = experiment.codebook
 
-#viewer = napari.Viewer()
-#viewer.add_layer
+#if __name__ == '__main__':
+#    process_experiment(experiment = experiment, cb = codebook)
+process_experiment(experiment = experiment, cb = codebook)
+

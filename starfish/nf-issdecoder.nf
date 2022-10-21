@@ -75,22 +75,37 @@ process TILING {
 process TO_SPACETX {
 
   input:
-  path x
+//  path x
 
   output:
+  path 'SpaceTx'
+//  path 'data_results'
+
+  script:
+  """
+  python $projectDir/bin/format_to_spacetx.py 
+  """
+}
+
+process DECODE {
+
+  input:
+  path SpaceTx
+
+  output:
+  stdout
 //  path 'SpaceTx'
 //  path 'data_results'
 
   script:
   """
-  python $projectDir/bin/to_spacetx.py -i $projectDir -c ${x}
+  python $projectDir/bin/decoding.py
   """
 }
-
-
 workflow {
-  tiling_ch = TILING(params.register_dir)
-  tiling_ch.view()
+  tiling_ch = TO_SPACETX()
+  decoding_ch = DECODE()
+  decoding_ch.view()
 //  tiling_ch.view()
 //  result_spacetx = TO_SPACETX(params.codebook)
 //  final_process = RESULT(result_spacetx.out)

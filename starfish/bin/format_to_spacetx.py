@@ -26,7 +26,7 @@ def get_args():
     return parser.parse_args()
 
 #--------------------------------------------------
-def format_structured_experiment(
+def format_experiment(
         in_dir: str = 'Tiled',
         out_dir: str = 'SpaceTx',
         subdirs: list = ['primary', 'nuclei', 'anchor_dots', 'anchor_nuclei'],
@@ -52,5 +52,6 @@ def main():
         out_dir = args.output_dir
     )
 
-if __name__ == '__main__':
-    main()
+#if __name__ == '__main__':
+#    main()
+format_experiment('/Users/segonzal/Documents/iss_nextflow/2bCartana_08_Test/Tiled', 'SpaceTx', ['primary'])
