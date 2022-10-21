@@ -28,7 +28,7 @@ static def flowSegment(wfp) {
     List mcsteps = ["raw",  // Step 0
         "illumination",     // Step 1
         "registration",     // Step 2
-        "processing",       // Step 3
+        "bsub_test",       // Step 3
         "dearray",          // Step 4
         "segmentation",     // Step 5
         "watershed",        // Step 6
@@ -62,7 +62,7 @@ static def precomputed(wfp) {
     [
         raw:                idxStart <= 2,
         illumination:       idxStart == 2, 
-        processing:         idxStart == 3,
+        bsub_test:         idxStart == 3,
         registration:       idxStart == 4 || (idxStart > 4 && !wfp.tma),
         dearray:            idxStart > 4 && wfp.tma,
         'probability-maps': idxStart == 6,
@@ -86,7 +86,7 @@ static def doirun(step, wfp) {
             return(idxStart <= 1 && idxStop >= 1)
         case 'registration':
             return(idxStart <= 2 && idxStop >= 2)
-        case 'processing':
+        case 'bsub_test':
             return(idxStart <= 3 && idxStop >= 3)
         case 'dearray':
             return(idxStart <= 4 && idxStop >= 4 && wfp.tma)

@@ -14,8 +14,8 @@ process backsub {
     // The pattern: specification must match the output: files below
     // TODO: replace report with the desired output directory
     // TODO: replace the pattern to match the output: clause below
-    publishDir "${params.in}/processing", mode: 'copy', pattern: "*.ome.tif"
-    publishDir "${params.in}/processing", mode: 'copy', pattern: "*.csv"
+    publishDir "${params.in}/processing", mode: 'copy', pattern: "bsub_out.ome.tif"
+    publishDir "${params.in}/processing", mode: 'copy', pattern: "markers_out.csv"
 
     // Stores .command.sh and .command.log from the work directory
     //   to the project provenance
@@ -46,17 +46,17 @@ process backsub {
 
     // Specifies whether to run the process
     // Here, we simply take the flag from the workflow parameters
-  when: mcp.workflow["processing"]
+  when: mcp.workflow["bsub_test"]
 
     // The command to be executed inside the tool container
     // The command must write all outputs to the current working directory (.)
     // Opts.moduleOpts() will identify and return the appropriate module options
     """    
-    -r $pre_img -o /processing/bsub.ome.tif -m $chMrk -mo /processing/mo_bsub.csv ${Opts.moduleOpts(module, mcp)}
+    python /background_sub.py -r $pre_img -o /processing/bsub_out.ome.tif -m $chMrk -mo /processing/markers_out.csv ${Opts.moduleOpts(module, mcp)}
     """
 }
 
-workflow processing {
+workflow bsub_test {
   
     // Inputs:
     // mcp - MCMICRO parameters (workflow, options, etc.)
@@ -68,7 +68,7 @@ workflow processing {
     chMrk
   main:
     // find way to write inputs for function
-    backsub(mcp, chMrk, mcp.modules['processing'], pre_img)
+    backsub(mcp, chMrk, mcp.modules['bsub_test'], pre_img)
 
     // Return the outputs produced by the tool
   emit:
