@@ -13,6 +13,7 @@ primary = fov.get_image(FieldOfView.PRIMARY_IMAGES)
 
 # save_dir = '/Users/segonzal/Documents/Repositories/imbast/data/primary'
 save_dir = Path(os.getcwd()) / "sample_dataset"
+print(save_dir)
 
 
 def generate_dataset(save_dir: Union[str, Path]):

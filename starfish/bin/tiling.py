@@ -7,6 +7,7 @@ import pandas as pd
 import numpy as np
 import argparse
 from pathlib import Path
+import logging
 
 # input_path = '/Users/segonzal/Documents/Repositories/imbast/data/primary'
 # img_input = imread(os.path.join(input_path, os.listdir(input_path)[0]))
@@ -116,7 +117,7 @@ def main(input_path, output_path, tile_size=500, tile_overlap=0):
     #     get_tile_coordinates(tile_size=tile_size, tile_overlap=tile_overlap),
     #     '/Users/segonzal/Downloads'
     # )
-
+    print(input_path, output_path)
     input_path = Path(input_path)
     output_path = Path(output_path)
     output_path.mkdir(exist_ok=True)

@@ -33,7 +33,8 @@ def format_experiment(
         coordinates_filename: str = 'coordinates.csv'
 ):
     for subdir in subdirs:
-        in_d = os.path.join(in_dir, subdir)
+        # in_d = os.path.join(in_dir, subdir)
+        in_d = in_dir
         out_d = os.path.join(out_dir, subdir)
         os.makedirs(out_d)
 
@@ -47,11 +48,12 @@ def format_experiment(
 #--------------------------------------------------
 def main():
     args = get_args()
-    format_structured_dataset(
-        in_dir = args.input_dir,
-        out_dir = args.output_dir
+    format_experiment(
+        in_dir=args.input_dir,
+        out_dir=args.output_dir
     )
 
-#if __name__ == '__main__':
-#    main()
-format_experiment('/Users/segonzal/Documents/iss_nextflow/2bCartana_08_Test/Tiled', 'SpaceTx', ['primary'])
+
+if __name__ == '__main__':
+   main()
+#  format_experiment('/Users/segonzal/Documents/iss_nextflow/2bCartana_08_Test/Tiled', 'SpaceTx', ['primary'])

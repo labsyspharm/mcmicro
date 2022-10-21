@@ -49,6 +49,9 @@ findFiles = { key, pattern, ife -> pre[key] ?
     Channel.fromPath("${params.in}/$key/$pattern").ifEmpty(ife) : Channel.empty()
 }
 
+// Find spot images in starfish_input
+starimgs = Channel.fromPath( "${params.in}/primary", checkIfExists: true )
+
 // Some image formats store multiple fields of view in a single file. Other
 // formats store each field separately, typically in .tif files, with a separate
 // index file to tie them together. We will look for the index files from
@@ -126,7 +129,7 @@ workflow {
     tmamasks = dearray.out.masks.mix(pre_masks)
 
     // Is the data type ISS?
-    starfish(mcp)
+    starfish(mcp, starimgs)
 
     // Reconcile WSI and TMA processing for downstream segmentation
     allimg = img.wsi.mix(tmacores)

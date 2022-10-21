@@ -28,7 +28,7 @@ process TILING {
 
   script:
   """
-  python $projectDir/bin/tiling.py -i ${x} 
+  python $projectDir/bin/tiling.py --input ${x} --output TILED
   """
 }
 
