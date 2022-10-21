@@ -101,7 +101,7 @@ include {segmentation}   from "$projectDir/modules/segmentation"
 include {quantification} from "$projectDir/modules/quantification"
 include {downstream}     from "$projectDir/modules/downstream"
 include {viz}            from "$projectDir/modules/viz"
-include {bsub_test}     from "$projectDir/modules/bsub_test"
+include {bsub_test}     from "$projectDir/modules/processing"
 
 // Define the primary mcmicro workflow
 workflow {
