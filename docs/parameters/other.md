@@ -14,9 +14,13 @@ Segmentation
 1. [Cypository](./other.html#cypository)
 1. [Mesmer](./other.html#mesmer)
 
-Clsutering and cell type inference
+Clustering and cell type inference
 1. [Clustering](./other.html#clustering) 
 1. [naivestates](./other.html#naivestates)
+
+In-situ sequencing spot deconvolution
+1. [Starfish](./other.html#starfish)
+
 
 <br>
 
@@ -258,3 +262,30 @@ Nextflow will write all outputs to the `cell-states/naivestates/` subdirectory w
 |`--mct <filename>` | |The tool has a basic marker -> cell type (mct) mapping in `typemap.csv`. More sophisticated mct mappings can be defined by creating a `custom-map.csv` file with two columns: `Marker` and `State`. |
 
 [Back to top](./other.html#other-modules){: .btn .btn-purple} [Back to main modules](./){: .btn .btn-outline} 
+
+## Starfish
+
+### Description
+starfish is a Python library for processing images of image-based spatial transcriptomics. We implemented part of the starfish pipeline to process ISS images starting from ... until the final result, a table with locations of all called spots.
+### Usage
+Add a `iss_decoding:` field to [workflow parameters]({{site.baseurl}}/parameters/) to select starfish.
+
+* Example `params.yml`:
+
+``` yaml
+workflow:
+  stop-at: iss_decoding
+  downstream: naivestates
+  naivestates-model: /full/path/to/mct.csv
+options:
+  naivestates: --log no
+```
+* Default naivestates options: `-p png`
+* Running outside of MCMICRO: [Instructions](https://github.com/labsyspharm/mcmicro-ilastik){:target="_blank"}.
+### Inputs
+
+
+### Outputs
+
+
+### Optional arguments
