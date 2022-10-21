@@ -1,15 +1,13 @@
 import os
-import numpy as np
 import starfish
-from skimage.io import imread
 import argparse
 from starfish.image import ApplyTransform, LearnTransform, Filter
 from starfish.types import Axes
 from starfish import data, FieldOfView
 from starfish.spots import FindSpots, DecodeSpots, AssignTargets
-from starfish.util.plot import imshow_plane
 
 codebook = data.ISS(use_test_data=True).codebook
+
 
 def get_args():
     """Get command-line arguments"""
@@ -81,6 +79,7 @@ def process_experiment(experiment: starfish.Experiment, cb: starfish.Codebook):
 def save_fov(fov, dataframe):
     fov_df = dataframe.to_features_dataframe()
     fov_df.to_csv(f'fov_{fov}.csv', index=False)
+
 
 def main():
     args = get_args()

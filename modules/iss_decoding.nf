@@ -122,8 +122,8 @@ workflow starfish {
     // code_tile = Channel.fromPath("$projectDir/starfish/bin/decoding.py")
     ///code_convert = Channel.fromPath("$projectDir/starfish/bin/decoding.py")
     
-    code_decode = Channel.fromPath("$projectDir/starfish/bin/tiling.py")
-    TILED = starfish_tile(mcp, mcp.modules['iss_decoding'], code_decode, img_dir)
+    code_tile = Channel.fromPath("$projectDir/starfish/bin/tiling.py")
+    TILED = starfish_tile(mcp, mcp.modules['iss_decoding'], code_tile, img_dir)
 
     println TILED
     code_convert = Channel.fromPath("$projectDir/starfish/bin/format_to_spacetx.py")

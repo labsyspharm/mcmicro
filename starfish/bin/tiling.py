@@ -109,17 +109,7 @@ def write_coords_file(coordinates, file_path) -> None:
 def main(input_path, output_path, tile_size=500, tile_overlap=0):
     input_path = Path(input_path)
     output_path = Path(output_path)
-    # coords = tile_image_set(
-    #     '/Users/segonzal/Documents/Repositories/imbast/data/primary',
-    #     tile_size,
-    #     tile_overlap,
-    #     'primary',
-    #     get_tile_coordinates(tile_size=tile_size, tile_overlap=tile_overlap),
-    #     '/Users/segonzal/Downloads'
-    # )
-    print(input_path, output_path)
-    input_path = Path(input_path)
-    output_path = Path(output_path)
+
     output_path.mkdir(exist_ok=True)
 
     coords = tile_image_set(
