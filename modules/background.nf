@@ -7,15 +7,14 @@ import mcmicro.*
 process backsub {
 
     // Use the container specification from the parameter file
-    // No change to this line is required
     container "${params.contPfx}${module.container}:${module.version}"
 
     // Specify the project subdirectory for writing the outputs to
     // The pattern: specification must match the output: files below
-    // TODO: replace report with the desired output directory
-    // TODO: replace the pattern to match the output: clause below
-    publishDir "${params.in}/processing", mode: 'copy', pattern: "bsub_out.ome.tif"
-    publishDir "${params.in}/processing", mode: 'copy', pattern: "markers_out.csv"
+    // Subdirectory: background
+    // Hardcoded output file names
+    publishDir "${params.in}/background", mode: 'copy', pattern: "*.ome.tif"
+    publishDir "${params.in}/background", mode: 'copy', pattern: "*.csv"
 
     // Stores .command.sh and .command.log from the work directory
     //   to the project provenance
@@ -27,50 +26,50 @@ process backsub {
     // Inputs for the process
     // mcp - MCMICRO parameters (workflow, options, etc.)
     // module - module specifications (name, container, options, etc.)
-    // img/sft - pairs of images and their matching spatial feature tables
+    // path to the markers.csv
+    // path to the registered image
   input:
     val mcp
-    path(chMrk)
     val module
-    path(pre_img)
+    path(marker)
+    path(image)
 
-    // Process outputs that should be captured and 
-    //  a) returned as results
-    //  b) published to the project directory
-    // TODO: replace *.html with the pattern of the tool output files
+    // outputs are returned as results with appropriate patterns
   output:
-    // Output background subtracted image and markers.csv as tuple
-    tuple path('*.ome.tif'), path('*.csv'), emit: result
-    // Provenance files -- no change is needed here
+    // Output background subtracted image and markers.csv
+    path('*.ome.tif'), emit: image_out
+    path('*.csv'), emit: marker_out
+    // Provenance files
     tuple path('.command.sh'), path('.command.log')
 
     // Specifies whether to run the process
     // Here, we simply take the flag from the workflow parameters
-  when: mcp.workflow["bsub_test"]
+  when: mcp.workflow["background"]
 
     // The command to be executed inside the tool container
     // The command must write all outputs to the current working directory (.)
     // Opts.moduleOpts() will identify and return the appropriate module options
-    """    
-    python /background_sub.py -r $pre_img -o /processing/bsub_out.ome.tif -m $chMrk -mo /processing/markers_out.csv ${Opts.moduleOpts(module, mcp)}
+    """
+    /opt/conda/bin/python /tmp/background_sub.py -o ./background_subtracted_image.ome.tif -mo ./markers_bs.csv -r $image -m $marker ${Opts.moduleOpts(module, mcp)}
     """
 }
-
-workflow bsub_test {
+workflow background {
   
     // Inputs:
     // mcp - MCMICRO parameters (workflow, options, etc.)
-    // imgs - images
-    // sfts - spatial feature tables
+    // image - image
+    // marker - marker file
   take:
-    mcp
-    pre_img
-    chMrk
+    mcp // MCMICRO parameters (workflow, options, etc.)
+    image // image to apply background subtraction to
+    marker // marker file
   main:
-    // find way to write inputs for function
-    backsub(mcp, chMrk, mcp.modules['bsub_test'], pre_img)
-
+    // run the backsub process with the mcmicro parameters, module value
+    // markers path and pre-registered image path
+    backsub(mcp, mcp.modules['background'], marker, image)
+    
     // Return the outputs produced by the tool
   emit:
-    backsub.out.result
+    backsub.out.image_out
+    backsub.out.marker_out
 }

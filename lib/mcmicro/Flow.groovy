@@ -25,15 +25,17 @@ static def flowSegment(wfp) {
     }
 
     // Valid start/stop steps in the mcmicro pipeline
-    List mcsteps = ["raw",  // Step 0
+    List mcsteps = [
+        "raw",              // Step 0
         "illumination",     // Step 1
         "registration",     // Step 2
-        "bsub_test",       // Step 3
+        "background",       // Step 3
         "dearray",          // Step 4
         "segmentation",     // Step 5
         "watershed",        // Step 6
         "quantification",   // Step 7
-        "downstream"]       // Step 8
+        "downstream"        // Step 8
+        ]
 
     // Identify starting and stopping indices
     int idxStart = mcsteps.indexOf( wfp['start-at'] )
@@ -44,7 +46,7 @@ static def flowSegment(wfp) {
         throw new Exception("Unknown stopping step ${wfp['stop-at']}")
 
     // Advance segmentation -> watershed to ensure no dangling probability maps
-    if( idxStop == 4 ) idxStop = 5
+    if( idxStop == 5 ) idxStop = 6
 
     return [idxStart, idxStop]
 }
@@ -62,12 +64,11 @@ static def precomputed(wfp) {
     [
         raw:                idxStart <= 2,
         illumination:       idxStart == 2, 
-        bsub_test:         idxStart == 3,
-        registration:       idxStart == 4 || (idxStart > 4 && !wfp.tma),
-        dearray:            idxStart > 4 && wfp.tma,
-        'probability-maps': idxStart == 6,
-        segmentation:       idxStart == 7,
-        quantification:     idxStart == 8
+        registration:       idxStart == 3 || (idxStart > 3 && !wfp.tma),
+        dearray:            idxStart > 3 && wfp.tma,
+        'probability-maps': idxStart == 5,
+        segmentation:       idxStart == 6,
+        quantification:     idxStart == 7
     ]
 }
 
@@ -86,7 +87,7 @@ static def doirun(step, wfp) {
             return(idxStart <= 1 && idxStop >= 1)
         case 'registration':
             return(idxStart <= 2 && idxStop >= 2)
-        case 'bsub_test':
+        case 'background':
             return(idxStart <= 3 && idxStop >= 3)
         case 'dearray':
             return(idxStart <= 4 && idxStop >= 4 && wfp.tma)

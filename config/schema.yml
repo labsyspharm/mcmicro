@@ -13,7 +13,7 @@ workflow:
   - downstream
   - ilastik-model
   - mesmer-model
-  - bsub_test
+  - background
 deprecated:
   quantification-mask: "--quant-opts '--masks ...'"
   illum: --start-at illumination
