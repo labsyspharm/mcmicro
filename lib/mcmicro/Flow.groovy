@@ -64,7 +64,7 @@ static def precomputed(wfp) {
     [
         raw:                idxStart <= 2,
         illumination:       idxStart == 2, 
-        registration:       idxStart == 3 || idxStart == 4 || (idxStart > 4 && !wfp.tma && !wfp.background),
+        registration:       idxStart == 3 || (idxStart > 3 && !wfp.tma && !wfp.background),
         background:         idxStart > 3 && wfp.background,
         dearray:            idxStart > 4 && wfp.tma,
         'probability-maps': idxStart == 6,
