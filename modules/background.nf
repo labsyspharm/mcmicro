@@ -12,9 +12,8 @@ process backsub {
     // Specify the project subdirectory for writing the outputs to
     // The pattern: specification must match the output: files below
     // Subdirectory: background
-    // Hardcoded output file names
-    publishDir "${params.in}/background", mode: 'copy', pattern: "*.ome.tif"
-    publishDir "${params.in}/background", mode: 'copy', pattern: "*.csv"
+    publishDir "${params.in}/background", mode: 'copy', pattern: "${sampleName+'_backsub'}.ome.tif"
+    publishDir "${params.in}/background", mode: 'copy', pattern:'markers_bs.csv'
 
     // Stores .command.sh and .command.log from the work directory
     //   to the project provenance
@@ -33,12 +32,13 @@ process backsub {
     val module
     path(marker)
     path(image)
+    val sampleName
 
     // outputs are returned as results with appropriate patterns
   output:
     // Output background subtracted image and markers.csv
-    path('*.ome.tif'), emit: image_out
-    path('*.csv'), emit: marker_out
+    path("${sampleName+'_backsub'}.ome.tif"), emit: image_out
+    path('markers_bs.csv'), emit: marker_out
     // Provenance files
     tuple path('.command.sh'), path('.command.log')
 
@@ -50,15 +50,12 @@ process backsub {
     // The command must write all outputs to the current working directory (.)
     // Opts.moduleOpts() will identify and return the appropriate module options
     """
-    /opt/conda/bin/python /tmp/background_sub.py -o ./background_subtracted_image.ome.tif -mo ./markers_bs.csv -r $image -m $marker ${Opts.moduleOpts(module, mcp)}
+    /opt/conda/bin/python /tmp/background_sub.py -o ${sampleName+'_backsub'}.ome.tif -mo ./markers_bs.csv -r $image -m $marker ${Opts.moduleOpts(module, mcp)}
     """
 }
 workflow background {
   
     // Inputs:
-    // mcp - MCMICRO parameters (workflow, options, etc.)
-    // image - image
-    // marker - marker file
   take:
     mcp // MCMICRO parameters (workflow, options, etc.)
     image // image to apply background subtraction to
@@ -66,10 +63,11 @@ workflow background {
   main:
     // run the backsub process with the mcmicro parameters, module value
     // markers path and pre-registered image path
-    backsub(mcp, mcp.modules['background'], marker, image)
+    sampleName = file(params.in).name
+    backsub(mcp, mcp.modules['background'], marker, image, sampleName)
     
     // Return the outputs produced by the tool
   emit:
-    backsub.out.image_out
-    backsub.out.marker_out
+    image = backsub.out.image_out
+    marker = backsub.out.marker_out
 }

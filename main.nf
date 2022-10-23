@@ -79,6 +79,10 @@ pre_dfp   = findFiles0('illumination', "*-dfp.tif")
 pre_ffp   = findFiles0('illumination', "*-ffp.tif")
 pre_img   = findFiles('registration', "*.{ome.tiff,ome.tif,tif,tiff,btf}",
     {error "No pre-stitched image in ${params.in}/registration"})
+pre_bsub  = findFiles('background', "*.ome.tif",
+    {error "No background subtracted image in ${params.in}/background"})
+pre_bsubm = findFiles('background', "*.csv",
+    {error "No background subtracted markers file in ${params.in}/background"})
 pre_cores = findFiles('dearray', "*.tif",
     {error "No TMA cores in ${params.in}/dearray"})
 pre_masks = findFiles('dearray', "masks/*.tif",
@@ -109,17 +113,27 @@ workflow {
     registration(mcp, raw,
 		 illumination.out.ffp.mix( pre_ffp ),
 		 illumination.out.dfp.mix( pre_dfp ))
+    img = registration.out.mix(pre_img)
 
-    // Apply background subtraction if specified
-    background(mcp, pre_img, chMrk)
-    // change the pre_img channel to the background subtracted image
-    pre_img = background.out[0]
-    // change the marker csv to the background subtracted csv
-    chMrk = background.out[1]
+    // Should background subtraction be applied?
+    img = img.
+        branch{
+            nobs: !wfp.background
+            bs: wfp.background
+        }
+    // Apply background if specified
+    background(mcp, img.bs, chMrk)
+    // Merge against precomputed intermediates
+    bsub_image = background.out.image.mix(pre_bsub)
+    bsub_marker = background.out.marker.mix(pre_bsubm)
+    // Reconcile non-background subtracted and background 
+    // subtracted images for downstream processing
+    img = img.nobs.mix(bsub_image)
+    // change the marker file to the background subtracted csv
+    chMrk = chMrk.mix(bsub_marker)
 
     // Are we working with a TMA or a whole-slide image?
-    img = registration.out
-        .mix(pre_img)
+    img = img
         .branch {
             wsi: !wfp.tma
             tma: wfp.tma
