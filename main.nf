@@ -127,7 +127,7 @@ workflow {
             bs: wfp.background
         }
     // Apply background if specified
-    background(mcp, img.bs, chMrk)
+    background(mcp, img.bs, chMrk.bs)
     // Merge against precomputed intermediates
     bsub_image = background.out.image.mix(pre_bsub)
     bsub_marker = background.out.marker.mix(pre_bsubm)
