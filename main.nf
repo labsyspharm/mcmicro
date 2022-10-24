@@ -121,6 +121,11 @@ workflow {
             nobs: !wfp.background
             bs: wfp.background
         }
+    chMrk = chMrk.
+        branch{
+            nobs: !wfp.background
+            bs: wfp.background
+        }
     // Apply background if specified
     background(mcp, img.bs, chMrk)
     // Merge against precomputed intermediates
@@ -129,8 +134,8 @@ workflow {
     // Reconcile non-background subtracted and background 
     // subtracted images for downstream processing
     img = img.nobs.mix(bsub_image)
-    // change the marker file to the background subtracted csv
-    chMrk = chMrk.mix(bsub_marker)
+    // Reconcile the marker file to the background subtracted csv
+    chMrk = chMrk.nobs.mix(bsub_marker)
 
     // Are we working with a TMA or a whole-slide image?
     img = img
