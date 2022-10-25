@@ -64,9 +64,9 @@ static def precomputed(wfp) {
     [
         raw:                idxStart <= 2,
         illumination:       idxStart == 2, 
-        registration:       idxStart == 3 || (idxStart > 4 && !wfp.tma && !wfp.background),
-        background:         idxStart > 3 && wfp.background,
-        dearray:            idxStart > 4 && wfp.tma,
+        registration:       idxStart == 3 || (idxStart == 4 && !wfp.background) || (idxStart > 4 && !wfp.tma && !wfp.background), // needed for background (3), tma if no background (4), everything else if both tma and background aren't specified
+        background:         idxStart > 3 && wfp.background, // if background specified, required
+        dearray:            idxStart > 4 && wfp.tma, // if tma specified, required
         'probability-maps': idxStart == 6,
         segmentation:       idxStart == 7,
         quantification:     idxStart == 8
@@ -89,7 +89,7 @@ static def doirun(step, wfp) {
         case 'registration':
             return(idxStart <= 2 && idxStop >= 2)
         case 'background':
-            return(idxStart <= 3 && idxStop >=3 && wfp.background)
+            return(idxStart <= 3 && idxStop >= 3 && wfp.background)
         case 'dearray':
             return(idxStart <= 4 && idxStop >= 4 && wfp.tma)
         case 'segmentation':
