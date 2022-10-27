@@ -64,6 +64,7 @@ jobs:
           - --start-at illumination --stop-at registration
           - --segmentation cypository --cypository-opts '--channel 10 --scalingFactor 2' --s3seg-opts '--logSigma 45 300'
           - --segmentation ilastik,mesmer
+          - --segmentation cellpose --mcquant-opts '--masks *masks.tif'
           - -profile singularity
     needs: setup
     runs-on: ubuntu-latest
