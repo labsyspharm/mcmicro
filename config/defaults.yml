@@ -9,12 +9,14 @@ workflow:
   segmentation: unmicst
   segmentation-recyze: false
   downstream: scimap
+  iss_decoding: false
 options:
   ashlar: -m 30
   cypository: --model zeisscyto
   ilastik: --num_channels 1
   mcquant: --masks cell*.tif
   naivestates: -p png
+  starfish: --tile-size 2000
 modules:
   illumination:
     name: basic
@@ -114,3 +116,7 @@ modules:
     name: autominerva
     container: labsyspharm/auto-minerva
     version: '2022-06-06'
+  iss_decoding:
+    name: starfish
+    container: spacetx/starfish
+    version: 0.2.2
