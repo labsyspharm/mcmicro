@@ -68,6 +68,15 @@ modules:
       channel: --nuclear-channel
       idxbase: 0
       watershed: 'no'
+    -
+      name: cellpose
+      container: niksto/cellpose_for_mcmicro
+      version: latest
+      cmd: cellpose --channel_axis 0 --save_tif --savedir .
+      input: --image_path
+      channel: --chan
+      idxbase: 0
+      watershed: 'no'
   watershed:
     name: s3seg
     container: labsyspharm/s3segmenter
