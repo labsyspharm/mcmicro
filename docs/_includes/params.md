@@ -26,6 +26,7 @@ tma: true
 | `--start-at <step>` | `registration` | Name of the first step to be executed by the pipeline. Must be one of `illumination`, `registration`, `dearray` (TMA only), `probability-maps`, `segmentation`, `quantification`, `cell-states` |
 | `--stop-at <step>` | `quantification` | Name of the final step to be executed by the pipeline. Spans the same vocabulary as `--start-at`. |
 | `--tma` | Omitted | If specified, mcmicro treats input data as a TMA. If omitted, the input is assumed to be a whole-slide image. |
+| `--background` | Omitted | If specified, mcmicro treats input data as if autofluorescence channels should be subtracted. |
 | `--ilastik-model <model.ilp>` | None | A custom `.ilp` file to be used as the classifier model for ilastik. |
 | `--probability-maps <choice>` | `unmicst` | Which module(s) to use for probability map computation. Must be one of `unmicst`, `ilastik`, `all` (`unmicst` AND `ilastik`), and `cypository` for cytoplasm segmentation |
 
