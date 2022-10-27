@@ -62,6 +62,7 @@ jobs:
         params:
           - --viz
           - --start-at illumination --stop-at registration
+          - --background
           - --segmentation cypository --cypository-opts '--channel 10 --scalingFactor 2' --s3seg-opts '--logSigma 45 300'
           - --segmentation ilastik,mesmer
           - --segmentation cellpose --mcquant-opts '--masks *masks.tif'
