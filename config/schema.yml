@@ -13,6 +13,7 @@ workflow:
   - downstream
   - ilastik-model
   - mesmer-model
+  - background
 deprecated:
   quantification-mask: "--quant-opts '--masks ...'"
   illum: --start-at illumination

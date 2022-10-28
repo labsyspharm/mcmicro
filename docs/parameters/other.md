@@ -14,9 +14,12 @@ Segmentation
 1. [Cypository](./other.html#cypository)
 1. [Mesmer](./other.html#mesmer)
 
-Clsutering and cell type inference
+Clustering and cell type inference
 1. [Clustering](./other.html#clustering) 
 1. [naivestates](./other.html#naivestates)
+
+Background subtraction
+1. [Backsub](./other.html#backsub)
 
 <br>
 
@@ -109,7 +112,7 @@ A `.tif` file that annotates individual pixels with the probability that they be
 
 ### Description
 
-The [Mesmer](https://doi.org/10.1038/s41587-021-01094-0){:target="_blank"} modules provides an alternative segmentation approach to UnMicst and ilastik. It is implemented and maintained by an external group. Check their [GitHub repository](https://github.com/vanvalenlab/deepcell-applications){:target="_blank"} for the most up-to-date information.
+The [Mesmer](https://doi.org/10.1038/s41587-021-01094-0){:target="_blank"} module provides an alternative segmentation approach to UnMicst and ilastik. It is implemented and maintained by an external group. Check their [GitHub repository](https://github.com/vanvalenlab/deepcell-applications){:target="_blank"} for the most up-to-date information.
 
 ### Usage
 
@@ -256,5 +259,36 @@ Nextflow will write all outputs to the `cell-states/naivestates/` subdirectory w
 |`--sfx <suffix>` |automatically determined| A common suffix on the marker columns (e.g., `_cellMask` or `_nucleiMask`). The suffix will be removed in the output plots and tables to improve readability. Use `$` to force an empty suffix.|
 | `--umap`|disabled| Include this flag to generate UMAP plots.|
 |`--mct <filename>` | |The tool has a basic marker -> cell type (mct) mapping in `typemap.csv`. More sophisticated mct mappings can be defined by creating a `custom-map.csv` file with two columns: `Marker` and `State`. |
+
+[Back to top](./other.html#other-modules){: .btn .btn-purple}
+
+---
+
+## Backsub
+
+### Description
+`Backsub` is a background subtraction module for sequential IF images. It performs autofluorescence, pixel level subtraction on large `.ome.tif` images primarily developed with the Lunaphore COMET platform outputs in mind.
+
+### Usage
+By default, MCMICRO assumes background subtraction should not be performed. Add `background: true` to [module options]({{site.baseurl}}/parameters/) to indicate it should be.
+
+* Example `params.yml`:
+
+``` yaml
+workflow:
+  background: true
+```
+
+* Running outside of MCMICRO: [Instructions](https://github.com/SchapiroLabor/Background_subtraction){:target="_blank"}.
+
+### Inputs
+
+* Stitched and registered multi-cycle `.ome.tif`
+* The `markers.csv` file must contain a `background` with `TRUE` values specifying autofluorescence channels and an `exposure` column with exposure times for respective channel acquisitions. Additionally, the `Filter` column must match between cycles for the same channel.
+
+### Outputs
+
+* A pyramidal, tiled `.ome.tif`. Nextflow will write the output file to `background/` within the project directory.
+* A modified `markers.csv` to match the background subtracted image.
 
 [Back to top](./other.html#other-modules){: .btn .btn-purple} [Back to main modules](./){: .btn .btn-outline} 
