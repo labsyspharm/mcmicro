@@ -40,6 +40,12 @@ jobs:
         with:
           path: ~/data/exemplar-001
           key: ex001-2022-02-24
+      - name: Exemplar-001 (w/ autofluorescence) cache
+        uses: actions/cache@v3
+        id: cache-ex001-af
+        with:
+          path: ~/data/af/exemplar-001
+          key: ex001-af-2022-10-27
       - name: Exemplar-002 cache
         uses: actions/cache@v3
         id: cache-ex002
@@ -51,6 +57,9 @@ jobs:
       - name: Exemplar-001 download
         if: steps.cache-ex001.outputs.cache-hit != 'true'
         run: ./nextflow exemplar.nf --name exemplar-001 --path ~/data
+      - name: Exemplar-001 (w/ autofluorescence) download
+        if: steps.cache-ex001-af.outputs.cache-hit != 'true'
+        run: ./nextflow exemplar.nf --name exemplar-001 --path ~/data/af --from-cycle 1 --to-cycle 3
       - name: Exemplar-002 download
         if: steps.cache-ex002.outputs.cache-hit != 'true'
         run: ./nextflow exemplar.nf --name exemplar-002 --path ~/data --from-cycle 6 --to-cycle 7
@@ -80,9 +89,19 @@ jobs:
         run: curl -fsSL get.nextflow.io | bash
       - name: Restore exemplar-001 cache
         uses: actions/cache@v3
+        if: ${{ !contains(matrix.params, 'background') }}
         with:
           path: ~/data/exemplar-001
           key: ex001-2022-02-24
+      - name: Restore exemplar-001 (w/ autofluorescence) cache
+        uses: actions/cache@v3
+        if: ${{ contains(matrix.params, 'background') }}
+        with:
+          path: ~/data/af/exemplar-001
+          key: ex001-af-2022-10-27
+      - name: Adjust data location for the autofluorescence exemplar
+        if: ${{ contains(matrix.params, 'background') }}
+        run: mv ~/data/af/exemplar-001 ~/data
       - name: Test exemplar-001 with additional parameters
         run: |
           docker rmi -f $(docker images -a -q)
