@@ -1,3 +1,31 @@
+### 2022-11-01
+
+* Expanded the parsing of the parameter file specified via `-params-file`. This allows for the entire workflow/options/modules parameter structure to be pasted directly inside the "Pipeline parameters" field of a Nextflow Tower launchpad.
+
+### 2022-10-28
+
+* Added a background subtraction module. The module can be turned on by setting the `background` workflow option to `true`:
+
+``` yaml
+workflow:
+  background: true
+```
+
+### 2022-10-26
+
+* Added cellpose. The module can now be selected as one of the `segmentation` workflow settings:
+
+``` yaml
+workflow:
+  segmentation: cellpose
+```
+
+### 2022-10-19
+
+* Added a roadie script for generating image pyramids. Example usage:
+
+`nextflow run labsyspharm/mcmicro/roadie.nf --in simple.tif --out pyramid.ome.tif`
+
 ### 2022-10-01
 
 * Changed the order of tokens in quantification output to make it easier to match filenames against other intermediate.
