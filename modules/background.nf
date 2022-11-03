@@ -50,7 +50,7 @@ process backsub {
     // The command must write all outputs to the current working directory (.)
     // Opts.moduleOpts() will identify and return the appropriate module options
     """
-    /opt/conda/bin/python /tmp/background_sub.py -o ${sampleName+'_backsub'}.ome.tif -mo ./markers_bs.csv -r $image -m $marker ${Opts.moduleOpts(module, mcp)}
+    python3 /background_subtraction/background_sub.py -o ${sampleName+'_backsub'}.ome.tif -mo ./markers_bs.csv -r $image -m $marker ${Opts.moduleOpts(module, mcp)}
     """
 }
 workflow background {
