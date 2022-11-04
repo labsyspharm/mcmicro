@@ -267,7 +267,7 @@ Nextflow will write all outputs to the `cell-states/naivestates/` subdirectory w
 ## Backsub
 
 ### Description
-`Backsub` is a background subtraction module for sequential IF images. It performs autofluorescence, pixel level subtraction on large `.ome.tif` images primarily developed with the Lunaphore COMET platform outputs in mind.
+`Backsub` is a background subtraction module for sequential IF images. It performs autofluorescence, pixel-level subtraction on large `.ome.tif` images primarily developed with the Lunaphore COMET platform outputs in mind.
 
 ### Usage
 By default, MCMICRO assumes background subtraction should not be performed. Add `background: true` to [module options]({{site.baseurl}}/parameters/) to indicate it should be.
@@ -284,7 +284,7 @@ workflow:
 ### Inputs
 
 * Stitched and registered multi-cycle `.ome.tif`
-* The `markers.csv` file must contain a `background` with `TRUE` values specifying autofluorescence channels and an `exposure` column with exposure times for respective channel acquisitions. Additionally, the `Filter` column must match between cycles for the same channel.
+* The `markers.csv` file must contain a `background` column with `TRUE` values specifying autofluorescence channels and an `exposure` column with exposure times for respective channel acquisitions. Additionally, the `Filter` column must match between cycles with the same channel.
 
 ### Outputs
 
