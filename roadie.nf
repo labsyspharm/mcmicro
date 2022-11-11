@@ -143,6 +143,6 @@ workflow {
 
       // Identify the input file and execute the task
       inp = Channel.fromPath(params.in)
-      roadie(task, inp, opts, outd, 'move')
+      roadie(task, inp, opts, true, outd, 'move')
     }
 }
