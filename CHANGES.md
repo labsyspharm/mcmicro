@@ -1,3 +1,13 @@
+### 2022-11-23
+
+* [dearray] The output of Coreograph is now being run through palom to generate pyramids, which are needed for Autominerva. The following combination of parameters should now work:
+
+```yaml
+workflow:
+  tma: true
+  viz: true
+```
+
 ### 2022-11-01
 
 * Expanded the parsing of the parameter file specified via `-params-file`. This allows for the entire workflow/options/modules parameter structure to be pasted directly inside the "Pipeline parameters" field of a Nextflow Tower launchpad.
