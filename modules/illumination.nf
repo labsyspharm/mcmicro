@@ -33,7 +33,7 @@ process illumination {
     script:
     def relPath = Paths.get(relPath)
     def fn = escapeForImagej(relPath)
-    def xpn = escapeForImagej(relPath.subpath(0, 1).toString().tokenize(".")[0])
+    def xpn = escapeForImagej(relPath.subpath(0, 1))
     def macroParams = Util.escapeForShell(
         """filename=$fn,output_dir=".",experiment_name=$xpn"""
     )
