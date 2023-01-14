@@ -284,7 +284,7 @@ workflow:
 ### Inputs
 
 * Stitched and registered multi-cycle `.ome.tif`
-* The `markers.csv` file must contain a `background` column with `TRUE` values specifying autofluorescence channels and an `exposure` column with exposure times for respective channel acquisitions. Additionally, the `Filter` column must match between cycles with the same channel.
+* The `markers.csv` file must contain a `marker_name` column specifying channel markers. The `background` column indicates which channel should be subtracted and the value must match the marker name of the background channel. The `exposure` column with exposure times for respective channel acquisitions is also required. Additionally, the `remove` column can have "TRUE" values for channels which shouldn't be included in the output. An example `markers.csv` can be found [here](https://github.com/SchapiroLabor/Background_subtraction/blob/main/example/markers.csv).
 
 ### Outputs
 
