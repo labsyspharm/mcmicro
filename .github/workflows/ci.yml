@@ -98,7 +98,7 @@ jobs:
         if: ${{ contains(matrix.params, 'background') }}
         with:
           path: ~/data/af/exemplar-001
-          key: ex001-af-2022-10-27
+          key: ex001-af-2023-01-14
       - name: Adjust data location for the autofluorescence exemplar
         if: ${{ contains(matrix.params, 'background') }}
         run: mv ~/data/af/exemplar-001 ~/data
