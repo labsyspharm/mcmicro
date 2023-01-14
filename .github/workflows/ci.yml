@@ -45,7 +45,7 @@ jobs:
         id: cache-ex001-af
         with:
           path: ~/data/af/exemplar-001
-          key: ex001-af-2022-10-27
+          key: ex001-af-2023-01-13
       - name: Exemplar-002 cache
         uses: actions/cache@v3
         id: cache-ex002
