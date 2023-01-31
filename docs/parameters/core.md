@@ -378,10 +378,15 @@ ___
 The modules uses one or more segmentation masks against the original image to quantify the expression of every channel on a per-cell basis. Check the [MCQuant README](https://github.com/labsyspharm/quantification#single-cell-quantification){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
-By default, MCMICRO runs MCQuant on all cell segmentation masks. Add `mcquant:` to [module options]({{site.baseurl}}/parameters/) to specify a different mask or to provide additional module-specific arguments to MCMICRO.
+By default, MCMICRO runs MCQuant on all cell segmentation masks that match the `cell*.tif` filename pattern. Add `mcquant:` to [module options]({{site.baseurl}}/parameters/) to specify a different mask or to provide additional module-specific arguments to MCMICRO.
 
-* Example: `nextflow run labsyspharm/mcmicro --in /my/project --quant-opts '--masks cytoMask.tif nucleiMask.tif'`
-* Default: `--quant-opts '--masks cell*.tif'`
+* Example `params.yml`:
+
+``` yaml
+options:
+  mcquant: --masks cytoMask.tif nucleiMask.tif
+```
+
 * Running outside of MCMICRO: [Instructions](https://github.com/labsyspharm/quantification){:target="_blank"}.
 
 ### Inputs

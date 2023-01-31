@@ -4,6 +4,7 @@ workflow:
   qc-files: copy
   tma: false
   viz: false
+  background: false
   multi-formats: '{.xdce,.nd,.scan,.htd}'
   single-formats: '{.ome.tiff,.ome.tif,.rcpnl,.btf,.nd2,.tif,.czi}'
   segmentation: unmicst
@@ -27,9 +28,13 @@ modules:
   dearray:
     name: coreograph
     container: labsyspharm/unetcoreograph
-    version: 2.2.8
+    version: 2.2.9
     cmd: python /app/UNetCoreograph.py --outputPath .
     input: --imagePath
+  background:
+    name: backsub
+    container: ghcr.io/schapirolabor/background_subtraction
+    version: v0.3.3
   segmentation:
     -
       name: unmicst
@@ -66,6 +71,15 @@ modules:
       cmd: python /usr/src/app/run_app.py mesmer --squeeze --output-directory . --output-name cell.tif
       input: --nuclear-image
       channel: --nuclear-channel
+      idxbase: 0
+      watershed: 'no'
+    -
+      name: cellpose
+      container: niksto/cellpose_for_mcmicro
+      version: latest
+      cmd: cellpose --channel_axis 0 --save_tif --savedir .
+      input: --image_path
+      channel: --chan
       idxbase: 0
       watershed: 'no'
   watershed:

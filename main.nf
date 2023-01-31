@@ -79,6 +79,10 @@ pre_dfp   = findFiles0('illumination', "*-dfp.tif")
 pre_ffp   = findFiles0('illumination', "*-ffp.tif")
 pre_img   = findFiles('registration', "*.{ome.tiff,ome.tif,tif,tiff,btf}",
     {error "No pre-stitched image in ${params.in}/registration"})
+pre_bsub  = findFiles('background', "*.ome.tif",
+    {error "No background subtracted image in ${params.in}/background"})
+pre_bsubm = findFiles('background', "*.csv",
+    {error "No background subtracted markers file in ${params.in}/background"})
 pre_cores = findFiles('dearray', "*.tif",
     {error "No TMA cores in ${params.in}/dearray"})
 pre_masks = findFiles('dearray', "masks/*.tif",
@@ -101,6 +105,7 @@ include {segmentation}   from "$projectDir/modules/segmentation"
 include {quantification} from "$projectDir/modules/quantification"
 include {downstream}     from "$projectDir/modules/downstream"
 include {viz}            from "$projectDir/modules/viz"
+include {background}     from "$projectDir/modules/background"
 
 // Define the primary mcmicro workflow
 workflow {
@@ -108,10 +113,32 @@ workflow {
     registration(mcp, raw,
 		 illumination.out.ffp.mix( pre_ffp ),
 		 illumination.out.dfp.mix( pre_dfp ))
+    img = registration.out.mix(pre_img)
+
+    // Should background subtraction be applied?
+    img = img.
+        branch{
+            nobs: !wfp.background
+            bs: wfp.background
+        }
+    chMrk = chMrk.
+        branch{
+            nobs: !wfp.background
+            bs: wfp.background
+        }
+    // Apply background if specified
+    background(mcp, img.bs, chMrk.bs)
+    // Merge against precomputed intermediates
+    bsub_image = background.out.image.mix(pre_bsub)
+    bsub_marker = background.out.marker.mix(pre_bsubm)
+    // Reconcile non-background subtracted and background 
+    // subtracted images for downstream processing
+    img = img.nobs.mix(bsub_image)
+    // Reconcile the marker file to the background subtracted csv
+    chMrk = chMrk.nobs.mix(bsub_marker)
 
     // Are we working with a TMA or a whole-slide image?
-    img = registration.out
-        .mix(pre_img)
+    img = img
         .branch {
             wsi: !wfp.tma
             tma: wfp.tma

@@ -86,11 +86,15 @@ static def cleanParams(pars, mspecs) {
     // Identify all module names
     def names = collectNames(mspecs)
 
+    // Protected keywords
+    def keywords = ['in', 'cont-pfx', 'roadie', 'workflow',
+        'options', 'modules', 'params']
+
     // Clean up the parameter list
     // Separate workflow parameters from module options
     pars.findAll{ key, val ->
         Opts.camel2snake(key) == key &&
-        !['in', 'cont-pfx', 'roadie', 'modules', 'params'].contains(key)
+        !keywords.contains(key)
     }.each{ key, val ->
         String keyc = key.replaceAll( /-opts$/, '' )
         if(names.contains(keyc))
@@ -161,11 +165,10 @@ static def parseParams(gp, fns, fnw) {
         updateMap(mcp, mp)
     }
 
-    // Override the module specs, if specified
-    if(gp.containsKey('modules')) {
-        Map mm = new Yaml().load(new File(gp.modules))
-        updateMap(mcp.modules, mm)
-    }
+    // Override specific sections of parameters, if specified in -params-file
+    if(gp.containsKey('workflow')) updateMap(mcp.workflow, gp.workflow)
+    if(gp.containsKey('options')) updateMap(mcp.options, gp.options)
+    if(gp.containsKey('modules')) updateMap(mcp.modules, gp.modules)
 
     // Override workflow parameters and module options with
     //   command-line arguments (cla), as appropriate

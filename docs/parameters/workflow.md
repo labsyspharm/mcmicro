@@ -24,7 +24,7 @@ nav_order: 1
 
   Name of the first step to be executed by the pipeline
   
-  * **Valid values:** `illumination`, `registration`, `dearray` (TMA only), `segmentation`, `watershed`, `quantification`, `downstream`
+  * **Valid values:** `illumination`, `registration`, `background` (background only), `dearray` (TMA only), `segmentation`, `watershed`, `quantification`, `downstream`
   * **Default:** `registration`
   * **Example:** 
   
@@ -36,7 +36,7 @@ workflow:
 ### `stop-at`
   Name of the final step to be executed by the pipeline
 
-  * **Valid values:** `illumination`, `registration`, `dearray` (TMA only), `segmentation`, `quantification`, `downstream`
+  * **Valid values:** `illumination`, `registration`, `background` (background only), `dearray` (TMA only), `segmentation`, `quantification`, `downstream`
   * **Default:** `quantification`
   * **Example:**
 
@@ -144,4 +144,17 @@ workflow:
 ``` yaml
 workflow:
   qc-files: move
+```
+
+### `background`
+
+  Wheter background subtraction should be performed, and the computed intermediates used in further processing
+
+  * **Valid values:** `true`, `false`
+  * **Default:** `false`
+  * **Example:**
+
+``` yaml
+workflow:
+  background: true
 ```
