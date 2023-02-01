@@ -5,6 +5,7 @@ nav_order: 20
 parent: Platforms
 ---
 
+
 ## What is Nextflow Tower?
 
 [Nextflow Tower](https://seqera.io/tower/) is a web-based platform for managing and monitoring Nextflow pipelines. Tower extends the capabilities of Nextflow by providing a centralized, web-based interface for executing, visualizing, and managing pipelines. With Tower, users can easily track the progress of their pipelines, monitor resource usage, and manage access control. Additionally, Tower provides a comprehensive audit trail, allowing users to track the history of pipeline executions and view the details of each run. Tower is highly scalable, making it well suited for use in large-scale compute environments, such as high-performance computing (HPC) clusters, cloud computing platforms, and multi-user data centers.
@@ -53,18 +54,40 @@ process.accelerator = [request:1, type:'GPU']
 
 ### Staging data
 
-You will need to stage the data you wish to process with MCMICRO to a cloud bucket that your compoute environment will be able to access.
+You will need to stage the data you wish to process with MCMICRO to a cloud bucket that your compute environment will be able to access.
 
 To stage the provided exemplar data you may run the MCMICRO pipeline in Tower:
 - Add `exemplar.nf` as the 'Main script` to be run 
+- Add `process.container = 'ubuntu'` to the Nextflow config (A container is currently not specified for the processes in `exemplar.nf`)
 - Specify `name` (the name of the example dataset to stage) and `path` (the S3 URI where the data should be staged to as pipeline parameters). For example:
     ```
     name: exemplar-001
     path: s3://mc2-mcmicro-project-tower-bucket/examples/exemplar-001/
     ```
+
 ### Launching exemplar-001
 
+In the Tower web interface open the launchpad for the pipeline as created above. Or start from the Quick Launch and add pipeline details
+
+First complete the Pipeline Parameters box.
+Minimally `in`, A URI to the input directory is required
+Provide additional arguments as required
+
+For example to run `exemplar-002` from registration to downstream with scanpy:
+
+
+```
+in: 's3://mc2-mcmicro-project-tower-bucket/testing/output/exemplar-001/'
+tma: true
+start-at: 'registration'
+stop-at: 'downstream'
+downstream: ['scanpy']
+```
+Click ***Launch*** to start the run.
+
 ### Monitoring runs
+
+Tower provides a rich web interface for monitoring Nextflow runs including task status and progress, connfiguration settings, aggregated run metrics, and access to execution
 
 ### Outputs
 
@@ -72,18 +95,56 @@ To stage the provided exemplar data you may run the MCMICRO pipeline in Tower:
 
 ## Benchmarking MCMICRO performance
 
+The table below shows example aggregated statistics for MCMICRO runs on AWS Batch compute environments in  Nextflow Tower. 
 
+| Dataset | Start at | Stop at | Processes | Wall time† | CPU time | Estimated cost‡ | Spot/On Demand | GPU |
+| --- | --- | ---| --- | --- | --- | --- | --- | --- |
+| [exemplar-001](https://mcmicro.org/datasets/#exemplar-data-for-testing-mcmicro)</br>Single core of TMA | registration | quantification | 4 | 14 m 25 s |0.1 CPU hours | $0.003 | Spot | True |
+| [exemplar-002](https://mcmicro.org/datasets/#exemplar-data-for-testing-mcmicro)</br>4 core TMA | registration | quantification | 18 |33 m 16 s | 0.9 CPU hours| $0.02 | Spot | True |
+| [exemplar-002](https://mcmicro.org/datasets/#exemplar-data-for-testing-mcmicro)</br>4 core TMA | registration | quantification | 18 | 50 m 45 s | 3.7 CPU hours | $0.089 | Spot | False |
+| [exemplar-002](https://mcmicro.org/datasets/#exemplar-data-for-testing-mcmicro)</br>4 core TMA | registration | quantification | 18 | 28 m 55 s | 0.9 CPU hours | $0.085 | On Demand | True |
+| [exemplar-002](https://mcmicro.org/datasets/#exemplar-data-for-testing-mcmicro)</br>4 core TMA | registration | quantification | 18 |45 m 4 s | 3.2 CPU hours | $0.193  | On Demand | False |
+| [EMIT TMA22](https://www.synapse.org/#!Synapse:syn22345748/wiki/609239)</br>123 core TMA </br>(pre-dearrayed) | segmentation | downstream</br>[`fastpg`,</br>`flowsom`,</br>`scanpy`] | 738 | 1 h 25 m 56 s | 17.5 CPU hours | $0.506 | Spot | True |
+| [EMIT TMA22](https://www.synapse.org/#!Synapse:syn22345748/wiki/609239)</br>123 core TMA </br>(pre-dearrayed) | segmentation | downstream</br>[`fastpg`,</br>`flowsom`,</br>`scanpy`] | 738 | 31 m 58 s | 108.3 CPU hours| $2.816 | Spot | False |
+| [EMIT TMA22](https://www.synapse.org/#!Synapse:syn22345748/wiki/609239)</br>123 core TMA </br>(pre-dearrayed) | segmentation | downstream</br>[`fastpg`,</br>`flowsom`,</br>`scanpy`] | 738 | 1 h 2 m 45 s | 26.1 CPU hours | $6.556 | On Demand | True |
+| [EMIT TMA22](https://www.synapse.org/#!Synapse:syn22345748/wiki/609239)</br>123 core TMA </br>(pre-dearrayed) | segmentation | downstream</br>[`fastpg`,</br>`flowsom`,</br>`scanpy`] | 738 | 37 m 52 s  | 167.3 CPU hours | $8.387  | On Demand | False |
 
-| Dataset | Start at | Stop at | Processes | Wall time | CPU time | Estimated cost |
-| --- | --- | ---| --- | --- | --- | --- |
-| exemplar-001 | registration | quantification | 4 | 16 m 45 s | 0.4 CPU hours | $0.022 |
-| exemplar-002</br>(4 cores) | registration | quantification | 14 |19 m 45 s | 1.3 CPU hours | $0.085 |
-| EMIT TMA22</br>(123 cores) | segmentation | downstream</br>(`fastpg`, `flowsom` `scanpy`) | 738 | 1 h 2 m 45 s | 26.1 CPU hours | $6.556 |
+† Wall time (or total running time) includes time for an instance to be allocated 
 
+‡ The cost is only based on estimated computation usage and does not currently take into account storage or associated network costs.
 
-## Launching MCMICRO through the Nextflow Tower CLI
+We can see that Spot instance runs can be around 4 times cheaper than those run in On Demand instances, And that GPU instances reduces run cost by around half due to the faster process times.
+A 10-16 times cost reduction can be realised by moving from On Demand with no GPU to Spot instances with GPU enabled.
 
 
 ## Monitoring local MCMICRO runs with Nextflow Tower
 
+The Nextflow Tower can be used to [monitor locally launched Nextflow runs](https://tower.nf/welcome). 
 
+For example
+
+```
+$ export TOWER_ACCESS_TOKEN=<YOUR ACCESS TOKEN>
+$ nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-001 --path .
+$ nextflow run labsyspharm/mcmicro --in exemplar-001/ -with-tower
+
+N E X T F L O W  ~  version 22.04.4z
+Launching `https://github.com/labsyspharm/mcmicro` [tender_magritte] DSL2 - revision: 9abb9d65ac [master]
+Downloading plugin nf-tower@1.4.0
+Monitor the execution with Nextflow Tower using this url https://tower.nf/user/adam-taylor/watch/2ow41Nbe6jZ0vb
+executor >  local (4)
+[-        ] process > illumination                    -
+[01/0b0b11] process > registration:ashlar             [100%] 1 of 1 ✔
+[-        ] process > dearray:coreograph              -
+[e9/bfa63f] process > segmentation:worker (unmicst-1) [100%] 1 of 1 ✔
+[69/47d6c4] process > segmentation:s3seg (1)          [100%] 1 of 1 ✔
+[66/d76f58] process > quantification:mcquant (1)      [100%] 1 of 1 ✔
+[-        ] process > downstream:worker               -
+[-        ] process > viz:roadie:runTask              -
+[-        ] process > viz:autominerva                 -
+Completed at: 01-Feb-2023 18:57:12
+Duration    : 8m 46s
+CPU hours   : 0.1
+Succeeded   : 4
+```
+The link to tower.nf provides access to the Tower interface to monitor the run
