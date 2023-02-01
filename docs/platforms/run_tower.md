@@ -7,11 +7,13 @@ parent: Platforms
 
 ## What is Nextflow Tower?
 
+<img src="{{ site.baseurl }}/images/tower-run.jpg" />
+
 [Nextflow Tower](https://seqera.io/tower/) is a web-based platform for managing and monitoring Nextflow pipelines. Tower extends the capabilities of Nextflow by providing a centralized, web-based interface for executing, visualizing, and managing pipelines. With Tower, users can easily track the progress of their pipelines, monitor resource usage, and manage access control. Additionally, Tower provides a comprehensive audit trail, allowing users to track the history of pipeline executions and view the details of each run. Tower is highly scalable, making it well suited for use in large-scale compute environments, such as high-performance computing (HPC) clusters, cloud computing platforms, and multi-user data centers.
 
-If you’re new to Tower, we recommend this 15-minute introduction at a suggested 1.5x playback speed:
+If you’re new to Tower, we recommend this 15-minute introduction from nf-core/bytesize at a suggested 1.5x playback speed:
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/zS_hbXQmHbI" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+[![nf-core/bytesize episode on Nextflow Tower](https://img.youtube.com/vi/zS_hbXQmHbI/0.jpg)](https://www.youtube.com/watch?v=zS_hbXQmHbI)
 
 
 Nextflow Tower Enterprise and Nextflow Tower cloud are products of Seqera Labs. If your organization has a deployment of Nextflow Tower, the introduction provided here demonstrate how to run MCMICRO pipelines in Tower on AWS Batch, and the benefits provided.
@@ -23,8 +25,9 @@ If you don't have a Tower license, you can still benefit from Nextflow Tower Clo
 
 ### Launchpad
 
-To setup MCMICRO in the Tower Launchpad: 
-<div style="position: relative; padding-bottom: 55.21472392638037%; height: 0;"><iframe src="https://www.loom.com/embed/d91bda11d10c40ee8c014e13bcd055fe" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"></iframe></div>
+Watch the following short (3m 27s) introduction on adding MCMICRO to the Tower Launchpad:
+
+[![MCMCRO Tower Launchpad setup](https://cdn.loom.com/sessions/thumbnails/d91bda11d10c40ee8c014e13bcd055fe-with-play.gif)](https://www.loom.com/share/d91bda11d10c40ee8c014e13bcd055fe)
 
 ### Nextflow config
 
