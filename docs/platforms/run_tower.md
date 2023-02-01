@@ -7,8 +7,6 @@ parent: Platforms
 
 ## What is Nextflow Tower?
 
-<img src="{{ site.baseurl }}/images/tower-run.jpg" />
-
 [Nextflow Tower](https://seqera.io/tower/) is a web-based platform for managing and monitoring Nextflow pipelines. Tower extends the capabilities of Nextflow by providing a centralized, web-based interface for executing, visualizing, and managing pipelines. With Tower, users can easily track the progress of their pipelines, monitor resource usage, and manage access control. Additionally, Tower provides a comprehensive audit trail, allowing users to track the history of pipeline executions and view the details of each run. Tower is highly scalable, making it well suited for use in large-scale compute environments, such as high-performance computing (HPC) clusters, cloud computing platforms, and multi-user data centers.
 
 If you’re new to Tower, we recommend this 15-minute introduction from nf-core/bytesize at a suggested 1.5x playback speed:
@@ -55,6 +53,15 @@ process.accelerator = [request:1, type:'GPU']
 
 ### Staging data
 
+You will need to stage the data you wish to process with MCMICRO to a cloud bucket that your compoute environment will be able to access.
+
+To stage the provided exemplar data you may run the MCMICRO pipeline in Tower:
+- Add `exemplar.nf` as the 'Main script` to be run 
+- Specify `name` (the name of the example dataset to stage) and `path` (the S3 URI where the data should be staged to as pipeline parameters). For example:
+    ```
+    name: exemplar-001
+    path: s3://mc2-mcmicro-project-tower-bucket/examples/exemplar-001/
+    ```
 ### Launching exemplar-001
 
 ### Monitoring runs
@@ -65,7 +72,14 @@ process.accelerator = [request:1, type:'GPU']
 
 ## Benchmarking MCMICRO performance
 
-Running MCMICRO on AWS Batch or similar compute environments 
+
+
+| Dataset | Start at | Stop at | Processes | Wall time | CPU time | Estimated cost |
+| --- | --- | ---| --- | --- | --- | --- |
+| exemplar-001 | registration | quantification | 4 | 16 m 45 s | 0.4 CPU hours | $0.022 |
+| exemplar-002</br>(4 cores) | registration | quantification | 14 |19 m 45 s | 1.3 CPU hours | $0.085 |
+| EMIT TMA22</br>(123 cores) | segmentation | downstream</br>(`fastpg`, `flowsom` `scanpy`) | 738 | 1 h 2 m 45 s | 26.1 CPU hours | $6.556 |
+
 
 ## Launching MCMICRO through the Nextflow Tower CLI
 
