@@ -116,10 +116,79 @@ The table below shows example aggregated statistics for MCMICRO runs on AWS Batc
 We can see that Spot instance runs can be around 4 times cheaper than those run in On Demand instances, And that GPU instances reduces run cost by around half due to the faster process times.
 A 10-16 times cost reduction can be realised by moving from On Demand with no GPU to Spot instances with GPU enabled.
 
+Increasing resources to 16 CPUs and 32 GB memory does not provide a speed or cost improvement.
+
+Nextflow Tower 22.3 now provides per-process configuration optimization. Optimization was performed by launching MCMICRO `exemplar-002` on a `m5a.4xlarge` EC2 instance (16 CPUs, 64 GB memory, no GPU) and monitoring with Tower 22.3. The following optimization was suggested
+
+```
+process {
+  withName: 'registration:ashlar' {
+    cpus = 2
+    memory = 1.GB
+  }
+  withName: 'dearray:coreograph' {
+    cpus = 2
+    memory = 2.GB
+  }
+  withName: 'segmentation:worker' {
+    cpus = 4
+    memory = 3.GB
+  }
+  withName: 'segmentation:s3seg' {
+    cpus = 4
+    memory = 2.GB
+  }
+  withName: 'quantification:mcquant' {
+    cpus = 2
+    memory = 1.GB
+  }
+}
+```
+
+This could be further optimized by only specifying GPU instances for process that can use the GPU, and manual inspection of the resource usage graphs to reduce process resource allocations where not fully utilized.
+
+```
+process {
+  withName: 'registration:ashlar' {
+    cpus = 1
+    memory = 1.GB
+  }
+  withName: 'dearray:coreograph' {
+    cpus = 1
+    memory = 2.GB
+  }
+  withName: 'dearray:roadie:runTask' {
+    cpus = 1
+    memory = 1.GB
+  }
+  withName: 'segmentation:worker' {
+    accelerator = [request:1, type:'GPU']
+    cpus = 1
+    memory = 3.GB
+  }
+  withName: 'segmentation:s3seg' {
+    cpus = 3
+    memory = 2.GB
+  }
+  withName: 'quantification:mcquant' {
+    cpus = 1
+    memory = 1.GB
+  }
+}
+```
+
+
+| Dataset | Wall time | CPU time | Estimated cost | Spot/On Demand | GPU | CPUs | Memory | CPU efficiency | Memory efficiency |
+| --- | --- | ---| --- | --- | --- | --- | --- | --- | --- |
+| [exemplar-002](https://mcmicro.org/datasets/#exemplar-data-for-testing-mcmicro)</br>4 core TMA |33 m 16 s | 0.9 CPU hours| $0.02 | Spot | True | 4 CPUs | 16 GB | 9.8% | 22.27% | 
+| [exemplar-002](https://mcmicro.org/datasets/#exemplar-data-for-testing-mcmicro)</br>4 core TMA | 28 m 25 s| 3.4 CPU hours| $0.072 | Spot | True | 16 CPUs | 32 GB | 4.93% | 7.23% |
+| [exemplar-002](https://mcmicro.org/datasets/#exemplar-data-for-testing-mcmicro)</br>4 core TMA | 40 m 55 s | 0.7 CPU hours | $0.023 | Spot | True | suggested optimization | suggested optimization | 28.22  | 35.22 |
+| [exemplar-002](https://mcmicro.org/datasets/#exemplar-data-for-testing-mcmicro)</br>4 core TMA | 54 m 25 s | 0.5 CPU hours| $0.014 | Spot | True | manual optimization | manual optimization | 80.13  | 53.03 |
+
 
 ## Monitoring local MCMICRO runs with Nextflow Tower
 
-The Nextflow Tower can be used to [monitor locally launched Nextflow runs](https://tower.nf/welcome). 
+Nextflow Tower can be used to [monitor locally launched Nextflow runs](https://tower.nf/welcome) by adding setting the `TOWER_ACCESS_TOKEN` and adding `-with-tower` to the `nextflow run` command.
 
 For example
 
