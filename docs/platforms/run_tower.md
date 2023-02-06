@@ -222,3 +222,5 @@ CPU hours   : 0.1
 Succeeded   : 4
 ```
 The link to tower.nf provides access to the Tower interface to monitor the run
+
+![https://cdn.loom.com/sessions/thumbnails/657cb8f4ca774d2bb760c386eee1cbfc-with-play.gif](https://cdn.loom.com/sessions/thumbnails/657cb8f4ca774d2bb760c386eee1cbfc-with-play.gif)
