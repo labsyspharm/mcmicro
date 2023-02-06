@@ -73,17 +73,21 @@ First complete the Pipeline Parameters box.
 Minimally `in`, A URI to the input directory is required
 Provide additional arguments as required
 
-For example to run `exemplar-002` from registration to downstream with scanpy:
+For example to run `exemplar-002` from registration to downstream with scanpy we would add:
 
 
 ```
-in: 's3://mc2-mcmicro-project-tower-bucket/testing/output/exemplar-001/'
+in: 's3://mc2-mcmicro-project-tower-bucket/testing/output/exemplar-002/'
 tma: true
 start-at: 'registration'
 stop-at: 'downstream'
 downstream: ['scanpy']
 ```
 Click ***Launch*** to start the run.
+
+
+[![Launching MCMICRO on Tower](https://cdn.loom.com/sessions/thumbnails/9229341356274008a8dce2ebade1923c-with-play.gif)](https://www.loom.com/share/9229341356274008a8dce2ebade1923c)
+
 
 ### Monitoring runs
 
@@ -108,6 +112,7 @@ The table below shows example aggregated statistics for MCMICRO runs on AWS Batc
 | [EMIT TMA22](https://www.synapse.org/#!Synapse:syn22345748/wiki/609239)</br>123 core TMA </br>(pre-dearrayed) | segmentation | downstream</br>[`fastpg`,</br>`flowsom`,</br>`scanpy`] | 738 | 31 m 58 s | 108.3 CPU hours| $2.816 | Spot | False |
 | [EMIT TMA22](https://www.synapse.org/#!Synapse:syn22345748/wiki/609239)</br>123 core TMA </br>(pre-dearrayed) | segmentation | downstream</br>[`fastpg`,</br>`flowsom`,</br>`scanpy`] | 738 | 1 h 2 m 45 s | 26.1 CPU hours | $6.556 | On Demand | True |
 | [EMIT TMA22](https://www.synapse.org/#!Synapse:syn22345748/wiki/609239)</br>123 core TMA </br>(pre-dearrayed) | segmentation | downstream</br>[`fastpg`,</br>`flowsom`,</br>`scanpy`] | 738 | 37 m 52 s  | 167.3 CPU hours | $8.387  | On Demand | False |
+| CyCIF Tonsil  | segmentation |quantification  | 3 succeeded</br>2 retried | 2 h 32 m 15 s  | 8.9 CPU hours | $0.201  | On Demand | True |
 
 † Wall time (or total running time) includes time for an instance to be allocated 
 
@@ -183,7 +188,7 @@ process {
 | [exemplar-002](https://mcmicro.org/datasets/#exemplar-data-for-testing-mcmicro)</br>4 core TMA |33 m 16 s | 0.9 CPU hours| $0.02 | Spot | True | 4 CPUs | 16 GB | 9.8% | 22.27% | 
 | [exemplar-002](https://mcmicro.org/datasets/#exemplar-data-for-testing-mcmicro)</br>4 core TMA | 28 m 25 s| 3.4 CPU hours| $0.072 | Spot | True | 16 CPUs | 32 GB | 4.93% | 7.23% |
 | [exemplar-002](https://mcmicro.org/datasets/#exemplar-data-for-testing-mcmicro)</br>4 core TMA | 40 m 55 s | 0.7 CPU hours | $0.023 | Spot | True | suggested optimization | suggested optimization | 28.22  | 35.22 |
-| [exemplar-002](https://mcmicro.org/datasets/#exemplar-data-for-testing-mcmicro)</br>4 core TMA | 54 m 25 s | 0.5 CPU hours| $0.014 | Spot | True | manual optimization | manual optimization | 80.13  | 53.03 |
+| [exemplar-002](https://mcmicro.org/datasets/#exemplar-data-for-testing-mcmicro)</br>4 core TMA | 54 m  25 s | 0.5 CPU hours | $0.014 | Spot | True | further optimization | further optimization | 28.22  | 35.22 |
 
 
 ## Monitoring local MCMICRO runs with Nextflow Tower
