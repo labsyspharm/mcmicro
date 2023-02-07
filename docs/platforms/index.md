@@ -13,3 +13,5 @@ For small images (on the order of a few GB, like the exemplar dataset), MCMICRO 
 1. Instructions for deploying MCMICRO in a [Galaxy environment](./galaxy/)
 1. Instructions for deploying MCMICRO on [Amazon Web Services](./run-AWS.html)
 1. Instructions for deploying MCMICRO on the [O2 Compute Cluster](./run-O2.html) (for users at **Harvard Medical School only**) 
+1. Instructions for deploying MCMICRO on Nextflow Tower](./run-tower.html)
+
