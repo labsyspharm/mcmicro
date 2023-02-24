@@ -57,7 +57,7 @@ modules:
     -
       name: ilastik
       container: labsyspharm/mcmicro-ilastik
-      version: 1.6.0
+      version: 1.6.1
       cmd: python /app/mc-ilastik.py --output .
       input: --input
       model: --model
