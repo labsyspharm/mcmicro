@@ -1,3 +1,4 @@
+image: ghcr.io/labsyspharm/mcmicro:devenv-latest
 tasks:
   - name: Download default containers
     init: |
@@ -8,8 +9,5 @@ tasks:
           [mods['registration'], mods['segmentation'][0],\
            mods['watershed'], mods['quantification']]]"\
       | while read line ; do docker pull $line ; done
-  - name: Install Nextflow and download exemplar
-    init: |
-      cd /workspace; curl -s https://get.nextflow.io | bash
-      ./nextflow mcmicro/exemplar.nf --name exemplar-001
-      rm -rf /workspace/work
+  - name: Default workdir
+    init: cd /workspace
