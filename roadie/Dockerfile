@@ -5,6 +5,7 @@ RUN apt-get update && apt-get install -y python3-opencv
 RUN python -m pip install \
   threadpoolctl \
   sklearn \
+  pandas \
   tifffile \
   zarr \
   scikit-image \
