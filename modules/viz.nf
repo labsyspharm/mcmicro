@@ -36,6 +36,7 @@ workflow viz {
   take:
     mcp
     imgs
+    markers
 
   main:
     

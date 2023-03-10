@@ -164,7 +164,7 @@ workflow {
     downstream(mcp, sft)
 
     // Vizualization
-    viz(mcp, allimg)
+    viz(mcp, allimg, chMrk)
 }
 
 // Write out parameters used
