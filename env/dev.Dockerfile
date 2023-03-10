@@ -6,7 +6,7 @@ RUN sudo apt-get update && \
     sudo rm -rf /var/lib/apt/lists/*
 
 # Additional packages for Roadie scripts
-RUN pip install \
+RUN pip install --no-cache-dir \
   threadpoolctl \
   sklearn \
   pandas \
