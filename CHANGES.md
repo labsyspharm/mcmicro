@@ -1,4 +1,4 @@
-### 2022-03-10
+### 2023-03-10
 
 * [viz] Auto-Minerva story construction will now read channel names from `markers.csv`
 
