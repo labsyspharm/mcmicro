@@ -15,3 +15,5 @@ RUN python -m pip install --no-cache-dir \
     scikit-image
 
 RUN git clone https://github.com/labsyspharm/minerva-author.git /app/minerva-author
+
+ADD modules/ext/story.py /app

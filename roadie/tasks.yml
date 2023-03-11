@@ -2,10 +2,6 @@ recyze:
   description: channel and pixel cropping
   output: '*.ome.tif*'
   params: ['x', 'x2', 'y', 'y2', 'w', 'h', 'channels']
-story:
-  description: prepare image for auto-minerva
-  output: '*.json'
-  params: ['m']
 pyramidize:
   description: generate a pyramid for the input image
   output: '*.ome.tif'
