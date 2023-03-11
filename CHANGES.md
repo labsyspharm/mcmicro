@@ -1,3 +1,7 @@
+### 2023-03-10
+
+* [viz] Auto-Minerva story construction will now read channel names from `markers.csv`
+
 ### 2022-11-23
 
 * [dearray] The output of Coreograph is now being run through palom to generate pyramids, which are needed for Autominerva. The following combination of parameters should now work:
