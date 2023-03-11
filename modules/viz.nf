@@ -16,7 +16,7 @@ process autominerva {
   input:
     val wfp
     val module
-    tuple val(tag), path(img), path(story)
+    tuple val(tag), path(img), path(markers)
 
   output:
     path("${tag}/**"), emit: viz
@@ -27,8 +27,9 @@ process autominerva {
 
   when: Flow.doirun('viz', wfp)
 
-    """    
-    python /app/minerva-author/src/save_exhibit_pyramid.py $img $story $tag
+    """
+    python /app/story.py --in $img --m $markers --out story.json
+    python /app/minerva-author/src/save_exhibit_pyramid.py $img story.json $tag
     """
 }
 
@@ -40,19 +41,7 @@ workflow viz {
 
   main:
     
-    // Proceed to generate stories only if visualization is requested
-    inputs = imgs.branch {
-        story: mcp.workflow['viz']
-        other: true
-    }
-
-    stories = roadie(
-        'story', inputs.story, '', 
-        true, "${params.in}/qc/story", 'copy'
-      ).map{ it -> tuple(Util.getImageID(it), it) }
-    images = imgs.map{ it -> tuple(Util.getImageID(it), it) }
-
-    inputs = images.combine(stories, by:0)
+    inputs = imgs.map{ it -> tuple(Util.getImageID(it), it) }.combine( markers )
     autominerva(mcp.workflow, mcp.modules['viz'], inputs)
 
   emit:
