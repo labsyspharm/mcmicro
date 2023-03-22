@@ -113,31 +113,40 @@ process gatorpy {
 
 workflow gator {
   
-    // Inputs:
-    // mcp - MCMICRO parameters (workflow, options, etc.)
-    // imgs - images
-    // sfts - spatial feature tables
   take:
-    mcp
-    markers
-    gatorModels
-    imgs
-    masks
-    sfts
+    mcp   // MCMICRO parameters (workflow, options, etc.)
+    imgs  // images
+    msks  // segmentation masks
+    sfts  // spatial feature tables
 
   main:
     
-    // Match images against feature tables
+    // Identify marker information and the GATOR model
+    markers = Channel.fromPath( "${params.in}/markers.csv", checkIfExists: true )
+    model   = Channel.fromPath( "${params.in}/models/gator.pkl" )
+
+    // Retrieve image tags
     id_imgs = imgs.map{ it -> tuple(Util.getImageID(it), it) }
-    id_sfts = sfts.map{ it -> tuple(Util.getFileID(it, '--'), it) }
-    id_masks = masks.map{ id, msk -> x = id.split('-',2); tuple(x[1], x[0], msk) }
 
+    // Retrieve the three mask tags: image, method, compartment
+    id_msks = msks.map{ id, msk -> x = id.split('-',2); tuple(x[1], x[0], msk)}
+      .transpose()   // Split up the list of masks
+      .map{ _1, _2, msk -> tuple(_1, _2, Util.getImageID(msk), msk)}
 
-    // Apply the process to each (image, sft) pair
-    id_imgs.combine(id_sfts, by:0)
-        .map{ tag, img, sft -> tuple(img, sft) } | snr
+    // Retrieve the three sft tags: image, method, compartment
+    id_sfts = sfts.map{ it ->
+      x = it.getBaseName().toString().split('--')
+      y = x[1].split('_')
+      tuple(x[0], y[0], y[1], it) 
+    }
+
+    // Match everything up and strip the tags
+    // Put the inputs in the correct order to match gatorpy spec
+    inputs = id_msks.combine(id_sfts, by: [0,1,2]).combine(id_imgs, by: 0)\
+      .map{_1, _2, _3, msk, sft, img -> tuple(img, msk, sft)}.view()
+//    gatorpy(mcp, mcp.modules['gator'], markers, model, inputs)
 
     // Return the outputs produced by the tool
-  emit:
-    snr.out.results
+//  emit:
+//    gatorpy.out.results
 }
