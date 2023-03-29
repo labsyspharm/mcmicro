@@ -1,7 +1,7 @@
 ---
 layout: default
 title: AWS configuration
-nav_order: 12
+nav_order: 4
 parent: Platforms
 ---
 

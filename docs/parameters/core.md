@@ -482,7 +482,9 @@ Nextflow will write all outputs to the `cell-states/scimap/` subdirectory within
 Minerave allows for fast, interactive viewing of multiplexed images. It also enables highlighting and effective sharing of important regions of interest among collaborators.
 
 ### Usage
-At the moment, MCMICRO does not automatically generate Minerva stories of the input images, and users need to manually provide MCMICRO outputs to Minerva in a separate workflow. To learn more about how to use Minerva, visit the [Minerva wiki](https://github.com/labsyspharm/minerva-story/wiki){:target="_blank"} for the most up-to-date information about the Minerva suite.
+MCMICRO can automatically generate un-annotated Minerva stories if users enable the [`viz` workflow parameter](https://mcmicro.org/parameters/workflow.html#viz).  
+
+Annotated narratives must be manually generated, and users must provide MCMICRO outputs to Minerva in a separate workflow. To learn more about making Minerva stories, visit the [Minerva wiki](https://github.com/labsyspharm/minerva-story/wiki){:target="_blank"} for the most up-to-date information about the Minerva suite.
 
 [Back to top](./){: .btn .btn-outline} 
 

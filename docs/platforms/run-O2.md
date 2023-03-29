@@ -1,7 +1,7 @@
 ---
 layout: default
 title: O2 cluster (HMS only)
-nav_order: 14
+nav_order: 2
 parent: Platforms
 ---
 
