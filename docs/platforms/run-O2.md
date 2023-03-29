@@ -58,7 +58,7 @@ process{
   }
 }
 ```
-Use [existing profiles](https://github.com/labsyspharm/mcmicro/blob/master/config/tma.config) as examples. Once `myproject.config` is composed, it can be provided to a `nextflow run` command using the `-c` flag:
+Use [existing profiles](https://github.com/labsyspharm/mcmicro/tree/master/config/nf) as examples. Once `myproject.config` is composed, it can be provided to a `nextflow run` command using the `-c` flag:
 
 ```
 nextflow run labsyspharm/mcmicro --in /path/to/exemplar-001 -profile O2 -c myproject.config
