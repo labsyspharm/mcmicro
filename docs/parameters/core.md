@@ -87,8 +87,6 @@ Core modules:
 {: .text-blue-000}
 
 {: .fs-3}
-Last updated on {{ site.time | date: "%Y-%m-%d" }}.
-
 *All modules in MCMICRO are available as standalone executable Docker containers. When running modules within MCMICRO, the inputs and outputs will be handled by the pipeline and do not need to be specified explicitly.*
 
 ## BaSiC
