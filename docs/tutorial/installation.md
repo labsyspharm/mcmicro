@@ -33,7 +33,10 @@ If not already installed, install Java: [https://adoptopenjdk.net/](https://adop
 </div>
 </details>
 
-Install [Nextflow](https://www.nextflow.io/){:target="_blank"}: `curl -s https://get.nextflow.io | bash`
+Install [Nextflow](https://www.nextflow.io/){:target="_blank"}: 
+```
+curl -s https://get.nextflow.io | bash
+```
 
 >This command will create a `nextflow` executable in the current directory. To simplify usage, consider moving this executable to a directory that is available on `$PATH`. One common place for this is a `bin/` directory in your home folder:
 

@@ -1,13 +1,14 @@
 ---
 layout: default
-title: Module Specifications
+title: Modifying modules (advanced)
 nav_order: 50
 parent: Parameters
 ---
 
 # Module specifications
 
-MCMICRO specifies all modules dynamically. Most of the users will not need to modify the default specifications. Occasionally, a user may need to run a different version of an existing module or add another module. Both of those things can be done by specifying the corresponding fields in the `modules:` namespace of the [parameter file]({{site.baseurl}}/parameters/).
+**Most users will not need to modify the default specifications.** 
+Occasionally, a user may need to run a different version of an existing module or add another module. Both of those things can be done by specifying the corresponding fields in the `modules:` namespace of the [parameter file]({{site.baseurl}}/parameters/).
 
 ## Modifying a module version
 

@@ -16,13 +16,21 @@ On this page, you will find more information about how to supply parameters to t
 
 ## Parameter files
 
-Parameter files must be specified in standard YAML format using the following three namespaces:
+Parameters must be specified in standard YAML format **using the following three namespaces:**
+{: .fs-5}
+{: .fw-300}
 
-* `workflow` - pipeline-level parameters controlling overall behavior of MCMICRO
-* `options` - module-level parameters that will be forwarded to individual tools; the entries are matched against `name` fields in `modules`
-* `modules` - module specifications, such as container name and version, whether the module uses 0-based or 1-based indexing, etc.
+* `workflow` - pipeline-level parameters controlling overall behavior of MCMICRO  
+<br>
+* `options` - module-level parameters that will be forwarded to individual tools
+	* the entries are matched against `name` fields in `modules`   
+<br>
+* `modules` - module specifications, such as container name and version, whether the module uses 0-based or 1-based indexing, etc.  (**For advanced users!**)
 
+<br>
 An example `params.yml` may look as follows:
+{: .fs-5}
+{: .fw-300}
 
 ``` yaml
 workflow:
@@ -38,9 +46,14 @@ modules:
     version: 1.4.0-large
 ```
 
-MCMICRO will fall back on [default values](https://github.com/labsyspharm/mcmicro/blob/master/config/defaults.yml){:target="_blank"} for any setting not specified in a parameter file.
+<br>
+MCMICRO will use [default values](https://github.com/labsyspharm/mcmicro/blob/master/config/defaults.yml){:target="_blank"} for any settings not specified in a parameter file.
+{: .fs-5}
+{: .fw-500}
+{: .text-center }
 
-Please see the subpages for more information about [workflow](./workflow.html), [options](./core.html), and [modules](./specs.html) namespaces.
+_Please see the subpages for more information about the parameters for the [workflow](./workflow.html), [options](./core.html), and [modules](./specs.html) namespaces._
+{: .text-center }
 
 ## Specifying an external parameter file
 
