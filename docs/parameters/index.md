@@ -6,17 +6,31 @@ nav_order: 5
 
 # Supplying parameters to MCMICRO
 
-Parameters can be supplied in three ways,
+MCMICRO will use [default values](https://github.com/labsyspharm/mcmicro/blob/master/config/defaults.yml){:target="_blank"} for any settings not specified in a parameter file.
+{: .fs-5}
+{: .fw-500}
 
-1. by [providing `params.yml` as a file](./#parameter-files) in the project [directory]({{site.baseurl}}/io.html#input),
-2. by [pointing to a `params.yml` file in another directory](./#specifying-an-external-parameter-file), or
-3. by [overwriting individual parameters](./#overwriting-individual-parameters) on the command line. If no parameters are supplied, MCMICRO will run with a set of [default parameter values](https://github.com/labsyspharm/mcmicro/blob/master/config/defaults.yml). MCMICRO will resolve conflicting parameter values with a [priority list](./#parameter-value-prioritization).
+
+MCMICRO will resolve conflicting parameter values with a [priority list](./#parameter-value-prioritization).
+{: .fs-5}
+{: .fw-500}
+
+<br>
+
+Parameters can be supplied in two ways,
+{: .fs-5}
+{: .fw-300}
+
+1. by [providing `params.yml` as a file](./#parameter-files) (**RECOMMENDED**)
+	1. in the project [directory]({{site.baseurl}}/io.html#input) 
+	2. or by [pointing to a `params.yml` file in another directory](./#specifying-an-external-parameter-file), or
+3. by [overwriting individual parameters](./#overwriting-individual-parameters) on the command line.
 
 On this page, you will find more information about how to supply parameters to the pipeline for each of these methods, how to [change where intermediate files are stored](./#specifying-path-for-intermediate-files) and [how to specify start and stop modules](./#specifying-start-and-stop-modules).
 
-## Parameter files
+## Option 1: Parameter files (RECOMMENDED)
 
-Parameters must be specified in standard YAML format **using the following three namespaces:**
+Parameters must be specified in standard YAML format using the following three namespaces:
 {: .fs-5}
 {: .fw-300}
 
@@ -47,15 +61,12 @@ modules:
 ```
 
 <br>
-MCMICRO will use [default values](https://github.com/labsyspharm/mcmicro/blob/master/config/defaults.yml){:target="_blank"} for any settings not specified in a parameter file.
-{: .fs-5}
-{: .fw-500}
-{: .text-center }
+
 
 _Please see the subpages for more information about the parameters for the [workflow](./workflow.html), [options](./core.html), and [modules](./specs.html) namespaces._
 {: .text-center }
 
-## Specifying an external parameter file
+### Specifying an external parameter file
 
 By default, MCMICRO will look for `params.yml` in the [project directory]({{site.baseurl}}/io.html#input). If you want to use the same parameter values for multiple projects, you can instead create a single `myparams.yml` file (elsewhere) and supply the path to this file to the pipeline with `--params`:
 
@@ -69,7 +80,7 @@ nextflow run labsyspharm/mcmicro --in /path/to/project2 --params /path/to/mypara
 
 Values specified in the external `myparams.yml` will overwrite any values found in `params.yml` files of individual project directories.
 
-## Overwriting individual parameters
+## Option 2: Overwriting individual parameters
 
 Individual parameters can be overwritten directly on the command line. This provides an opportunity for "one-off" runs without the need to modify existing parameter files.
 
@@ -103,26 +114,4 @@ By default, Nextflow writes intermediate files to a `work/` directory inside wha
 nextflow run labsyspharm/mcmicro --in /path/to/my-data -w /path/to/work/
 ```
 
-## Specifying start and stop modules
-By default, the pipeline starts from the registration step ([ASHLAR]({{site.baseurl}}/parameters/core.html#ashlar)), proceeds through [UnMICST]({{site.baseurl}}/parameters/core.html#unmicst), [S3segmenter]({{site.baseurl}}/parameters/core.html#s3segmenter), and stops after executing the quantification [MCQuant]({{site.baseurl}}/parameters/core.html#mcquant) step.
 
-Use `start-at` and `stop-at` workflow parameters to execute any contiguous section of the pipeline instead.
-
-**Example 1: Running illumination correction and registration only**
-
-``` yaml
-workflow:
-  start-at: illumination
-  stop-at: registration
-```
-
-**Example 2: Start by dearraying an already-registered TMA image**
-
-``` yaml
-workflow:
-  tma: true
-  start-at: dearray
-```
-
-**Note:** Starting at any step beyond registration requires pre-computed output of the previous steps placed at the correct location in the project directory.
-{: .fs-3}
