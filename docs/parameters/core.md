@@ -1,11 +1,15 @@
 ---
 layout: default
-title: "Module options"
+title: "Options"
 parent: Parameters
 nav_order: 5
 ---
-{: .text-center }
-# The MCMICRO pipeline
+
+# Module Options
+
+Parameters under the namespace `options` regulate the function of individual modules in the pipeline. Parameters are matched to the appropriate module using the [`name:`](./specs.html#name) fields in the namespace [`modules`](./#option-1-parameter-files-recommended).  
+{: .fs-5}
+{: .fw-400}
 
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" viewBox="0 0 439 166" inkscape:version="0.92.4 (5da689c313, 2019-01-14)" sodipodi:docname="imgmap_modules.svg" style="background-image: url(../images/pipeline-no-microscope.png)">
 
@@ -622,6 +626,9 @@ A segmentation mask, similar to the ones produced by S3segmenter. Nextflow will 
 | `--compartment` | Predict nuclear or whole-cell segmentation. | `"whole-cell"` |
 | `--image-mpp` | The resolution of the image in microns-per-pixel. A value of 0.5 corresponds to 20x zoom. | `0.5` |
 | `--batch-size` | Number of images to predict on per batch. | `4` |
+
+
+[Back to Other Modules](./core.html#other-modules){: .btn .btn-purple} [Back to top](./core){: .btn .btn-outline} 
 
 ---
 

@@ -1,14 +1,36 @@
 ---
 layout: default
-title: Modifying modules (advanced)
+title: Module specifications
 nav_order: 50
 parent: Parameters
 ---
 
 # Module specifications
 
-**Most users will not need to modify the default specifications.** 
-Occasionally, a user may need to run a different version of an existing module or add another module. Both of those things can be done by specifying the corresponding fields in the `modules:` namespace of the [parameter file]({{site.baseurl}}/parameters/).
+{: .fs-5}
+{: .fw-400}
+**Most users will not need to modify the default `modules` specifications, unless you want to:**  
+1. Run a different version of an existing module, or 
+2. Add another module  
+{: .fs-5}
+{: .fw-400}
+
+The following page describes how to use the `modules:` namespace of the [parameter file]({{site.baseurl}}/parameters/) to accomplish either of these goals.
+{: .fs-5}
+{: .fw-400}
+
+---
+
+<details open markdown="block">
+  <summary>
+    Table of contents
+  </summary>
+  {: .text-delta }
+1. TOC
+{:toc}
+</details>
+
+---
 
 ## Modifying a module version
 

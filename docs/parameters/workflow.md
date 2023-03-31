@@ -5,7 +5,10 @@ parent: Parameters
 nav_order: 1
 ---
 
-{: .no_toc }
+# Workflow parameters  
+Parameters under the namespace `workflow` regulate the function of the pipeline as a whole. 
+{: .fs-5}
+{: .fw-400}
 
 <details open markdown="block">
   <summary>
@@ -18,7 +21,7 @@ nav_order: 1
 
 ---
 
-# Workflow parameters  
+
 
 By default, the pipeline starts from the registration step ([ASHLAR]({{site.baseurl}}/parameters/core.html#ashlar)), proceeds through [UnMICST]({{site.baseurl}}/parameters/core.html#unmicst), [S3segmenter]({{site.baseurl}}/parameters/core.html#s3segmenter), and stops after executing the quantification [MCQuant]({{site.baseurl}}/parameters/core.html#mcquant) step.
 {: .fs-5}
