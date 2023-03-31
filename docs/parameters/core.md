@@ -104,7 +104,7 @@ The module implements the BaSiC method for correcting uneven illumination, devel
 
 ### Usage
 
-By default, MCMICRO skips this step as it requires manual inspection of the outputs to ensure that illumination correction does not introduce artifacts for downstream processing.  Add `start-at: illumination` to [workflow parameters]({{site.baseurl}}/parameters/) to request that MCMICRO runs the module.
+By default, MCMICRO skips this step as it requires manual inspection of the outputs to ensure that illumination correction does not introduce artifacts for downstream processing.  Add `start-at: illumination` to [`workflow` parameters]({{site.baseurl}}/parameters/workflow) to request that MCMICRO runs the module.
 
 * Example `params.yml`:
 
@@ -136,7 +136,7 @@ The module performs simultaneous stiching of tiles and registration across chann
 
 ### Usage
 
-MCMICRO runs ASHLAR by default. Add `ashlar:` to [module options]({{site.baseurl}}/parameters/) to control its behavior.
+MCMICRO runs ASHLAR by default. Add `ashlar:` to [`options`]({{site.baseurl}}/parameters/#option-1-parameter-files-recommended) to control its behavior.
 
 * Example `params.yml`:
 
@@ -189,7 +189,7 @@ The modules uses the popular UNet deep learning architecture to identify cores w
 
 ### Usage
 
-By default, MCMICRO assumes that the input is a whole-slide image. Add `tma: true` to [module options]({{site.baseurl}}/parameters/) to indicate that the input is a TMA instead. Add `coreograph:` to [module options]({{site.baseurl}}/parameters/) to control the module behavior.
+By default, MCMICRO assumes that the input is a whole-slide image. Add `tma: true` to [`workflow`]({{site.baseurl}}/parameters/workflow#tma) to indicate that the input is a TMA instead. Add `coreograph:` to [`options`]({{site.baseurl}}/parameters/#option-1-parameter-files-recommended) to control the module behavior.
 
 * Example `params.yml`:
 
@@ -244,7 +244,7 @@ A troubleshooting guide can be found within [Coreograph parameter tuning]({{site
 UnMICST uses a convolutional neural network to annotate each pixel with the probability that it belongs to a given subcellular component (nucleus, cytoplasm, cell boundary). Check the [UnMICST website](https://labsyspharm.github.io/UnMICST-info/){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
-MCMICRO applies UnMicst to all input images by default. Add `unmicst:` to [module options]({{site.baseurl}}/parameters/) to control its behavior.
+MCMICRO applies UnMicst to all input images by default. Add `unmicst:` to [`options`]({{site.baseurl}}/parameters/#option-1-parameter-files-recommended) to control its behavior.
 
 * Example `params.yml`:
 
@@ -296,7 +296,7 @@ ___
 The modules applies standard watershed segmentation to probability maps to produce the final cell/nucleus/cytoplasm/etc. masks.
 
 ### Usage
-By default, MCMICRO applies S3segmenter to the output of all modules that produce probability maps. Add `s3seg:` to [module options]({{site.baseurl}}/parameters/) to control its behavior..
+By default, MCMICRO applies S3segmenter to the output of all modules that produce probability maps. Add `s3seg:` to [`options`]({{site.baseurl}}/parameters/#option-1-parameter-files-recommended) to control its behavior..
 
 * Example `params.yml`:
 
@@ -307,12 +307,12 @@ options:
 
 ### Inputs
 1.  A fully-stitched and registered ``.ome.tif``, preferably flat field corrected. Nextflow will take these from the `registration/` and `dearray/` subdirectories, as approrpriate.
-2.  A 3-class probability map, as derived by modules such as [UnMICST](./core.html#unmicst) or [Ilastik](./other.html#ilastik).
+2.  A 3-class probability map, as derived by modules such as [UnMICST](./core.html#unmicst) or [Ilastik](./core.html#ilastik).
 
 [S3segmenter](https://github.com/HMS-IDAC/S3segmenter){:target="_blank"} assumes that you have:
 1. Acquired images of your sample with optimal acquisition settings.
 2. Stitched and registered the tiles and channels respectively (if working with a large piece of tissue) and saved it as a Bioformats compatible tiff file.
-3. Processed your image in some way so as to increase contrast between individual nuclei using classical or machine learning methods such as [Ilastik](./other.html#ilastik) (a random forest model) or [UnMICST](./core.html#unmicst) (a deep learning semantic segmentation model based on the UNet architecture). MCMICRO supports both.
+3. Processed your image in some way so as to increase contrast between individual nuclei using classical or machine learning methods such as [Ilastik](./core.html#ilastik) (a random forest model) or [UnMICST](./core.html#unmicst) (a deep learning semantic segmentation model based on the UNet architecture). MCMICRO supports both.
 {: .fs-3}
 
 ### Output
@@ -380,7 +380,7 @@ ___
 The modules uses one or more segmentation masks against the original image to quantify the expression of every channel on a per-cell basis. Check the [MCQuant README](https://github.com/labsyspharm/quantification#single-cell-quantification){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
-By default, MCMICRO runs MCQuant on all cell segmentation masks that match the `cell*.tif` filename pattern. Add `mcquant:` to [module options]({{site.baseurl}}/parameters/) to specify a different mask or to provide additional module-specific arguments to MCMICRO.
+By default, MCMICRO runs MCQuant on all cell segmentation masks that match the `cell*.tif` filename pattern. Add `mcquant:` to [`options`]({{site.baseurl}}/parameters/#option-1-parameter-files-recommended) to specify a different mask or to provide additional module-specific arguments to MCMICRO.
 
 * Example `params.yml`:
 
@@ -446,7 +446,7 @@ SCIMAP is a suite of tools that enables spatial single-cell analyses. Check the 
 ### Usage
 MCMICRO allows users to automatically apply SCIMAP's clustering algorithms to the cell-by-feature table produced by MCQuant. The clustering results can be subsequently used for manual assignment of cell states. Since MCMICRO stops at MCQuant by default, users will need to explicitly request that the pipeline continues to the clustering step. MCMICRO's usage of SCIMAP doesn't have any parameters, and users are encouraged to check the [SCIMAP website](https://scimap.xyz){:target="_blank"} for more sophisticated human-in-the-loop analyses.
 
-Add `downstream: scimap` and `stop-at: downstream` to [workflow parameters]({{site.baseurl}}/parameters/) to enable SCIMAP. Add `mcquant:` to [module options]({{site.baseurl}}/parameters/) to control its behavior.
+Add `downstream: scimap` and `stop-at: downstream` to [`workflow` parameters]({{site.baseurl}}/parameters/workflow.html#stop-at) to enable SCIMAP. Add `mcquant:` to [`options`]({{site.baseurl}}/parameters/#option-1-parameter-files-recommended) to control its behavior.
 
 * Example `params.yml`:
 
@@ -484,7 +484,7 @@ Nextflow will write all outputs to the `cell-states/scimap/` subdirectory within
 Minerave allows for fast, interactive viewing of multiplexed images. It also enables highlighting and effective sharing of important regions of interest among collaborators.
 
 ### Usage
-MCMICRO can automatically generate un-annotated Minerva stories if users enable the [`viz` workflow parameter](https://mcmicro.org/parameters/workflow.html#viz).  
+MCMICRO can automatically generate un-annotated Minerva stories if users enable the [`viz` workflow parameter](./workflow.html#viz).  
 
 Annotated narratives must be manually generated, and users must provide MCMICRO outputs to Minerva in a separate workflow. To learn more about making Minerva stories, visit the [Minerva wiki](https://github.com/labsyspharm/minerva-story/wiki){:target="_blank"} for the most up-to-date information about the Minerva suite.
 
@@ -515,7 +515,7 @@ Annotated narratives must be manually generated, and users must provide MCMICRO 
 The module provides a command-line interface to the popular [ilastik](https://www.ilastik.org/) toolkit and serves as another method for generating probability maps that can be used as an alternative to UnMICST. Check the [GitHub](https://github.com/labsyspharm/mcmicro-ilastik){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
-By default, MCMICRO runs UnMicst for probability map generation. To run Ilastik instead of or in addition to UnMicst, add `segmentation: ilastik` to [workflow parameters]({{site.baseurl}}/parameters/). When specifying multiple methods, the method names should be provided as a list enclosed in square brackets. Arguments should be passed to Ilastik via `ilastik:` in the module options section, while custom models can be provided to Ilastik via `ilastik-model:` workflow parameter.
+By default, MCMICRO runs UnMicst for probability map generation. To run Ilastik instead of or in addition to UnMicst, add `segmentation: ilastik` to [workflow parameters]({{site.baseurl}}/parameters/workflow#segmentation). When specifying multiple methods, the method names should be provided as a list enclosed in square brackets. Arguments should be passed to Ilastik via `ilastik:` in the module options section, while custom models can be provided to Ilastik via `ilastik-model:` workflow parameter.
 
 * Example `params.yml`:
 
@@ -557,7 +557,7 @@ The output is similar to that produced by UnMicst, namely a ```.tif``` stack whe
 Cypository is used to segment the cytoplasm of cells. Check the [GitHub repository](https://github.com/HMS-IDAC/Cypository#cypository---pytorch-mask-rcnn-for-cell-segmentation){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
-Add `segmentation: cypository` to [workflow parameters]({{site.baseurl}}/parameters/) to enable Cypository. In general, it would be uncommon to run Cypository alongside probability map generators for nuclei, but it can be done by specifying method names as a list enclosed in square brackets, e.g., `segmentation: [cypository, unmicst]`. Additional Cypository parameters should be provided to MCMICRO by including a `cypository:` field in the module options section.
+Add `segmentation: cypository` to [workflow parameters]({{site.baseurl}}/parameters/workflow.html#segmentation) to enable Cypository. In general, it would be uncommon to run Cypository alongside probability map generators for nuclei, but it can be done by specifying method names as a list enclosed in square brackets, e.g., `segmentation: [cypository, unmicst]`. Additional Cypository parameters should be provided to MCMICRO by including a `cypository:` field in the module options section.
 
 * Example `params.yml`:
 ``` yaml
@@ -598,7 +598,7 @@ The [Mesmer](https://doi.org/10.1038/s41587-021-01094-0){:target="_blank"} modul
 
 ### Usage
 
-Add `segmentation: mesmer` to [workflow parameters]({{site.baseurl}}/parameters/) to enable Mesmer. When running together with UnMicst and/or ilastik, method names must be provided as a list enclosed in square brackets. Additional Mesmer parameters can be provided to MCMICRO by including a `mesmer:` field in the module options section.
+Add `segmentation: mesmer` to [workflow parameters]({{site.baseurl}}/parameters/workflow.html#segmentation) to enable Mesmer. When running together with UnMicst and/or ilastik, method names must be provided as a list enclosed in square brackets. Additional Mesmer parameters can be provided to MCMICRO by including a `mesmer:` field in the module options section.
 
 * Example `params.yml`:
 
@@ -639,7 +639,7 @@ A segmentation mask, similar to the ones produced by S3segmenter. Nextflow will 
 MCMICRO integrates three methods for clustering single-cell data. These are [FastPG](https://www.biorxiv.org/content/10.1101/2020.06.19.159749v2){:target="_blank"} (Fast C++ implementation of the popular Phenograph method), Leiden community detection via [scanpy](https://scanpy.readthedocs.io/en/stable/){:target="_blank"}, and [FlowSOM](https://bioconductor.org/packages/release/bioc/html/FlowSOM.html){:target="_blank"}.
 
 ### Usage
-Add a `downstream:` field to [workflow parameters]({{site.baseurl}}/parameters/) to select one or more methods. Method names should be provided as a comma-delimited list enclosed in square brackets. Additional method parameters should be provided to MCMICRO by adding `fastpg:`, `scanpy:` and `flowsom:` fields to the module options section.
+Add a `downstream:` field to [workflow parameters]({{site.baseurl}}/parameters/workflow.html#downstream) to select one or more methods. Method names should be provided as a comma-delimited list enclosed in square brackets. Additional method parameters should be provided to MCMICRO by adding `fastpg:`, `scanpy:` and `flowsom:` fields to the module options section.
 
 * Example `params.yml`:
 
@@ -709,7 +709,7 @@ All methods output a `.csv` file annotating individual cells with their cluster 
 `naivestates` is a label-free, cluster-free tool for inferring cell types from quantified marker expression data, based on known marker <-> cell type associations. Check the [GitHub repository](https://github.com/labsyspharm/naivestates){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
-Add a `downstream:` field to [workflow parameters]({{site.baseurl}}/parameters/) to select naivestates. When running alongside other cell state inference methods, such as SCIMAP, method names should be provided as a list enclosed in square brackets. Custom marker to cell type (mct) mapping can be provided to naivestates via the `naivestates-model:` workflow parameters, while additional arguments should be specified by including a `naivestates:` field in the module options section.
+Add a `downstream:` field to [workflow parameters]({{site.baseurl}}/parameters/workflow.html#downstream) to select naivestates. When running alongside other cell state inference methods, such as SCIMAP, method names should be provided as a list enclosed in square brackets. Custom marker to cell type (mct) mapping can be provided to naivestates via the `naivestates-model:` workflow parameters, while additional arguments should be specified by including a `naivestates:` field in the module options section.
 
 * Example `params.yml`:
 
@@ -760,7 +760,7 @@ Nextflow will write all outputs to the `cell-states/naivestates/` subdirectory w
 `Backsub` is a background subtraction module for sequential IF images. It performs autofluorescence, pixel-level subtraction on large `.ome.tif` images primarily developed with the Lunaphore COMET platform outputs in mind.
 
 ### Usage
-By default, MCMICRO assumes background subtraction should not be performed. Add `background: true` to [module options]({{site.baseurl}}/parameters/) to indicate it should be.
+By default, MCMICRO assumes background subtraction should not be performed. Add `background: true` to [module options]({{site.baseurl}}/parameters/workflow.html#background) to indicate it should be.
 
 * Example `params.yml`:
 

@@ -93,7 +93,7 @@ Pre-computed flat-field and dark-field illumination profiles can be placed in th
 ### (Optional) Parameter file
 The parameter file must be named `params.yml` and placed in the project directory, alongside `markers.csv`. Parameter values must be specified using standard YAML format. Please see the [detailed parameter descriptions]({{site.baseurl}}/parameters/) for more information.
 
-[Back to top](./){: .btn .btn-outline} 
+[Back to top](./io){: .btn .btn-outline} 
 
 ---
 
@@ -222,7 +222,7 @@ exemplar-002
 1. If UnMicst was used to generate probability maps, `unmicst/` will contain thumbnail previews, allowing for a quick assessment of their quality.
 1. After segmentation, two-channel tif files containing DAPI and nuclei/cell/cytoplasm outlines will reside in `s3seg/`, allowing for a visual inspection of segmentation quality.
  
-[Back to top](./){: .btn .btn-outline} 
+[Back to top](./io){: .btn .btn-outline} 
 
 ---
 
@@ -245,6 +245,6 @@ Visual inspection of [quality control](./io.html#quality-control) (`qc/`) files 
 
 By default Nextflow writes intermediate files to a `work/` directory inside whatever location you initiate a pipeline run from. You can change that by specifying a different [`-w` parameter](./parameters/#specifying-path-for-intermediate-files).
 
-[Back to top](./){: .btn .btn-outline} 
+[Back to top](./io){: .btn .btn-outline} 
 
 
