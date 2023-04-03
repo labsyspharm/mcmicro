@@ -76,12 +76,22 @@
                   "enum": [
                       "unmicst",
                       "ilastik"
+                      "cypository",
+                      "mesmer",
+                      "cellpose"
                   ]
               },
               "downstream": {
                   "type": "string",
                   "description": "A list of downstream modules to run",
-                  "default": "scimap"
+                  "default": "scimap",
+                  "enum": [
+                      "naivestates",
+                      "scimap",
+                      "fastpg",
+                      "scanpy",
+                      "flowsom"
+                  ]
               },
               "viz": {
                   "type": "boolean",
@@ -117,10 +127,6 @@
               "ashlar-opts": {
                   "type": "string",
                   "description": "Arguments to ASHLAR"
-              },
-              "coreograph-opts": {
-                  "type": "string",
-                  "description": "Arguments to Coreograph"
               },
               "unmicst-opts": {
                   "type": "string",
