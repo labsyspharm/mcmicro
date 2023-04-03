@@ -1,97 +1,165 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
-    "$id": "https://raw.githubusercontent.com/labsyspharm/mcmicro/master/nextflow_schema.json",
-    "title": "Nextflow pipeline parameters",
-    "description": "This pipeline uses Nextflow and processes some kind of data. The JSON Schema was built using the nf-core pipeline schema builder.",
-    "type": "object",
-    "properties": {
-        "in": {
-            "type": "string",
-            "format": "directory-path"
-        },
-        "start_at": {
-            "type": "string",
-            "description": "Name of the first step to be executed by the pipeline",
-            "enum": [
-                "illumination",
-                "registration",
-                "background",
-                "dearray",
-                "segmentation",
-                "watershed",
-                "quantification",
-                "downstream"
-            ],
-            "default": "registration"
-        },
-        "stop_at": {
-            "type": "string",
-            "description": "Name of the final step to be executed by the pipeline",
-            "default": "quantification",
-            "enum": [
-                "illumination",
-                "registration",
-                "background",
-                "dearray",
-                "segmentation",
-                "watershed",
-                "quantification",
-                "downstream"
-            ]
-        },
-        "tma": {
-            "type": "boolean",
-            "description": "If true, MCMICRO treats input data as a TMA. If false, the input is assumed to be a whole-slide image"
-        },
-        "segmentation_channel": {
-            "type": "string",
-            "description": "One or more channels to use for segmentation, specified using 1-based indexing; values will be forwarded to all segmentation modules",
-            "default": "1"
-        },
-        "segmentation_recyze": {
-            "type": "boolean",
-            "description": "Whether the image should be reduced to the channels specified in segmentation-channel prior to being provided to the segmentation modules."
-        },
-        "ilastik_model": {
-            "type": "string",
-            "description": "A custom .ilp file to be used as the classifier model for ilastik",
-            "pattern": "^.+\\.ilp$",
-            "format": "file-path"
-        },
-        "segmentation": {
-            "type": "string",
-            "description": "A list of segmentation modules to run",
-            "default": "unmicst",
-            "enum": [
-                "unmicst",
-                "ilastik"
-            ]
-        },
-        "downstream": {
-            "type": "string",
-            "description": "A list of downstream modules to run",
-            "default": "scimap"
-        },
-        "qc_files": {
-            "type": "string",
-            "description": "Wheter QC files should be copied, moved or symbolically linked from work directories to the project directory",
-            "enum": [
-                "copy",
-                "move",
-                "symlink"
-            ],
-            "default": "copy"
-        },
-        "viz": {
-            "type": "boolean",
-            "description": "Whether to generate a vizualization with Auto-Minerva"
-        },
-        "background": {
-            "type": "boolean",
-            "description": "Wheter background subtraction should be performed, and the computed intermediates used in further processing"
-        }
-    },
-    "required": [
-        "in"
-    ]
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/labsyspharm/mcmicro/master/nextflow_schema.json",
+  "title": "Nextflow pipeline parameters",
+  "description": "This pipeline uses Nextflow and processes some kind of data. The JSON Schema was built using the nf-core pipeline schema builder.",
+  "type": "object",
+  "definitions": {
+      "mandatory_parameters": {
+          "title": "Mandatory parameters",
+          "type": "object",
+          "description": "",
+          "default": "",
+          "properties": {
+              "in": {
+                  "type": "string",
+                  "format": "directory-path",
+                  "description": "Location of the data"
+              }
+          },
+          "required": [
+              "in"
+          ]
+      },
+      "optional_parameters": {
+          "title": "Optional parameters",
+          "type": "object",
+          "description": "",
+          "default": "",
+          "properties": {
+              "sample_name": {
+                  "type": "string",
+                  "description": "The name of the experiment/specimen"
+              },
+              "start-at": {
+                  "type": "string",
+                  "description": "Name of the first step to be executed by the pipeline. Must be one of `illumination`, `registration`, `dearray` (TMA only), `probability-maps`, `segmentation`, `quantification`, `cell-states`",
+                  "enum": [
+                      "illumination",
+                      "registration",
+                      "background",
+                      "dearray",
+                      "segmentation",
+                      "watershed",
+                      "quantification",
+                      "downstream"
+                  ],
+                  "default": "registration"
+              },
+              "stop-at": {
+                  "type": "string",
+                  "description": "Name of the final step to be executed by the pipeline. Spans the same vocabulary as `--start-at`.",
+                  "default": "quantification",
+                  "enum": [
+                      "illumination",
+                      "registration",
+                      "background",
+                      "dearray",
+                      "segmentation",
+                      "watershed",
+                      "quantification",
+                      "downstream"
+                  ]
+              },
+              "tma": {
+                  "type": "boolean",
+                  "description": "If specified, mcmicro treats input data as a TMA. If omitted, the input is assumed to be a whole-slide image."
+              },
+              "background": {
+                  "type": "boolean",
+                  "description": "If specified, mcmicro treats input data as if autofluorescence channels should be subtracted."
+              },
+              "segmentation": {
+                  "type": "string",
+                  "description": "A list of segmentation modules to run",
+                  "default": "unmicst",
+                  "enum": [
+                      "unmicst",
+                      "ilastik"
+                  ]
+              },
+              "downstream": {
+                  "type": "string",
+                  "description": "A list of downstream modules to run",
+                  "default": "scimap"
+              },
+              "viz": {
+                  "type": "boolean",
+                  "description": "Whether to generate a vizualization with Auto-Minerva"
+              },
+              "qc-files": {
+                  "type": "string",
+                  "description": "Wheter QC files should be copied, moved or symbolically linked from work directories to the project directory",
+                  "enum": [
+                      "copy",
+                      "move",
+                      "symlink"
+                  ],
+                  "default": "copy"
+              },
+              "segmentation-channel": {
+                  "type": "string",
+                  "description": "One or more channels to use for segmentation, specified using 1-based indexing; values will be forwarded to all segmentation modules",
+                  "default": "1"
+              },
+              "segmentation-recyze": {
+                  "type": "boolean",
+                  "description": "Whether the image should be reduced to the channels specified in segmentation-channel prior to being provided to the segmentation modules."
+              }
+          }
+      },
+      "parameters_for_individual_modules": {
+          "title": "Parameters for individual modules",
+          "type": "object",
+          "description": "Module-specific parameters can be specified using the various `opts` arguments, followed by the parameters enclosed inside single quotes `'`:",
+          "default": "",
+          "properties": {
+              "ashlar-opts": {
+                  "type": "string",
+                  "description": "Arguments to ASHLAR"
+              },
+              "coreograph-opts": {
+                  "type": "string",
+                  "description": "Arguments to Coreograph"
+              },
+              "unmicst-opts": {
+                  "type": "string",
+                  "description": "Arguments to UnMicst"
+              },
+              "ilastik-opts": {
+                  "type": "string",
+                  "description": "Arguments to Ilastik"
+              },
+              "s3seg-opts": {
+                  "type": "string",
+                  "description": "Arguments to S3Segmenter"
+              },
+              "mcquant-opts": {
+                  "type": "string",
+                  "description": "Arguments to MCQUANT"
+              },
+              "naievestates-opts": {
+                  "type": "string",
+                  "description": "Arguments to naievestates"
+              },
+              "ilastik-model": {
+                  "type": "string",
+                  "description": "A custom `.ilp` file to be used as the classifier model for ilastik.",
+                  "pattern": "^.+\\.ilp$",
+                  "format": "file-path"
+              }
+          }
+      }
+  },
+  "allOf": [
+      {
+          "$ref": "#/definitions/mandatory_parameters"
+      },
+      {
+          "$ref": "#/definitions/optional_parameters"
+      },
+      {
+          "$ref": "#/definitions/parameters_for_individual_modules"
+      }
+  ]
 }
