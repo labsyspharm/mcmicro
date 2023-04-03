@@ -75,7 +75,7 @@
                   "default": "unmicst",
                   "enum": [
                       "unmicst",
-                      "ilastik"
+                      "ilastik",
                       "cypository",
                       "mesmer",
                       "cellpose"
