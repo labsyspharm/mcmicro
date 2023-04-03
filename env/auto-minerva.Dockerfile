@@ -1,9 +1,10 @@
 FROM labsyspharm/roadie:2022-05-24
 
 RUN apt-get update && \
-    apt-get install -y openslide-tools
+    apt-get install -y openslide-tools && \
+    rm -rf /var/lib/apt/lists/*
 
-RUN python -m pip install \
+RUN python -m pip install --no-cache-dir \
     altair \
     imagecodecs \
     matplotlib \
@@ -14,3 +15,5 @@ RUN python -m pip install \
     scikit-image
 
 RUN git clone https://github.com/labsyspharm/minerva-author.git /app/minerva-author
+
+ADD modules/ext/story.py /app

@@ -1,5 +1,6 @@
 import json
 import numpy as np
+import pandas as pd
 import ome_types
 import scipy.stats
 import sklearn.mixture
@@ -40,7 +41,7 @@ def auto_threshold(img):
     return vmin, vmax
 
 
-def main(in_path, out_path):
+def main(in_path, out_path, markers_path):
 
     threadpoolctl.threadpool_limits(1)
 
@@ -86,6 +87,14 @@ def main(in_path, out_path):
         )
         pixels_per_micron = None
         channel_names = [f"Channel {i + 1}" for i in range(zarray.shape[0])]
+
+    # Override channel names with a markers.csv, if provided
+    if markers_path is not None:
+        print(f"Using marker names from {markers_path}")
+        markers = pd.read_csv(markers_path)
+        if markers.shape[0] != len(channel_names):
+            raise Exception("The number of channels in markers.csv does not match the image")
+        channel_names = markers['marker_name'].tolist()
 
     story = {
         "sample_info": {
@@ -134,6 +143,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--in', type=str, required=True, help="Input Image Path")
     parser.add_argument('--out', type=str, required=False, help="Output JSON Path")
+    parser.add_argument('--m', type=str, required=False, default=None, help="Path to markers.csv")
     args = parser.parse_args()
 
     # Automatically infer the output filename, if not specified
@@ -146,4 +156,4 @@ if __name__ == "__main__":
         else:                     stem = os.extsep.join(tokens[0:-1])
         out_path = stem + ".json"
 
-    main(in_path, out_path)
+    main(in_path, out_path, vars(args)['m'])

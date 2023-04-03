@@ -23,6 +23,7 @@ process mcquant {
     when: Flow.doirun('quantification', mcp.workflow)
 
     """
+    shopt -s nullglob
     python /app/CommandSingleCellExtraction.py --image $tag \
     ${Opts.moduleOpts(module, mcp)} --output . --channel_names $ch
     """
