@@ -39,6 +39,10 @@ Parameters must be specified in standard YAML format using the following three n
 * [`modules`](./specs) - module specifications, such as container name and version, whether the module uses 0-based or 1-based indexing, etc.  (**For advanced users!**)
 
 <br>
+_Please see the subpages for more information about the parameters for the [workflow](./workflow.html), [options](./core.html), and [modules](./specs.html) namespaces._
+{: .text-center }
+
+<br>
 An example `params.yml` may look as follows:
 {: .fs-5}
 {: .fw-300}
@@ -57,8 +61,35 @@ modules:
     version: 1.4.0-large
 ```
 
-_Please see the subpages for more information about the parameters for the [workflow](./workflow.html), [options](./core.html), and [modules](./specs.html) namespaces._
-{: .text-center }
+<style>
+  code {
+    white-space : pre-wrap !important;
+    word-break: break-word;
+  }
+  details > summary {
+    color: #00B0E9;
+    font-weight: bold;
+  }
+</style>
+
+<details>
+
+<summary>Expand for a note on supplying multiple option parameters for the same module*</summary>
+
+<div markdown="1">
+When supplying multiple `option` parameters for the same module, only use the module name ONCE.
+
+For example:
+{: .fs-5}
+{: .fw-300}
+
+```yaml
+options:
+  mesmer: --image-mmp 0.5 --compartment "both"
+```
+
+</div>
+</details>
 
 <br>
 
