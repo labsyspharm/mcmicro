@@ -54,43 +54,16 @@ workflow:
   viz: true
   segmentation-channel: 1 5
 options:
-  ashlar: -m 15
+  ashlar: --flip-y -c 5
   s3seg: --maxima-footprint-size 5
 modules:
   watershed:
     version: 1.4.0-large
 ```
 
-<style>
-  code {
-    white-space : pre-wrap !important;
-    word-break: break-word;
-  }
-  details > summary {
-    color: #00B0E9;
-    font-weight: bold;
-  }
-</style>
-
-<details>
-
-<summary>Expand for a note on supplying multiple option parameters for the same module*</summary>
-
-<div markdown="1">
-When supplying multiple `option` parameters for the same module, only use the module name ONCE.
-
-For example:
+Note: When supplying multiple `option` parameters for the same module, only use the module name ONCE. See the line for `ashlar` in the example above.
 {: .fs-5}
 {: .fw-300}
-
-```yaml
-options:
-  mesmer: --image-mmp 0.5 --compartment "both"
-```
-
-</div>
-</details>
-
 <br>
 
 ### Specifying an external parameter file
