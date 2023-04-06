@@ -75,8 +75,8 @@ modules:
       watershed: 'no'
     -
       name: cellpose
-      container: niksto/cellpose_for_mcmicro
-      version: latest
+      container: biocontainers/cellpose
+      version: 2.1.1_cv2
       cmd: cellpose --channel_axis 0 --save_tif --savedir .
       input: --image_path
       channel: --chan
