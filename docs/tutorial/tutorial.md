@@ -12,19 +12,16 @@ has_children: true
 {: .fw-500}
 Here we show an example of how to execute MCMICRO on two exemplar datasets using the command line (Nextflow) interface on a local computer. 
 
-{: .fs-5}
-Following this tutorial can verify that MCMICRO is correctly installed and running on your computer by demonstrating the expected inputs and outputs for the exemplar datasets. 
-
 {: .fs-3}
 **Note:** *Nextflow is compatible with Linux or Mac (through the terminal), but Windows users will need to set up a [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/about){:target="_blank"} or use the [Galaxy workflow]({{site.baseurl}}/platforms/galaxy/).*
 
 *If you are not running MCMICRO on your local computer, please head to [Platforms]({{site.baseurl}}/platforms/) for platform-specific instructions.*
 
-<br>
 
-You can view an example of how MCMICRO turns image tiles into single-cell segmented mosaic images here: [MCMICRO Pipeline Visual Guide]({{ site.baseurl }}/overview/pipeline-visual-guide.html){:target="_blank"}{: .btn .btn-green .btn-outline .btn-arrow }
+---
+**Following this tutorial can verify that MCMICRO is correctly installed and running on your computer by demonstrating the expected inputs and outputs for the exemplar datasets.**
 
-<br>
+---
 
 {: .fs-6}
  **Step 0:** Be sure to [install](../tutorial/installation.html) nextflow and Docker before proceeding through these steps.

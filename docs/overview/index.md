@@ -5,11 +5,17 @@ nav_order: 2
 has_children: true
 ---
 
-# Overview Video
+# Overview
 
 {% include youtube.html id="fnxBvgJQmtY" autoplay=false mute=false controls=true loop=false related=false %}
 
 A general introduction [video](https://www.youtube.com/watch?v=fnxBvgJQmtY){:target="_blank"} that provides a high-level overview of the pipeline.
+
+<br>
+
+You can view an example of how MCMICRO turns image tiles into single-cell segmented mosaic images here: [MCMICRO Pipeline Visual Guide]({{ site.baseurl }}/overview/pipeline-visual-guide.html){:target="_blank"}{: .btn .btn-green .btn-outline .btn-arrow }
+
+<br>
 
 ---
 # MCMICRO for processing and analyzing images 

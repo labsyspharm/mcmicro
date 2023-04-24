@@ -7,7 +7,7 @@ parent: Platforms
 
 # Running mcmicro on the O2 compute cluster
 
-**O2 is a [high-performance cluster](https://harvardmed.atlassian.net/wiki/spaces/O2/overview) at Harvard Medical School (HMS). Non-HMS users can safely ignore this page.**
+**O2 is a high-performance cluster at Harvard Medical School (HMS). Non-HMS users can safely ignore this page.**
 
 **Familiarity with basic O2 commands will make running MCMICRO much easier on O2. If this is your first time interacting with the platform, please check out HMS's [O2 documentation](https://harvardmed.atlassian.net/wiki/spaces/O2/overview).** 
 
