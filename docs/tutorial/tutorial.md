@@ -10,10 +10,15 @@ has_children: true
 
 {: .fs-5}
 {: .fw-500}
-Here we show an example of how to execute MCMICRO on two exemplar datasets using the command line (Nextflow) interface.
+Here we show an example of how to execute MCMICRO on two exemplar datasets using the command line (Nextflow) interface on a local computer. 
+
+{: .fs-5}
+Following this tutorial can verify that MCMICRO is correctly installed and running on your computer by demonstrating the expected inputs and outputs for the exemplar datasets. 
 
 {: .fs-3}
 **Note:** *Nextflow is compatible with Linux or Mac (through the terminal), but Windows users will need to set up a [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/about){:target="_blank"} or use the [Galaxy workflow]({{site.baseurl}}/platforms/galaxy/).*
+
+*If you are not running MCMICRO on your local computer, please head to [Platforms]({{site.baseurl}}/platforms/) for platform-specific instructions.*
 
 <br>
 

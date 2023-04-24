@@ -9,9 +9,11 @@ parent: Platforms
 
 **O2 is a [high-performance cluster](https://harvardmed.atlassian.net/wiki/spaces/O2/overview) at Harvard Medical School (HMS). Non-HMS users can safely ignore this page.**
 
-There are several important caveats to run mcmicro on O2.
+**Familiarity with basic O2 commands will make running MCMICRO much easier on O2. If this is your first time interacting with the platform, please check out HMS's [O2 documentation](https://harvardmed.atlassian.net/wiki/spaces/O2/overview).** 
 
-1. [Installation]({{ site.baseurl }}/tutorial/installation.html) only requires Nextflow. Docker is not needed, because O2 uses Singularity to execute module containers, and Singularity is already available on O2.
+## Setting up for MCMICRO on O2
+
+1. Follow [installation instructions]({{ site.baseurl }}/tutorial/installation.html) to install Nextflow. **Docker is not needed**, because O2 uses Singularity to execute module containers, and Singularity is already available on O2.
 
 1. Please ensure that Java is available by running `module load java`.
 
