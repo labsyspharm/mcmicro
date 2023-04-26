@@ -1,7 +1,7 @@
 ---
 layout: default
 title: Nextflow Tower
-nav_order: 20
+nav_order: 6
 parent: Platforms
 ---
 

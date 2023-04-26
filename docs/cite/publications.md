@@ -15,7 +15,9 @@ The [Laboratory of Systems Pharmacology (LSP)](https://labsyspharm.org/){:target
 
 * Lin, J.-R., Izar, B., Wang, S., Yapp, C., Mei, S., Shah, P. M., Santagata, S., & Sorger, P. K. (2018). Highly multiplexed immunofluorescence imaging of human tissues and tumors using t-CyCIF and conventional optical microscopes. _ELife_, _7_. [https://doi.org/10.7554/eLife.31657](https://doi.org/10.7554/eLife.31657){:target="_blank"}
 
-* Muhlich, J., Chen, Y.-A., Russell, D., & Sorger, P. K. (2021). Stitching and registering highly multiplexed whole slide images of tissues and tumors using ASHLAR software. _BioRxiv_. [https://doi.org/10.1101/2021.04.20.440625](https://doi.org/10.1101/2021.04.20.440625){:target="_blank"}
+* Lin, J.-R., Wang, S., Coy, S., Chen, Y.-A., Yapp, C., Tyler, M., Nariya, M.K., Heiser, C.N., Lau, K.S., Santagata, S., Sorger, P.K. (2023). Multiplexed 3D atlas of state transitions and immune interaction in colorectal cancer. _Cell_, _186_, (2), 363. [https://doi.org/10.1016/j.cell.2022.12.028](https://doi.org/10.1016/j.cell.2022.12.028){:target="_blank"}
+
+* Muhlich, J., Chen, Y.-A., Yapp, C., Russell, D., Santagata, S., & Sorger, P. K. (2022). Stitching and registering highly multiplexed whole-slide images of tissues and tumors using ASHLAR. _Bioinformatics_, _38_ (19), 4613. [https://doi.org/10.1093/bioinformatics/btac544](https://doi.org/10.1093/bioinformatics/btac544){:target="_blank"}
 
 * Nirmal, A. J., Maliga, Z., Vallius, T., Quattrochi, B., Chen, A. A., Jacobson, C. A., Pelletier, R. J., Yapp, C., Arias-Camison, R., Chen, Y.-A., Lian, C. G., Murphy, G. F., Santagata, S., & Sorger, P. K. (2022). The spatial landscape of progression and immunoediting in primary melanoma at single cell resolution. _Cancer Discovery_. [https://doi.org/10.1158/2159-8290.CD-21-1357](https://doi.org/10.1158/2159-8290.CD-21-1357){:target="_blank"}
 
@@ -25,7 +27,7 @@ The [Laboratory of Systems Pharmacology (LSP)](https://labsyspharm.org/){:target
 
 * Schapiro, D., Yapp, C., Sokolov, A., Reynolds, S. M., Chen, Y.-A., Sudar, D., Xie, Y., Muhlich, J. L., Arias-Camison, R., Arena, S., Taylor, A. J., Nikolov, M., Tyler, M., Lin, J.-R., Burlingame, E. A., Human Tumor Atlas Network, Chang, Y. H., Farhi, S. L., Thorsson, V., … Sorger, P. K. (2022). MITI Minimum Information guidelines for highly multiplexed tissue images. _Nature Methods_. [https://doi.org/10.1038/s41592-022-01415-4](https://doi.org/10.1038/s41592-022-01415-4){:target="_blank"}
 
-* Yapp, C., Novikov, E., Jang, W.-D., Vallius, T., Chen, Y.-A., Cicconet, M., Maliga, Z., Jacobson, C. A., Wei, D., Santagata, S., Pfister, H., & Sorger, P. K. (2021). UnMICST: Deep learning with real augmentation for robust segmentation of highly multiplexed images of human tissues. _BioRxiv_. [https://doi.org/10.1101/2021.04.02.438285](https://doi.org/10.1101/2021.04.02.438285){:target="_blank"}
+* Yapp, C., Novikov, E., Jang, W.-D., Vallius, T., Chen, Y.-A., Cicconet, M., Maliga, Z., Jacobson, C. A., Wei, D., Santagata, S., Pfister, H., & Sorger, P. K. (2022). UnMICST: Deep learning with real augmentation for robust segmentation of highly multiplexed images of human tissues. _Commun Biol_ **5**, 1263 (2022). [https://doi.org/10.1038/s42003-022-04076-3](https://doi.org/10.1038/s42003-022-04076-3){:target="_blank"}
 
 * View the [HiTS bioRxiv channel](https://connect.biorxiv.org/relate/content/151){:target="_blank"} and the [LSP website](https://labsyspharm.org/publications/highlighted/){:target="_blank"} for the most up-to-date list of our work. 
 

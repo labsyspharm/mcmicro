@@ -3,11 +3,10 @@ layout: default
 title: "Options: Other modules"
 nav_order: 40
 parent: Parameters
+nav_exclude: true
 ---
 
 # Other Modules
-
-Last updated on {{ site.time | date: "%Y-%m-%d" }}.
 
 Segmentation
 1. [Ilastik](./other.html#ilastik)
@@ -28,6 +27,7 @@ Background subtraction
 ---
 
 ## Ilastik
+{: .fw-500}
 
 ### Description
 The module provides a command-line interface to the popular [ilastik](https://www.ilastik.org/) toolkit and serves as another method for generating probability maps that can be used as an alternative to UnMICST. Check the [GitHub](https://github.com/labsyspharm/mcmicro-ilastik){:target="_blank"} for the most up-to-date documentation.
@@ -69,9 +69,9 @@ The output is similar to that produced by UnMicst, namely a ```.tif``` stack whe
 ---
 
 ## Cypository
+{: .fw-500}
 
 ### Description
-
 Cypository is used to segment the cytoplasm of cells. Check the [GitHub repository](https://github.com/HMS-IDAC/Cypository#cypository---pytorch-mask-rcnn-for-cell-segmentation){:target="_blank"} for the most up-to-date documentation.
 
 ### Usage
@@ -109,9 +109,9 @@ A `.tif` file that annotates individual pixels with the probability that they be
 ---
 
 ## Mesmer
+{: .fw-500}
 
 ### Description
-
 The [Mesmer](https://doi.org/10.1038/s41587-021-01094-0){:target="_blank"} module provides an alternative segmentation approach to UnMicst and ilastik. It is implemented and maintained by an external group. Check their [GitHub repository](https://github.com/vanvalenlab/deepcell-applications){:target="_blank"} for the most up-to-date information.
 
 ### Usage
@@ -148,6 +148,7 @@ A segmentation mask, similar to the ones produced by S3segmenter. Nextflow will 
 ---
 
 ## Clustering
+{: .fw-500}
 
 ### Description
 MCMICRO integrates three methods for clustering single-cell data. These are [FastPG](https://www.biorxiv.org/content/10.1101/2020.06.19.159749v2){:target="_blank"} (Fast C++ implementation of the popular Phenograph method), Leiden community detection via [scanpy](https://scanpy.readthedocs.io/en/stable/){:target="_blank"}, and [FlowSOM](https://bioconductor.org/packages/release/bioc/html/FlowSOM.html){:target="_blank"}.
@@ -216,6 +217,8 @@ All methods output a `.csv` file annotating individual cells with their cluster 
 ---
 
 ## Naivestates
+{: .fw-500}
+
 
 ### Description
 `naivestates` is a label-free, cluster-free tool for inferring cell types from quantified marker expression data, based on known marker <-> cell type associations. Check the [GitHub repository](https://github.com/labsyspharm/naivestates){:target="_blank"} for the most up-to-date documentation.
@@ -265,6 +268,8 @@ Nextflow will write all outputs to the `cell-states/naivestates/` subdirectory w
 ---
 
 ## Backsub
+{: .fw-500}
+
 
 ### Description
 `Backsub` is a background subtraction module for sequential IF images. It performs autofluorescence, pixel-level subtraction on large `.ome.tif` images primarily developed with the Lunaphore COMET platform outputs in mind.

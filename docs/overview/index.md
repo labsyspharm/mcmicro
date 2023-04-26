@@ -5,11 +5,17 @@ nav_order: 2
 has_children: true
 ---
 
-# Overview Video
+# Overview
 
 {% include youtube.html id="fnxBvgJQmtY" autoplay=false mute=false controls=true loop=false related=false %}
 
 A general introduction [video](https://www.youtube.com/watch?v=fnxBvgJQmtY){:target="_blank"} that provides a high-level overview of the pipeline.
+
+<br>
+
+You can view an example of how MCMICRO turns image tiles into single-cell segmented mosaic images here: [MCMICRO Pipeline Visual Guide]({{ site.baseurl }}/overview/pipeline-visual-guide.html){:target="_blank"}{: .btn .btn-green .btn-outline .btn-arrow }
+
+<br>
 
 ---
 # MCMICRO for processing and analyzing images 
@@ -231,7 +237,7 @@ An overview of the [SCIMAP](https://scimap.xyz/){:target="_blank"} toolkit.
 ### Visualization  
 
 **Minerva**  
-Minerva is a suite of software tools that enables interactive viewing and sharing of large image data ([Rashid et al., 2021](https://doi.org/10.1038/s41551-021-00789-8){:target="_blank"}; [Hoffer et al., 2020](https://doi.org/10.21105/joss.02579){:target="_blank"}). Currently, we have released **Minerva Author**, a tool that lets you easily create and annotate images, and **Minerva Story**, a narrative image viewer for web hosting. Additional tools are in active development - go to the [Minerva wiki](https://github.com/labsyspharm/minerva-story/wiki){:target="_blank"} for the most up-to-date information about the Minerva suite. 
+Minerva is a suite of software tools that enables interactive viewing and sharing of large image data ([Rashid et al., 2021](https://doi.org/10.1038/s41551-021-00789-8){:target="_blank"}; [Hoffer et al., 2020](https://doi.org/10.21105/joss.02579){:target="_blank"}). Currently, we have released **Minerva Author**, a tool that lets you easily annotate images and create narrative guides to walk through the data, and **Minerva Story**, the image viewer that hosts the stories online. MCMICRO now has an option to automatically create non-narrated "auto-Minerva" stories as part of the pipeline. Additional tools are in active development - go to the [Minerva wiki](https://github.com/labsyspharm/minerva-story/wiki){:target="_blank"} for the most up-to-date information about the Minerva suite. 
 
 {: .text-center }
 {: .fs-3 }
@@ -243,7 +249,7 @@ A screenshot from a Minerva story on primary lung cancer - view the story [here]
 
 {: .text-center }
 {: .fw-500}
-Walk through the process of turning image tiles into single-cell segmented mosaic image: <br>[MCMICRO Pipeline Visual Guide]({{ site.baseurl }}/tutorial/pipeline-visual-guide.html){: .btn .btn-green .btn-outline .btn-arrow }
+Walk through the process of turning image tiles into single-cell segmented mosaic image: <br>[MCMICRO Pipeline Visual Guide]({{ site.baseurl }}/overview/pipeline-visual-guide.html){: .btn .btn-green .btn-outline .btn-arrow }
 
 <br>
 
@@ -270,9 +276,6 @@ We release The Exemplar Microscopy Images of Tissues dataset [(EMIT)]({{ site.ba
 ## The open microscopy environment (OME) 
 MCMICRO is designed to solve the problem of processing high volumes of tissue image data and yield reliable image mosaics and single cell data. It does not, however, solve all problems associated with the analysis and publication of images. We strongly recommend that laboratories also adopt the database and visualization tools provided by the OME community. The [OME community](https://www.openmicroscopy.org/events/ome-community-meeting-2021/){:target="_blank"} is welcoming and has many online resources that discuss the topics described above; OME sponsors multiple workshops and conferences of interest to new and experienced microscopists.
 
-{: .text-center }
-{: .fs-5 }
-In our laboratories, we use MCMICRO, OME/OMERO and MINERVA in parallel.
 
 <br>
 
