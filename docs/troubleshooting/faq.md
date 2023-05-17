@@ -18,6 +18,8 @@ parent: Troubleshooting
 {:toc}
 </details>
 
+---
+
 ## Pipeline execution
 
 ### Q: How do I resume a pipeline run that halted partway?
@@ -66,6 +68,9 @@ nextflow clean -f last           # Proceed with the removal
 nextflow clean -n -but last
 nextflow clean -f -but last
 ```
+
+<br>
+
 ### Q: My computer has an Apple M1 chip and the pipeline is failing at the Segmentation step. What can I do?
 
 A: You can use ilastik for probability map generation instead. To do so, add `segmentation: ilastik` to the [workflow parameters]({{site.baseurl}}/parameters/) in your `params.yml`:
@@ -78,6 +83,8 @@ workflow:
 This is because UnMICST (`segmentation:worker (unmicst-1)`) currently does not work on the M1 architecture. Fortunately, ilastik is supported by M1. See [GitHub Issue #353](https://github.com/labsyspharm/mcmicro/issues/353) for more details.
 
 *If you came here from Step 3 in Tutorials, head back to [Tutorials](../tutorial/tutorial.html) to finish the rest of the steps!*
+
+<br>
 
 ### Q: MCMICRO doesn't seem to recognize my file format. How do I tell it what files to look for?
 
@@ -97,6 +104,8 @@ workflow:
 
 for multi-file formats. Note that in the latter case, you need to specify the extension of the index file (`.ndpis` in this case) and not the individual files being indexed (`.ndpi` in this case).
 
+<br>
+
 ### Q: My execution environment doesn't support Docker. Can I run MCMICRO using Singularity instead?
 
 Yes, MCMICRO can be configured to use Singularity in place of Docker. Use the `-profile` flag to switch configurations:
@@ -104,6 +113,8 @@ Yes, MCMICRO can be configured to use Singularity in place of Docker. Use the `-
 ```
 nextflow run labsyspharm/mcmicro --in /my/project -profile singularity
 ```
+
+---
 
 ## Segmentation
 
@@ -117,9 +128,13 @@ workflow:
   ilastik-model: mymodel.ilp
 ```
 
+<br>
+
 ### Q: How do I check the quality of segmentation?
 
 A: After a successful MCMICRO run, two-channel tif files containing DAPI and nuclei/cell/cytoplasm outlines will reside in `qc/s3seg`. Segmentation quality can be assessed through visual inspection of these files in, e.g., [napari](https://napari.org/).
+
+<br>
 
 ### Q: How do I handle images acquired without pixel binning?
 
@@ -138,6 +153,8 @@ options:
   s3seg: --cytoDilation 6
 ```
 
+---
+
 ## Quantification
 
 ### Q: How do I quantify multiple masks?
@@ -151,6 +168,8 @@ options:
 
 will quantify cell and nuclei masks. The corresponding spatial feature tables can then be found in `quantification/unmicst-exemplar-001_cell.csv` and `quantification/unmicst-exemplar-001_nuclei.csv`, respectively.
 
+<br>
+
 ### Q: How do I compute the median expression of each channel?
 
 A: Use `mcquant` [module options]({{site.baseurl}}/parameters/) to specify the corresponding `--intensity_props` parameter for quantification:
@@ -159,6 +178,8 @@ A: Use `mcquant` [module options]({{site.baseurl}}/parameters/) to specify the c
 options:
   mcquant: --intensity_props median_intensity
 ```
+
+<br>
 
 ### Q: What are the units of the MCMICRO `Area` outputs?
 

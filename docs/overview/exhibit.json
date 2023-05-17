@@ -14,7 +14,7 @@
     ],
     "PixelsPerMicron": 1.5385,
     "Name": "MCMICRO Exemplar-002", 
-    "Header": "This visual guide takes you through a series of steps for deriving biological information from highly-multiplexed images using MCMICRO pipeline. To learn more about the pipeline and the exemplar-002 dataset, visit [MCMICRO website](https://mcmicro.org)\n\n![https://mcmicro.org/images/Fig1.png](https://jteffthits.github.io/mcmicro-1/images/pipeline-no-microscope-white.png)",
+    "Header": "This visual guide takes you through a series of steps for deriving biological information from highly-multiplexed images using MCMICRO pipeline. To learn more about the pipeline and the exemplar-002 dataset, visit [MCMICRO website](https://mcmicro.org)\n\n![https://mcmicro.org/images/Fig1.png](https://mcmicro.org/images/pipeline-no-microscope-white.png)",
     "Footer": "<a href=\"https://mcmicro.org\" class=\"btn btn-secondary mt-5\" role=\"button\">Back to MCMICRO</a>",
     "FirstGroup": "Staining",
     "Rotation": 0,
