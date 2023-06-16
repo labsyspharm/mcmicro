@@ -70,6 +70,7 @@ modules:
       version: 0.4.0
       cmd: python /usr/src/app/run_app.py mesmer --squeeze --output-directory . --output-name cell.tif
       input: --nuclear-image
+      membrane-input: --membrane-image
       channel: --nuclear-channel
       idxbase: 0
       watershed: 'no'
