@@ -1,3 +1,7 @@
+### 2023-06-16
+
+* If `--membrane-channel` is provided to Mesmer options, MCMICRO will automatically pass the input image both as `--nuclear-image` and as `--membrane-image` to the Mesmer CLI.
+
 ### 2023-03-10
 
 * [viz] Auto-Minerva story construction will now read channel names from `markers.csv`
