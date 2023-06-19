@@ -1,6 +1,11 @@
 import mcmicro.*
 
 process ashlar {
+
+  time '4hours'
+  memory '60 GB'
+  executor 'sge'
+
     container "${params.contPfx}${module.container}:${module.version}"
     publishDir "${params.in}/registration", mode: 'copy', pattern: '*.tif'
     
