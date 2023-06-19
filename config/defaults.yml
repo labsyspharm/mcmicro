@@ -70,6 +70,7 @@ modules:
       version: 0.4.0
       cmd: python /usr/src/app/run_app.py mesmer --squeeze --output-directory . --output-name cell.tif
       input: --nuclear-image
+      membrane-input: --membrane-image
       channel: --nuclear-channel
       idxbase: 0
       watershed: 'no'
@@ -85,7 +86,7 @@ modules:
   watershed:
     name: s3seg
     container: labsyspharm/s3segmenter
-    version: 1.5.2
+    version: 1.5.3
     channel: --probMapChan
     idxbase: 1
   quantification:
