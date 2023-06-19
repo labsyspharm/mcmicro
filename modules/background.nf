@@ -6,6 +6,10 @@ import mcmicro.*
 //   process name match your tool name to avoid user confusion
 process backsub {
 
+  time '20minutes'
+  memory '60 GB'
+  executor 'sge'
+
     // Use the container specification from the parameter file
     container "${params.contPfx}${module.container}:${module.version}"
 
