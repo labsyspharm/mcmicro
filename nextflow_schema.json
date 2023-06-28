@@ -1,0 +1,222 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema",
+  "$id": "https://raw.githubusercontent.com/labsyspharm/mcmicro/master/nextflow_schema.json",
+  "title": "MCMICRO pipeline parameters",
+  "description": "The MCMICRO pipeline uses Nextflow to transforms multi-channel whole-slide images into single-cell data. The JSON Schema was built using the nf-core pipeline schema builder.",
+  "type": "object",
+  "definitions": {
+      "mandatory_parameters": {
+          "title": "Mandatory parameters",
+          "type": "object",
+          "description": "",
+          "default": "",
+          "properties": {
+              "in": {
+                  "type": "string",
+                  "format": "directory-path",
+                  "description": "Location of the input directory. Must contain markers.csv (comma-delimited file containing a column titled `marker_name`) and appropriate directory structure. See documentation at mcmicro.org"
+              }
+          },
+          "required": [
+              "in"
+          ]
+      },
+      "optional_parameters": {
+          "title": "Optional parameters",
+          "type": "object",
+          "description": "",
+          "default": "",
+          "properties": {
+              "sample_name": {
+                  "type": "string",
+                  "description": "The name of the experiment/specimen"
+              },
+              "start-at": {
+                  "type": "string",
+                  "description": "Name of the first step to be executed by the pipeline.",
+                  "enum": [
+                      "illumination",
+                      "registration",
+                      "background",
+                      "dearray",
+                      "segmentation",
+                      "watershed",
+                      "quantification",
+                      "downstream"
+                  ],
+                  "default": "registration"
+              },
+              "stop-at": {
+                  "type": "string",
+                  "description": "Name of the final step to be executed by the pipeline.",
+                  "default": "quantification",
+                  "enum": [
+                      "illumination",
+                      "registration",
+                      "background",
+                      "dearray",
+                      "segmentation",
+                      "watershed",
+                      "quantification",
+                      "downstream"
+                  ]
+              },
+              "tma": {
+                  "type": "boolean",
+                  "description": "If selected, MCMICRO treats input data as a tisssue microarray and will attempt to de-array cores using `coreograph`. If omitted, the input is assumed to be a whole-slide image."
+              },
+              "background": {
+                  "type": "boolean",
+                  "description": "If selected, MCMICRO treats input data as if background channels should be subtracted using the `Backsub` module. See mcmicro.org documentation for details on additional `background` and `remove` columns required in the `markers.csv` file."
+              },
+              "segmentation": {
+                  "type": "string",
+                  "description": "A list of segmentation modules to run",
+                  "default": "unmicst",
+                  "enum": [
+                      "unmicst",
+                      "ilastik",
+                      "cypository",
+                      "mesmer",
+                      "cellpose",
+                      ["unmicst", "ilastik"],
+                      ["unmicst", "cypository"],
+                      ["unmicst", "mesmer"],
+                      ["unmicst", "cellpose"],
+                      ["ilastik", "cypository"],
+                      ["ilastik", "mesmer"],
+                      ["ilastik", "cellpose"],
+                      ["cypository", "mesmer"],
+                      ["cypository", "cellpose"],
+                      ["mesmer", "cellpose"],
+                      ["unmicst", "ilastik", "cypository"],
+                      ["unmicst", "ilastik", "mesmer"],
+                      ["unmicst", "ilastik", "cellpose"],
+                      ["unmicst", "cypository", "mesmer"],
+                      ["unmicst", "cypository", "cellpose"],
+                      ["unmicst", "mesmer", "cellpose"],
+                      ["ilastik", "cypository", "mesmer"],
+                      ["ilastik", "cypository", "cellpose"],
+                      ["ilastik", "mesmer", "cellpose"],
+                      ["cypository", "mesmer", "cellpose"],
+                      ["unmicst", "ilastik", "cypository", "mesmer"],
+                      ["unmicst", "ilastik", "cypository", "cellpose"],
+                      ["unmicst", "ilastik", "mesmer", "cellpose"],
+                      ["unmicst", "cypository", "mesmer", "cellpose"],
+                      ["ilastik", "cypository", "mesmer", "cellpose"],
+                      ["unmicst", "ilastik", "cypository", "mesmer", "cellpose"]
+                  ]
+              },
+              "downstream": {
+                  "type": "string",
+                  "description": "A list of downstream modules to run",
+                  "default": "scimap",
+                  "enum": [
+                      "naivestates",
+                      "scimap",
+                      "fastpg",
+                      "scanpy",
+                      "flowsom",
+                      ["naivestates", "scimap"],
+                      ["naivestates", "fastpg"],
+                      ["naivestates", "scanpy"],
+                      ["naivestates", "flowsom"],
+                      ["scimap", "fastpg"],
+                      ["scimap", "scanpy"],
+                      ["scimap", "flowsom"],
+                      ["fastpg", "scanpy"],
+                      ["fastpg", "flowsom"],
+                      ["scanpy", "flowsom"],
+                      ["naivestates", "scimap", "fastpg"],
+                      ["naivestates", "scimap", "scanpy"],
+                      ["naivestates", "scimap", "flowsom"],
+                      ["naivestates", "fastpg", "scanpy"],
+                      ["naivestates", "fastpg", "flowsom"],
+                      ["naivestates", "scanpy", "flowsom"],
+                      ["scimap", "fastpg", "scanpy"],
+                      ["scimap", "fastpg", "flowsom"],
+                      ["scimap", "scanpy", "flowsom"],
+                      ["naivestates", "scimap", "fastpg", "scanpy"],
+                      ["naivestates", "scimap", "fastpg", "flowsom"],
+                      ["naivestates", "scimap", "scanpy", "flowsom"],
+                      ["naivestates", "fastpg", "scanpy", "flowsom"],
+                      ["scimap", "fastpg", "scanpy", "flowsom"],
+                      ["naivestates", "scimap", "fastpg", "scanpy", "flowsom"]
+                  ]
+              },
+              "viz": {
+                  "type": "boolean",
+                  "description": "If selected a Minerva story will be generated in sequential groups of 4 channels using auto-Minerva"
+              },
+              "qc-files": {
+                  "type": "string",
+                  "description": "Should QC files should be copied, moved or symbolically linked from work directories to the project directory",
+                  "enum": [
+                      "copy",
+                      "move",
+                      "symlink"
+                  ],
+                  "default": "copy"
+              },
+              "segmentation-channel": {
+                  "type": "string",
+                  "description": "One or more channels to use for segmentation, specified using 1-based indexing; values will be forwarded to all segmentation modules",
+                  "default": "1"
+              },
+              "segmentation-recyze": {
+                  "type": "boolean",
+                  "description": "If selected the image will be reduced to the channels specified in segmentation-channel prior to being provided to the segmentation modules."
+              }
+          }
+      },
+      "parameters_for_individual_modules": {
+          "title": "Parameters for individual modules",
+          "type": "object",
+          "description": "Module-specific parameters can be specified using the various `opts` arguments, followed by the parameters enclosed inside single quotes `'`:",
+          "default": "",
+          "properties": {
+              "ashlar-opts": {
+                  "type": "string",
+                  "description": "Arguments to ASHLAR"
+              },
+              "unmicst-opts": {
+                  "type": "string",
+                  "description": "Arguments to UnMicst"
+              },
+              "ilastik-opts": {
+                  "type": "string",
+                  "description": "Arguments to Ilastik"
+              },
+              "s3seg-opts": {
+                  "type": "string",
+                  "description": "Arguments to S3Segmenter"
+              },
+              "mcquant-opts": {
+                  "type": "string",
+                  "description": "Arguments to MCQUANT"
+              },
+              "naievestates-opts": {
+                  "type": "string",
+                  "description": "Arguments to naievestates"
+              },
+              "ilastik-model": {
+                  "type": "string",
+                  "description": "A custom `.ilp` file to be used as the classifier model for ilastik.",
+                  "pattern": "^.+\\.ilp$",
+                  "format": "file-path"
+              }
+          }
+      }
+  },
+  "allOf": [
+      {
+          "$ref": "#/definitions/mandatory_parameters"
+      },
+      {
+          "$ref": "#/definitions/optional_parameters"
+      },
+      {
+          "$ref": "#/definitions/parameters_for_individual_modules"
+      }
+  ]
+}
