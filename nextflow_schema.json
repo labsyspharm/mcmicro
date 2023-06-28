@@ -33,7 +33,7 @@
               },
               "start-at": {
                   "type": "string",
-                  "description": "Name of the first step to be executed by the pipeline. Must be one of `illumination`, `registration`, `dearray` (TMA only), `probability-maps`, `segmentation`, `watershed`, `quantification`, or `downstream`",
+                  "description": "Name of the first step to be executed by the pipeline.",
                   "enum": [
                       "illumination",
                       "registration",
@@ -48,7 +48,7 @@
               },
               "stop-at": {
                   "type": "string",
-                  "description": "Name of the final step to be executed by the pipeline.  Must be one of `illumination`, `registration`, `dearray` (TMA only), `probability-maps`, `segmentation`, `watershed`, `quantification`, or `downstream`",
+                  "description": "Name of the final step to be executed by the pipeline.",
                   "default": "quantification",
                   "enum": [
                       "illumination",
