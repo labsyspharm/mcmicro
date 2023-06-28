@@ -1,11 +1,13 @@
-nextflow.enable.dsl=1
-
 process O2ext {
     executor 'local'
     
     '''
-    rm -rf $HOME/.mcmicro
-    mkdir -p $HOME/.mcmicro
-    ln -s /n/groups/lsp/mcmicro/singularity/* $HOME/.mcmicro
+    rm -rfv $HOME/.mcmicro
+    mkdir -pv $HOME/.mcmicro
+    ln -sv /n/groups/lsp/mcmicro/singularity/* $HOME/.mcmicro
     '''
+}
+
+workflow {
+    O2ext()
 }
