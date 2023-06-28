@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema",
   "$id": "https://raw.githubusercontent.com/labsyspharm/mcmicro/master/nextflow_schema.json",
-  "title": "Nextflow pipeline parameters",
-  "description": "This pipeline uses Nextflow and processes some kind of data. The JSON Schema was built using the nf-core pipeline schema builder.",
+  "title": "MCMICRO pipeline parameters",
+  "description": "The MCMICRO pipeline uses Nextflow to transforms multi-channel whole-slide images into single-cell data. The JSON Schema was built using the nf-core pipeline schema builder.",
   "type": "object",
   "definitions": {
       "mandatory_parameters": {
@@ -14,7 +14,7 @@
               "in": {
                   "type": "string",
                   "format": "directory-path",
-                  "description": "Location of the data"
+                  "description": "Location of the input directory. Must contain markers.csv (comma-delimited file containing a column titled `marker_name`) and appropriate directory structure. See documentation at mcmicro.org"
               }
           },
           "required": [
@@ -33,7 +33,7 @@
               },
               "start-at": {
                   "type": "string",
-                  "description": "Name of the first step to be executed by the pipeline. Must be one of `illumination`, `registration`, `dearray` (TMA only), `probability-maps`, `segmentation`, `quantification`, `cell-states`",
+                  "description": "Name of the first step to be executed by the pipeline. Must be one of `illumination`, `registration`, `dearray` (TMA only), `probability-maps`, `segmentation`, `watershed`, `quantification`, or `downstream`",
                   "enum": [
                       "illumination",
                       "registration",
@@ -48,7 +48,7 @@
               },
               "stop-at": {
                   "type": "string",
-                  "description": "Name of the final step to be executed by the pipeline. Spans the same vocabulary as `--start-at`.",
+                  "description": "Name of the final step to be executed by the pipeline.  Must be one of `illumination`, `registration`, `dearray` (TMA only), `probability-maps`, `segmentation`, `watershed`, `quantification`, or `downstream`",
                   "default": "quantification",
                   "enum": [
                       "illumination",
@@ -63,11 +63,11 @@
               },
               "tma": {
                   "type": "boolean",
-                  "description": "If specified, mcmicro treats input data as a TMA. If omitted, the input is assumed to be a whole-slide image."
+                  "description": "If selected, MCMICRO treats input data as a tisssue microarray and will attempt to de-array cores using `coreograph`. If omitted, the input is assumed to be a whole-slide image."
               },
               "background": {
                   "type": "boolean",
-                  "description": "If specified, mcmicro treats input data as if autofluorescence channels should be subtracted."
+                  "description": "If selected, MCMICRO treats input data as if background channels should be subtracted. Background channels to be specified in `markers.csv` as a column called `background` containing `true` OR `false`."
               },
               "segmentation": {
                   "type": "string",
@@ -146,11 +146,11 @@
               },
               "viz": {
                   "type": "boolean",
-                  "description": "Whether to generate a vizualization with Auto-Minerva"
+                  "description": "If selected a Minerva story will be generated in sequential groups of 4 channels using auto-Minerva"
               },
               "qc-files": {
                   "type": "string",
-                  "description": "Wheter QC files should be copied, moved or symbolically linked from work directories to the project directory",
+                  "description": "Should QC files should be copied, moved or symbolically linked from work directories to the project directory",
                   "enum": [
                       "copy",
                       "move",
@@ -165,7 +165,7 @@
               },
               "segmentation-recyze": {
                   "type": "boolean",
-                  "description": "Whether the image should be reduced to the channels specified in segmentation-channel prior to being provided to the segmentation modules."
+                  "description": "If selected the image will be reduced to the channels specified in segmentation-channel prior to being provided to the segmentation modules."
               }
           }
       },
