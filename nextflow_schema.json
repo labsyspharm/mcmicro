@@ -67,7 +67,7 @@
               },
               "background": {
                   "type": "boolean",
-                  "description": "If selected, MCMICRO treats input data as if background channels should be subtracted. Background channels to be specified in `markers.csv` as a column called `background` containing `true` OR `false`."
+                  "description": "If selected, MCMICRO treats input data as if background channels should be subtracted using the `Backsub` module. See mcmicro.org documentation for details on additional `background` and `remove` columns required in the `markers.csv` file."
               },
               "segmentation": {
                   "type": "string",
