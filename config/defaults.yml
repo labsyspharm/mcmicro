@@ -14,7 +14,7 @@ options:
   ashlar: -m 30
   cypository: --model zeisscyto
   ilastik: --num_channels 1
-  mcquant: --masks cell*.tif *_cp_masks.tif
+  mcquant: --masks cell*.tif *_cp_masks*.tif
   naivestates: -p png
 modules:
   illumination:
