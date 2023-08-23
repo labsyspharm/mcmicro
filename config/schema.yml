@@ -14,6 +14,7 @@ workflow:
   - ilastik-model
   - mesmer-model
   - background
+  - cellpose-model
 deprecated:
   quantification-mask: "--quant-opts '--masks ...'"
   illum: --start-at illumination

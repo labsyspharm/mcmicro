@@ -500,6 +500,7 @@ Annotated narratives must be manually generated, and users must provide MCMICRO 
 | [Ilastik](./core.html#ilastik) | Probability map generator | [Code](https://github.com/labsyspharm/mcmicro-ilastik) - [DOI](https://doi.org/10.1038/s41592-019-0582-9) |
 | [Cypository](./core.html#ilastik) | Probability map generator (cytoplasm only) | [Code](https://github.com/HMS-IDAC/Cypository) |
 | [Mesmer](./core.html#mesmer) | Instance segmentation | [Code](https://github.com/vanvalenlab/deepcell-applications) - [DOI](https://doi.org/10.1038/s41587-021-01094-0) |
+| [Cellpose](./core.html#cellpose) | Instance segmentation | [Code](https://github.com/MouseLand/cellpose) - [DOI](https://doi.org/10.1038/s41592-022-01663-4) |
 | [naivestates](./core.html#naivestates) | Cell type calling with Naive Bayes | [Code](https://github.com/labsyspharm/naivestates) |
 | [FastPG](./core.html#clustering) | Clustering (Louvain community detection) | [Code](https://github.com/labsyspharm/mcmicro-fastPG) - [DOI](https://www.biorxiv.org/content/10.1101/2020.06.19.159749v2) |
 | [scanpy](./core.html#clustering) | Clustering (Leiden community detection) | [Code](https://github.com/labsyspharm/mcmicro-scanpy) |
@@ -629,6 +630,53 @@ A segmentation mask, similar to the ones produced by S3segmenter. Nextflow will 
 
 
 [Back to Other Modules](./core.html#other-modules){: .btn .btn-purple} [Back to top](./core){: .btn .btn-outline} 
+
+---
+
+## Cellpose
+{: .fw-500}
+
+### Description
+Cellpose is a DL segmentation algorithm able to segment the nuclear or cytoplasmic compartments of the cell.  Publications of this algorithm can be found in [1](https://www.nature.com/articles/s41592-020-01018-x){:target="_blank"} and [2](https://www.nature.com/articles/s41592-022-01663-4){:target="_blank"}.  A thorough documentation of the script and CLI can be found [here](https://cellpose.readthedocs.io/en/latest/index.html){:target="_blank"}.
+
+### Usage
+
+To use this segmentation method add the line `segmentation: cellpose` in the workflow section of the `params.yml` file.  Under the options section of `params.yml` specify the input arguments of the cellpose script, such as segmentation model and channel(s) on which the model will be applied.  Notice that the channel(s) argument(s), i.e. --chan and --chan2, expect a zero-based index.  
+
+For large data sets it is recommended to use the parameters `segmentation-recyze: true` along with `segmentation-channel:`.  In the example below we consider an image stack of 10 channels with the nuclear marker in channel 2 and membrane marker in channel 7.  The use of `segmentation-recyze: true` will reduce the image stack to these two channels prior to segmentation, hence reindexing the stack channels such that 2-->0 and 7-->1.
+
+
+* Example `params.yml`:
+
+``` yaml
+workflow:
+  segmentation-channel: 2 7 
+  segmentation-recyze: true
+  segmentation: cellpose
+options:
+  cellpose: --pretrained_model cyto --chan 1 --chan2 0 --no_npy
+```
+* Running outside of MCMICRO: [Github](https://github.com/MouseLand/cellpose){:target="_blank"}, [Instructions](https://cellpose.readthedocs.io/en/latest/installation.html){:target="_blank"}.
+
+### Input
+
+* The image (`.tif`) to be segmented should be in the `registration/` subdirectory.
+* --pretained_model: name of the built-in model to be used for segmentation, options include “_nuclei_”,“_cyto_” and “_cyto2_”.  Alternatively you can give a file path to a custom retrained model.  Custom models can be trained in the [cellpose GUI](https://cellpose.readthedocs.io/en/latest/gui.html){:target="_blank"}.
+* --chan: zero-based index of the channel on which the segmentation model will be applied.  When using the “nuclei” model provide the index of the nuclear channel, e.g. DAPI.  In the case of the "cyto" models provide the channel of the membrane marker.
+* --chan2 [optional]: index of the nuclear marker channel.  This argument is valid only when using the "cyto" models.
+
+### Output
+
+A `.tif` image with the segmentation masks in the `segmentation/` subdirectory.
+
+### Optional arguments
+
+| Name | Description | Default Value |
+| :--- | :--- | :--- |
+| `--pretrained_model` | Name of a built-in segmentation model or a file path to a custom model. | `cyto` |
+| `--chan` | Index of the selected channel to segment.  | `0` |
+| `--chan2` | Index of the nuclear marker channel. | `0` |
+| `--no_npy` | Boolean flag to suppress saving the .npy files output (recommended to avoid overflow errors when processing large data sets). | `False` |
 
 ---
 

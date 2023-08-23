@@ -14,7 +14,7 @@ options:
   ashlar: -m 30
   cypository: --model zeisscyto
   ilastik: --num_channels 1
-  mcquant: --masks cell*.tif
+  mcquant: --masks cell*.tif *_cp_masks*.tif
   naivestates: -p png
 modules:
   illumination:
@@ -78,9 +78,9 @@ modules:
       name: cellpose
       container: biocontainers/cellpose
       version: 2.1.1_cv2
-      cmd: cellpose --channel_axis 0 --save_tif --savedir .
+      cmd: cellpose --channel_axis 0 --save_tif --savedir . --verbose
       input: --image_path
-      channel: --chan
+      model: --pretrained_model
       idxbase: 0
       watershed: 'no'
   watershed:
