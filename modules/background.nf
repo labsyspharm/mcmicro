@@ -12,7 +12,7 @@ process backsub {
     // Specify the project subdirectory for writing the outputs to
     // The pattern: specification must match the output: files below
     // Subdirectory: background
-    publishDir "${params.in}/background", mode: 'copy', pattern: "${sampleName+'_backsub'}.ome.tif"
+    publishDir "${params.in}/background", mode: 'copy', pattern: "*.ome.tif"
     publishDir "${params.in}/background", mode: 'copy', pattern:'markers_bs.csv'
 
     // Stores .command.sh and .command.log from the work directory
@@ -37,7 +37,7 @@ process backsub {
     // outputs are returned as results with appropriate patterns
   output:
     // Output background subtracted image and markers.csv
-    path("${sampleName+'_backsub'}.ome.tif"), emit: image_out
+    path("*.ome.tif"), emit: image_out
     path('markers_bs.csv'), emit: marker_out
     // Provenance files
     tuple path('.command.sh'), path('.command.log')
@@ -49,9 +49,16 @@ process backsub {
 
     // Compose parameters using module options
     def imgin  = "${module.image} $image"
-    def mrkin  = "${module.markers} $marker"
-    def imgout = "${module['image-output']} ${sampleName+'_backsub'}.ome.tif"
-    def mrkout = "${module['markers-output']} markers_bs.csv"
+
+    // If the module specifies a way to provide an output file name, use it
+    // Otherwise, keep this argument empty
+    def imgout = (module['image-output'] == "") ? "" :
+      "${module['image-output']} ${sampleName+'_backsub'}.ome.tif"
+
+    // If the module specifies a way to on marker files, use it
+    // Otherwise, keep this argument empty
+    def mrkin  = (module.markers == "") ? "" : "${module.markers} $marker"
+    def mrkout = (module['markers-output'] == "") ? "" : "${module['markers-output']} markers_bs.csv"
 
     // Compose the full command to be executed inside the container
     """
