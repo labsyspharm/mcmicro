@@ -1,6 +1,9 @@
 // Import utility functions from lib/mcmicro/*.groovy
 import mcmicro.*
 
+// For nested string formatting
+import groovy.text.GStringTemplateEngine
+
 // Process name will appear in the the nextflow execution log
 // While not strictly required, it's a good idea to make the 
 //   process name match your tool name to avoid user confusion
@@ -22,64 +25,61 @@ process backsub {
       pattern: '.command.{sh,log}',
       saveAs: {fn -> fn.replace('.command', "${module.name}-${task.index}")}
     
-    // Inputs for the process
-    // mcp - MCMICRO parameters (workflow, options, etc.)
-    // module - module specifications (name, container, options, etc.)
-    // path to the markers.csv
-    // path to the registered image
+  // Inputs for the process
+  // mcp - MCMICRO parameters (workflow, options, etc.)
+  // module - module specifications (name, container, options, etc.)
+  // tuple - image file ID, image file path, markers.csv file path
   input:
     val mcp
     val module
-    path(marker)
-    path(image)
-    val sampleName
+    tuple val(image_id), path(image), path(marker)
 
-    // outputs are returned as results with appropriate patterns
+  // outputs are returned as results with appropriate patterns
   output:
-    // Output background subtracted image and markers.csv
+    // Output background subtracted image and markers_bs.csv
     path("*.ome.tif"), emit: image_out
     path('markers_bs.csv'), emit: marker_out
     // Provenance files
     tuple path('.command.sh'), path('.command.log')
 
-    // Specifies whether to run the process
-    // Here, we simply take the flag from the workflow parameters
+  // Specifies whether to run the process
+  // Here, we simply take the flag from the workflow parameters
   when: mcp.workflow["background"]
+
   script:
+    // String replacement Map for the syntax of ${variable_name} in
+    //   module.cmd
+    def formatMap = [
+      marker: marker,
+      image_id: image_id,
+      image: image,
+    ]
+    def command = new GStringTemplateEngine()
+      .createTemplate(module.cmd)
+      .make(formatMap)
+      .toString()
 
-    // Compose parameters using module options
-    def imgin  = "${module.image} $image"
-
-    // If the module specifies a way to provide an output file name, use it
-    // Otherwise, keep this argument empty
-    def imgout = (module['image-output'] == "") ? "" :
-      "${module['image-output']} ${sampleName+'_backsub'}.ome.tif"
-
-    // If the module specifies a way to on marker files, use it
-    // Otherwise, keep this argument empty
-    def mrkin  = (module.markers == "") ? "" : "${module.markers} $marker"
-    def mrkout = (module['markers-output'] == "") ? "" : "${module['markers-output']} markers_bs.csv"
-
-    // Compose the full command to be executed inside the container
     """
-    ${module.cmd} ${imgin} ${mrkin} ${imgout} ${mrkout} ${Opts.moduleOpts(module, mcp)}
+    $command ${Opts.moduleOpts(module, mcp)}
     """
 }
 
 workflow background {
   
-    // Inputs:
+  // Inputs:
   take:
     mcp // MCMICRO parameters (workflow, options, etc.)
-    image // image to apply background subtraction to
+    imgs // images to apply background subtraction to
     marker // marker file
+
   main:
-    // run the backsub process with the mcmicro parameters, module value
-    // markers path and pre-registered image path
-    sampleName = file(params.in).name
-    backsub(mcp, mcp.modules['background'], marker, image, sampleName)
+    // Assemble inputs from multiple channels
+    inputs = imgs
+      .map{ f -> tuple(Util.getImageID(f), f) }
+      .combine(marker)
+    backsub(mcp, mcp.modules['background'], inputs)
     
-    // Return the outputs produced by the tool
+  // Return the outputs produced by the tool
   emit:
     image = backsub.out.image_out
     marker = backsub.out.marker_out
