@@ -74,6 +74,7 @@ jobs:
           - --viz
           - --start-at illumination --stop-at registration
           - --background
+          - --background --background-method imagej-rolling-ball
           - --segmentation cypository --cypository-opts '--channel 10 --scalingFactor 2' --s3seg-opts '--logSigma 45 300'
           - --segmentation ilastik,mesmer
           - --segmentation cellpose --mcquant-opts '--masks *masks.tif'
