@@ -17,7 +17,7 @@ options:
   ilastik: --num_channels 1
   mcquant: --masks cell*.tif *_cp_masks*.tif
   naivestates: -p png
-  imagej-rolling-ball: -n=4 -j="-Xmx4g"
+  imagej-rolling-ball: 100 -n=4 -j="-Xmx4g"
 modules:
   illumination:
     name: basic
@@ -38,15 +38,15 @@ modules:
       name: backsub
       container: ghcr.io/schapirolabor/background_subtraction
       version: v0.3.3
-      cmd: |
+      cmd: |-
         python3 /background_subtraction/background_sub.py \
           -r ${image} -m ${marker} \
           -o ${image_id}_backsub.ome.tif -mo markers_bs.csv
     -
       name: imagej-rolling-ball
       container: yuanchen12/imagej-rolling-ball
-      version: v2023.8.1
-      cmd: cp ${marker} markers_bs.csv && rolling-ball ${image} --overwrite
+      version: v2023.8.2
+      cmd: cp ${marker} markers_bs.csv && rolling-ball ${image}
   segmentation:
     -
       name: unmicst
