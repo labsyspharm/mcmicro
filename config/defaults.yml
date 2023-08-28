@@ -45,7 +45,7 @@ modules:
     -
       name: imagej-rolling-ball
       container: yuanchen12/imagej-rolling-ball
-      version: v2023.8.2
+      version: v2023.8.3
       cmd: cp ${marker} markers_bs.csv && rolling-ball ${image}
   segmentation:
     -
