@@ -176,6 +176,18 @@ static def parseParams(gp, fns, fnw) {
     updateMap(mcp, cla)
     validateWFParams(mcp.workflow, fns)
 
+    // Select the background module based on --background-method
+    mcp.modules['background'] = mcp.modules['background'].findAll{
+        it.name == mcp.workflow['background-method']
+    }
+    if(mcp.modules['background'].size() < 1) {
+        String msg = "Unknown background subtraction method " +
+            mcp.workflow['background-method']
+        throw new Exception(msg)
+    }
+    else
+        mcp.modules['background'] = mcp.modules['background'][0]
+
     // Filter segmentation modules based on --segmentation
     mcp.modules['segmentation'] = mcp.modules['segmentation'].findAll{
         mcp.workflow.segmentation.contains(it.name)

@@ -5,6 +5,7 @@ workflow:
   tma: false
   viz: false
   background: false
+  background-method: backsub
   multi-formats: '{.xdce,.nd,.scan,.htd}'
   single-formats: '{.ome.tiff,.ome.tif,.rcpnl,.btf,.nd2,.tif,.czi}'
   segmentation: unmicst
@@ -16,6 +17,7 @@ options:
   ilastik: --num_channels 1
   mcquant: --masks cell*.tif *_cp_masks*.tif
   naivestates: -p png
+  imagej-rolling-ball: 100 -n=4 -j="-Xmx4g"
 modules:
   illumination:
     name: basic
@@ -32,9 +34,21 @@ modules:
     cmd: python /app/UNetCoreograph.py --outputPath .
     input: --imagePath
   background:
-    name: backsub
-    container: ghcr.io/schapirolabor/background_subtraction
-    version: v0.3.3
+    -
+      name: backsub
+      container: ghcr.io/schapirolabor/background_subtraction
+      version: v0.3.3
+      cmd: |-
+        python3 /background_subtraction/background_sub.py \
+          -r ${image} -m ${marker} \
+          -o ${image_id}_backsub.ome.tif -mo markers_bs.csv
+    -
+      name: imagej-rolling-ball
+      container: yuanchen12/imagej-rolling-ball
+      version: v2023.8.6
+      cmd: |-
+        cp ${marker} markers_bs.csv && \
+          rolling-ball --imagej_version="/tmp/Fiji.app" ${image}
   segmentation:
     -
       name: unmicst

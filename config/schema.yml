@@ -15,6 +15,7 @@ workflow:
   - mesmer-model
   - background
   - cellpose-model
+  - background-method
 deprecated:
   quantification-mask: "--quant-opts '--masks ...'"
   illum: --start-at illumination
