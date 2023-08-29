@@ -223,7 +223,7 @@ workflow:
 {: .fw-300}
 
   * **Valid values:** `backsub`, `imagej-rolling-ball`
-  * **Default:** `baskcub`
+  * **Default:** `backsub`
   * **Example:**
 
 ``` yaml
