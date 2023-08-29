@@ -505,6 +505,8 @@ Annotated narratives must be manually generated, and users must provide MCMICRO 
 | [FastPG](./core.html#clustering) | Clustering (Louvain community detection) | [Code](https://github.com/labsyspharm/mcmicro-fastPG) - [DOI](https://www.biorxiv.org/content/10.1101/2020.06.19.159749v2) |
 | [scanpy](./core.html#clustering) | Clustering (Leiden community detection) | [Code](https://github.com/labsyspharm/mcmicro-scanpy) |
 | [FlowSOM](./core.html#clustering) | Clustering (Self-organizing maps) | [Code](https://github.com/labsyspharm/mcmicro-flowsom) |
+| [backsub](./core.html#backsub) | Background subtraction | [Code](https://github.com/SchapiroLabor/Background_subtraction) |
+| [Imagej-rolling-ball](./core.html#imagej-rolling-ball) | Background subtraction (rolling ball) | [Code](https://github.com/Yu-AnChen/imagej-rolling-ball) |
 
 
 ---
@@ -830,6 +832,42 @@ workflow:
 * A modified `markers.csv` to match the background subtracted image.
 
 [Back to Other Modules](./core.html#other-modules){: .btn .btn-purple} [Back to top](./core){: .btn .btn-outline} 
+
+---
+
+## Imagej-rolling-ball
+{: .fw-500}
+
+### Description
+`Imagej-rolling-ball` is a background subtraction module that applies ImageJ's "Subtract Background..." function to the multi-channel whole-slide images. Application of rolling ball background subtraction for widefield fluorescent microscopy is demonstrated [here](https://www.cambridge.org/core/journals/microscopy-today/article/how-to-get-better-fluorescence-images-with-your-widefield-microscope-a-methodology-review/0F9E17F6F11B78E96309AFC0CE3AF1CC)
+
+### Usage
+By default, MCMICRO does not perform background subtraction. Add `background: true` and `background-method: imagej-rolling-ball` to [module options]({{site.baseurl}}/parameters/workflow.html#background) to run it.
+
+Note that as mentioned [here](https://imagej.nih.gov/ij/docs/menus/process.html#background), the radius of the rolling ball "should be at least as large as the radius of the largest object in the image that is not part of the background". The default radius is **100 pixels** as below (`imagej-rolling-ball: 100 -n=4 -j="-Xmx4g"`). We generally use `100` for images with resolution of 0.325 µm/pixel.
+
+* Example `params.yml`:
+
+``` yaml
+workflow:
+  background: true
+  background-method: imagej-rolling-ball
+
+options:
+  imagej-rolling-ball: 100 -n=4 -j="-Xmx4g"
+```
+
+* Running outside of MCMICRO: [Instructions](https://github.com/Yu-AnChen/imagej-rolling-ball){:target="_blank"}.
+
+### Inputs
+
+* Stitched and registered multi-cycle `.ome.tif`
+
+### Outputs
+
+* A pyramidal, tiled `{input-image-name}-ij_rolling_ball_{radius}.ome.tif`. Nextflow will write the output file to `background/` within the project directory.
+
+[Back to Other Modules](./core.html#other-modules){: .btn .btn-purple} [Back to top](./core){: .btn .btn-outline}
 
 
 # Suggest a module

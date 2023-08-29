@@ -188,7 +188,7 @@ workflow:
 ```
 
 ## `qc-files`
-  Wheter QC files should be copied, moved or symbolically linked from work directories to the project directory
+  Whether QC files should be copied, moved or symbolically linked from work directories to the project directory
 {: .fs-4}
 {: .fw-300}
 
@@ -203,7 +203,7 @@ workflow:
 
 ## `background`
 
-  Wheter background subtraction should be performed, and the computed intermediates used in further processing
+  Whether background subtraction should be performed, and the computed intermediates used in further processing
 {: .fs-4}
 {: .fw-300}
 
@@ -214,4 +214,19 @@ workflow:
 ``` yaml
 workflow:
   background: true
+```
+
+## `background-method`
+
+  Which background subtraction module to use when `background: true`. 
+{: .fs-4}
+{: .fw-300}
+
+  * **Valid values:** `backsub`, `imagej-rolling-ball`
+  * **Default:** `baskcub`
+  * **Example:**
+
+``` yaml
+workflow:
+  background-method: backsub
 ```
