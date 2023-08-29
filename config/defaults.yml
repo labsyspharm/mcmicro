@@ -128,4 +128,4 @@ modules:
   viz:
     name: autominerva
     container: ghcr.io/labsyspharm/mcmicro
-    version: 'auto-minerva-2023-03-11'
+    version: auto-minerva-2023-08-29
