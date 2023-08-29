@@ -45,8 +45,10 @@ modules:
     -
       name: imagej-rolling-ball
       container: yuanchen12/imagej-rolling-ball
-      version: v2023.8.3
-      cmd: cp ${marker} markers_bs.csv && rolling-ball ${image}
+      version: v2023.8.6
+      cmd: |-
+        cp ${marker} markers_bs.csv && \
+          rolling-ball --imagej_version="/tmp/Fiji.app" ${image}
   segmentation:
     -
       name: unmicst
