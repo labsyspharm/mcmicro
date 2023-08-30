@@ -185,6 +185,8 @@ class PyramidWriter:
                     self.in_tiff.pages[0].tags["ResolutionUnit"].value),
                 tile=self.tile_shapes[0],
                 photometric=self.in_tiff.pages[0].photometric,
+                compression="adobe_deflate",
+                predictor=True,
             )
             if self.verbose:
                 print("Generating pyramid")
@@ -199,6 +201,8 @@ class PyramidWriter:
                     subfiletype=1,
                     dtype=dtype,
                     tile=tile_shape,
+                    compression="adobe_deflate",
+                    predictor=True,
                 )
                 if self.verbose:
                     print()
