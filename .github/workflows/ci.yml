@@ -84,10 +84,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Install Singularity
-        uses: eWaterCycle/setup-singularity@v6
+        uses: eWaterCycle/setup-singularity@v7
         if: ${{ contains(matrix.params, 'singularity') }}
         with:
-          singularity-version: 3.6.4
+          singularity-version: 3.8.3
       - name: Install Nextflow
         run: curl -fsSL get.nextflow.io | bash
       - name: Restore exemplar-001 cache
