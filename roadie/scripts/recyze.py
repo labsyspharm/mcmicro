@@ -223,7 +223,7 @@ class PyramidWriter:
                 self.metadata.images[0].pixels.tiff_data_blocks[0].plane_count = self.num_channels
 
             # Write
-        tifffile.tiffcomment(self.out_path, to_xml(self.metadata))
+        tifffile.tiffcomment(self.out_path, to_xml(self.metadata).encode())
 
 
 if __name__ == '__main__':
