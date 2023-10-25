@@ -237,6 +237,10 @@ if __name__ == '__main__':
     parser.add_argument('--w', type=int, required=False, default=None, help="Crop Width")
     parser.add_argument('--h', type=int, required=False, default=None, help="Crop Height")
     parser.add_argument('--channels', type=int, nargs="+", required=False, default=None, help="Channels")
+    parser.add_argument(
+        '--num-threads', type=int, required=False, default=0, metavar="N",
+        help="Worker thread count (Default: auto-scale based on number of available CPUs)",
+    )
     argument = parser.parse_args()
 
     # Automatically infer the output filename, if not specified
@@ -255,6 +259,15 @@ if __name__ == '__main__':
         else:
             stem = os.extsep.join(tokens[0:-1]) + "_crop"
             out_path = os.extsep.join([stem, tokens[-1]])
+
+    num_threads = argument.num_threads
+    if num_threads == 0:
+        if hasattr(os, "sched_getaffinity"):
+            num_threads = len(os.sched_getaffinity(0))
+        else:
+            num_threads = os.cpu_count()
+    tifffile.TIFF.MAXWORKERS = num_threads
+    tifffile.TIFF.MAXIOWORKERS = num_threads * 5
 
     writer = PyramidWriter(in_path, out_path, argument.channels, argument.x, argument.y,
                            argument.x2, argument.y2, argument.w, argument.h)
