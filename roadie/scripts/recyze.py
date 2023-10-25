@@ -236,7 +236,10 @@ if __name__ == '__main__':
     parser.add_argument('--y2', type=int, required=False, default=None, help="Crop Y2")
     parser.add_argument('--w', type=int, required=False, default=None, help="Crop Width")
     parser.add_argument('--h', type=int, required=False, default=None, help="Crop Height")
-    parser.add_argument('--channels', type=int, nargs="+", required=False, default=None, help="Channels")
+    parser.add_argument(
+        '--channels', type=int, nargs="+", required=False, default=None, metavar="C",
+        help="Channels to keep (Default: all)",
+    )
     parser.add_argument(
         '--num-threads', type=int, required=False, default=0, metavar="N",
         help="Worker thread count (Default: auto-scale based on number of available CPUs)",
