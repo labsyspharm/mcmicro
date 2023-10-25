@@ -6,10 +6,10 @@ RUN apt-get update && \
 
 RUN python -m pip install --no-cache-dir \
   threadpoolctl \
-  sklearn \
+  scikit-learn \
   pandas \
-  tifffile \
+  tifffile==2023.3.15 \
   zarr \
   scikit-image \
-  ome_types \
+  ome_types>=0.4.2 \
   palom
