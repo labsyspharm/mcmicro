@@ -1,4 +1,4 @@
-image: ghcr.io/labsyspharm/mcmicro:devenv-latest
+image: ghcr.io/labsyspharm/mcmicro:dev-latest
 tasks:
   - name: Download default containers
     init: |
