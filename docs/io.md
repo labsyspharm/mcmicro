@@ -52,6 +52,23 @@ myproject/
 └── illumination/
 ```
 
+**Using pre-registered images**
+
+The [canonical image processing workflow]({{site.baseurl}}/overview/#mcmicro-for-processing-and-analyzing-images) accepts as input raw,  unstitched image tiles. If your tiles have already been stitched and registered across cycles, place the resulting OME-TIFF in the `registration/` subdirectory instead. An example input directory may then look like
+```
+myproject/
+├── markers.csv
+├── params.yml
+└── registration/
+    └── myimage.ome.tif
+```
+
+The pipeline will then need to be configured to start with the segmentation step by adding the following [workflow parameter]({{site.baseurl}}/parameters/workflow.html#start-at) to your `params.yml`:
+``` yaml
+workflow:
+  start-at: segmentation
+```
+
 <br>
 
 ### Markers
