@@ -36,7 +36,9 @@ nextflow run labsyspharm/mcmicro --in path/to/my/project/
 
 **At the minimum, the pipeline expects two inputs**
 1. `markers.csv` in the parent directory (containing [metadata with markers](./io.html#markers))
-1. [Raw images](./io.html#raw-images) in the `raw/` subdirectory
+1. Input images that are either
+    * [Raw image tiles](./io.html#raw-images) placed in the `raw/` subdirectory, or
+    * [Preregistered images](./io.html#using-pre-registered-images) placed in the `registration/` subdirectory
 
 **Two other inputs are optional**
 1. (Optional) Precomputed [Illumination profiles](./io.html#optional-illumination-corrected-images) in the `illumination/` subdirectory.
