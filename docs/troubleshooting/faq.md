@@ -106,6 +106,25 @@ for multi-file formats. Note that in the latter case, you need to specify the ex
 
 <br>
 
+### Q: My image has already been stitched and registered. How do I apply MCMICRO to segment and quantify it?
+
+A: This requires two changes to the canonical workflow. First, place your stitched and registered image inside the `registration/` subdirectory:
+```
+myproject/
+├── markers.csv
+├── params.yml
+└── registration/
+    └── myimage.ome.tif
+```
+
+Second, add the following [workflow parameter]({{site.baseurl}}/parameters/workflow.html#start-at) to your `params.yml`:
+``` yaml
+workflow:
+  start-at: segmentation
+```
+
+<br>
+
 ### Q: My execution environment doesn't support Docker. Can I run MCMICRO using Singularity instead?
 
 Yes, MCMICRO can be configured to use Singularity in place of Docker. Use the `-profile` flag to switch configurations:
