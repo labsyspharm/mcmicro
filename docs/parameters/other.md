@@ -315,6 +315,10 @@ Nextflow will write all outputs to the `cell-states/naivestates/` subdirectory w
 
 ---
 
+## Backsub
+{: .fw-500}
+
+
 ### Description
 `Backsub` is an autofluorescence subtraction module for sequential IF images. It performs pixel-level subtraction on large `.ome.tif` images primarily developed with the Lunaphore COMET platform outputs in mind.
 
