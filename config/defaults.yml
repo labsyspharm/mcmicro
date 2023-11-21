@@ -37,7 +37,7 @@ modules:
     -
       name: backsub
       container: ghcr.io/schapirolabor/background_subtraction
-      version: v0.3.3
+      version: v0.4.1
       cmd: |-
         python3 /background_subtraction/background_sub.py \
           -r ${image} -m ${marker} \

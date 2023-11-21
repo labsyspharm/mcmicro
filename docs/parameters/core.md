@@ -505,7 +505,7 @@ Annotated narratives must be manually generated, and users must provide MCMICRO 
 | [FastPG](./core.html#clustering) | Clustering (Louvain community detection) | [Code](https://github.com/labsyspharm/mcmicro-fastPG) - [DOI](https://www.biorxiv.org/content/10.1101/2020.06.19.159749v2) |
 | [scanpy](./core.html#clustering) | Clustering (Leiden community detection) | [Code](https://github.com/labsyspharm/mcmicro-scanpy) |
 | [FlowSOM](./core.html#clustering) | Clustering (Self-organizing maps) | [Code](https://github.com/labsyspharm/mcmicro-flowsom) |
-| [backsub](./core.html#backsub) | Background subtraction | [Code](https://github.com/SchapiroLabor/Background_subtraction) |
+| [backsub](./core.html#backsub) | Autofluorescence correction | [Code](https://github.com/SchapiroLabor/Background_subtraction) |
 | [Imagej-rolling-ball](./core.html#imagej-rolling-ball) | Background subtraction (rolling ball) | [Code](https://github.com/Yu-AnChen/imagej-rolling-ball) |
 
 
@@ -603,13 +603,17 @@ The [Mesmer](https://doi.org/10.1038/s41587-021-01094-0){:target="_blank"} modul
 
 Add `segmentation: mesmer` to [workflow parameters]({{site.baseurl}}/parameters/workflow.html#segmentation) to enable Mesmer. When running together with UnMicst and/or ilastik, method names must be provided as a list enclosed in square brackets. Additional Mesmer parameters can be provided to MCMICRO by including a `mesmer:` field in the module options section.
 
+For large data sets it is recommended to use the parameters `segmentation-recyze: true` along with `segmentation-channel:`. In the example below we consider an image stack of 10 channels with the nuclear marker in channel 2 and membrane marker in channel 7.  The use of `segmentation-recyze: true` will reduce the image stack to these two channels prior to segmentation, hence reindexing the stack channels such that 2-->0 and 7-->1.
+
 * Example `params.yml`:
 
 ``` yaml
 workflow:
+  segmentation-channel: 2 7
+  segmentation-recyze: true
   segmentation: mesmer
 options:
-  mesmer: --image-mpp 0.25
+  mesmer: --image-mpp 0.25 --nuclear-channel 0 --membrane-channel 1
 ```
 * Running outside of MCMICRO: [Instructions](https://github.com/vanvalenlab/deepcell-applications){:target="_blank"}.
 
@@ -626,6 +630,7 @@ A segmentation mask, similar to the ones produced by S3segmenter. Nextflow will 
 | Name | Description | Default Value |
 | :--- | :--- | :--- |
 | `--nuclear-channel` | The numerical index of the channel(s) from `nuclear-image` to select. If multiple values are passed, the channels will be summed. | `0` |
+| `--membrane-channel` | The position of the membrane channel within the `segmentation-channel` parameter. |  |
 | `--compartment` | Predict nuclear or whole-cell segmentation. | `"whole-cell"` |
 | `--image-mpp` | The resolution of the image in microns-per-pixel. A value of 0.5 corresponds to 20x zoom. | `0.5` |
 | `--batch-size` | Number of images to predict on per batch. | `4` |
@@ -807,16 +812,18 @@ Nextflow will write all outputs to the `cell-states/naivestates/` subdirectory w
 
 
 ### Description
-`Backsub` is a background subtraction module for sequential IF images. It performs autofluorescence, pixel-level subtraction on large `.ome.tif` images primarily developed with the Lunaphore COMET platform outputs in mind.
+`Backsub` is an autofluorescence subtraction module for sequential IF images. It performs pixel-level subtraction on large `.ome.tif` images primarily developed with the Lunaphore COMET platform outputs in mind.
 
 ### Usage
-By default, MCMICRO assumes background subtraction should not be performed. Add `background: true` to [module options]({{site.baseurl}}/parameters/workflow.html#background) to indicate it should be.
+By default, MCMICRO assumes background subtraction should not be performed. Add `background: true` to [module options]({{site.baseurl}}/parameters/workflow.html#background) to indicate it should be. By default, the `background-method` parameter is set to `backsub`. 
+If channels are removed using this module, and `segmentation-channel` is specified, it should be kept in mind that the index provided with `segmentation-channel` would refer to the index after channel removal.
 
 * Example `params.yml`:
 
 ``` yaml
 workflow:
   background: true
+  background-method: backsub
 ```
 
 * Running outside of MCMICRO: [Instructions](https://github.com/SchapiroLabor/Background_subtraction){:target="_blank"}.
@@ -830,6 +837,14 @@ workflow:
 
 * A pyramidal, tiled `.ome.tif`. Nextflow will write the output file to `background/` within the project directory.
 * A modified `markers.csv` to match the background subtracted image.
+
+### Optional arguments
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `--pixel-size` | `None` | The resolution of the image in microns-per-pixel. If not provided, it is read from metadata. If that is not possible, 1 is assigned. |
+| `--tile-size` | `1024` | Tile size used for pyramid image generation.|
+| `--chunk-size` | `5000` | Chunk size used for lazy loading and processing the image.|
 
 [Back to Other Modules](./core.html#other-modules){: .btn .btn-purple} [Back to top](./core){: .btn .btn-outline} 
 

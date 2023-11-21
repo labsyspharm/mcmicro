@@ -148,7 +148,7 @@ workflow:
 {: .fs-4}
 {: .fw-300}
 
-  * **Valid values:** One or more of `unmicst`, `ilastik`, `mesmer`, `cypository`, specified as a YAML list
+  * **Valid values:** One or more of `unmicst`, `ilastik`, `mesmer`, `cypository`, `cellpose` specified as a YAML list
   * **Default:** `unmicst`
   * **Example:**
   
