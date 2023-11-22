@@ -320,16 +320,18 @@ Nextflow will write all outputs to the `cell-states/naivestates/` subdirectory w
 
 
 ### Description
-`Backsub` is a background subtraction module for sequential IF images. It performs autofluorescence, pixel-level subtraction on large `.ome.tif` images primarily developed with the Lunaphore COMET platform outputs in mind.
+`Backsub` is an autofluorescence subtraction module for sequential IF images. It performs pixel-level subtraction on large `.ome.tif` images primarily developed with the Lunaphore COMET platform outputs in mind.
 
 ### Usage
-By default, MCMICRO assumes background subtraction should not be performed. Add `background: true` to [module options]({{site.baseurl}}/parameters/) to indicate it should be.
+By default, MCMICRO assumes background subtraction should not be performed. Add `background: true` to [module options]({{site.baseurl}}/parameters/workflow.html#background) to indicate it should be. By default, the `background-method` parameter is set to `backsub`. 
+If channels are removed using this module, and `segmentation-channel` is specified, it should be kept in mind that the index provided with `segmentation-channel` would refer to the index after channel removal.
 
 * Example `params.yml`:
 
 ``` yaml
 workflow:
   background: true
+  background-method: backsub
 ```
 
 * Running outside of MCMICRO: [Instructions](https://github.com/SchapiroLabor/Background_subtraction){:target="_blank"}.
@@ -344,4 +346,12 @@ workflow:
 * A pyramidal, tiled `.ome.tif`. Nextflow will write the output file to `background/` within the project directory.
 * A modified `markers.csv` to match the background subtracted image.
 
-[Back to top](./other.html#other-modules){: .btn .btn-purple} [Back to main modules](./){: .btn .btn-outline} 
+### Optional arguments
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `--pixel-size` | `None` | The resolution of the image in microns-per-pixel. If not provided, it is read from metadata. If that is not possible, 1 is assigned. |
+| `--tile-size` | `1024` | Tile size used for pyramid image generation.|
+| `--chunk-size` | `5000` | Chunk size used for lazy loading and processing the image.|
+
+[Back to Other Modules](./core.html#other-modules){: .btn .btn-purple} [Back to top](./core){: .btn .btn-outline} 
