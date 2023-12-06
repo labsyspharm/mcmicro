@@ -7,7 +7,7 @@ from ome_types import from_tiff, to_xml
 from pathlib import Path
 import argparse
 import os
-
+import uuid
 
 class PyramidWriter:
 
@@ -208,6 +208,7 @@ class PyramidWriter:
                     print()
             self.metadata.images[0].pixels.channels = [self.metadata.images[0].pixels.channels[i] for i in
                                                        self.channels]
+            self.metadata.uuid = uuid.uuid4().urn
             self.metadata.images[0].pixels.size_c = self.num_channels
             self.metadata.images[0].pixels.size_x = self.width
             self.metadata.images[0].pixels.size_y = self.height
