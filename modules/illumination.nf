@@ -12,7 +12,7 @@ process illumination {
     container "${params.contPfx}${module.container}:${module.version}"
 
     // Output profiles
-    publishDir "${params.in}/illumination", "${params.publish_dir_mode}",
+    publishDir "${params.in}/illumination", mode: "${params.publish_dir_mode}",
       pattern: '*.tif'
 
     // Provenance
