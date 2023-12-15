@@ -12,7 +12,8 @@ process illumination {
     container "${params.contPfx}${module.container}:${module.version}"
 
     // Output profiles
-    publishDir "${params.in}/illumination", mode: 'copy', pattern: '*.tif'
+    publishDir "${params.in}/illumination", "${params.publish_dir_mode}",
+      pattern: '*.tif'
 
     // Provenance
     publishDir "${Flow.QC(params.in, 'provenance')}", mode: 'copy', 

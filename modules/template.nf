@@ -61,7 +61,8 @@ process snr {
     // The pattern: specification must match the output: files below
     // TODO: replace report with the desired output directory
     // TODO: replace the pattern to match the output: clause below
-    publishDir "${params.in}/report", mode: 'copy', pattern: "*.html"
+    publishDir "${params.in}/report", mode: "${params.publish_dir_mode}",
+      pattern: "*.html"
 
     // Stores .command.sh and .command.log from the work directory
     //   to the project provenance
