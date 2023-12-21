@@ -198,6 +198,10 @@ static def parseParams(gp, fns, fnw) {
         mcp.workflow.downstream.contains(it.name)
     }
 
+    // Implement qc-files=inherit which sets qc-files to the value of
+    // publish_dir_mode.
+    if(mcp.workflow['qc-files'] == 'inherit') mcp.workflow['qc-files'] = gp.publish_dir_mode
+
     mcp
 }
 

@@ -1,7 +1,7 @@
 workflow:
   start-at: registration
   stop-at: quantification
-  qc-files: copy
+  qc-files: inherit
   tma: false
   viz: false
   background: false
