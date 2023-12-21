@@ -150,13 +150,15 @@
               },
               "qc-files": {
                   "type": "string",
-                  "description": "Should QC files should be copied, moved or symbolically linked from work directories to the project directory",
+                  "description": "Should QC files should be copied, moved, hard linked, or symbolically linked from work directories to the project directory. 'inherit' may be specified to use the value of the publish_dir_mode pipeline parameter.",
                   "enum": [
                       "copy",
                       "move",
-                      "symlink"
+                      "link",
+                      "symlink",
+                      "inherit",
                   ],
-                  "default": "copy"
+                  "default": "inherit"
               },
               "segmentation-channel": {
                   "type": "string",

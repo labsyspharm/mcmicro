@@ -28,9 +28,9 @@ process worker {
     tag "${module.name}-${task.index}"
     
     // Output files in the pre-configured output format (outfmt) and optional plots
-    publishDir "${pubDir}", mode: 'copy',
+    publishDir "${pubDir}", mode: "${params.publish_dir_mode}",
       pattern: "$outfmt", saveAs: {fn -> fnOut != '' ? fnOut : fn}
-    publishDir "${pubDir}", mode: 'copy', pattern: 'plots/**'
+    publishDir "${pubDir}", mode: "${params.publish_dir_mode}", pattern: 'plots/**'
 
     // QC
     publishDir "${Flow.QC(params.in, module.name)}", mode: "${mcp.workflow['qc-files']}",

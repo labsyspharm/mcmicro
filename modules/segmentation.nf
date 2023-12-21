@@ -4,8 +4,8 @@ process s3seg {
     container "${params.contPfx}${module.container}:${module.version}"
 
     // Output
-    publishDir "${pubDir}/$tag",
-      mode: 'copy', pattern: '*/*.ome.tif', saveAs: {f -> file(f).name}
+    publishDir "${pubDir}/$tag", mode: "${params.publish_dir_mode}",
+      pattern: '*/*.ome.tif', saveAs: {f -> file(f).name}
 
     // QC
     publishDir "${Flow.QC(params.in, '/s3seg/' + tag)}",

@@ -4,7 +4,8 @@ process mcquant {
     container "${params.contPfx}${module.container}:${module.version}"
 
     // Output
-    publishDir "${params.in}/quantification", mode: 'copy', pattern: '*.csv'
+    publishDir "${params.in}/quantification", mode: "${params.publish_dir_mode}",
+      pattern: '*.csv'
 
     // Provenance
     publishDir "${Flow.QC(params.in, 'provenance')}", mode: 'copy', 

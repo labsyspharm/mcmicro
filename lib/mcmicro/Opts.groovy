@@ -88,7 +88,7 @@ static def cleanParams(pars, mspecs) {
 
     // Protected keywords
     def keywords = ['in', 'cont-pfx', 'roadie', 'workflow',
-        'options', 'modules', 'params']
+        'options', 'modules', 'params', 'publish_dir_mode']
 
     // Clean up the parameter list
     // Separate workflow parameters from module options
@@ -197,6 +197,10 @@ static def parseParams(gp, fns, fnw) {
     mcp.modules['downstream'] = mcp.modules['downstream'].findAll{
         mcp.workflow.downstream.contains(it.name)
     }
+
+    // Implement qc-files=inherit which sets qc-files to the value of
+    // publish_dir_mode.
+    if(mcp.workflow['qc-files'] == 'inherit') mcp.workflow['qc-files'] = gp.publish_dir_mode
 
     mcp
 }

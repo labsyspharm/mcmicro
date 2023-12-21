@@ -188,12 +188,12 @@ workflow:
 ```
 
 ## `qc-files`
-  Whether QC files should be copied, moved or symbolically linked from work directories to the project directory
+  Whether QC files should be copied, moved, hard linked, or symbolically linked from work directories to the project directory. 'inherit' may be specified to use the value of the publish_dir_mode pipeline parameter.
 {: .fs-4}
 {: .fw-300}
 
-  * **Valid values:** `copy`, `move`, `symlink`
-  * **Default:** `copy`
+  * **Valid values:** `copy`, `move`, `link`, `symlink`, `inherit`
+  * **Default:** `inherit`
   * **Example:**
 
 ``` yaml
