@@ -100,7 +100,7 @@ modules:
   watershed:
     name: s3seg
     container: labsyspharm/s3segmenter
-    version: 1.5.5
+    version: 1.5.6
     channel: --probMapChan
     idxbase: 1
   quantification:
