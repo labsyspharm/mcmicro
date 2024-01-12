@@ -17,16 +17,16 @@ parent: Platforms
 
 1. Please ensure that Java is available by running `module load java`.
 
-1. If your account is not in the `lsp` group (type `groups` to check), then please run the following command to prepare your environment: `nextflow run labsyspharm/mcmicro/setup/O2ext.nf`
+1. If your account is not in the `HITS_lsp-analysis` group (type `groups` to check), then please run the following command to prepare your environment: `nextflow run labsyspharm/mcmicro/setup/O2ext.nf`
 
-1. When working with [exemplars]({{ site.baseurl }}/datasets/), please download your own copy to `/n/scratch3/users/.../$USER/` (where `$USER` is your eCommons ID and `...` is its first letter).
+1. When working with [exemplars]({{ site.baseurl }}/datasets/), please download your own copy to `/n/scratch/users/.../$USER/` (where `$USER` is your eCommons ID and `...` is its first letter).
 
 ## O2 execution
 
 To run the pipeline on O2, the following additional steps are required:
-1. If your account is in the `lsp` group, please add the flag `-profile O2`. Use `-profile O2,WSI` and `-profile O2,TMA` for very large whole-slide images (WSIs) and tissue microarrays (TMAs), respectively. The profiles differ in the amount of resources requested for each module.
-1. If your account is not in the `lsp` group, please use `-profile O2ext`. Similarly, use `-profile O2ext,WSI` and `-profile O2ext,TMA` for WSIs and TMAs.
-1. To avoid running over on your disk quota, it is also recommended to use `/n/scratch3` for holding the `work/` directory. Furthermore, `/n/scratch3` is faster than `/home` or `/n/groups`, so jobs will complete faster. 
+1. If your account is in the `HITS_lsp-analysis` group, please add the flag `-profile O2`. Use `-profile O2,WSI` and `-profile O2,TMA` for very large whole-slide images (WSIs) and tissue microarrays (TMAs), respectively. The profiles differ in the amount of resources requested for each module.
+1. If your account is not in the `HITS_lsp-analysis` group, please use `-profile O2ext`. Similarly, use `-profile O2ext,WSI` and `-profile O2ext,TMA` for WSIs and TMAs.
+1. To avoid running over on your disk quota, it is also recommended to use `/n/scratch` for holding the `work/` directory. Furthermore, `/n/scratch` is faster than `/home` or `/n/groups`, so jobs will complete faster. 
 
 Compose an `sbatch` script that encapsulates resource requests, module loading and the `nextflow` command into a single entity. Create a `submit_mcmicro.sh` file based on the following template:
 
@@ -36,13 +36,13 @@ Compose an `sbatch` script that encapsulates resource requests, module loading a
 #SBATCH -J mcmicro              
 #SBATCH -o mcmicro-%J.log
 #SBATCH -t 0-12:00
-#SBATCH --mem=8G
+#SBATCH --mem=1G
 #SBATCH --mail-type=END         # Type of email notification- BEGIN,END,FAIL,ALL
 #SBATCH --mail-user=user@university.edu   # Email to which notifications will be sent
 
 module purge
 module load java
-/home/$USER/bin/nextflow run labsyspharm/mcmicro --in /n/scratch3/users/${USER:0:1}/$USER/exemplar-001 -profile O2 -w /n/scratch3/users/${USER:0:1}/$USER/work
+/home/$USER/bin/nextflow run labsyspharm/mcmicro --in /n/scratch/users/${USER:0:1}/$USER/exemplar-001 -profile O2 -w /n/scratch/users/${USER:0:1}/$USER/work
 ```
 replacing relevant fields (e.g., `user@university.edu`) with your own values.
 
