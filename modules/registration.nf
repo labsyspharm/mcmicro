@@ -30,7 +30,7 @@ process ashlar {
       def opts = Opts.moduleOpts(module, mcp)
 
       // Images
-      def imgs = opts.contains("filepattern|") ? "" :
+      def imgs = opts.contains("filepattern|") || opts.contains("fileseries|") ? "" :
         lrelPath.collect{ Util.escapeForShell(it) }.join(" ")
 
       // Illumination profiles
