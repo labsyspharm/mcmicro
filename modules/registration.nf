@@ -26,11 +26,19 @@ process ashlar {
     when: Flow.doirun('registration', mcp.workflow)
     
     script:
-    def imgs = lrelPath.collect{ Util.escapeForShell(it) }.join(" ")
-    def ilp = "--ffp $lffp --dfp $ldfp"
-    if (ilp == '--ffp  --dfp ') ilp = ''  // Don't supply empty --ffp --dfp
+      // Options
+      def opts = Opts.moduleOpts(module, mcp)
+
+      // Images
+      def imgs = opts.contains("filepattern|") || opts.contains("fileseries|") ? "" :
+        lrelPath.collect{ Util.escapeForShell(it) }.join(" ")
+
+      // Illumination profiles
+      def ilp = "--ffp $lffp --dfp $ldfp"
+      if (ilp == '--ffp  --dfp ') ilp = ''  // Don't supply empty --ffp --dfp
+
     """
-    ashlar $imgs ${Opts.moduleOpts(module, mcp)} $ilp -o ${sampleName}.ome.tif
+    ashlar $imgs $opts $ilp -o ${sampleName}.ome.tif
     """
 }
 
