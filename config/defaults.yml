@@ -26,7 +26,7 @@ modules:
   registration:
     name: ashlar
     container: labsyspharm/ashlar
-    version: 1.17.0
+    version: 1.18.0
   dearray:
     name: coreograph
     container: labsyspharm/unetcoreograph
