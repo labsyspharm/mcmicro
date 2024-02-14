@@ -24,7 +24,7 @@ mcp = Opts.parseParams(
     "$projectDir/config/defaults.yml"
 )
 
-// Separate out workflow parameters (wfp) and module specs to simplify code
+// Separate out workflow parameters (wfp) to simplify code
 wfp = mcp.workflow
 
 // Identify relevant precomputed intermediates
@@ -54,25 +54,11 @@ findFiles = { key, pattern, ife -> pre[key] ?
 // index file to tie them together. We will look for the index files from
 // multiple-file formats in a first, separate pass in order to avoid finding the
 // individual .tif files instead. If no multi-file formats are detected, then we
-// look for the single-file formats. Also, for multi-file formats we need to
-// stage the parent directory and not just the index file.
-(formatType, formatPattern) =
-    file("${params.in}/raw/**${wfp['multi-formats']}") ?
-    ["multi", wfp['multi-formats']] : ["single", wfp['single-formats']]
-rawFiles = findFiles('raw', "**${formatPattern}",
-		     {error "No images found in ${params.in}/raw"})
-
-// Here we assemble tuples of 1) path to stage for each raw image (might be a
-// directory) and 2) relative path to the main file for each image. Processes
-// must input the first as a path and the second as a val to avoid incorrect or
-// redundant file staging. They must also only use the second (relative) path to
-// construct pathnames for scripts etc. mcmicro.Util.escapePathForShell must be
-// used when interpolating these paths into script strings, as we are bypassing
-// the normal way that paths are passed to channels which handles this escaping
-// automatically.
-raw = rawFiles
-    .map{ tuple(formatType == "single" ? it : it.parent, it) }
-    .map{ toStage, relPath -> tuple(toStage, toStage.parent.relativize(relPath).toString()) }
+// look for the single-file formats.
+formatPattern = file("${params.in}/raw/**${wfp['multi-formats']}") ?
+    wfp['multi-formats'] : wfp['single-formats']
+raw = findFiles('raw', "**${formatPattern}",
+    {error "No images found in ${params.in}/raw"})
 
 // Find precomputed intermediates
 pre_dfp   = findFiles0('illumination', "*-dfp.tif")
