@@ -13,11 +13,7 @@ process ashlar {
     input:
       val mcp
       val module
-      val sampleName
-      path lraw       // Only for staging
-      val lrelPath    // Use this for paths
-      path lffp
-      path ldfp
+      tuple val(sampleName), path(lraw), val(lrelPath), path(lffp), path(ldfp)
 
     output:
       path "*.ome.tif", emit: img
@@ -50,18 +46,21 @@ workflow registration {
       dfp     // dark-field profiles
 
     main:
-      rawst = raw.toSortedList{a, b -> a[0] <=> b[0]}.transpose()
-      sampleName  = file(params.in).name
 
-      ashlar(
-        mcp,
-        mcp.modules['registration'],
-        sampleName,
-        rawst.first(),
-        rawst.last(),
-        ffp.toSortedList{a, b -> a.getName() <=> b.getName()},
-        dfp.toSortedList{a, b -> a.getName() <=> b.getName()}
-      )
+    srt = {a, b -> file(a).getName() <=> file(b).getName()}
+
+    rawg = raw.groupTuple(sort: srt)
+    ffpg = ffp.groupTuple(sort: srt)
+    dfpg = dfp.groupTuple(sort: srt)
+
+    inputs = rawg.join(ffpg, remainder:true).join(dfpg, remainder:true)
+      .map{tuple(
+        it[0], it[1], it[2],
+        it[3] == null ? [] : it[3],    // Convert null to empty list
+        it[4] == null ? [] : it[4]     // Ditto
+      )}
+
+    ashlar(mcp, mcp.modules['registration'], inputs)
 
     emit:
       ashlar.out.img
