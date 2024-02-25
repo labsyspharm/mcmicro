@@ -1,5 +1,25 @@
 import mcmicro.*
 
+// Here we assemble tuples of 1) sample name, 2) path to stage for each raw image
+// (might be a directory) and 3) relative path to the main file for each image. 
+// Processes must input the first as a path and the second as a val to avoid incorrect
+// or redundant file staging. They must also only use the second (relative) path to
+// construct pathnames for scripts etc. mcmicro.Util.escapePathForShell must be
+// used when interpolating these paths into script strings, as we are bypassing
+// the normal way that paths are passed to channels which handles this escaping
+// automatically.
+def prepare(x, wfp) {
+  rawdir = file("${params.in}/raw")
+  formatType = file("${rawdir}/**${wfp['multi-formats']}") ? 'multi' : 'single'
+  x.map{ tuple(
+      Util.getSampleName(it, rawdir),
+      formatType == "single" ? it : it.parent, 
+      it) 
+    }
+    .map{ sampleName, toStage, relPath -> 
+      tuple(sampleName, toStage, toStage.parent.relativize(relPath).toString()) }
+}
+
 process ashlar {
     container "${params.contPfx}${module.container}:${module.version}"
     publishDir "${params.in}/registration", mode: "${params.publish_dir_mode}",
@@ -51,35 +71,17 @@ workflow registration {
 
     main:
 
-      rawdir = file("${params.in}/raw")
-      rawFiles.map(it -> Util.getSampleName(it, rawdir)).view()
+    rawPrep = prepare(raw, mcp.workflow).groupTuple(sort: true)
 
-      // Here we assemble tuples of 1) path to stage for each raw image (might be a
-      // directory) and 2) relative path to the main file for each image. Processes
-      // must input the first as a path and the second as a val to avoid incorrect or
-      // redundant file staging. They must also only use the second (relative) path to
-      // construct pathnames for scripts etc. mcmicro.Util.escapePathForShell must be
-      // used when interpolating these paths into script strings, as we are bypassing
-      // the normal way that paths are passed to channels which handles this escaping
-      // automatically.
-      raw = rawFiles
-          .map{ tuple(formatType == "single" ? it : it.parent, it) }
-          .map{ toStage, relPath -> tuple(toStage, toStage.parent.relativize(relPath).toString()) }
-
-
-      rawst = raw.toSortedList{a, b -> a[0] <=> b[0]}.transpose()
-      sampleName  = file(params.in).name
-
-      ashlar(
+/*      ashlar(
         mcp,
         mcp.modules['registration'],
-        sampleName,
-        rawst.first(),
-        rawst.last(),
+        rawPrep,
         ffp.toSortedList{a, b -> a.getName() <=> b.getName()},
         dfp.toSortedList{a, b -> a.getName() <=> b.getName()}
-      )
+      )*/
 
     emit:
-      ashlar.out.img
+//      ashlar.out.img
+      rawPrep
 }

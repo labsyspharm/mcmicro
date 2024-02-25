@@ -95,10 +95,11 @@ include {background}     from "$projectDir/modules/background"
 
 // Define the primary mcmicro workflow
 workflow {
-    illumination(wfp, mcp.modules['illumination'], raw)
-    registration(mcp, raw,
+    illumination(mcp, raw).view()
+/*    registration(mcp, raw,
 		 illumination.out.ffp.mix( pre_ffp ),
 		 illumination.out.dfp.mix( pre_dfp ))
+    .view()
     img = registration.out.mix(pre_img)
 
     // Should background subtraction be applied?
@@ -150,7 +151,7 @@ workflow {
     downstream(mcp, sft)
 
     // Vizualization
-    viz(mcp, allimg, chMrk)
+    viz(mcp, allimg, chMrk)*/
 }
 
 // Write out parameters used
