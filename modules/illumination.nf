@@ -1,8 +1,6 @@
 import mcmicro.*
 import java.nio.file.Paths
 
-include {prepare} from "$projectDir/modules/registration"
-
 def escapeForImagej(s) {
     // When passing an arbitrary string as an ImageJ macro parameter value, we
     // must backslash-escape backslashes and double-quotes and wrap the whole
@@ -10,7 +8,7 @@ def escapeForImagej(s) {
     "\"" + s.toString().replace("\\", "\\\\").replace("\"", "\\\"") + "\""
 }
 
-process basic {
+process illumination {
     container "${params.contPfx}${module.container}:${module.version}"
 
     // Output profiles
@@ -27,8 +25,8 @@ process basic {
       val module
       tuple val(sname), path(raw), val(relPath) // raw is only for staging, use relPath for paths
     output:
-      path '*-dfp.tif', emit: dfp
-      path '*-ffp.tif', emit: ffp
+      tuple val(sname), path('*-dfp.tif'), emit: dfp
+      tuple val(sname), path('*-ffp.tif'), emit: ffp
       tuple path('.command.sh'), path('.command.log')
 
     when: Flow.doirun('illumination', wfp)
@@ -45,19 +43,4 @@ process basic {
       --run /opt/fiji/imagej_basic_ashlar.py \
       $macroParams
     """
-}
-
-workflow illumination {
-  take:
-    mcp     // MCMICRO parameters as read by Opts.parseParams()
-    raw     // raw image tiles
-
-  main:
-    rawPrep = prepare(raw, mcp.workflow)
-
-    // basic(mcp.workflow, mcp.modules['illumination'], rawPrep)
-
-  emit:
-    rawPrep
-//    basic.out
 }

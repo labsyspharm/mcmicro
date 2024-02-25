@@ -1,25 +1,5 @@
 import mcmicro.*
 
-// Here we assemble tuples of 1) sample name, 2) path to stage for each raw image
-// (might be a directory) and 3) relative path to the main file for each image. 
-// Processes must input the first as a path and the second as a val to avoid incorrect
-// or redundant file staging. They must also only use the second (relative) path to
-// construct pathnames for scripts etc. mcmicro.Util.escapePathForShell must be
-// used when interpolating these paths into script strings, as we are bypassing
-// the normal way that paths are passed to channels which handles this escaping
-// automatically.
-def prepare(x, wfp) {
-  rawdir = file("${params.in}/raw")
-  formatType = file("${rawdir}/**${wfp['multi-formats']}") ? 'multi' : 'single'
-  x.map{ tuple(
-      Util.getSampleName(it, rawdir),
-      formatType == "single" ? it : it.parent, 
-      it) 
-    }
-    .map{ sampleName, toStage, relPath -> 
-      tuple(sampleName, toStage, toStage.parent.relativize(relPath).toString()) }
-}
-
 process ashlar {
     container "${params.contPfx}${module.container}:${module.version}"
     publishDir "${params.in}/registration", mode: "${params.publish_dir_mode}",
@@ -33,11 +13,7 @@ process ashlar {
     input:
       val mcp
       val module
-      val sampleName
-      path lraw       // Only for staging
-      val lrelPath    // Use this for paths
-      path lffp
-      path ldfp
+      tuple val(sampleName), path(lraw), val(lrelPath), path(lffp), path(ldfp)
 
     output:
       path "*.ome.tif", emit: img
@@ -71,17 +47,21 @@ workflow registration {
 
     main:
 
-    rawPrep = prepare(raw, mcp.workflow).groupTuple(sort: true)
+    srt = {a, b -> file(a).getName() <=> file(b).getName()}
 
-/*      ashlar(
-        mcp,
-        mcp.modules['registration'],
-        rawPrep,
-        ffp.toSortedList{a, b -> a.getName() <=> b.getName()},
-        dfp.toSortedList{a, b -> a.getName() <=> b.getName()}
-      )*/
+    rawg = raw.groupTuple(sort: srt)
+    ffpg = ffp.groupTuple(sort: srt)
+    dfpg = dfp.groupTuple(sort: srt)
+
+    inputs = rawg.join(ffpg, remainder:true).join(dfpg, remainder:true)
+      .map{tuple(
+        it[0], it[1], it[2],
+        it[3] == null ? [] : it[3],    // Convert null to empty list
+        it[4] == null ? [] : it[4]     // Ditto
+      )}
+
+    ashlar(mcp, mcp.modules['registration'], inputs)
 
     emit:
-//      ashlar.out.img
-      rawPrep
+      ashlar.out.img
 }

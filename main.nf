@@ -54,15 +54,36 @@ findFiles = { key, pattern, ife -> pre[key] ?
 // index file to tie them together. We will look for the index files from
 // multiple-file formats in a first, separate pass in order to avoid finding the
 // individual .tif files instead. If no multi-file formats are detected, then we
-// look for the single-file formats.
-formatPattern = file("${params.in}/raw/**${wfp['multi-formats']}") ?
-    wfp['multi-formats'] : wfp['single-formats']
-raw = findFiles('raw', "**${formatPattern}",
-    {error "No images found in ${params.in}/raw"})
+// look for the single-file formats. Also, for multi-file formats we need to
+// stage the parent directory and not just the index file.
+(formatType, formatPattern) =
+    file("${params.in}/raw/**${wfp['multi-formats']}") ?
+    ["multi", wfp['multi-formats']] : ["single", wfp['single-formats']]
+rawFiles = findFiles('raw', "**${formatPattern}",
+		     {error "No images found in ${params.in}/raw"})
+
+// Here we assemble tuples of 1) path to stage for each raw image (might be a
+// directory) and 2) relative path to the main file for each image. Processes
+// must input the first as a path and the second as a val to avoid incorrect or
+// redundant file staging. They must also only use the second (relative) path to
+// construct pathnames for scripts etc. mcmicro.Util.escapePathForShell must be
+// used when interpolating these paths into script strings, as we are bypassing
+// the normal way that paths are passed to channels which handles this escaping
+// automatically.
+raw = rawFiles
+    .map{ tuple(
+        Util.getSampleName(it, file("${params.in}/raw")),
+        formatType == "single" ? it : it.parent, 
+        it
+    )}
+    .map{ sampleName, toStage, relPath -> 
+        tuple(sampleName, toStage, toStage.parent.relativize(relPath).toString()) }
 
 // Find precomputed intermediates
-pre_dfp   = findFiles0('illumination', "*-dfp.tif")
-pre_ffp   = findFiles0('illumination', "*-ffp.tif")
+pre_dfp   = findFiles0('illumination', "**-dfp.tif")
+    .map{ tuple(Util.getSampleName(it, file("${params.in}/illumination")), it) }
+pre_ffp   = findFiles0('illumination', "**-ffp.tif")
+    .map{ tuple(Util.getSampleName(it, file("${params.in}/illumination")), it) }
 pre_img   = findFiles('registration', "*.{ome.tiff,ome.tif,tif,tiff,btf}",
     {error "No pre-stitched image in ${params.in}/registration"})
 pre_bsub  = findFiles('background', "*.ome.tif",
@@ -95,12 +116,12 @@ include {background}     from "$projectDir/modules/background"
 
 // Define the primary mcmicro workflow
 workflow {
-    illumination(mcp, raw).view()
-/*    registration(mcp, raw,
+    illumination(wfp, mcp.modules['illumination'], raw)
+    registration(mcp, raw,
 		 illumination.out.ffp.mix( pre_ffp ),
 		 illumination.out.dfp.mix( pre_dfp ))
     .view()
-    img = registration.out.mix(pre_img)
+/*    img = registration.out.mix(pre_img)
 
     // Should background subtraction be applied?
     img = img.
