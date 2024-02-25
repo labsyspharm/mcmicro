@@ -120,8 +120,7 @@ workflow {
     registration(mcp, raw,
 		 illumination.out.ffp.mix( pre_ffp ),
 		 illumination.out.dfp.mix( pre_dfp ))
-    .view()
-/*    img = registration.out.mix(pre_img)
+    img = registration.out.mix(pre_img)
 
     // Should background subtraction be applied?
     img = img.
@@ -172,7 +171,7 @@ workflow {
     downstream(mcp, sft)
 
     // Vizualization
-    viz(mcp, allimg, chMrk)*/
+    viz(mcp, allimg, chMrk)
 }
 
 // Write out parameters used
