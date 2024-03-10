@@ -24,6 +24,7 @@ process ashlar {
     script:
       // Options
       def opts = Opts.moduleOpts(module, mcp)
+        .replace('{samplename}', sampleName)
 
       // Images
       def imgs = opts.contains("filepattern|") || opts.contains("fileseries|") ? "" :

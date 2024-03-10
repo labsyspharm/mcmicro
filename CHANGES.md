@@ -1,3 +1,23 @@
+### 2024-03-10
+
+* Allow for dynamic sample name specification in the fileseries/filepattern expressions.
+
+For example, if the filenames are structured like this:
+```
+myproject/
+  markers.csv
+  params.yml
+  raw/
+    image1/
+      image1_ch1.tif
+      image1_ch2.tif
+    image2/
+      image2_ch1.tif
+      image2_ch2.tif
+```
+
+The corresponding expression can now be specified as `fileseries|.|pattern={samplename}_ch{channel}.tif`.
+
 ### 2024-02-25
 
 * Added support for multiple samples in `raw/` subdirectory. If multiple images share the same markers and should be processed with the same set of parameters, they can be placed as subdirectories of `raw/`. In other words, instead of structuring the data as multiple projects:
@@ -7,15 +27,15 @@ image1/
   markers.csv
   params.yml
   raw/
-    tile1.rcpnl
-    tile2.rcpnl
+    cycle1.rcpnl
+    cycle2.rcpnl
 
 image2/
   markers.csv
   params.yml
   raw/
-    tile1.rcpnl
-    tile2.rcpnl
+    cycle1.rcpnl
+    cycle2.rcpnl
 ```
 
 they can be consolidated under the same project folder:
@@ -26,11 +46,11 @@ myproject/
   params.yml
   raw/
     image1/
-      tile1.rcpnl
-      tile2.rcpnl
+      cycle1.rcpnl
+      cycle2.rcpnl
     image2/
-      tile1.rcpnl
-      tile2.rcpnl
+      cycle1.rcpnl
+      cycle2.rcpnl
 ```
 
 ### 2024-01-31
