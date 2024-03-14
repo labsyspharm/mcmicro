@@ -1,4 +1,4 @@
-FROM labsyspharm/roadie:2022-05-24
+FROM ghcr.io/labsyspharm/mcmicro:roadie-latest
 
 RUN apt-get update && \
     apt-get install -y openslide-tools && \

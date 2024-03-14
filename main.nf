@@ -24,7 +24,7 @@ mcp = Opts.parseParams(
     "$projectDir/config/defaults.yml"
 )
 
-// Separate out workflow parameters (wfp) and module specs to simplify code
+// Separate out workflow parameters (wfp) to simplify code
 wfp = mcp.workflow
 
 // Identify relevant precomputed intermediates
@@ -71,12 +71,19 @@ rawFiles = findFiles('raw', "**${formatPattern}",
 // the normal way that paths are passed to channels which handles this escaping
 // automatically.
 raw = rawFiles
-    .map{ tuple(formatType == "single" ? it : it.parent, it) }
-    .map{ toStage, relPath -> tuple(toStage, toStage.parent.relativize(relPath).toString()) }
+    .map{ tuple(
+        Util.getSampleName(it, file("${params.in}/raw")),
+        formatType == "single" ? it : it.parent, 
+        it
+    )}
+    .map{ sampleName, toStage, relPath -> 
+        tuple(sampleName, toStage, toStage.parent.relativize(relPath).toString()) }
 
 // Find precomputed intermediates
-pre_dfp   = findFiles0('illumination', "*-dfp.tif")
-pre_ffp   = findFiles0('illumination', "*-ffp.tif")
+pre_dfp   = findFiles0('illumination', "**-dfp.tif")
+    .map{ tuple(Util.getSampleName(it, file("${params.in}/illumination")), it) }
+pre_ffp   = findFiles0('illumination', "**-ffp.tif")
+    .map{ tuple(Util.getSampleName(it, file("${params.in}/illumination")), it) }
 pre_img   = findFiles('registration', "*.{ome.tiff,ome.tif,tif,tiff,btf}",
     {error "No pre-stitched image in ${params.in}/registration"})
 pre_bsub  = findFiles('background', "*.ome.tif",

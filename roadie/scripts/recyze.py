@@ -7,7 +7,7 @@ from ome_types import from_tiff, to_xml
 from pathlib import Path
 import argparse
 import os
-
+import uuid
 
 class PyramidWriter:
 
@@ -185,6 +185,8 @@ class PyramidWriter:
                     self.in_tiff.pages[0].tags["ResolutionUnit"].value),
                 tile=self.tile_shapes[0],
                 photometric=self.in_tiff.pages[0].photometric,
+                compression="adobe_deflate",
+                predictor=True,
             )
             if self.verbose:
                 print("Generating pyramid")
@@ -199,11 +201,14 @@ class PyramidWriter:
                     subfiletype=1,
                     dtype=dtype,
                     tile=tile_shape,
+                    compression="adobe_deflate",
+                    predictor=True,
                 )
                 if self.verbose:
                     print()
             self.metadata.images[0].pixels.channels = [self.metadata.images[0].pixels.channels[i] for i in
                                                        self.channels]
+            self.metadata.uuid = uuid.uuid4().urn
             self.metadata.images[0].pixels.size_c = self.num_channels
             self.metadata.images[0].pixels.size_x = self.width
             self.metadata.images[0].pixels.size_y = self.height
@@ -219,7 +224,7 @@ class PyramidWriter:
                 self.metadata.images[0].pixels.tiff_data_blocks[0].plane_count = self.num_channels
 
             # Write
-        tifffile.tiffcomment(self.out_path, to_xml(self.metadata))
+        tifffile.tiffcomment(self.out_path, to_xml(self.metadata).encode())
 
 
 if __name__ == '__main__':
@@ -232,7 +237,14 @@ if __name__ == '__main__':
     parser.add_argument('--y2', type=int, required=False, default=None, help="Crop Y2")
     parser.add_argument('--w', type=int, required=False, default=None, help="Crop Width")
     parser.add_argument('--h', type=int, required=False, default=None, help="Crop Height")
-    parser.add_argument('--channels', type=int, nargs="+", required=False, default=None, help="Channels")
+    parser.add_argument(
+        '--channels', type=int, nargs="+", required=False, default=None, metavar="C",
+        help="Channels to keep (Default: all)",
+    )
+    parser.add_argument(
+        '--num-threads', type=int, required=False, default=0, metavar="N",
+        help="Worker thread count (Default: auto-scale based on number of available CPUs)",
+    )
     argument = parser.parse_args()
 
     # Automatically infer the output filename, if not specified
@@ -251,6 +263,15 @@ if __name__ == '__main__':
         else:
             stem = os.extsep.join(tokens[0:-1]) + "_crop"
             out_path = os.extsep.join([stem, tokens[-1]])
+
+    num_threads = argument.num_threads
+    if num_threads == 0:
+        if hasattr(os, "sched_getaffinity"):
+            num_threads = len(os.sched_getaffinity(0))
+        else:
+            num_threads = os.cpu_count()
+    tifffile.TIFF.MAXWORKERS = num_threads
+    tifffile.TIFF.MAXIOWORKERS = num_threads * 5
 
     writer = PyramidWriter(in_path, out_path, argument.channels, argument.x, argument.y,
                            argument.x2, argument.y2, argument.w, argument.h)

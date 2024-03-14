@@ -1,5 +1,13 @@
 package mcmicro
 
+static def getSampleName(f, rawdir) {
+    // Resolve paths relative to the input project directory
+    String rel = rawdir.relativize(f).toString()
+    rel.contains('/') ? rel.split('/').head() : 
+        rawdir.parent.getName()
+}
+
+
 /**
  * Extracts a file ID as the first token before delim in the filename
  *

@@ -88,7 +88,7 @@ static def cleanParams(pars, mspecs) {
 
     // Protected keywords
     def keywords = ['in', 'cont-pfx', 'roadie', 'workflow',
-        'options', 'modules', 'params']
+        'options', 'modules', 'params', 'publish_dir_mode']
 
     // Clean up the parameter list
     // Separate workflow parameters from module options
@@ -176,6 +176,18 @@ static def parseParams(gp, fns, fnw) {
     updateMap(mcp, cla)
     validateWFParams(mcp.workflow, fns)
 
+    // Select the background module based on --background-method
+    mcp.modules['background'] = mcp.modules['background'].findAll{
+        it.name == mcp.workflow['background-method']
+    }
+    if(mcp.modules['background'].size() < 1) {
+        String msg = "Unknown background subtraction method " +
+            mcp.workflow['background-method']
+        throw new Exception(msg)
+    }
+    else
+        mcp.modules['background'] = mcp.modules['background'][0]
+
     // Filter segmentation modules based on --segmentation
     mcp.modules['segmentation'] = mcp.modules['segmentation'].findAll{
         mcp.workflow.segmentation.contains(it.name)
@@ -185,6 +197,10 @@ static def parseParams(gp, fns, fnw) {
     mcp.modules['downstream'] = mcp.modules['downstream'].findAll{
         mcp.workflow.downstream.contains(it.name)
     }
+
+    // Implement qc-files=inherit which sets qc-files to the value of
+    // publish_dir_mode.
+    if(mcp.workflow['qc-files'] == 'inherit') mcp.workflow['qc-files'] = gp.publish_dir_mode
 
     mcp
 }

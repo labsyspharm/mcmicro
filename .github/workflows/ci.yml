@@ -74,19 +74,20 @@ jobs:
           - --viz
           - --start-at illumination --stop-at registration
           - --background
+          - --background --background-method imagej-rolling-ball
           - --segmentation cypository --cypository-opts '--channel 10 --scalingFactor 2' --s3seg-opts '--logSigma 45 300'
           - --segmentation ilastik,mesmer
           - --segmentation cellpose --mcquant-opts '--masks *masks.tif'
-          - --viz -profile singularity
+          - --viz --segmentation ilastik -profile singularity
     needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Install Singularity
-        uses: eWaterCycle/setup-singularity@v6
+        uses: eWaterCycle/setup-singularity@v7
         if: ${{ contains(matrix.params, 'singularity') }}
         with:
-          singularity-version: 3.6.4
+          singularity-version: 3.8.3
       - name: Install Nextflow
         run: curl -fsSL get.nextflow.io | bash
       - name: Restore exemplar-001 cache

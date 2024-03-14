@@ -500,10 +500,13 @@ Annotated narratives must be manually generated, and users must provide MCMICRO 
 | [Ilastik](./core.html#ilastik) | Probability map generator | [Code](https://github.com/labsyspharm/mcmicro-ilastik) - [DOI](https://doi.org/10.1038/s41592-019-0582-9) |
 | [Cypository](./core.html#ilastik) | Probability map generator (cytoplasm only) | [Code](https://github.com/HMS-IDAC/Cypository) |
 | [Mesmer](./core.html#mesmer) | Instance segmentation | [Code](https://github.com/vanvalenlab/deepcell-applications) - [DOI](https://doi.org/10.1038/s41587-021-01094-0) |
+| [Cellpose](./core.html#cellpose) | Instance segmentation | [Code](https://github.com/MouseLand/cellpose) - [DOI](https://doi.org/10.1038/s41592-022-01663-4) |
 | [naivestates](./core.html#naivestates) | Cell type calling with Naive Bayes | [Code](https://github.com/labsyspharm/naivestates) |
 | [FastPG](./core.html#clustering) | Clustering (Louvain community detection) | [Code](https://github.com/labsyspharm/mcmicro-fastPG) - [DOI](https://www.biorxiv.org/content/10.1101/2020.06.19.159749v2) |
 | [scanpy](./core.html#clustering) | Clustering (Leiden community detection) | [Code](https://github.com/labsyspharm/mcmicro-scanpy) |
 | [FlowSOM](./core.html#clustering) | Clustering (Self-organizing maps) | [Code](https://github.com/labsyspharm/mcmicro-flowsom) |
+| [backsub](./core.html#backsub) | Autofluorescence correction | [Code](https://github.com/SchapiroLabor/Background_subtraction) |
+| [Imagej-rolling-ball](./core.html#imagej-rolling-ball) | Background subtraction (rolling ball) | [Code](https://github.com/Yu-AnChen/imagej-rolling-ball) |
 
 
 ---
@@ -600,13 +603,17 @@ The [Mesmer](https://doi.org/10.1038/s41587-021-01094-0){:target="_blank"} modul
 
 Add `segmentation: mesmer` to [workflow parameters]({{site.baseurl}}/parameters/workflow.html#segmentation) to enable Mesmer. When running together with UnMicst and/or ilastik, method names must be provided as a list enclosed in square brackets. Additional Mesmer parameters can be provided to MCMICRO by including a `mesmer:` field in the module options section.
 
+For large data sets it is recommended to use the parameters `segmentation-recyze: true` along with `segmentation-channel:`. In the example below we consider an image stack of 10 channels with the nuclear marker in channel 2 and membrane marker in channel 7.  The use of `segmentation-recyze: true` will reduce the image stack to these two channels prior to segmentation, hence reindexing the stack channels such that 2-->0 and 7-->1.
+
 * Example `params.yml`:
 
 ``` yaml
 workflow:
+  segmentation-channel: 2 7
+  segmentation-recyze: true
   segmentation: mesmer
 options:
-  mesmer: --image-mpp 0.25
+  mesmer: --image-mpp 0.25 --nuclear-channel 0 --membrane-channel 1
 ```
 * Running outside of MCMICRO: [Instructions](https://github.com/vanvalenlab/deepcell-applications){:target="_blank"}.
 
@@ -623,12 +630,60 @@ A segmentation mask, similar to the ones produced by S3segmenter. Nextflow will 
 | Name | Description | Default Value |
 | :--- | :--- | :--- |
 | `--nuclear-channel` | The numerical index of the channel(s) from `nuclear-image` to select. If multiple values are passed, the channels will be summed. | `0` |
+| `--membrane-channel` | The position of the membrane channel within the `segmentation-channel` parameter. |  |
 | `--compartment` | Predict nuclear or whole-cell segmentation. | `"whole-cell"` |
 | `--image-mpp` | The resolution of the image in microns-per-pixel. A value of 0.5 corresponds to 20x zoom. | `0.5` |
 | `--batch-size` | Number of images to predict on per batch. | `4` |
 
 
 [Back to Other Modules](./core.html#other-modules){: .btn .btn-purple} [Back to top](./core){: .btn .btn-outline} 
+
+---
+
+## Cellpose
+{: .fw-500}
+
+### Description
+Cellpose is a DL segmentation algorithm able to segment the nuclear or cytoplasmic compartments of the cell.  Publications of this algorithm can be found in [1](https://www.nature.com/articles/s41592-020-01018-x){:target="_blank"} and [2](https://www.nature.com/articles/s41592-022-01663-4){:target="_blank"}.  A thorough documentation of the script and CLI can be found [here](https://cellpose.readthedocs.io/en/latest/index.html){:target="_blank"}.
+
+### Usage
+
+To use this segmentation method add the line `segmentation: cellpose` in the workflow section of the `params.yml` file.  Under the options section of `params.yml` specify the input arguments of the cellpose script, such as segmentation model and channel(s) on which the model will be applied.  Notice that the channel(s) argument(s), i.e. --chan and --chan2, expect a zero-based index.  
+
+For large data sets it is recommended to use the parameters `segmentation-recyze: true` along with `segmentation-channel:`.  In the example below we consider an image stack of 10 channels with the nuclear marker in channel 2 and membrane marker in channel 7.  The use of `segmentation-recyze: true` will reduce the image stack to these two channels prior to segmentation, hence reindexing the stack channels such that 2-->0 and 7-->1.
+
+
+* Example `params.yml`:
+
+``` yaml
+workflow:
+  segmentation-channel: 2 7 
+  segmentation-recyze: true
+  segmentation: cellpose
+options:
+  cellpose: --pretrained_model cyto --chan 1 --chan2 0 --no_npy
+```
+* Running outside of MCMICRO: [Github](https://github.com/MouseLand/cellpose){:target="_blank"}, [Instructions](https://cellpose.readthedocs.io/en/latest/installation.html){:target="_blank"}.
+
+### Input
+
+* The image (`.tif`) to be segmented should be in the `registration/` subdirectory.
+* --pretained_model: name of the built-in model to be used for segmentation, options include “_nuclei_”,“_cyto_” and “_cyto2_”.  Alternatively you can give a file path to a custom retrained model.  Custom models can be trained in the [cellpose GUI](https://cellpose.readthedocs.io/en/latest/gui.html){:target="_blank"}.
+* --chan: zero-based index of the channel on which the segmentation model will be applied.  When using the “nuclei” model provide the index of the nuclear channel, e.g. DAPI.  In the case of the "cyto" models provide the channel of the membrane marker.
+* --chan2 [optional]: index of the nuclear marker channel.  This argument is valid only when using the "cyto" models.
+
+### Output
+
+A `.tif` image with the segmentation masks in the `segmentation/` subdirectory.
+
+### Optional arguments
+
+| Name | Description | Default Value |
+| :--- | :--- | :--- |
+| `--pretrained_model` | Name of a built-in segmentation model or a file path to a custom model. | `cyto` |
+| `--chan` | Index of the selected channel to segment.  | `0` |
+| `--chan2` | Index of the nuclear marker channel. | `0` |
+| `--no_npy` | Boolean flag to suppress saving the .npy files output (recommended to avoid overflow errors when processing large data sets). | `False` |
 
 ---
 
@@ -757,16 +812,18 @@ Nextflow will write all outputs to the `cell-states/naivestates/` subdirectory w
 
 
 ### Description
-`Backsub` is a background subtraction module for sequential IF images. It performs autofluorescence, pixel-level subtraction on large `.ome.tif` images primarily developed with the Lunaphore COMET platform outputs in mind.
+`Backsub` is an autofluorescence subtraction module for sequential IF images. It performs pixel-level subtraction on large `.ome.tif` images primarily developed with the Lunaphore COMET platform outputs in mind.
 
 ### Usage
-By default, MCMICRO assumes background subtraction should not be performed. Add `background: true` to [module options]({{site.baseurl}}/parameters/workflow.html#background) to indicate it should be.
+By default, MCMICRO assumes background subtraction should not be performed. Add `background: true` to [module options]({{site.baseurl}}/parameters/workflow.html#background) to indicate it should be. By default, the `background-method` parameter is set to `backsub`. 
+If channels are removed using this module, and `segmentation-channel` is specified, it should be kept in mind that the index provided with `segmentation-channel` would refer to the index after channel removal.
 
 * Example `params.yml`:
 
 ``` yaml
 workflow:
   background: true
+  background-method: backsub
 ```
 
 * Running outside of MCMICRO: [Instructions](https://github.com/SchapiroLabor/Background_subtraction){:target="_blank"}.
@@ -781,7 +838,51 @@ workflow:
 * A pyramidal, tiled `.ome.tif`. Nextflow will write the output file to `background/` within the project directory.
 * A modified `markers.csv` to match the background subtracted image.
 
+### Optional arguments
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `--pixel-size` | `None` | The resolution of the image in microns-per-pixel. If not provided, it is read from metadata. If that is not possible, 1 is assigned. |
+| `--tile-size` | `1024` | Tile size used for pyramid image generation.|
+| `--chunk-size` | `5000` | Chunk size used for lazy loading and processing the image.|
+
 [Back to Other Modules](./core.html#other-modules){: .btn .btn-purple} [Back to top](./core){: .btn .btn-outline} 
+
+---
+
+## Imagej-rolling-ball
+{: .fw-500}
+
+### Description
+`Imagej-rolling-ball` is a background subtraction module that applies ImageJ's "Subtract Background..." function to the multi-channel whole-slide images. Application of rolling ball background subtraction for widefield fluorescent microscopy is demonstrated [here](https://www.cambridge.org/core/journals/microscopy-today/article/how-to-get-better-fluorescence-images-with-your-widefield-microscope-a-methodology-review/0F9E17F6F11B78E96309AFC0CE3AF1CC)
+
+### Usage
+By default, MCMICRO does not perform background subtraction. Add `background: true` and `background-method: imagej-rolling-ball` to [module options]({{site.baseurl}}/parameters/workflow.html#background) to run it.
+
+Note that as mentioned [here](https://imagej.nih.gov/ij/docs/menus/process.html#background), the radius of the rolling ball "should be at least as large as the radius of the largest object in the image that is not part of the background". The default radius is **100 pixels** as below (`imagej-rolling-ball: 100 -n=4 -j="-Xmx4g"`). We generally use `100` for images with resolution of 0.325 µm/pixel.
+
+* Example `params.yml`:
+
+``` yaml
+workflow:
+  background: true
+  background-method: imagej-rolling-ball
+
+options:
+  imagej-rolling-ball: 100 -n=4 -j="-Xmx4g"
+```
+
+* Running outside of MCMICRO: [Instructions](https://github.com/Yu-AnChen/imagej-rolling-ball){:target="_blank"}.
+
+### Inputs
+
+* Stitched and registered multi-cycle `.ome.tif`
+
+### Outputs
+
+* A pyramidal, tiled `{input-image-name}-ij_rolling_ball_{radius}.ome.tif`. Nextflow will write the output file to `background/` within the project directory.
+
+[Back to Other Modules](./core.html#other-modules){: .btn .btn-purple} [Back to top](./core){: .btn .btn-outline}
 
 
 # Suggest a module

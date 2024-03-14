@@ -6,7 +6,8 @@ process coreograph {
     container "${params.contPfx}${module.container}:${module.version}"
     
     // Output -- publish masks only, images need to be pyramidized
-    publishDir "${params.in}/dearray", mode: 'copy', pattern: '**mask.tif'
+    publishDir "${params.in}/dearray", mode: "${params.publish_dir_mode}",
+      pattern: '**mask.tif'
 
     // QC
     publishDir "${Flow.QC(params.in, module.name)}",
@@ -46,7 +47,7 @@ workflow dearray {
 
     // Pass the core images through palom to pyramidize them
     inputs = coreograph.out.cores.flatten()
-    roadie('pyramidize', inputs, '', true, "${params.in}/dearray", 'copy')
+    roadie('pyramidize', inputs, '', true, "${params.in}/dearray", "${params.publish_dir_mode}")
 
   emit:
     cores = roadie.out

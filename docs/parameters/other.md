@@ -12,6 +12,7 @@ Segmentation
 1. [Ilastik](./other.html#ilastik)
 1. [Cypository](./other.html#cypository)
 1. [Mesmer](./other.html#mesmer)
+1. [Cellpose](./other.html#cellpose)
 
 Clustering and cell type inference
 1. [Clustering](./other.html#clustering) 
@@ -147,6 +148,53 @@ A segmentation mask, similar to the ones produced by S3segmenter. Nextflow will 
 
 ---
 
+## Cellpose
+{: .fw-500}
+
+### Description
+Cellpose is a DL segmentation algorithm able to segment the nuclear or cytoplasmic compartments of the cell.  Publications of this algorithm can be found in [1](https://www.nature.com/articles/s41592-020-01018-x){:target="_blank"} and [2](https://www.nature.com/articles/s41592-022-01663-4){:target="_blank"}.  A thorough documentation of the script and CLI can be found [here](https://cellpose.readthedocs.io/en/latest/index.html){:target="_blank"}.
+
+### Usage
+
+To use this segmentation method add the line `segmentation: cellpose` in the workflow section of the `params.yml` file.  Under the options section of `params.yml` specify the input arguments of the cellpose script, such as segmentation model and channel(s) on which the model will be applied.  Notice that the channel(s) argument(s), i.e. --chan and --chan2, expect a zero-based index.  
+
+For large data sets it is recommended to use the parameters `segmentation-recyze: true` along with `segmentation-channel:`.  In the example below we consider an image stack of 10 channels with the nuclear marker in channel 2 and membrane marker in channel 7.  The use of `segmentation-recyze: true` will reduce the image stack to these two channels prior to segmentation, hence reindexing the stack channels such that 2-->0 and 7-->1.
+
+
+* Example `params.yml`:
+
+``` yaml
+workflow:
+  segmentation-channel: 2 7 
+  segmentation-recyze: true
+  segmentation: cellpose
+options:
+  cellpose: --pretrained_model cyto --chan 1 --chan2 0 --no_npy
+```
+* Running outside of MCMICRO: [Github](https://github.com/MouseLand/cellpose){:target="_blank"}, [Instructions](https://cellpose.readthedocs.io/en/latest/installation.html){:target="_blank"}.
+
+### Input
+
+* The image (`.tif`) to be segmented should be in the `registration/` subdirectory.
+* --pretained_model: name of the built-in model to be used for segmentation, options include “_nuclei_”,“_cyto_” and “_cyto2_”.  Alternatively you can give a file path to a custom retrained model.  Custom models can be trained in the [cellpose GUI](https://cellpose.readthedocs.io/en/latest/gui.html){:target="_blank"}.
+* --chan: zero-based index of the channel on which the segmentation model will be applied.  When using the “nuclei” model provide the index of the nuclear channel, e.g. DAPI.  In the case of the "cyto" models provide the channel of the membrane marker.
+* --chan2 [optional]: index of the nuclear marker channel.  This argument is valid only when using the "cyto" models.
+
+### Output
+
+A `.tif` image with the segmentation masks in the `segmentation/` subdirectory.
+
+### Optional arguments
+
+| Name | Description | Default Value |
+| :--- | :--- | :--- |
+| `--pretrained_model` | Name of a built-in segmentation model or a file path to a custom model. | `cyto` |
+| `--chan` | Index of the selected channel to segment.  | `0` |
+| `--chan2` | Index of the nuclear marker channel. | `0` |
+| `--no_npy` | Boolean flag to suppress saving the .npy files output (recommended to avoid overflow errors when processing large data sets). | `False` |
+
+---
+
 ## Clustering
 {: .fw-500}
 
@@ -272,16 +320,18 @@ Nextflow will write all outputs to the `cell-states/naivestates/` subdirectory w
 
 
 ### Description
-`Backsub` is a background subtraction module for sequential IF images. It performs autofluorescence, pixel-level subtraction on large `.ome.tif` images primarily developed with the Lunaphore COMET platform outputs in mind.
+`Backsub` is an autofluorescence subtraction module for sequential IF images. It performs pixel-level subtraction on large `.ome.tif` images primarily developed with the Lunaphore COMET platform outputs in mind.
 
 ### Usage
-By default, MCMICRO assumes background subtraction should not be performed. Add `background: true` to [module options]({{site.baseurl}}/parameters/) to indicate it should be.
+By default, MCMICRO assumes background subtraction should not be performed. Add `background: true` to [module options]({{site.baseurl}}/parameters/workflow.html#background) to indicate it should be. By default, the `background-method` parameter is set to `backsub`. 
+If channels are removed using this module, and `segmentation-channel` is specified, it should be kept in mind that the index provided with `segmentation-channel` would refer to the index after channel removal.
 
 * Example `params.yml`:
 
 ``` yaml
 workflow:
   background: true
+  background-method: backsub
 ```
 
 * Running outside of MCMICRO: [Instructions](https://github.com/SchapiroLabor/Background_subtraction){:target="_blank"}.
@@ -296,4 +346,12 @@ workflow:
 * A pyramidal, tiled `.ome.tif`. Nextflow will write the output file to `background/` within the project directory.
 * A modified `markers.csv` to match the background subtracted image.
 
-[Back to top](./other.html#other-modules){: .btn .btn-purple} [Back to main modules](./){: .btn .btn-outline} 
+### Optional arguments
+
+| Parameter | Default | Description |
+| --- | --- | --- |
+| `--pixel-size` | `None` | The resolution of the image in microns-per-pixel. If not provided, it is read from metadata. If that is not possible, 1 is assigned. |
+| `--tile-size` | `1024` | Tile size used for pyramid image generation.|
+| `--chunk-size` | `5000` | Chunk size used for lazy loading and processing the image.|
+
+[Back to Other Modules](./core.html#other-modules){: .btn .btn-purple} [Back to top](./core){: .btn .btn-outline} 

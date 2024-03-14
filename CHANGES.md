@@ -1,3 +1,98 @@
+### 2024-03-10
+
+* Allow for dynamic sample name specification in the fileseries/filepattern expressions.
+
+For example, if the filenames are structured like this:
+```
+myproject/
+  markers.csv
+  params.yml
+  raw/
+    image1/
+      image1_ch1.tif
+      image1_ch2.tif
+    image2/
+      image2_ch1.tif
+      image2_ch2.tif
+```
+
+The corresponding expression can now be specified as `fileseries|.|pattern={samplename}_ch{channel}.tif`.
+
+### 2024-02-25
+
+* Added support for multiple samples in `raw/` subdirectory. If multiple images share the same markers and should be processed with the same set of parameters, they can be placed as subdirectories of `raw/`. In other words, instead of structuring the data as multiple projects:
+
+```
+image1/
+  markers.csv
+  params.yml
+  raw/
+    cycle1.rcpnl
+    cycle2.rcpnl
+
+image2/
+  markers.csv
+  params.yml
+  raw/
+    cycle1.rcpnl
+    cycle2.rcpnl
+```
+
+they can be consolidated under the same project folder:
+
+```
+myproject/
+  markers.csv
+  params.yml
+  raw/
+    image1/
+      cycle1.rcpnl
+      cycle2.rcpnl
+    image2/
+      cycle1.rcpnl
+      cycle2.rcpnl
+```
+
+### 2024-01-31
+
+* Added support for ASHLAR's [fileseries/filepattern](https://forum.image.sc/t/ashlar-how-to-pass-multiple-images-to-be-stitched/49864) feature. The patterns can be provided directly via ASHLAR's options:
+
+``` yaml
+options:
+  ashlar: fileseries|...
+```
+
+### 2023-12-21
+
+* Added a config parameter controlling how intermediates are published to project directory. The behavior can be controlling by adding the following to `custom.config`:
+
+```
+params.publish_dir_mode = 'copy'
+```
+
+and providing it to the pipeline with
+
+```
+nextflow run labsyspharm/mcmicro --in exemplar-001 -c custom.config
+```
+
+The valid values for `publish_dir_mode` can be found in [Nextflow documentation](https://nextflow.io/docs/latest/process.html#publishdir) of `publishDir`, argument `mode`.
+
+### 2023-08-29
+
+* Added ImageJ rolling ball background subtraction module
+
+The new module can be selected by adding the following to `params.yml`:
+``` yaml
+workflow:
+  background: true
+  background-method: imagej-rolling-ball
+```
+
+### 2023-06-16
+
+* If `--membrane-channel` is provided to Mesmer options, MCMICRO will automatically pass the input image both as `--nuclear-image` and as `--membrane-image` to the Mesmer CLI.
+
 ### 2023-03-10
 
 * [viz] Auto-Minerva story construction will now read channel names from `markers.csv`

@@ -73,6 +73,7 @@ exemplar-001 or exemplar-002
     ├── ...
     └── ...
 ```
+**NOTE**: For this tutorial, we demonstrate running the pipeline with the input of raw images and illumination profiles (in `illumination`). To see a more comprehensive description of inputs for MCMICRO, please see the [**Input** section under **Inputs/Outputs**](../io.md#input).
 
 By default, `exemplar-001` contains cycles 6 through 8, while exemplar-002 contains all 10 cycles. Use `nextflow run labsyspharm/mcmicro/exemplar.nf --help` to learn how to download a different range of cycles for each exemplar.
 

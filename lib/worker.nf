@@ -28,9 +28,9 @@ process worker {
     tag "${module.name}-${task.index}"
     
     // Output files in the pre-configured output format (outfmt) and optional plots
-    publishDir "${pubDir}", mode: 'copy',
+    publishDir "${pubDir}", mode: "${params.publish_dir_mode}",
       pattern: "$outfmt", saveAs: {fn -> fnOut != '' ? fnOut : fn}
-    publishDir "${pubDir}", mode: 'copy', pattern: 'plots/**'
+    publishDir "${pubDir}", mode: "${params.publish_dir_mode}", pattern: 'plots/**'
 
     // QC
     publishDir "${Flow.QC(params.in, module.name)}", mode: "${mcp.workflow['qc-files']}",
@@ -68,10 +68,18 @@ process worker {
     //   if they all use the same model file.
     script:
 
-    // Find module specific parameters and compose a command
-    def cmd = "${module.cmd} ${module.input} $inp ${Opts.moduleOpts(module, mcp)}"
+    // Find module specific parameters
+    def opts = "${Opts.moduleOpts(module, mcp)}"
+
+    // Determine if we need to pass the input as a membrane image also
+    def mmbr = (opts.indexOf('membrane') > -1 && module.containsKey('membrane-input')) ?
+      "${module['membrane-input']} $inp" : ""
+
+    // Compose the command
+    def cmd = "${module.cmd} ${module.input} $inp $mmbr $opts"
     String m = "${module.name}-model"
 
+    // Create a copy of the model file if one is provided
     if( mcp.workflow.containsKey(m) ) {
       def mdlcp = "cp-${model.name}"
       """

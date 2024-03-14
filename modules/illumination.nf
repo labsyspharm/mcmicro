@@ -12,7 +12,8 @@ process illumination {
     container "${params.contPfx}${module.container}:${module.version}"
 
     // Output profiles
-    publishDir "${params.in}/illumination", mode: 'copy', pattern: '*.tif'
+    publishDir "${params.in}/illumination/${sname}", mode: "${params.publish_dir_mode}",
+      pattern: '*.tif'
 
     // Provenance
     publishDir "${Flow.QC(params.in, 'provenance')}", mode: 'copy', 
@@ -22,10 +23,10 @@ process illumination {
     input:
       val wfp
       val module
-      tuple path(raw), val(relPath) // raw is only for staging, use relPath for paths
+      tuple val(sname), path(raw), val(relPath) // raw is only for staging, use relPath for paths
     output:
-      path '*-dfp.tif', emit: dfp
-      path '*-ffp.tif', emit: ffp
+      tuple val(sname), path('*-dfp.tif'), emit: dfp
+      tuple val(sname), path('*-ffp.tif'), emit: ffp
       tuple path('.command.sh'), path('.command.log')
 
     when: Flow.doirun('illumination', wfp)

@@ -1,12 +1,10 @@
 import mcmicro.*
 
-include {roadie} from "$projectDir/roadie"
-
 process autominerva {
     container "${params.contPfx}${module.container}:${module.version}"
 
     // Output
-    publishDir "${params.in}/viz", mode: 'copy', pattern: "$tag/**"
+    publishDir "${params.in}/viz", mode: "${params.publish_dir_mode}", pattern: "$tag/**"
 
     // Provenance
     publishDir "${Flow.QC(params.in, 'provenance')}", mode: 'copy', 

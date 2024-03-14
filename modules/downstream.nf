@@ -10,7 +10,7 @@ workflow downstream {
     // Determine if there are any custom models specified
     inp = Channel.of( mcp.modules['downstream'] )
         .flatten()
-        .map{ it -> String m = "${it.name}Model";
+        .map{ it -> String m = "${it.name}-model";
             tuple(it, mcp.workflow.containsKey(m) ?
             file(mcp.workflow[m]) : 'built-in') }
         .combine(input)

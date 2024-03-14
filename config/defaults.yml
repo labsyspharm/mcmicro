@@ -1,10 +1,11 @@
 workflow:
   start-at: registration
   stop-at: quantification
-  qc-files: copy
+  qc-files: inherit
   tma: false
   viz: false
   background: false
+  background-method: backsub
   multi-formats: '{.xdce,.nd,.scan,.htd}'
   single-formats: '{.ome.tiff,.ome.tif,.rcpnl,.btf,.nd2,.tif,.czi}'
   segmentation: unmicst
@@ -14,8 +15,9 @@ options:
   ashlar: -m 30
   cypository: --model zeisscyto
   ilastik: --num_channels 1
-  mcquant: --masks cell*.tif
+  mcquant: --masks cell*.tif *_cp_masks*.tif
   naivestates: -p png
+  imagej-rolling-ball: 100 -n=4 -j="-Xmx4g"
 modules:
   illumination:
     name: basic
@@ -32,14 +34,18 @@ modules:
     cmd: python /app/UNetCoreograph.py --outputPath .
     input: --imagePath
   background:
-    name: backsub
-    container: ghcr.io/schapirolabor/background_subtraction
-    version: v0.4.1
+      name: backsub
+      container: ghcr.io/schapirolabor/background_subtraction
+      version: v0.4.1
+      cmd: |-
+        python3 /background_subtraction/background_sub.py \
+          -r ${image} -m ${marker} \
+          -o ${image_id}_backsub.ome.tif -mo markers_bs.csv
   segmentation:
     -
       name: unmicst
       container: labsyspharm/unmicst
-      version: 2.7.6
+      version: 2.7.7
       cmd: python /app/unmicstWrapper.py --stackOutput --outputPath .
       input: ''
       channel: --channel
@@ -70,6 +76,7 @@ modules:
       version: 0.4.0
       cmd: python /usr/src/app/run_app.py mesmer --squeeze --output-directory . --output-name cell.tif
       input: --nuclear-image
+      membrane-input: --membrane-image
       channel: --nuclear-channel
       idxbase: 0
       watershed: 'no'
@@ -77,15 +84,15 @@ modules:
       name: cellpose
       container: biocontainers/cellpose
       version: 2.1.1_cv2
-      cmd: cellpose --channel_axis 0 --save_tif --savedir .
+      cmd: cellpose --channel_axis 0 --save_tif --savedir . --verbose
       input: --image_path
-      channel: --chan
+      model: --pretrained_model
       idxbase: 0
       watershed: 'no'
   watershed:
     name: s3seg
     container: labsyspharm/s3segmenter
-    version: 1.5.2
+    version: 1.5.6
     channel: --probMapChan
     idxbase: 1
   quantification:
@@ -127,4 +134,4 @@ modules:
   viz:
     name: autominerva
     container: ghcr.io/labsyspharm/mcmicro
-    version: 'auto-minerva-2023-03-11'
+    version: auto-minerva-2023-08-29
