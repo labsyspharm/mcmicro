@@ -156,7 +156,7 @@
                       "move",
                       "link",
                       "symlink",
-                      "inherit",
+                      "inherit"
                   ],
                   "default": "inherit"
               },
