@@ -25,7 +25,7 @@ process mcquant {
 
     """
     shopt -s nullglob
-    python /app/CommandSingleCellExtraction.py --image $tag \
+    mcquant --image $tag \
     ${Opts.moduleOpts(module, mcp)} --output . --channel_names $ch
     """
 }

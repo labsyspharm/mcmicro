@@ -106,7 +106,7 @@ modules:
   quantification:
     name: mcquant
     container: labsyspharm/quantification
-    version: 1.5.3
+    version: 1.6.0
   downstream:
     -
       name: naivestates
