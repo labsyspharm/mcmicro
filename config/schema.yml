@@ -19,6 +19,7 @@ workflow:
   - flowsom-model
   - scanpy-model
   - fastpg-model
+  - naivestates-model
 deprecated:
   quantification-mask: "--quant-opts '--masks ...'"
   illum: --start-at illumination
