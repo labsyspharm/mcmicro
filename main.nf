@@ -48,7 +48,6 @@ findFiles0 = { key, pattern -> pre[key] ?
 findFiles = { key, pattern, ife -> pre[key] ?
     Channel.fromPath("${params.in}/$key/$pattern").ifEmpty(ife) : Channel.empty()
 }
-findDirectories = { key -> Channel.fromPath("${params.in}/$key/*", type: 'dir')}
 // Some image formats store multiple fields of view in a single file. Other
 // formats store each field separately, typically in .tif files, with a separate
 // index file to tie them together. We will look for the index files from
@@ -59,14 +58,13 @@ findDirectories = { key -> Channel.fromPath("${params.in}/$key/*", type: 'dir')}
 (formatType, formatPattern) =
     file("${params.in}/raw/**${wfp['multi-formats']}") ?
     ["multi", wfp['multi-formats']] : ["single", wfp['single-formats']]
-rawFiles = findFiles('raw', "**${formatPattern}",
-		     {error "No images found in ${params.in}/raw"})
-
+    
 stagingDirs = Channel.fromPath("${params.in}/staging/*", type: 'dir')
     .ifEmpty { error "No subdirectories found in staging directory" }
 staging_in = stagingDirs
     .map{ tuple(
-        Util.getSampleNameFromDir(it, file("${params.in}/staging")),
+        Util.getSampleName(it, file("${params.in}/staging")),
+        Util.getCycleNameFromDir(it, file("${params.in}/staging")),
         formatType == "single" ? it : it.parent
     )}
 // Here we assemble tuples of 1) path to stage for each raw image (might be a
@@ -77,6 +75,8 @@ staging_in = stagingDirs
 // used when interpolating these paths into script strings, as we are bypassing
 // the normal way that paths are passed to channels which handles this escaping
 // automatically.
+rawFiles = findFiles('raw', "**${formatPattern}",
+		     {error "No images found in ${params.in}/raw"})
 raw = rawFiles
     .map{ tuple(
         Util.getSampleName(it, file("${params.in}/raw")),
@@ -125,6 +125,17 @@ include {background}     from "$projectDir/modules/background"
 // Define the primary mcmicro workflow
 workflow {
     staging(mcp, staging_in, chMrk)
+    //staging.out.view()
+    staging.out.map{
+        sample, cycle, path ->
+        tuple(sample, cycle, path, path.toString().split('/').last())
+        }.toSortedList { a, b -> a[1] <=> b[1] }
+        .flatMap()
+        .map{
+            sample, cycle, path, name ->
+            tuple(sample, path, name)
+        }.set{ sorted_staging }
+    raw = raw.mix(sorted_staging)
 
     illumination(wfp, mcp.modules['illumination'], raw)
     registration(mcp, raw,

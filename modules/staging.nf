@@ -16,10 +16,10 @@ process phenoimager2mc {
     input:
       val mcp
       val module
-      tuple val(cycle), path(indir), path(marker)
+      tuple val(samplename), val(cycle), path(indir), path(marker)
 
     output:
-      tuple val(cycle), path("*.tif"), emit: img
+      tuple val(samplename), val(cycle), path("*.tif"), emit: img
       tuple path('.command.sh'), path('.command.log')
 
     when: Flow.doirun('staging', mcp.workflow)

@@ -75,6 +75,10 @@
                 "type": "boolean",
                 "description": "Is a staging step required before stitching with ASHLAR?"
               },
+              "illumination": {
+                "type": "boolean",
+                "description": "Should illumination correction be performed?"
+              },
               "segmentation": {
                   "type": "string",
                   "description": "A list of segmentation modules to run",

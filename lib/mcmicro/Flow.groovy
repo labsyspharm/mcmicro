@@ -89,7 +89,7 @@ static def doirun(step, wfp) {
         case 'staging':
             return(idxStart == 0 && idxStop >= 0)
         case 'illumination': 
-            return(idxStart <= 2 && idxStop >= 2)
+            return(idxStart <= 2 && idxStop >= 2 && wfp.illumination)
         case 'registration':
             return(idxStart <= 3 && idxStop >= 3)
         case 'background':

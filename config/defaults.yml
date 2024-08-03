@@ -4,6 +4,7 @@ workflow:
   qc-files: inherit
   tma: false
   viz: false
+  illumination: false
   background: false
   background-method: backsub
   staging: false
