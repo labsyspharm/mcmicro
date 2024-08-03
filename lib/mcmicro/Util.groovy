@@ -6,7 +6,11 @@ static def getSampleName(f, rawdir) {
     rel.contains('/') ? rel.split('/').head() : 
         rawdir.parent.getName()
 }
-
+static def getSampleNameFromDir(f, rawdir) {
+    // Resolve paths relative to the input project directory
+    String rel = rawdir.relativize(f).toString()
+    rel.split('/').head()
+}
 
 /**
  * Extracts a file ID as the first token before delim in the filename

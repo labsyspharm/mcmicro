@@ -188,6 +188,18 @@ static def parseParams(gp, fns, fnw) {
     else
         mcp.modules['background'] = mcp.modules['background'][0]
 
+    // Select the staging module based on --staging-method
+    mcp.modules['staging'] = mcp.modules['staging'].findAll{
+        it.name == mcp.workflow['staging-method']
+    }
+    if(mcp.modules['staging'].size() < 1) {
+        String msg = "Unknown staging method " +
+            mcp.workflow['staging-method']
+        throw new Exception(msg)
+    }
+    else
+        mcp.modules['staging'] = mcp.modules['staging'][0]
+
     // Filter segmentation modules based on --segmentation
     mcp.modules['segmentation'] = mcp.modules['segmentation'].findAll{
         mcp.workflow.segmentation.contains(it.name)

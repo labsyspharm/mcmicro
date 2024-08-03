@@ -6,6 +6,8 @@ workflow:
   viz: false
   background: false
   background-method: backsub
+  staging: false
+  staging-method: phenoimager2mc
   multi-formats: '{.xdce,.nd,.scan,.htd}'
   single-formats: '{.ome.tiff,.ome.tif,.rcpnl,.btf,.nd2,.tif,.czi}'
   segmentation: unmicst
@@ -33,6 +35,15 @@ modules:
     version: 2.2.9
     cmd: python /app/UNetCoreograph.py --outputPath .
     input: --imagePath
+  staging:
+    -
+      name: phenoimager2mc
+      container: ghcr.io/schapirolabor/phenoimager2mc
+      version: main
+      cmd: |-
+        python /phenoimager2mc/scripts/phenoimager2mc.py \
+          --indir ${indir} \
+          -o . -m 6
   background:
     -
       name: backsub

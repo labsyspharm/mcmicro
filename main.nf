@@ -48,7 +48,7 @@ findFiles0 = { key, pattern -> pre[key] ?
 findFiles = { key, pattern, ife -> pre[key] ?
     Channel.fromPath("${params.in}/$key/$pattern").ifEmpty(ife) : Channel.empty()
 }
-
+findDirectories = { key -> Channel.fromPath("${params.in}/$key/*", type: 'dir')}
 // Some image formats store multiple fields of view in a single file. Other
 // formats store each field separately, typically in .tif files, with a separate
 // index file to tie them together. We will look for the index files from
@@ -62,6 +62,13 @@ findFiles = { key, pattern, ife -> pre[key] ?
 rawFiles = findFiles('raw', "**${formatPattern}",
 		     {error "No images found in ${params.in}/raw"})
 
+stagingDirs = Channel.fromPath("${params.in}/staging/*", type: 'dir')
+    .ifEmpty { error "No subdirectories found in staging directory" }
+staging_in = stagingDirs
+    .map{ tuple(
+        Util.getSampleNameFromDir(it, file("${params.in}/staging")),
+        formatType == "single" ? it : it.parent
+    )}
 // Here we assemble tuples of 1) path to stage for each raw image (might be a
 // directory) and 2) relative path to the main file for each image. Processes
 // must input the first as a path and the second as a val to avoid incorrect or
@@ -105,6 +112,7 @@ pre_qty   = findFiles('quantification', "*.csv",
     {error "No quantification tables in ${params.in}/quantification"})
 
 // Import individual modules
+include {staging}        from "$projectDir/modules/staging"
 include {illumination}   from "$projectDir/modules/illumination"
 include {registration}   from "$projectDir/modules/registration"
 include {dearray}        from "$projectDir/modules/dearray"
@@ -116,6 +124,8 @@ include {background}     from "$projectDir/modules/background"
 
 // Define the primary mcmicro workflow
 workflow {
+    staging(mcp, staging_in, chMrk)
+
     illumination(wfp, mcp.modules['illumination'], raw)
     registration(mcp, raw,
 		 illumination.out.ffp.mix( pre_ffp ),
