@@ -43,7 +43,7 @@ modules:
       cmd: |-
         python /phenoimager2mc/scripts/phenoimager2mc.py \
           --indir ${indir} \
-          -o . -m 6
+          -o ${cycle}.ome.tif -m 6
   background:
     -
       name: backsub
