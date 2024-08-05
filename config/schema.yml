@@ -11,6 +11,9 @@ workflow:
   - segmentation
   - segmentation-channel
   - segmentation-recyze
+  - segmentation-nuclear-channel
+  - segmentation-membrane-channel
+  - segmentation-max-projection
   - downstream
   - ilastik-model
   - mesmer-model

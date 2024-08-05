@@ -255,10 +255,61 @@ static def moduleOpts(module, mcp) {
         copts = module.channel + ' ' + idx.join(' ')
       }
 
+    String ncopts = ''
+    if(wfp.containsKey('segmentation-nuclear-channel') &&
+        module.containsKey('nuclear-channel')) {
+
+        // Module spec must specify whether indexing is 0-based or 1-based
+        if(!module.containsKey('idxbase'))
+            error module.name + " spec in modules.yml is missing idxbase key"
+
+        // Identify the list of indices
+        List idx = wfp['segmentation-nuclear-channel'].toString().tokenize()
+
+        // Account for recyze, if appropriate
+        if(wfp['segmentation-recyze'])
+            idx = (1..idx.size()).collect{it}
+
+        // Account for 0-based indexing
+        if(module.idxbase == 0)
+            idx = idx.collect{"${(it as int)-1}"}
+
+        // S3segmenter will work with the first index only
+        if(module.name == 's3seg')
+            idx = idx[0..0]
+
+        ncopts = module.nuclear_channel + ' ' + idx.join(' ')
+      }
+
+    String mcopts = ''
+    if(wfp.containsKey('segmentation-membrane-channel') &&
+        module.containsKey('membrane-channel')) {
+
+        // Module spec must specify whether indexing is 0-based or 1-based
+        if(!module.containsKey('idxbase'))
+            error module.name + " spec in modules.yml is missing idxbase key"
+
+        // Identify the list of indices
+        List idx = wfp['segmentation-membrane-channel'].toString().tokenize()
+
+        // Account for recyze, if appropriate
+        if(wfp['segmentation-recyze'])
+            idx = (1..idx.size()).collect{it}
+
+        // Account for 0-based indexing
+        if(module.idxbase == 0)
+            idx = idx.collect{"${(it as int)-1}"}
+
+        // S3segmenter will work with the first index only
+        if(module.name == 's3seg')
+            idx = idx[0..0]
+
+        mcopts = module.membrane_channel + ' ' + idx.join(' ')
+      }
     // Identify all remaining module options
     String mopts = ''
     if(mcp.options.containsKey(module.name))
         mopts = mcp.options[module.name]
 
-    copts + ' ' + mopts
+    copts + ' ' + ncopts + ' ' + mcopts + ' ' + mopts
 }

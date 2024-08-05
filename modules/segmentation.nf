@@ -75,7 +75,22 @@ workflow segmentation {
     chan = mcp.workflow.containsKey('segmentation-channel') ?
       mcp.workflow['segmentation-channel'].toString()
         .tokenize().collect{"${(it as int)-1}"}.join(' ') : '0'
-    recyzeOut = roadie('recyze', recyzeIn.toCut, "--channels $chan", false, '', '' )
+
+    nuc_chan = mcp.workflow.containsKey('segmentation-nuclear-channel') ?
+      mcp.workflow['segmentation-nuclear-channel'].toString()
+        .tokenize().collect{"${(it as int)-1}"}.join(' ') : '0'
+
+    mem_chan = mcp.workflow.containsKey('segmentation-membrane-channel') ?
+      mcp.workflow['segmentation-membrane-channel'].toString()
+        .tokenize().collect{"${(it as int)-1}"}.join(' ') : ''
+
+    recyzeOut = roadie('recyze', 
+      recyzeIn.toCut, 
+      ["--channels $chan",
+        mcp.workflow.containsKey('segmentation-nuclear-channel') ? "--nuclear_channels $nuc_chan" : "",
+        mcp.workflow.containsKey('segmentation-membrane-channel') ? "--membrane_channels $mem_chan" : "",
+        mcp.workflow.containsKey('segmentation-max-projection') ? "--max_projection" : ""].join(" ").trim(), 
+      false, '', '' )
 
     // Determine IDs of images
     id_cut   = recyzeOut.map{ f -> tuple(Util.getFileID(f, '_crop.ome'), f) }

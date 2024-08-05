@@ -1,7 +1,7 @@
 recyze:
   description: channel and pixel cropping
   output: '*.ome.tif*'
-  params: ['x', 'x2', 'y', 'y2', 'w', 'h', 'channels']
+  params: ['x', 'x2', 'y', 'y2', 'w', 'h', 'channels', 'nuclear_channels', 'membrane_channels', 'max_projection']
 pyramidize:
   description: generate a pyramid for the input image
   output: '*.ome.tif'
