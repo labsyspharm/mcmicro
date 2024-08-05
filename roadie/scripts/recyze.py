@@ -69,6 +69,11 @@ class PyramidWriter:
                 sys.exit(1)
             self.channels = [0]
 
+        if self.max_projection and len(self.membrane_channels) > 0 and len(self.nuclear_channels) > 0:
+            self.channels = [0, 1]
+        elif self.max_projection and len(self.nuclear_channels) > 0:
+            self.channels = [0]
+
         xy = _x is not None and _y is not None
         xy2 = _x2 is not None and _y2 is not None
         wh = _w is not None and _h is not None
@@ -114,13 +119,7 @@ class PyramidWriter:
 
     @property
     def num_channels(self):
-        if self.max_projection:
-            if len(self.membrane_channels) > 0 & len(self.nuclear_channels) > 0:
-                return 2
-            else:
-                return 1
-        else:
-            return len(self.channels)
+        return len(self.channels)
 
     @property
     def level_shapes(self):
@@ -158,10 +157,6 @@ class PyramidWriter:
                 channels, 
                 slice(self.y,self.y + self.height), 
                 slice(self.x,self.x + self.width ))),axis=0)
-        #for ch in channels:
-        ###    if ch != channels[0]:
-        ##        maxprojection = np.maximum(maxprojection, self.in_data[0][ch, self.y:self.y + self.height, self.x:self.x + self.width])
-        #maxprojection = np.expand_dims(maxprojection, axis=0) 
         return maxprojection
 
     def base_tiles(self):
@@ -171,7 +166,6 @@ class PyramidWriter:
         if self.max_projection:
             # If max projection is enabled, generate the maximum projection image
             if self.nuclear_channels:
-                print(self.nuclear_channels)
                 nuclear_img = self.max_projection_channel(self.nuclear_channels)
                 imgs = [nuclear_img]
                 if self.membrane_channels:

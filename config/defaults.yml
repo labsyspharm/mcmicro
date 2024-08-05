@@ -41,11 +41,11 @@ modules:
     -
       name: phenoimager2mc
       container: ghcr.io/schapirolabor/phenoimager2mc
-      version: main
+      version: v0.1.1
       cmd: |-
         python /phenoimager2mc/scripts/phenoimager2mc.py \
           --indir ${indir} \
-          -o ${cycle}.ome.tif -m 6
+          -o ${cycle}.ome.tif
   background:
     -
       name: backsub
