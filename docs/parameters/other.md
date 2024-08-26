@@ -7,6 +7,8 @@ nav_exclude: true
 ---
 
 # Other Modules
+Staging
+1. [phenoimager2mc](./other.html#phenoimager2mc)
 
 Segmentation
 1. [Ilastik](./other.html#ilastik)
@@ -26,6 +28,32 @@ Background subtraction
 [Back to main modules](./){: .btn .btn-outline} 
 
 ---
+
+## Staging - Phenoimager2mc
+{: .fw-500}
+
+### Description
+Introducing an additional `staging` step in the pipeline, the [phenoimager2mc](https://github.com/schapirolabor/phenoimager2mc){:target="_blank"} module takes in individual unmixed component data tiles produced by the [InForm software by Akoya](https://www.akoyabio.com/phenoimager/inform-tissue-finder/) and produces an `ome-tif` file per cycle that is compatible with ASHLAR.
+
+### Usage
+By default, `staging` is not performed and the parameter has to be provided as shown below. In addition, the `staging-method: phenoimager2mc` parameter can specify which staging option should be used. It should be noted, `illumination` is run by default after `staging` and should actively be turned off if not needed as presented. It is highly recommended that the input tiles already have overlaps between them, if not, gaps will be introduced.
+
+* Example `params.yml`:
+
+``` yaml
+workflow:
+  start-at: staging
+  staging: true
+  illumination: false
+  staging-method: phenoimager2mc
+options:
+  phenoimager2mc: -m 6 --normalization max
+```
+* Specify number of channels per cycle: `-m`
+* Specify normalization (float32 -> uint16) method: `--normalization`, options `max`, `99th` for maximum value normalization or 99th percentile, respectively.
+* Running outside of MCMICRO: [Instructions](https://github.com/labsyspharm/mcmicro-ilastik){:target="_blank"}.
+
+[Back to top](./other.html#other-modules){: .btn .btn-purple} 
 
 ## Ilastik
 {: .fw-500}
@@ -158,16 +186,31 @@ Cellpose is a DL segmentation algorithm able to segment the nuclear or cytoplasm
 
 To use this segmentation method add the line `segmentation: cellpose` in the workflow section of the `params.yml` file.  Under the options section of `params.yml` specify the input arguments of the cellpose script, such as segmentation model and channel(s) on which the model will be applied.  Notice that the channel(s) argument(s), i.e. --chan and --chan2, expect a zero-based index.  
 
-For large data sets it is recommended to use the parameters `segmentation-recyze: true` along with `segmentation-channel:`.  In the example below we consider an image stack of 10 channels with the nuclear marker in channel 2 and membrane marker in channel 7.  The use of `segmentation-recyze: true` will reduce the image stack to these two channels prior to segmentation, hence reindexing the stack channels such that 2-->0 and 7-->1.
+For large data sets it is recommended to use the parameters `segmentation-recyze: true` along with `segmentation-channel:`.  In the example below we consider an image stack of 12 channels with the nuclear marker in channel 2 and membrane marker in channel 7.  The use of `segmentation-recyze: true` will reduce the image stack to these two channels prior to segmentation, hence reindexing the stack channels such that 2-->0 and 7-->1. 
+If `segmentation-max-projection: true` and multiple channels are provided for nuclear and membrane stains with `segmentation-nuclear-channel:` and `segmentation-membrane-channel:`, the returned image stack will contain the maximum projection of the respective nuclear (recyze output channel 0) and membrane channels (recyze output channel 1).
 
 
 * Example `params.yml`:
 
 ``` yaml
 workflow:
-  segmentation-channel: 2 7 
+  segmentation-channel: 2 7
   segmentation-recyze: true
   segmentation: cellpose
+options:
+  cellpose: --pretrained_model cyto --chan 1 --chan2 0 --no_npy
+```
+
+* Example `params.yml` using max-projection - the input image is large, so `segmentation-recyze` is toggled. The segmentation in this case should be run on the maximum projection of two nuclear markers (channels 5 and 11), and 3 membrane markers (channels 2 3 and 7). The output from `Recyze` will be a two-channel `tif`, the nuclear channel max projection - channel 0, is provided to the `cyto` model with `--chan2 0`, and the membrane channel max  projection - channel 1, is provided to the model with `--chan 1`.
+
+``` yaml
+workflow:
+  segmentation-channel: 2 3 5 7 11
+  segmentation-recyze: true
+  segmentation: cellpose
+  segmentation-max-projection: true
+  segmentation-nuclear-channel: 5 11
+  segmentation-membrane-channel: 2 3 7
 options:
   cellpose: --pretrained_model cyto --chan 1 --chan2 0 --no_npy
 ```
