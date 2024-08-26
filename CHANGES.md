@@ -1,3 +1,35 @@
+
+### 2024-08-26
+
+* Add staging step before illumination - `start-at: staging`, `staging: true`
+* `phenoimager2mc` added as a staging module - `staging-method: phenoimager2mc`
+* illumination is run by default if `start-at: staging` is given and can be toggled off with `illumination: false`
+* Add max projection option to recyze on multiple nuclear and/or membrane channels provided - output will have nuclear channel 0 and membrane channel 1
+  * `segmentation-max-projection: true`
+  * `segmentation-channel: 1 3 8 9`
+  * `segmentation-nuclear-channel: 1 8`
+  * `segmentation-membrane-channel: 3 9`
+
+Example parameter file for running staging, registration, segmentation with cellpose using the above options and quantification:
+```
+workflow:
+  start-at: staging
+  stop-at: quantification
+  illumination: false
+  staging: true
+  staging-method: phenoimager2mc
+  segmentation-recyze: true
+  segmentation-max-projection: true
+  segmentation-channel: 1 5 7 8 11
+  segmentation-nuclear-channel: 5 11
+  segmentation-membrane-channel: 1 7 8
+  segmentation: cellpose
+options:
+  phenoimager2mc: -m 6 --normalization max
+  ashlar: --align-channel 4 --flip-y
+  cellpose: --pretrained_model cyto --chan 1 --chan2 0 --no_npy
+```
+
 ### 2024-03-10
 
 * Allow for dynamic sample name specification in the fileseries/filepattern expressions.

@@ -36,7 +36,7 @@ Background subtraction
 Introducing an additional `staging` step in the pipeline, the [phenoimager2mc](https://github.com/schapirolabor/phenoimager2mc){:target="_blank"} module takes in individual unmixed component data tiles produced by the [InForm software by Akoya](https://www.akoyabio.com/phenoimager/inform-tissue-finder/) and produces an `ome-tif` file per cycle that is compatible with ASHLAR.
 
 ### Usage
-By default, `staging` is not performed and the parameter has to be provided as shown below. In addition, the `staging-method: phenoimager2mc` parameter can specify which staging option should be used. It should be noted, `illumination` is run by default after `staging` and should actively be turned off if not needed as presented. It is highly recommended that the input tiles already have overlaps between them, if not, gaps will be introduced.
+By default, `staging` is not performed and the parameter has to be provided as shown below. In addition, the `staging-method: phenoimager2mc` parameter can specify which staging option should be used. It should be noted, `illumination` is run by default after `staging` and should actively be turned off if not needed as presented. It is highly recommended that the input tiles already have overlaps between them, if not, gaps will be introduced. 
 
 * Example `params.yml`:
 
@@ -52,6 +52,13 @@ options:
 * Specify number of channels per cycle: `-m`
 * Specify normalization (float32 -> uint16) method: `--normalization`, options `max`, `99th` for maximum value normalization or 99th percentile, respectively.
 * Running outside of MCMICRO: [Instructions](https://github.com/labsyspharm/mcmicro-ilastik){:target="_blank"}.
+
+
+### Input
+Inputs should be saved in the `--in` directory in the `staging` subdirectory and should be `tif` or `tiff` component data files. The `marker` file should represent the expected stitched image, file paths should not contain whitespaces, and the cycles will be registered alphabetically.
+
+### Output
+An normalized `.ome.tif` file compatible with ASHLAR containing information from all tiles per cycle.
 
 [Back to top](./other.html#other-modules){: .btn .btn-purple} 
 
