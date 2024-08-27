@@ -18,7 +18,6 @@ workflow:
   - ilastik-model
   - mesmer-model
   - background
-  - staging
   - staging-method
   - cellpose-model
   - background-method

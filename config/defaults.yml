@@ -7,7 +7,6 @@ workflow:
   illumination: true
   background: false
   background-method: backsub
-  staging: false
   staging-method: phenoimager2mc
   multi-formats: '{.xdce,.nd,.scan,.htd}'
   single-formats: '{.ome.tiff,.ome.tif,.rcpnl,.btf,.nd2,.tif,.czi}'

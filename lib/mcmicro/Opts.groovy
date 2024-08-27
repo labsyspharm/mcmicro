@@ -138,6 +138,24 @@ static def validateWFParams(wfp, fns) {
             "segmentation-channel provided"
         throw new Exception(msg)
     }
+    if(!wfp['segmentation-max-projection'] && 
+      (wfp.containsKey('segmentation-nuclear-channel') || wfp.containsKey('segmentation-membrane-channel'))) {
+        String msg = "Multiple nuclear or membrane channels were requested " +
+            "but no maximum projection specification is provided. " +
+            "Either add the segmentation-max-projection parameter " +
+            "or only use segmentation-channel for channel selection."
+        throw new Exception(msg)
+    }
+    if(wfp['segmentation-max-projection'] &&
+      !(wfp.containsKey('segmentation-nuclear-channel') || wfp.containsKey('segmentation-membrane-channel'))) {
+        String msg = "Maximum projection specification provided but no " +
+            "nuclear or membrane channels defined. " +
+            "Either specify multiple nuclear (and membrane channels) with " +
+            "segmentation-nuclear-channel (and segmentation-membrane-channel) " +
+            "or exclude segmentation-max-projection and only use segmentation-channel " +
+            "for channel specification."
+        throw new Exception(msg)
+    }
 }
 
 /**

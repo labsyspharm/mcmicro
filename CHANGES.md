@@ -1,10 +1,11 @@
 
 ### 2024-08-26
 
-* Add staging step before illumination - `start-at: staging`, `staging: true`
+* Add staging step before illumination - `start-at: staging`
 * `phenoimager2mc` added as a staging module - `staging-method: phenoimager2mc`
 * illumination is run by default if `start-at: staging` is given and can be toggled off with `illumination: false`
 * Add max projection option to recyze on multiple nuclear and/or membrane channels provided - output will have nuclear channel 0 and membrane channel 1
+* `segmentation-nuclear-channel` and `segmentation-membrane-channel` should only be used if segmentation-max-projection is toggled, otherwise the output of recyze would only contain the channels provided in `segmentation-channel`
   * `segmentation-max-projection: true`
   * `segmentation-channel: 1 3 8 9`
   * `segmentation-nuclear-channel: 1 8`
@@ -16,7 +17,6 @@ workflow:
   start-at: staging
   stop-at: quantification
   illumination: false
-  staging: true
   staging-method: phenoimager2mc
   segmentation-recyze: true
   segmentation-max-projection: true

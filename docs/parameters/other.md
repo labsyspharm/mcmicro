@@ -55,7 +55,7 @@ options:
 
 
 ### Input
-Inputs should be saved in the `--in` directory in the `staging` subdirectory and should be `tif` or `tiff` component data files. The `marker` file should represent the expected stitched image, file paths should not contain whitespaces, and the cycles will be registered alphabetically.
+Inputs should be saved in the `staging` directory as one subdirectory per cycle containing the `tif` or `tiff` component data files. The `marker` file should represent the expected registered image, file paths should not contain whitespaces, and it should be taken into account that cycle order is the alphabetical order of subdirectory names.
 
 ### Output
 An normalized `.ome.tif` file compatible with ASHLAR containing information from all tiles per cycle.

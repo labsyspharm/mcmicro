@@ -48,6 +48,9 @@ findFiles0 = { key, pattern -> pre[key] ?
 findFiles = { key, pattern, ife -> pre[key] ?
     Channel.fromPath("${params.in}/$key/$pattern").ifEmpty(ife) : Channel.empty()
 }
+findDirs = { key, ife -> pre[key] ? 
+    Channel.fromPath("${params.in}/$key/*", type: 'dir').ifEmpty(ife) : Channel.empty()
+}
 // Some image formats store multiple fields of view in a single file. Other
 // formats store each field separately, typically in .tif files, with a separate
 // index file to tie them together. We will look for the index files from
@@ -59,8 +62,8 @@ findFiles = { key, pattern, ife -> pre[key] ?
     file("${params.in}/raw/**${wfp['multi-formats']}") ?
     ["multi", wfp['multi-formats']] : ["single", wfp['single-formats']]
     
-stagingDirs = Channel.fromPath("${params.in}/staging/*", type: 'dir')
-    .ifEmpty { error "No subdirectories found in staging directory" }
+stagingDirs = findDirs('staging', 
+    {error "No subdirectories found in staging directory"})
 staging_in = stagingDirs
     .map{ tuple(
         Util.getSampleName(it, file("${params.in}/staging")),

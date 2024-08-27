@@ -85,11 +85,11 @@ workflow segmentation {
         .tokenize().collect{"${(it as int)-1}"}.join(' ') : ''
 
     recyzeOut = roadie('recyze', 
-      recyzeIn.toCut, 
+      recyzeIn.toCut,
       ["--channels $chan",
-        mcp.workflow.containsKey('segmentation-nuclear-channel') ? "--nuclear_channels $nuc_chan" : "",
+        mcp.workflow.containsKey('segmentation-nuclear-channel')  ? "--nuclear_channels $nuc_chan"  : "",
         mcp.workflow.containsKey('segmentation-membrane-channel') ? "--membrane_channels $mem_chan" : "",
-        mcp.workflow.containsKey('segmentation-max-projection') ? "--max_projection" : ""].join(" ").trim(), 
+        mcp.workflow['segmentation-max-projection']               ? "--max_projection"              : ""].join(" ").trim(), 
       false, '', '' )
 
     // Determine IDs of images
