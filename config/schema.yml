@@ -7,13 +7,18 @@ workflow:
   - viz
   - multi-formats
   - single-formats
+  - illumination
   - segmentation
   - segmentation-channel
   - segmentation-recyze
+  - segmentation-nuclear-channel
+  - segmentation-membrane-channel
+  - segmentation-max-projection
   - downstream
   - ilastik-model
   - mesmer-model
   - background
+  - staging-method
   - cellpose-model
   - background-method
   - flowsom-model

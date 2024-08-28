@@ -111,6 +111,7 @@ By default, MCMICRO skips this step as it requires manual inspection of the outp
 ``` yaml
 workflow:
   start-at: illumination
+  illumination: true
 ```
 
 * Running outside of MCMICRO: [Instructions](https://github.com/labsyspharm/basic-illumination#running-as-a-docker-container){:target="_blank"}.

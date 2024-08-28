@@ -138,6 +138,24 @@ static def validateWFParams(wfp, fns) {
             "segmentation-channel provided"
         throw new Exception(msg)
     }
+    if(!wfp['segmentation-max-projection'] && 
+      (wfp.containsKey('segmentation-nuclear-channel') || wfp.containsKey('segmentation-membrane-channel'))) {
+        String msg = "Multiple nuclear or membrane channels were requested " +
+            "but no maximum projection specification is provided. " +
+            "Either add the segmentation-max-projection parameter " +
+            "or only use segmentation-channel for channel selection."
+        throw new Exception(msg)
+    }
+    if(wfp['segmentation-max-projection'] &&
+      !(wfp.containsKey('segmentation-nuclear-channel') || wfp.containsKey('segmentation-membrane-channel'))) {
+        String msg = "Maximum projection specification provided but no " +
+            "nuclear or membrane channels defined. " +
+            "Either specify multiple nuclear (and membrane channels) with " +
+            "segmentation-nuclear-channel (and segmentation-membrane-channel) " +
+            "or exclude segmentation-max-projection and only use segmentation-channel " +
+            "for channel specification."
+        throw new Exception(msg)
+    }
 }
 
 /**
@@ -187,6 +205,18 @@ static def parseParams(gp, fns, fnw) {
     }
     else
         mcp.modules['background'] = mcp.modules['background'][0]
+
+    // Select the staging module based on --staging-method
+    mcp.modules['staging'] = mcp.modules['staging'].findAll{
+        it.name == mcp.workflow['staging-method']
+    }
+    if(mcp.modules['staging'].size() < 1) {
+        String msg = "Unknown staging method " +
+            mcp.workflow['staging-method']
+        throw new Exception(msg)
+    }
+    else
+        mcp.modules['staging'] = mcp.modules['staging'][0]
 
     // Filter segmentation modules based on --segmentation
     mcp.modules['segmentation'] = mcp.modules['segmentation'].findAll{
@@ -243,10 +273,61 @@ static def moduleOpts(module, mcp) {
         copts = module.channel + ' ' + idx.join(' ')
       }
 
+    String ncopts = ''
+    if(wfp.containsKey('segmentation-nuclear-channel') &&
+        module.containsKey('nuclear-channel')) {
+
+        // Module spec must specify whether indexing is 0-based or 1-based
+        if(!module.containsKey('idxbase'))
+            error module.name + " spec in modules.yml is missing idxbase key"
+
+        // Identify the list of indices
+        List idx = wfp['segmentation-nuclear-channel'].toString().tokenize()
+
+        // Account for recyze, if appropriate
+        if(wfp['segmentation-recyze'])
+            idx = (1..idx.size()).collect{it}
+
+        // Account for 0-based indexing
+        if(module.idxbase == 0)
+            idx = idx.collect{"${(it as int)-1}"}
+
+        // S3segmenter will work with the first index only
+        if(module.name == 's3seg')
+            idx = idx[0..0]
+
+        ncopts = module.nuclear_channel + ' ' + idx.join(' ')
+      }
+
+    String mcopts = ''
+    if(wfp.containsKey('segmentation-membrane-channel') &&
+        module.containsKey('membrane-channel')) {
+
+        // Module spec must specify whether indexing is 0-based or 1-based
+        if(!module.containsKey('idxbase'))
+            error module.name + " spec in modules.yml is missing idxbase key"
+
+        // Identify the list of indices
+        List idx = wfp['segmentation-membrane-channel'].toString().tokenize()
+
+        // Account for recyze, if appropriate
+        if(wfp['segmentation-recyze'])
+            idx = (1..idx.size()).collect{it}
+
+        // Account for 0-based indexing
+        if(module.idxbase == 0)
+            idx = idx.collect{"${(it as int)-1}"}
+
+        // S3segmenter will work with the first index only
+        if(module.name == 's3seg')
+            idx = idx[0..0]
+
+        mcopts = module.membrane_channel + ' ' + idx.join(' ')
+      }
     // Identify all remaining module options
     String mopts = ''
     if(mcp.options.containsKey(module.name))
         mopts = mcp.options[module.name]
 
-    copts + ' ' + mopts
+    copts + ' ' + ncopts + ' ' + mcopts + ' ' + mopts
 }

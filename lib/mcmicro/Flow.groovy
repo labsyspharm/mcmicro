@@ -26,15 +26,16 @@ static def flowSegment(wfp) {
 
     // Valid start/stop steps in the mcmicro pipeline
     List mcsteps = [
-        "raw",              // Step 0
-        "illumination",     // Step 1
-        "registration",     // Step 2
-        "background",       // Step 3
-        "dearray",          // Step 4
-        "segmentation",     // Step 5
-        "watershed",        // Step 6
-        "quantification",   // Step 7
-        "downstream"        // Step 8
+        "staging",          // Step 0
+        "raw",              // Step 1
+        "illumination",     // Step 2
+        "registration",     // Step 3
+        "background",       // Step 4
+        "dearray",          // Step 5
+        "segmentation",     // Step 6
+        "watershed",        // Step 7
+        "quantification",   // Step 8
+        "downstream"        // Step 9
         ]
 
     // Identify starting and stopping indices
@@ -46,7 +47,7 @@ static def flowSegment(wfp) {
         throw new Exception("Unknown stopping step ${wfp['stop-at']}")
 
     // Advance segmentation -> watershed to ensure no dangling probability maps
-    if( idxStop == 5 ) idxStop = 6
+    if( idxStop == 6 ) idxStop = 7
 
     return [idxStart, idxStop]
 }
@@ -62,14 +63,15 @@ static def precomputed(wfp) {
 
     // Define whether a precomputed intermediate is relevant
     [
-        raw:                idxStart <= 2,
-        illumination:       idxStart == 2, 
-        registration:       idxStart == 3 || (idxStart == 4 && !wfp.background) || (idxStart > 4 && !wfp.tma && !wfp.background), // needed for background (3), tma if no background (4), everything else if both tma and background aren't specified
+        staging:            idxStart == 0,
+        raw:                idxStart <= 3 && idxStart > 0,
+        illumination:       idxStart == 3, 
+        registration:       idxStart == 4 || (idxStart == 5 && !wfp.background) || (idxStart > 5 && !wfp.tma && !wfp.background), // needed for background (3), tma if no background (4), everything else if both tma and background aren't specified
         background:         idxStart > 3 && wfp.background, // if background specified, required
-        dearray:            idxStart > 4 && wfp.tma, // if tma specified, required
-        'probability-maps': idxStart == 6,
-        segmentation:       idxStart == 7,
-        quantification:     idxStart == 8
+        dearray:            idxStart > 5 && wfp.tma, // if tma specified, required
+        'probability-maps': idxStart == 7,
+        segmentation:       idxStart == 8,
+        quantification:     idxStart == 9
     ]
 }
 
@@ -84,22 +86,24 @@ static def doirun(step, wfp) {
     def (idxStart, idxStop) = flowSegment(wfp)
 
     switch(step) {
+        case 'staging':
+            return(idxStart == 0 && idxStop >= 0)
         case 'illumination': 
-            return(idxStart <= 1 && idxStop >= 1)
+            return(idxStart <= 2 && idxStop >= 2 && wfp.illumination)
         case 'registration':
-            return(idxStart <= 2 && idxStop >= 2)
+            return(idxStart <= 3 && idxStop >= 3)
         case 'background':
-            return(idxStart <= 3 && idxStop >= 3 && wfp.background)
+            return(idxStart <= 4 && idxStop >= 4 && wfp.background)
         case 'dearray':
-            return(idxStart <= 4 && idxStop >= 4 && wfp.tma)
+            return(idxStart <= 5 && idxStop >= 5 && wfp.tma)
         case 'segmentation':
-            return(idxStart <= 5 && idxStop >= 5)
-        case 'watershed':
             return(idxStart <= 6 && idxStop >= 6)
-        case 'quantification':
+        case 'watershed':
             return(idxStart <= 7 && idxStop >= 7)
-        case 'downstream':
+        case 'quantification':
             return(idxStart <= 8 && idxStop >= 8)
+        case 'downstream':
+            return(idxStart <= 9 && idxStop >= 9)
         case 'viz':
             return(wfp.viz)
         default:

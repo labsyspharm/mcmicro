@@ -35,6 +35,7 @@
                   "type": "string",
                   "description": "Name of the first step to be executed by the pipeline.",
                   "enum": [
+                      "staging",
                       "illumination",
                       "registration",
                       "background",
@@ -51,6 +52,7 @@
                   "description": "Name of the final step to be executed by the pipeline.",
                   "default": "quantification",
                   "enum": [
+                      "staging",
                       "illumination",
                       "registration",
                       "background",
@@ -68,6 +70,14 @@
               "background": {
                   "type": "boolean",
                   "description": "If selected, MCMICRO treats input data as if background channels should be subtracted using the `Backsub` module. See mcmicro.org documentation for details on additional `background` and `remove` columns required in the `markers.csv` file."
+              },
+              "staging": {
+                "type": "boolean",
+                "description": "Is a staging step required before stitching with ASHLAR?"
+              },
+              "illumination": {
+                "type": "boolean",
+                "description": "Should illumination correction be performed?"
               },
               "segmentation": {
                   "type": "string",

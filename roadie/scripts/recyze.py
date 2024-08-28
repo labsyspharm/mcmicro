@@ -12,7 +12,7 @@ import uuid
 class PyramidWriter:
 
     def __init__(
-            self, _in_path, _out_path, _channels, _x, _y, _x2, _y2, _w, _h, scale=2, tile_size=1024, peak_size=1024,
+            self, _in_path, _out_path, _channels, _nuclear_channels, _membrane_channels, _max_projection, _x, _y, _x2, _y2, _w, _h, scale=2, tile_size=1024, peak_size=1024,
             verbose=False
     ):
         if tile_size % 16 != 0:
@@ -22,6 +22,7 @@ class PyramidWriter:
         self.in_data = zarr.open(self.in_tiff.series[0].aszarr())
         self.out_path = Path(_out_path)
         self.metadata = from_tiff(self.in_path)
+        self.max_projection = _max_projection
 
         self.tile_size = tile_size
         self.peak_size = peak_size
@@ -29,18 +30,48 @@ class PyramidWriter:
         if self.in_data[0].ndim == 3:  # Multi-channel image
             self.single_channel = False
             if _channels:
-                if max(_channels) > self.in_data[0].shape[0]:
+                if max(_channels) >= self.in_data[0].shape[0]:
                     print("Channel out of range", file=sys.stderr)
                     sys.exit(1)
                 else:
                     self.channels = _channels
             else:
                 self.channels = np.arange(self.in_data[0].shape[0], dtype=int).tolist()
+            if _nuclear_channels:
+                if max(_nuclear_channels) >= self.in_data[0].shape[0]:
+                    print("Nuclear channel out of range", file=sys.stderr)
+                    sys.exit(1)
+                else:
+                    self.nuclear_channels = _nuclear_channels
+            else:
+                self.nuclear_channels = []
+            if _membrane_channels:
+                if max(_membrane_channels) >= self.in_data[0].shape[0]:
+                    print("Membrane channel out of range", file=sys.stderr)
+                    sys.exit(1)
+                else:
+                    self.membrane_channels = _membrane_channels
+            else:
+                self.membrane_channels = []
         else:  # Single Channel image
             self.single_channel = True
             if _channels and max(_channels) > 0:
                 print("Channel out of range", file=sys.stderr)
                 sys.exit(1)
+            if _nuclear_channels and max(_nuclear_channels) > 0:
+                print("Nuclear channel out of range", file=sys.stderr)
+                sys.exit(1)
+            if _membrane_channels and max(_membrane_channels) > 0:
+                print("Membrane channel out of range", file=sys.stderr)
+                sys.exit(1)
+            if _max_projection:
+                print("Max projection not possible on single channel image.", file=sys.stderr)
+                sys.exit(1)
+            self.channels = [0]
+
+        if self.max_projection and len(self.membrane_channels) > 0 and len(self.nuclear_channels) > 0:
+            self.channels = [0, 1]
+        elif self.max_projection and len(self.nuclear_channels) > 0:
             self.channels = [0]
 
         xy = _x is not None and _y is not None
@@ -75,7 +106,9 @@ class PyramidWriter:
 
         print('Params:', 'x', self.x, 'y', self.y, 'height', self.height, 'width', self.width, 'levels',
               self.num_levels,
-              'channels', self.channels)
+              'channels', self.channels, 'nuclear_channels', self.nuclear_channels, 'membrane_channels', self.membrane_channels,
+              'max_projection', self.max_projection
+              )
 
         self.verbose = verbose
 
@@ -114,25 +147,39 @@ class PyramidWriter:
 
         return tile_shapes
 
+    def max_projection_channel(self, channels):
+        "Compute the maximum projection of the specified channels."
+        if not channels:
+            channels = self.channels
+        maxprojection = np.max(
+            self.in_data[0]
+            .get_orthogonal_selection((
+                channels, 
+                slice(self.y,self.y + self.height), 
+                slice(self.x,self.x + self.width ))),axis=0)
+        return maxprojection
+
     def base_tiles(self):
         h, w = self.base_shape
         th, tw = self.tile_shapes[0]
 
-        for ci in self.channels:
-            if self.verbose:
-                print(f"    Channel {ci}:")
-            if self.single_channel:
-                img = self.in_data[0][self.y:self.y + self.height, self.x:self.x + self.width]
+        if self.max_projection:
+            # If max projection is enabled, generate the maximum projection image
+            if self.nuclear_channels:
+                nuclear_img = self.max_projection_channel(self.nuclear_channels)
+                imgs = [nuclear_img]
+                if self.membrane_channels:
+                    membrane_img = self.max_projection_channel(self.membrane_channels)
+                    imgs.append(membrane_img)
             else:
-                img = self.in_data[0][ci, self.y:self.y + self.height, self.x:self.x + self.width]
-            print('Shape', img.shape)
+                imgs = [self.max_projection_channel(self.channels)]
+        else:
+            imgs = [self.in_data[0][ci, self.y:self.y + self.height, self.x:self.x + self.width] for ci in self.channels]
+
+        for img in imgs:
             for y in range(0, h, th):
                 for x in range(0, w, tw):
-                    # Returning a copy makes the array contiguous, avoiding
-                    # a severely unoptimized code path in ndarray.tofile.
                     yield img[y:y + th, x:x + tw].copy()
-            # Allow img to be freed immediately to avoid keeping it in
-            # memory while the next loop iteration calls assemble_channel.
             img = None
 
     def cropped_subres_image(self, base_img, level):
@@ -242,16 +289,26 @@ if __name__ == '__main__':
         help="Channels to keep (Default: all)",
     )
     parser.add_argument(
+        '--nuclear_channels', type=int, nargs="+", required=False, default=None, metavar="N",
+        help="Specifying nuclear channels to keep",
+    )
+    parser.add_argument(
+        '--membrane_channels', type=int, nargs="+", required=False, default=None, metavar="M",
+        help="Specifying membrane channels to keep",
+    )
+    parser.add_argument(
+        '--max_projection', action='store_true', help="Use max projection",
+    )
+    parser.add_argument(
         '--num-threads', type=int, required=False, default=0, metavar="N",
         help="Worker thread count (Default: auto-scale based on number of available CPUs)",
     )
-    argument = parser.parse_args()
+    args = parser.parse_args()
 
     # Automatically infer the output filename, if not specified
-    in_path = vars(argument)['in']
-    out_path = argument.out
+    in_path = vars(args)['in']
+    out_path = args.out
     if out_path is None:
-
         # Tokenize the input filename and insert "_crop"
         #   at the appropriate location
         tokens = os.path.basename(in_path).split(os.extsep)
@@ -264,7 +321,7 @@ if __name__ == '__main__':
             stem = os.extsep.join(tokens[0:-1]) + "_crop"
             out_path = os.extsep.join([stem, tokens[-1]])
 
-    num_threads = argument.num_threads
+    num_threads = args.num_threads
     if num_threads == 0:
         if hasattr(os, "sched_getaffinity"):
             num_threads = len(os.sched_getaffinity(0))
@@ -273,6 +330,5 @@ if __name__ == '__main__':
     tifffile.TIFF.MAXWORKERS = num_threads
     tifffile.TIFF.MAXIOWORKERS = num_threads * 5
 
-    writer = PyramidWriter(in_path, out_path, argument.channels, argument.x, argument.y,
-                           argument.x2, argument.y2, argument.w, argument.h)
+    writer = PyramidWriter(in_path, out_path, args.channels, args.nuclear_channels, args.membrane_channels, args.max_projection, args.x, args.y, args.x2, args.y2, args.w, args.h)
     writer.run()
