@@ -67,7 +67,7 @@ static def precomputed(wfp) {
         raw:                idxStart <= 3 && idxStart > 0,
         illumination:       idxStart == 3, 
         registration:       idxStart == 4 || (idxStart == 5 && !wfp.background) || (idxStart > 5 && !wfp.tma && !wfp.background), // needed for background (3), tma if no background (4), everything else if both tma and background aren't specified
-        background:         idxStart > 3 && wfp.background, // if background specified, required
+        background:         idxStart > 4 && wfp.background, // if background specified, required
         dearray:            idxStart > 5 && wfp.tma, // if tma specified, required
         'probability-maps': idxStart == 7,
         segmentation:       idxStart == 8,
