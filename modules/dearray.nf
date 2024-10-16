@@ -1,13 +1,11 @@
 import mcmicro.*
 
-include {roadie} from "$projectDir/roadie"
-
 process coreograph {
     container "${params.contPfx}${module.container}:${module.version}"
     
-    // Output -- publish masks only, images need to be pyramidized
+    // Output
     publishDir "${params.in}/dearray", mode: "${params.publish_dir_mode}",
-      pattern: '**mask.tif'
+      pattern: '{*.ome.tif,**mask.tif}'
 
     // QC
     publishDir "${Flow.QC(params.in, module.name)}",
@@ -24,7 +22,7 @@ process coreograph {
       path s
     
     output:
-      path "**{,[A-Z],[A-Z][A-Z]}{[0-9],[0-9][0-9]}.tif", emit: cores
+      path "*.ome.tif", emit: cores
       path "**_mask.tif", emit: masks
       path "TMA_MAP.tif"
       path "centroidsY-X.txt"
@@ -45,11 +43,7 @@ workflow dearray {
   main:
     coreograph(mcp, mcp.modules['dearray'], tma)
 
-    // Pass the core images through palom to pyramidize them
-    inputs = coreograph.out.cores.flatten()
-    roadie('pyramidize', inputs, '', true, "${params.in}/dearray", "${params.publish_dir_mode}")
-
   emit:
-    cores = roadie.out
+    cores = coreograph.out.cores.flatten()
     masks = coreograph.out.masks.flatten()
 }
