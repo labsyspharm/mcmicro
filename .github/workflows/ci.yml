@@ -111,7 +111,7 @@ jobs:
           ./nextflow main.nf --in ~/data/exemplar-001 ${{ matrix.params }}
           ls -R ~/data/exemplar-001
       - name: Upload processed result
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: ${{ github.event_name == 'push' && contains(matrix.params, 'viz') }}
         with:
           name: exemplar-001

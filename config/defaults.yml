@@ -33,7 +33,7 @@ modules:
   dearray:
     name: coreograph
     container: labsyspharm/unetcoreograph
-    version: 2.2.9
+    version: 2.4.0
     cmd: python /app/UNetCoreograph.py --outputPath .
     input: --imagePath
   staging:
