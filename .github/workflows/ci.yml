@@ -70,15 +70,16 @@ jobs:
   ex001:
     strategy:
       matrix:
-        params:
-          - --viz
-          - --start-at illumination --stop-at registration
-          - --background
-          - --background --background-method imagej-rolling-ball
-          - --segmentation cypository --cypository-opts '--channel 10 --scalingFactor 2' --s3seg-opts '--logSigma 45 300'
-          - --segmentation ilastik,mesmer
-          - --segmentation cellpose --mcquant-opts '--masks *masks.tif'
-          - --viz --segmentation ilastik -profile singularity
+        include:
+          - params: --viz
+            upload_artifact: true
+          - params: --start-at illumination --stop-at registration
+          - params: --background
+          - params: --background --background-method imagej-rolling-ball
+          - params: --segmentation cypository --cypository-opts '--channel 10 --scalingFactor 2' --s3seg-opts '--logSigma 45 300'
+          - params: --segmentation ilastik,mesmer
+          - params: --segmentation cellpose --mcquant-opts '--masks *masks.tif'
+          - params: --viz --segmentation ilastik -profile singularity
     needs: setup
     runs-on: ubuntu-latest
     steps:
@@ -112,7 +113,7 @@ jobs:
           ls -R ~/data/exemplar-001
       - name: Upload processed result
         uses: actions/upload-artifact@v4
-        if: ${{ github.event_name == 'push' && contains(matrix.params, 'viz') }}
+        if: ${{ github.event_name == 'push' && matrix.upload_artifact == 'true' }}
         with:
           name: exemplar-001
           path: |
