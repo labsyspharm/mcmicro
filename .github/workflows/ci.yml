@@ -31,25 +31,25 @@ jobs:
   setup:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install Nextflow
         run: curl -fsSL get.nextflow.io | bash
 
       # Exemplars will be cached
       - name: Exemplar-001 cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache-ex001
         with:
           path: ~/data/exemplar-001
           key: ex001-2022-02-24
       - name: Exemplar-001 (w/ autofluorescence) cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache-ex001-af
         with:
           path: ~/data/af/exemplar-001
           key: ex001-af-2023-01-14
       - name: Exemplar-002 cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         id: cache-ex002
         with:
           path: ~/data/exemplar-002
@@ -83,7 +83,7 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install Singularity
         uses: eWaterCycle/setup-singularity@v7
         if: ${{ contains(matrix.params, 'singularity') }}
@@ -92,13 +92,13 @@ jobs:
       - name: Install Nextflow
         run: curl -fsSL get.nextflow.io | bash
       - name: Restore exemplar-001 cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         if: ${{ !contains(matrix.params, 'background') }}
         with:
           path: ~/data/exemplar-001
           key: ex001-2022-02-24
       - name: Restore exemplar-001 (w/ autofluorescence) cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         if: ${{ contains(matrix.params, 'background') }}
         with:
           path: ~/data/af/exemplar-001
@@ -113,7 +113,7 @@ jobs:
           ls -R ~/data/exemplar-001
       - name: Upload processed result
         uses: actions/upload-artifact@v4
-        if: ${{ github.event_name == 'push' && matrix.upload_artifact == 'true' }}
+        if: ${{ github.event_name == 'push' && matrix.upload_artifact }}
         with:
           name: exemplar-001
           path: |
@@ -126,11 +126,11 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install Nextflow
         run: curl -fsSL get.nextflow.io | bash
       - name: Restore exemplar-001 cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/data/exemplar-001
           key: ex001-2022-02-24
@@ -155,11 +155,11 @@ jobs:
     needs: setup
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install Nextflow
         run: curl -fsSL get.nextflow.io | bash
       - name: Restore exemplar-002 cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/data/exemplar-002
           key: ex002-2022-02-24
