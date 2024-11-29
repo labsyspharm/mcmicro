@@ -124,6 +124,7 @@ include {quantification} from "$projectDir/modules/quantification"
 include {downstream}     from "$projectDir/modules/downstream"
 include {viz}            from "$projectDir/modules/viz"
 include {background}     from "$projectDir/modules/background"
+include {gator}          from "$projectDir/modules/gator"
 
 // Define the primary mcmicro workflow
 workflow {
@@ -192,7 +193,10 @@ workflow {
 
     // Spatial feature tables -> cell state calling
     sft = quantification.out.mix(pre_qty)
+
+    // Downstream analyses
     downstream(mcp, sft)
+    gator(mcp, allimg, segMsk, sft)
 
     // Vizualization
     viz(mcp, allimg, chMrk)
