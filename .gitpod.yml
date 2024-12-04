@@ -6,7 +6,7 @@ tasks:
         mcp = yaml.safe_load(open('config/defaults.yml'));\
         mods = mcp['modules'];\
         [print(m['container'] + ':' + m['version']) for m in \
-          [mods['registration'], mods['segmentation'][0],\
+          [mods['registration'], mods['segmentation'][3],\
            mods['watershed'], mods['quantification']]]"\
       | while read line ; do docker pull $line ; done
   - name: Default workdir
