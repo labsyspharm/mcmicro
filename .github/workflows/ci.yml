@@ -79,16 +79,10 @@ jobs:
           - params: --segmentation cypository --cypository-opts '--channel 10 --scalingFactor 2' --s3seg-opts '--logSigma 45 300'
           - params: --segmentation ilastik,mesmer
           - params: --segmentation cellpose --mcquant-opts '--masks *masks.tif'
-          - params: --viz --segmentation ilastik -profile singularity
     needs: setup
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Singularity
-        uses: eWaterCycle/setup-singularity@v7
-        if: ${{ contains(matrix.params, 'singularity') }}
-        with:
-          singularity-version: 3.8.3
       - name: Install Nextflow
         run: curl -fsSL get.nextflow.io | bash
       - name: Restore exemplar-001 cache
@@ -167,3 +161,23 @@ jobs:
           docker rmi -f $(docker images -a -q)
           ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at quantification
           ls -R ~/data/exemplar-002
+
+  # Test exemplar-001 with singularity containers
+  ex001-singularity:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install singularity
+        uses: singularityhub/install-singularity@main
+      - name: Install Nextflow
+        run: curl -fsSL get.nextflow.io | bash
+      - name: Restore exemplar-001 cache
+        uses: actions/cache@v4
+        with:
+          path: ~/data/exemplar-001
+          key: ex001-2022-02-24
+      - name: Test exemplar-001 with singularity containers
+        run: |
+          ./nextflow main.nf --in ~/data/exemplar-001 --viz --segmentation ilastik -profile singularity
+          ls -R ~/data/exemplar-001
