@@ -108,7 +108,6 @@ jobs:
         run: mv ~/data/af/exemplar-001 ~/data
       - name: Test exemplar-001 with additional parameters
         run: |
-          docker rmi -f $(docker images -a -q)
           ./nextflow main.nf --in ~/data/exemplar-001 ${{ matrix.params }}
           ls -R ~/data/exemplar-001
       - name: Upload processed result
@@ -136,7 +135,6 @@ jobs:
           key: ex001-2022-02-24
       - name: Test exemplar-001 step-by-step
         run: |
-          docker rmi -f $(docker images -a -q)
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at registration --stop-at registration
           ./nextflow clean -f last
           ./nextflow main.nf --in ~/data/exemplar-001 --start-at segmentation --stop-at segmentation
@@ -165,7 +163,6 @@ jobs:
           key: ex002-2022-02-24
       - name: Test exemplar-002
         run: |
-          docker rmi -f $(docker images -a -q)
           ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at registration --stop-at segmentation --segmentation mesmer
           docker rmi -f $(docker images -a -q)
           ./nextflow main.nf --in ~/data/exemplar-002 --tma --start-at quantification
