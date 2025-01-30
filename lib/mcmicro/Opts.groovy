@@ -87,20 +87,20 @@ static def cleanParams(pars, mspecs) {
     def names = collectNames(mspecs)
 
     // Protected keywords
-    def keywords = ['in', 'cont-pfx', 'roadie', 'workflow',
+    def keywords = ['in', 'contPfx', 'roadie', 'workflow',
         'options', 'modules', 'params', 'publish_dir_mode']
 
     // Clean up the parameter list
     // Separate workflow parameters from module options
     pars.findAll{ key, val ->
-        Opts.camel2snake(key) == key &&
         !keywords.contains(key)
     }.each{ key, val ->
-        String keyc = key.replaceAll( /-opts$/, '' )
+        String keysn = Opts.camel2snake(key)
+        String keyc = keysn.replaceAll( /-opts$/, '' )
         if(names.contains(keyc))
             options[keyc] = val
         else
-            workflow[key] = val
+            workflow[keysn] = val
     }
 
     ['workflow':workflow, 'options':options]
