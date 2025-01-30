@@ -94,7 +94,7 @@ pre_dfp   = findFiles0('illumination', "**-dfp.tif")
     .map{ tuple(Util.getSampleName(it, file("${params.in}/illumination")), it) }
 pre_ffp   = findFiles0('illumination', "**-ffp.tif")
     .map{ tuple(Util.getSampleName(it, file("${params.in}/illumination")), it) }
-pre_img   = findFiles('registration', "*.{ome.tiff,ome.tif,tif,tiff,btf}",
+pre_img   = findFiles('registration', "*.{ome.tiff,ome.tif,tif,tiff,btf,qptiff}",
     {error "No pre-stitched image in ${params.in}/registration"})
 pre_bsub  = findFiles('background', "*.ome.tif",
     {error "No background subtracted image in ${params.in}/background"})
