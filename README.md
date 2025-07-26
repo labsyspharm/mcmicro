@@ -8,9 +8,9 @@ The pipeline is described in [Nature Methods](https://www.nature.com/articles/s4
 
 ## Quick start
 
-1. [Install](http://mcmicro.org/instructions/nextflow/installation.html) nextflow and Docker. Verify installation with `nextflow run hello` and `docker run hello-world`
+1. [Install](https://mcmicro.org/tutorial/installation.html) nextflow and Docker. Verify installation with `nextflow run hello` and `docker run hello-world`
 1. [Download](http://mcmicro.org/datasets/) exemplar data: `nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-001`
-1. [Run](https://mcmicro.org/instructions/nextflow/) mcmicro on the exemplar: `nextflow run labsyspharm/mcmicro --in exemplar-001`
+1. [Run](https://mcmicro.org/tutorial/tutorial.html) mcmicro on the exemplar: `nextflow run labsyspharm/mcmicro --in exemplar-001`
 
 ## Funding
 
