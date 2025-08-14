@@ -229,7 +229,8 @@ class PyramidWriter:
                 resolution=(
                     self.in_tiff.pages[0].tags["XResolution"].value,
                     self.in_tiff.pages[0].tags["YResolution"].value,
-                    self.in_tiff.pages[0].tags["ResolutionUnit"].value),
+                ),
+                resolutionunit=self.in_tiff.pages[0].tags["ResolutionUnit"].value,
                 tile=self.tile_shapes[0],
                 photometric=self.in_tiff.pages[0].photometric,
                 compression="adobe_deflate",
