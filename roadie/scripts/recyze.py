@@ -27,18 +27,18 @@ class PyramidWriter:
         self.tile_size = tile_size
         self.peak_size = peak_size
         self.scale = scale
-        if self.in_data[0].ndim == 3:  # Multi-channel image
+        if self.in_data["0"].ndim == 3:  # Multi-channel image
             self.single_channel = False
             if _channels:
-                if max(_channels) >= self.in_data[0].shape[0]:
+                if max(_channels) >= self.in_data["0"].shape[0]:
                     print("Channel out of range", file=sys.stderr)
                     sys.exit(1)
                 else:
                     self.channels = _channels
             else:
-                self.channels = np.arange(self.in_data[0].shape[0], dtype=int).tolist()
+                self.channels = np.arange(self.in_data["0"].shape[0], dtype=int).tolist()
             if _nuclear_channels:
-                if max(_nuclear_channels) >= self.in_data[0].shape[0]:
+                if max(_nuclear_channels) >= self.in_data["0"].shape[0]:
                     print("Nuclear channel out of range", file=sys.stderr)
                     sys.exit(1)
                 else:
@@ -46,7 +46,7 @@ class PyramidWriter:
             else:
                 self.nuclear_channels = []
             if _membrane_channels:
-                if max(_membrane_channels) >= self.in_data[0].shape[0]:
+                if max(_membrane_channels) >= self.in_data["0"].shape[0]:
                     print("Membrane channel out of range", file=sys.stderr)
                     sys.exit(1)
                 else:
@@ -78,8 +78,8 @@ class PyramidWriter:
         xy2 = _x2 is not None and _y2 is not None
         wh = _w is not None and _h is not None
         if all(v is None for v in (_x, _y, _x2, _y2, _w, _h)):
-            _w = self.in_data[0].shape[-1]
-            _h = self.in_data[0].shape[-2]
+            _w = self.in_data["0"].shape[-1]
+            _h = self.in_data["0"].shape[-2]
             _x = _y = 0
         elif not xy or not (wh ^ xy2):
             print("Please specify x/y and either x2/y2 or w/h", file=sys.stderr)
@@ -98,11 +98,11 @@ class PyramidWriter:
 
         rounded_width = np.ceil((_w + self.x) / (self.scale ** (self.num_levels - 1))).astype(int) * \
                         (2 ** (self.num_levels - 1)) - self.x
-        self.width = min([rounded_width, self.in_data[0].shape[-1]])
+        self.width = min([rounded_width, self.in_data["0"].shape[-1]])
 
         rounded_height = np.ceil((_h + self.y) / (self.scale ** (self.num_levels - 1))).astype(
             int) * (2 ** (self.num_levels - 1)) - self.y
-        self.height = min([rounded_height, self.in_data[0].shape[-2]])
+        self.height = min([rounded_height, self.in_data["0"].shape[-2]])
 
         print('Params:', 'x', self.x, 'y', self.y, 'height', self.height, 'width', self.width, 'levels',
               self.num_levels,
@@ -152,7 +152,7 @@ class PyramidWriter:
         if not channels:
             channels = self.channels
         maxprojection = np.max(
-            self.in_data[0]
+            self.in_data["0"]
             .get_orthogonal_selection((
                 channels, 
                 slice(self.y,self.y + self.height), 
@@ -174,7 +174,7 @@ class PyramidWriter:
             else:
                 imgs = [self.max_projection_channel(self.channels)]
         else:
-            imgs = [self.in_data[0][ci, self.y:self.y + self.height, self.x:self.x + self.width] for ci in self.channels]
+            imgs = [self.in_data["0"][ci, self.y:self.y + self.height, self.x:self.x + self.width] for ci in self.channels]
 
         for img in imgs:
             for y in range(0, h, th):
@@ -200,9 +200,9 @@ class PyramidWriter:
 
         for c in self.channels:
             if self.single_channel:
-                base_img = self.in_data[level]
+                base_img = self.in_data[str(level)]
             else:
-                base_img = self.in_data[level][c]
+                base_img = self.in_data[str(level)][c]
             img = self.cropped_subres_image(base_img, level)
             if self.verbose:
                 sys.stdout.write(
@@ -218,7 +218,7 @@ class PyramidWriter:
                     yield a
 
     def run(self):
-        dtype = self.in_data[0].dtype
+        dtype = self.in_data["0"].dtype
         with tifffile.TiffWriter(self.out_path, ome=True, bigtiff=True) as tiff:
             tiff.write(
                 data=self.base_tiles(),
