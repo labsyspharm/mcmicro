@@ -55,8 +55,8 @@ process worker {
 
     // Modules have the option of producing additional files in plots/ and qc/
     //   subdirectories. These are captured and published to the project directory.
-    path('plots/**') optional true
-    path('qc/**') optional true
+    path('plots/**'), optional: true
+    path('qc/**'), optional: true
 
     // Provenance
     tuple path('.command.sh'), path('.command.log')

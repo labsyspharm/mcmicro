@@ -20,7 +20,7 @@ process autominerva {
     path("${tag}/**"), emit: viz
 
     // qc and provenance
-    path('*/qc/**') optional true
+    path('*/qc/**'), optional: true
     tuple path('.command.sh'), path('.command.log')
 
   when: Flow.doirun('viz', wfp)
