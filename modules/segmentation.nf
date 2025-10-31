@@ -28,7 +28,7 @@ process s3seg {
       tuple val(tag), path("*/*.ome.tif"), emit: segmasks
 
       // qc and provenance
-      path('*/qc/**') optional true
+      path('*/qc/**'), optional: true
       tuple path('.command.sh'), path('.command.log')
 
     when: Flow.doirun('watershed', mcp.workflow)
