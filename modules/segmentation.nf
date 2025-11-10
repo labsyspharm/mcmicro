@@ -5,7 +5,7 @@ process s3seg {
 
     // Output
     publishDir "${pubDir}/$tag", mode: "${params.publish_dir_mode}",
-      pattern: '*/*.ome.tif', saveAs: {f -> file(f).name}
+      pattern: '{*/*.ome.tif,*.csv}', saveAs: {f -> file(f).name}
 
     // QC
     publishDir "${Flow.QC(params.in, '/s3seg/' + tag)}",
@@ -26,6 +26,7 @@ process s3seg {
     output:
       // output for quantification
       tuple val(tag), path("*/*.ome.tif"), emit: segmasks
+      tuple val(tag), path("*.csv"), emit: puncta
 
       // qc and provenance
       path('*/qc/**'), optional: true
