@@ -26,7 +26,7 @@ process s3seg {
     output:
       // output for quantification
       tuple val(tag), path("*/*.ome.tif"), emit: segmasks
-      tuple val(tag), path("*.csv"), emit: puncta
+      tuple val(tag), path("*.csv"), emit: puncta, optional: true
 
       // qc and provenance
       path('*/qc/**'), optional: true
