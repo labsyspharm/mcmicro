@@ -20,6 +20,7 @@ options:
   ilastik: --num_channels 1
   mcquant: --masks cell*.tif *_cp_masks*.tif
   naivestates: -p png
+  backsub: --compression zlib
   imagej-rolling-ball: 100 -n=4 -j="-Xmx4g"
 modules:
   illumination:
