@@ -845,7 +845,7 @@ workflow:
 | --- | --- | --- |
 | `--pixel-size` | `None` | The resolution of the image in microns-per-pixel. If not provided, it is read from metadata. If that is not possible, 1 is assigned. |
 | `--tile-size` | `256` | Tile size used for pyramid image generation.|
-| `--compression` | `lzw` | The output pyramidal OME-TIFF will be compressed using the specified compression. Set to "none" for no compression. "lzw", "zlib", or "none" are accepted options. |
+| `--compression` | `zlib` | The output pyramidal OME-TIFF will be compressed using the specified compression. Set to "none" for no compression. "lzw", "zlib", or "none" are accepted options. |
 
 [Back to Other Modules](./core.html#other-modules){: .btn .btn-purple} [Back to top](./core){: .btn .btn-outline} 
 
