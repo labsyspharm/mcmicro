@@ -8,7 +8,7 @@ workflow:
   background: false
   background-method: backsub
   staging-method: phenoimager2mc
-  multi-formats: '{.xdce,.nd,.scan,.htd}'
+  multi-formats: '{.companion.ome,.xdce,.nd,.scan,.htd}'
   single-formats: '{.ome.tiff,.ome.tif,.rcpnl,.btf,.nd2,.tif,.czi}'
   segmentation: unmicst
   segmentation-recyze: false
