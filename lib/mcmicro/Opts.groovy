@@ -219,11 +219,23 @@ static def parseParams(gp, fns, fnw) {
         mcp.modules['staging'] = mcp.modules['staging'][0]
 
     // Filter segmentation modules based on --segmentation
+    if (mcp.workflow.segmentation instanceof String) {
+        if (mcp.workflow.segmentation.contains(',')) {
+            throw new Exception('Use an explicit list with square brackets to specify multiple segmenter modules, e.g. [mod1, mod2]')
+        }
+        mcp.workflow.segmentation = [mcp.workflow.segmentation]
+    }
     mcp.modules['segmentation'] = mcp.modules['segmentation'].findAll{
         mcp.workflow.segmentation.contains(it.name)
     }
 
     // Filter downstream modules based on --downstream
+    if (mcp.workflow.downstream instanceof String) {
+        if (mcp.workflow.downstream.contains(',')) {
+            throw new Exception('Use an explicit list with square brackets to specify multiple downstream modules, e.g. [mod1, mod2]')
+        }
+        mcp.workflow.downstream = [mcp.workflow.downstream]
+    }
     mcp.modules['downstream'] = mcp.modules['downstream'].findAll{
         mcp.workflow.downstream.contains(it.name)
     }

@@ -147,6 +147,7 @@ workflow segmentation {
     // Merge against instance segmentation outputs
     instSeg = allpmaps.filter{ _1, _2, _3, ws -> ws == 'no' }
         .map{ mtd, tag, _3, _4 -> tuple("${mtd}-${tag}", _3) }.groupTuple()
+        .map{ mt, paths -> tuple(mt, paths.flatten()) }
     
   emit:
     s3seg.out.segmasks.mix(instSeg)

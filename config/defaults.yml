@@ -110,6 +110,16 @@ modules:
       model: --pretrained_model
       idxbase: 0
       watershed: 'no'
+    -
+      name: mccellpose
+      container: labsyspharm/mccellpose
+      version: 1.0.3
+      cmd: mccellpose --use-gpu --jobs 2 --expand-size 2 --channel 1 --output-cell cell.ome.tif --output-nucleus nucleus.ome.tif
+      input: --input
+      channel: --channel
+      model: --pretrained_model
+      idxbase: 1
+      watershed: 'no'
   watershed:
     name: s3seg
     container: labsyspharm/s3segmenter
