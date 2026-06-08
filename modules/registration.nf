@@ -13,7 +13,7 @@ process ashlar {
     input:
       val mcp
       val module
-      tuple val(sampleName), path(lraw), val(lrelPath), path(lffp), path(ldfp)
+      tuple val(sampleName), path(lraw, arity: '1..*'), val(lrelPath), path(lffp), path(ldfp)
 
     output:
       path "{,*/}*.ome.tif", emit: img
