@@ -1,13 +1,36 @@
+# /// script
+# requires-python = ">=3.9"
+# dependencies = [
+#     "dask>=2023.3.0",
+#     "ome-types>=0.3.3",
+#     "tifffile>=2023.2.28",
+#     "tqdm>=4",
+#     "zarr>=2.14.2",
+# ]
+# ///
 import math
 import sys
+import itertools
 import tifffile
-import zarr
+import tqdm
+import dask
+import dask.array as da
 import numpy as np
 from ome_types import from_tiff, to_xml
 from pathlib import Path
 import argparse
 import os
 import uuid
+
+
+def pad_tile(img, h, w):
+    "Pad and reshape an image tile to work around a bug in tifffile <= 2023.3.15."
+    ph = h - img.shape[0]
+    pw = w - img.shape[1]
+    img = np.pad(img, ((0, ph), (0, pw)))
+    img = img[..., None]
+    return img
+
 
 class PyramidWriter:
 
@@ -19,7 +42,10 @@ class PyramidWriter:
             raise ValueError("tile_size must be a multiple of 16")
         self.in_path = Path(_in_path)
         self.in_tiff = tifffile.TiffFile(self.in_path, is_ome=False)
-        self.in_data = zarr.open(self.in_tiff.series[0].aszarr())
+        self.in_data = [
+            da.from_zarr((self.in_tiff.series[0].aszarr(level=i)))
+            for i in range(len(self.in_tiff.series[0].levels))
+        ]
         self.out_path = Path(_out_path)
         self.metadata = from_tiff(self.in_path)
         self.max_projection = _max_projection
@@ -27,18 +53,18 @@ class PyramidWriter:
         self.tile_size = tile_size
         self.peak_size = peak_size
         self.scale = scale
-        if self.in_data["0"].ndim == 3:  # Multi-channel image
+        if self.in_data[0].ndim == 3:  # Multi-channel image
             self.single_channel = False
             if _channels:
-                if max(_channels) >= self.in_data["0"].shape[0]:
+                if max(_channels) >= self.in_data[0].shape[0]:
                     print("Channel out of range", file=sys.stderr)
                     sys.exit(1)
                 else:
                     self.channels = _channels
             else:
-                self.channels = np.arange(self.in_data["0"].shape[0], dtype=int).tolist()
+                self.channels = np.arange(self.in_data[0].shape[0], dtype=int).tolist()
             if _nuclear_channels:
-                if max(_nuclear_channels) >= self.in_data["0"].shape[0]:
+                if max(_nuclear_channels) >= self.in_data[0].shape[0]:
                     print("Nuclear channel out of range", file=sys.stderr)
                     sys.exit(1)
                 else:
@@ -46,7 +72,7 @@ class PyramidWriter:
             else:
                 self.nuclear_channels = []
             if _membrane_channels:
-                if max(_membrane_channels) >= self.in_data["0"].shape[0]:
+                if max(_membrane_channels) >= self.in_data[0].shape[0]:
                     print("Membrane channel out of range", file=sys.stderr)
                     sys.exit(1)
                 else:
@@ -78,8 +104,8 @@ class PyramidWriter:
         xy2 = _x2 is not None and _y2 is not None
         wh = _w is not None and _h is not None
         if all(v is None for v in (_x, _y, _x2, _y2, _w, _h)):
-            _w = self.in_data["0"].shape[-1]
-            _h = self.in_data["0"].shape[-2]
+            _w = self.in_data[0].shape[-1]
+            _h = self.in_data[0].shape[-2]
             _x = _y = 0
         elif not xy or not (wh ^ xy2):
             print("Please specify x/y and either x2/y2 or w/h", file=sys.stderr)
@@ -98,11 +124,11 @@ class PyramidWriter:
 
         rounded_width = np.ceil((_w + self.x) / (self.scale ** (self.num_levels - 1))).astype(int) * \
                         (2 ** (self.num_levels - 1)) - self.x
-        self.width = min([rounded_width, self.in_data["0"].shape[-1]])
+        self.width = min([rounded_width, self.in_data[0].shape[-1]])
 
         rounded_height = np.ceil((_h + self.y) / (self.scale ** (self.num_levels - 1))).astype(
             int) * (2 ** (self.num_levels - 1)) - self.y
-        self.height = min([rounded_height, self.in_data["0"].shape[-2]])
+        self.height = min([rounded_height, self.in_data[0].shape[-2]])
 
         print('Params:', 'x', self.x, 'y', self.y, 'height', self.height, 'width', self.width, 'levels',
               self.num_levels,
@@ -152,11 +178,13 @@ class PyramidWriter:
         if not channels:
             channels = self.channels
         maxprojection = np.max(
-            self.in_data["0"]
-            .get_orthogonal_selection((
-                channels, 
-                slice(self.y,self.y + self.height), 
-                slice(self.x,self.x + self.width ))),axis=0)
+            self.in_data[0][
+                channels,
+                self.y : self.y + self.height,
+                self.x : self.x + self.width,
+            ],
+            axis=0,
+        )
         return maxprojection
 
     def base_tiles(self):
@@ -174,13 +202,15 @@ class PyramidWriter:
             else:
                 imgs = [self.max_projection_channel(self.channels)]
         else:
-            imgs = [self.in_data["0"][ci, self.y:self.y + self.height, self.x:self.x + self.width] for ci in self.channels]
+            imgs = [self.in_data[0][ci, self.y:self.y + self.height, self.x:self.x + self.width] for ci in self.channels]
 
-        for img in imgs:
-            for y in range(0, h, th):
-                for x in range(0, w, tw):
-                    yield img[y:y + th, x:x + tw].copy()
-            img = None
+        ys = range(0, h, th)
+        xs = range(0, w, tw)
+        total = len(ys) * len(xs)
+        for c, img in zip(self.channels, imgs):
+            for y, x in tqdm.tqdm(itertools.product(ys, xs), desc=f"Channel {c}", total=total):
+                tile = img[y:y + th, x:x + tw].compute()
+                yield pad_tile(tile, th, tw)
 
     def cropped_subres_image(self, base_img, level):
         scale = 2 ** level
@@ -200,9 +230,9 @@ class PyramidWriter:
 
         for c in self.channels:
             if self.single_channel:
-                base_img = self.in_data[str(level)]
+                base_img = self.in_data[level]
             else:
-                base_img = self.in_data[str(level)][c]
+                base_img = self.in_data[level][c]
             img = self.cropped_subres_image(base_img, level)
             if self.verbose:
                 sys.stdout.write(
@@ -213,12 +243,12 @@ class PyramidWriter:
             tw = tshape[1]
             for y in range(0, img.shape[0], th):
                 for x in range(0, img.shape[1], tw):
-                    a = img[y:y + th, x:x + tw]
+                    a = img[y:y + th, x:x + tw].compute()
                     a = a.astype(img.dtype)
-                    yield a
+                    yield pad_tile(a, th, tw)
 
     def run(self):
-        dtype = self.in_data["0"].dtype
+        dtype = self.in_data[0].dtype
         with tifffile.TiffWriter(self.out_path, ome=True, bigtiff=True) as tiff:
             tiff.write(
                 data=self.base_tiles(),
