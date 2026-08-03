@@ -88,7 +88,7 @@ static def cleanParams(pars, mspecs) {
 
     // Protected keywords
     def keywords = ['in', 'contPfx', 'cont-pfx', 'roadie', 'workflow',
-        'options', 'modules', 'params', 'publish_dir_mode']
+        'options', 'modules', 'params', 'publish_dir_mode', 'trace_report_suffix']
 
     // Clean up the parameter list
     // Separate workflow parameters from module options
