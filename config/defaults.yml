@@ -113,7 +113,7 @@ modules:
     -
       name: mccellpose
       container: labsyspharm/mccellpose
-      version: 1.0.3
+      version: 1.0.6
       cmd: mccellpose --use-gpu --jobs 2 --expand-size 2 --channel 1 --output-cell cell.ome.tif --output-nucleus nucleus.ome.tif
       input: --input
       channel: --channel
