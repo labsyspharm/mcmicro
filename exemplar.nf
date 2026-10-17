@@ -2,20 +2,27 @@
 
 nextflow.enable.dsl=2
 
-if( params.containsKey('help') ) {
+params.help      = false
+params.name      = null
+params.nc        = 0
+params.path      = '.'
+params.fromCycle = null
+params.toCycle   = null
+
+def printHelp() {
     println """
     Download MCMICRO exemplar datasets
 
     Expected parameters
       --name       - Name of the exemplar, e.g., "exemplar-001", "exemplar-002", etc.
-    
+
     Optional parameters
       --help       - Print this message and exit
       --path       - Path to the destination folder (Default: . or current directory)
       --from-cycle - Index of the first cycle to download
       --to-cycle   - Index of the final cycle to download
       --nc         - Number of cycles to download (overrides --from-cycle and --to-cycle)
-    
+
     Examples:
       1. Download the first five cycles of exemplar-001 to the current directory
 
@@ -27,45 +34,46 @@ if( params.containsKey('help') ) {
            --name exemplar-002 --path /data \\
            --from-cycle 3 --to-cycle 9
     """
-    exit 0
 }
 
-params.nc   = 0
-params.path = '.'
-
 // Define remote URLs and default parameters
-switch( params.name ) {
-    case "exemplar-001":
-	url = 'https://mcmicro.s3.amazonaws.com/exemplars/001/exemplar-001'
-    hasParams         = false
-    registered        = false
-	params.fromCycle  = 6
-	params.toCycle    = 8
-	break
-    case "exemplar-002":
-	url = 'https://mcmicro.s3.amazonaws.com/exemplars/002/exemplar-002'
-    hasParams         = true
-    registered        = false
-	params.fromCycle  = 1
-    params.toCycle    = 10
-	break
-    case "exemplar-003":
-    url = 'https://mcmicro.s3.amazonaws.com/exemplars/003/exemplar-003'
-    hasParams         = true
-    registered        = true
-    break
-    default:
-	error "Unknown exemplar name"
+def exemplarSpecs(name) {
+    def specs = [
+        'exemplar-001': [
+            url:        'https://mcmicro.s3.amazonaws.com/exemplars/001/exemplar-001',
+            hasParams:  false,
+            registered: false,
+            fromCycle:  6,
+            toCycle:    8
+        ],
+        'exemplar-002': [
+            url:        'https://mcmicro.s3.amazonaws.com/exemplars/002/exemplar-002',
+            hasParams:  true,
+            registered: false,
+            fromCycle:  1,
+            toCycle:    10
+        ],
+        'exemplar-003': [
+            url:        'https://mcmicro.s3.amazonaws.com/exemplars/003/exemplar-003',
+            hasParams:  true,
+            registered: true
+        ]
+    ]
+
+    if( !specs.containsKey(name) )
+        error "Unknown exemplar name"
+    return specs[name]
 }
 
 process getImages {
     publishDir "${params.path}/${params.name}", mode: 'move'
 
     input:
+        val url
         val name
         val loc
-    output:	file '**'
-    
+    output:	path '**'
+
     script:
     def img = "${loc}/${name}.ome.tiff"
     """
@@ -77,8 +85,10 @@ process getImages {
 process getIllumination {
     publishDir "${params.path}/${params.name}", mode: 'move'
 
-    input: val name
-    output:	file '**'
+    input:
+        val url
+        val name
+    output:	path '**'
 
     script:
     def ilp = 'illumination'
@@ -94,9 +104,12 @@ process getIllumination {
 process getMarkers {
     publishDir "${params.path}/${params.name}", mode: 'move'
 
-    input: val post
-    output: file 'markers.csv'
+    input:
+        val url
+        val post
+    output: path 'markers.csv'
 
+    script:
     """
     curl -f "${url}/markers.csv" ${post} > markers.csv
     """
@@ -105,9 +118,10 @@ process getMarkers {
 process getParams {
     publishDir "${params.path}/${params.name}", mode: 'move'
 
-    output: file 'params.yml'
-    when: hasParams
+    input: val url
+    output: path 'params.yml'
 
+    script:
     """
     curl -f -o params.yml "${url}/params.yml"
     """
@@ -115,39 +129,54 @@ process getParams {
 
 workflow {
 
+    if( params.help ) {
+        printHelp()
+        exit 0
+    }
+
+    def spec = exemplarSpecs(params.name)
+    def url  = spec.url
+
     // Is the exemplar pre-registered?
-    if(registered) {
+    if( spec.registered ) {
 
         // Write downloaded images directly to registration/
-        getImages(params.name, 'registration')
+        getImages(url, params.name, 'registration')
 
         // No post-processing of markers.csv
-        getMarkers('')
+        getMarkers(url, '')
 
     } else {
 
         // Determine the sequence of individual cycles to download
-        if(params.nc > 0 ) {
-            seq   = Channel.of( 1..params.nc )
+        def seq
+        def mFrom
+        def mTo
+        def nc = params.nc as Integer
+        if( nc > 0 ) {
+            seq   = channel.of( 1..nc )
             mFrom = 2
-            mTo   = params.nc * 4 + 1    // Four markers per channel, plus header
+            mTo   = nc * 4 + 1    // Four markers per channel, plus header
         }
         else {
-            seq   = Channel.of( params.fromCycle..params.toCycle )
-            mFrom = (params.fromCycle-1) * 4 + 2
-            mTo   = (params.toCycle) * 4 + 1
+            def fromCycle = (params.fromCycle ?: spec.fromCycle) as Integer
+            def toCycle   = (params.toCycle ?: spec.toCycle) as Integer
+            seq   = channel.of( fromCycle..toCycle )
+            mFrom = (fromCycle-1) * 4 + 2
+            mTo   = toCycle * 4 + 1
         }
 
         // Compose filenames and write downloads to raw/
-        fn = seq.map{it -> "${params.name}-cycle-${String.format("%02d", it)}"}
-        getImages(fn, 'raw')
+        def fn = seq.map{ i -> "${params.name}-cycle-${String.format("%02d", i)}" }
+        getImages(url, fn, 'raw')
 
         // Fetch illumination profiles
-        getIllumination(fn)
+        getIllumination(url, fn)
 
         // Cut the appropriate rows from markers.csv
-        getMarkers("| sed -n \"1p;${mFrom},${mTo}p\"")
+        getMarkers(url, "| sed -n \"1p;${mFrom},${mTo}p\"")
     }
 
-    getParams()
+    if( spec.hasParams )
+        getParams(url)
 }
