@@ -343,15 +343,15 @@ pipeline working under the legacy parser. Phases 1–2 are mechanical; phases 3�
 need design decisions and careful testing. Each phase follows the cycle in
 *Testing strategy*, using the cases listed under its **Testing** heading.
 
-### Phase 0 — Guardrails
+### Phase 0 — Guardrails [Done]
 
-- [ ] Add a CI job that runs `nextflow lint .` and fails on errors. Until the
+- [x] Add a CI job that runs `nextflow lint .` and fails on errors. Until the
       migration is done, it can be informational only.
-- [ ] Pin the Nextflow version in `ci.yml`, and add a matrix over the
+- [x] Pin the Nextflow version in `ci.yml`, and add a matrix over the
       candidate runtimes from *Testing strategy*: 25.04.7 (the minimum
       supported version), 26.10.2 legacy and 26.10.2 strict. Strict runs can
       be marked as allowed to fail until Phase 3.
-- [ ] In the meantime, document the `NXF_SYNTAX_PARSER=v1` workaround in the
+- [x] In the meantime, document the `NXF_SYNTAX_PARSER=v1` workaround in the
       README quick start.
 
 **Testing.** This phase does not change the pipeline, so there is no baseline
@@ -709,9 +709,12 @@ capture is the resolved configuration. No exemplar data is needed.
    AF-bs-pre.
 5. **Command-line types are converted using explicit types in
    `config/schema.yml`** (`string`, `boolean`, `auto`), applied only to
-   Strings in `Opts.cleanParams` (Phase 4). Two alternatives were rejected:
-   - Converting based on `config/defaults.yml`: parameters without a default
-     would stay Strings, so `qc/params.yml` would differ from the legacy
-     parser.
-   - Legacy-style conversion for every key: it would also convert quoted
-     strings from `-params-file` and config.
+   Strings in `Opts.cleanParams` (Phase 4).
+
+## Progress
+
+- **Phase 0:** CI pins Nextflow; the `ex001` job runs a 25.04.7 legacy /
+  26.10.2 legacy / 26.10.2 strict matrix (strict allowed to fail), other jobs
+  run 26.10.2 legacy only; informational `lint` job;
+  `roadmaps/**` excluded from CI triggers; README documents
+  `NXF_SYNTAX_PARSER=v1`.

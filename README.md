@@ -12,6 +12,8 @@ The pipeline is described in [Nature Methods](https://www.nature.com/articles/s4
 1. [Download](http://mcmicro.org/datasets/) exemplar data: `nextflow run labsyspharm/mcmicro/exemplar.nf --name exemplar-001`
 1. [Run](https://mcmicro.org/tutorial/tutorial.html) mcmicro on the exemplar: `nextflow run labsyspharm/mcmicro --in exemplar-001`
 
+**Nextflow 25.10 and later:** MCMICRO does not yet support the strict syntax parser that these versions use by default. Until it does, select the legacy parser by setting `NXF_SYNTAX_PARSER=v1`, e.g., `NXF_SYNTAX_PARSER=v1 nextflow run labsyspharm/mcmicro --in exemplar-001`
+
 ## Funding
 
 This work is supported by the following:

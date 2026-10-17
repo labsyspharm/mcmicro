@@ -12,6 +12,7 @@ on:
       - 'docs/**'
       - 'setup/**'
       - 'env/*'
+      - 'roadmaps/**'
   pull_request:
     branches: [ master ]
     paths-ignore:
@@ -21,15 +22,32 @@ on:
       - 'docs/**'
       - 'setup/**'
       - 'env/*'
+      - 'roadmaps/**'
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 jobs:
 
+  # Reports strict parser errors; informational until the migration in roadmaps/strict-parser.md is done
+  lint:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    env:
+      NXF_VER: 26.10.2
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Nextflow
+        run: curl -fsSL get.nextflow.io | bash
+      - name: Lint
+        run: ./nextflow lint . -o concise
+
   # Downloads exemplar data from S3 as needed
   setup:
     runs-on: ubuntu-latest
+    env:
+      NXF_VER: 26.10.2
+      NXF_SYNTAX_PARSER: v2
     steps:
       - uses: actions/checkout@v4
       - name: Install Nextflow
@@ -68,19 +86,31 @@ jobs:
 
   # Test exemplar-001
   ex001:
+    name: ex001 (${{ matrix.runtime.nextflow }} ${{ matrix.runtime.parser }}, ${{ matrix.params }})
     strategy:
       matrix:
+        runtime:
+          - { nextflow: 25.04.7, parser: v1 }
+          - { nextflow: 26.10.2, parser: v1 }
+          - { nextflow: 26.10.2, parser: v2 }
+        params:
+          - --viz
+          - --start-at illumination --stop-at registration
+          - --background
+          - --background --background-method imagej-rolling-ball
+          - --segmentation cypository --cypository-opts '--channel 10 --scalingFactor 2' --s3seg-opts '--logSigma 45 300'
+          - --segmentation ilastik,mesmer
+          - --segmentation cellpose --mcquant-opts '--masks *masks.tif'
         include:
           - params: --viz
             upload_artifact: true
-          - params: --start-at illumination --stop-at registration
-          - params: --background
-          - params: --background --background-method imagej-rolling-ball
-          - params: --segmentation cypository --cypository-opts '--channel 10 --scalingFactor 2' --s3seg-opts '--logSigma 45 300'
-          - params: --segmentation ilastik,mesmer
-          - params: --segmentation cellpose --mcquant-opts '--masks *masks.tif'
     needs: setup
     runs-on: ubuntu-latest
+    # main.nf does not compile under the strict parser (v2) yet, see roadmaps/strict-parser.md
+    continue-on-error: ${{ matrix.runtime.parser == 'v2' }}
+    env:
+      NXF_VER: ${{ matrix.runtime.nextflow }}
+      NXF_SYNTAX_PARSER: ${{ matrix.runtime.parser }}
     steps:
       - uses: actions/checkout@v4
       - name: Install Nextflow
@@ -106,7 +136,7 @@ jobs:
           ls -R ~/data/exemplar-001
       - name: Upload processed result
         uses: actions/upload-artifact@v4
-        if: ${{ github.event_name == 'push' && matrix.upload_artifact }}
+        if: ${{ github.event_name == 'push' && matrix.upload_artifact && matrix.runtime.nextflow == '26.10.2' && matrix.runtime.parser == 'v1' }}
         with:
           name: exemplar-001
           path: |
@@ -118,6 +148,9 @@ jobs:
   ex001-by-step:
     needs: setup
     runs-on: ubuntu-latest
+    env:
+      NXF_VER: 26.10.2
+      NXF_SYNTAX_PARSER: v1
     steps:
       - uses: actions/checkout@v4
       - name: Install Nextflow
@@ -146,6 +179,9 @@ jobs:
   ex002:
     needs: setup
     runs-on: ubuntu-latest
+    env:
+      NXF_VER: 26.10.2
+      NXF_SYNTAX_PARSER: v1
     steps:
       - uses: actions/checkout@v4
       - name: Install Nextflow
@@ -166,6 +202,9 @@ jobs:
   ex001-singularity:
     needs: setup
     runs-on: ubuntu-latest
+    env:
+      NXF_VER: 26.10.2
+      NXF_SYNTAX_PARSER: v1
     steps:
       - uses: actions/checkout@v4
       - name: Install singularity
