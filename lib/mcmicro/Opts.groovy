@@ -88,7 +88,13 @@ static def cleanParams(pars, mspecs) {
 
     // Protected keywords
     def keywords = ['in', 'contPfx', 'cont-pfx', 'roadie', 'workflow',
-        'options', 'modules', 'params', 'publish_dir_mode', 'trace_report_suffix']
+        'options', 'modules', 'params', 'publish_dir_mode', 'trace_report_suffix',
+        'mgb_report_dir', 'mgb-report-dir',
+        'mgb_singularity_cache', 'mgb-singularity-cache',
+        'mgb_work_dir', 'mgb-work-dir',
+        'mgb_gpu_queue', 'mgb-gpu-queue',
+        'mgb_gpu_gres', 'mgb-gpu-gres',
+        'mgb_ome_tiff_gpx_script', 'mgb-ome-tiff-gpx-script']
 
     // Clean up the parameter list
     // Separate workflow parameters from module options
